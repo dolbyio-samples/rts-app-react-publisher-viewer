@@ -7,6 +7,8 @@ import {
   Heading,
   HStack,
   Select,
+  Spacer,
+  Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -24,6 +26,10 @@ function App() {
   const initialState: AppState = {
     publishState: "Setup",
   };
+
+  const [shouldRecord, setShouldRecord] = useState(false);
+  const [participantsCount, setParticipantsCount] = useState(0);
+
   const reducer = (state: AppState, action: { type: PublishAction }) => {
     switch (action.type) {
       case "join": {
@@ -54,10 +60,13 @@ function App() {
 
   return (
     <VStack w="100%">
-      {/** TODO: create a TitleBar component */}
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
-          <Heading size="md"> Dolbyio logo </Heading>
+          <Heading size="md" p='4'> Dolbyio logo </Heading>
+        </Box>
+        <Spacer/>
+        <Box p='4'>
+        <Text> Participant number: {participantsCount} </Text>
         </Box>
       </Flex>
       <Box>
@@ -68,7 +77,7 @@ function App() {
               <Text color="white"> This is the video view </Text>
             </Box>
             <HStack>
-              <Button> Toggle Mic </Button>
+              <Button minW='40'> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
                 state.publishState === "Setup" ? (
@@ -81,7 +90,7 @@ function App() {
               }
             </HStack>
             <HStack>
-              <Button> Toggle Camera </Button>
+              <Button minW='40'> Toggle Camera </Button>
               {
                 // TODO: move to CameraSelect component
                 state.publishState === "Setup" ? (
@@ -93,8 +102,9 @@ function App() {
                 ) : undefined
               }
             </HStack>
-            {state.publishState == "Setup" ? (
+            {state.publishState == "Setup" || state.publishState == 'Connecting' ? (
               <Button
+                isLoading = {state.publishState == 'Connecting'}
                 onClick={() => {
                   dispatch({ type: "join" });
                   setTimeout(() => {
@@ -112,11 +122,16 @@ function App() {
                 Go Live
               </Button>
             ) : undefined}
-            { state.publishState === 'Streaming' ?   (
+             { state.publishState === 'Streaming' ? (
+              <>
               <Button onClick={() => dispatch({ type: "stopLive" })}>
                 Stop Live
               </Button>
+              <Text> This is a timer </Text>
+              </>
             ): undefined }
+            { state.publishState === 'Ready' || state.publishState === 'Streaming' ?
+            (<Switch onChange={() => setShouldRecord(!shouldRecord)}> enable recording </Switch>) : undefined }
           </VStack>
         </Center>
       </Box>
