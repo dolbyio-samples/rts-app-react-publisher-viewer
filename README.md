@@ -1,4 +1,4 @@
-# rts-app-react-milicast
+# stream-demo-react-milicast
 Internal MVP of Milicast SDK Demo
 
 ### Run the app in dev mode
