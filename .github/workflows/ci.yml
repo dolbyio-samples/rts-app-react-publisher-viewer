@@ -23,7 +23,7 @@ jobs:
 
       - name: Upload production artifacts
         uses: actions/upload-artifact@v3
-        if: github.ref == 'refs/heads/main' 
+        if: github.ref == 'refs/heads/main' && runner.os == "Linux"
         with:
           name: ${{ env.prod-dist }}
           retention-days: 1
