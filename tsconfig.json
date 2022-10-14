@@ -16,6 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "milicast-sdk.d.ts"],
+  "include": ["src", "millicast-sdk.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
