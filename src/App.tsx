@@ -135,6 +135,9 @@ function App() {
           </VStack>
         </Center>
       </Box>
+      <Box>
+        <Text>Version: {__APP_VERSION__} </Text>
+      </Box>
     </VStack>
   );
 }
