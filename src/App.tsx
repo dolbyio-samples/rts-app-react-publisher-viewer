@@ -28,7 +28,7 @@ function App() {
   };
 
   const [shouldRecord, setShouldRecord] = useState(false);
-  const [participantsCount, setParticipantsCount] = useState(0);
+  const [participantsCount] = useState(0);
 
   const reducer = (state: AppState, action: { type: PublishAction }) => {
     switch (action.type) {
@@ -80,26 +80,26 @@ function App() {
               <Button minW='40'> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
-                state.publishState === "Setup" ? (
+                state.publishState === "Setup" && (
                   <Select placeholder="Select Microphone">
                     <option value="option1">Mic 1</option>
                     <option value="option2">Mic 2</option>
                     <option value="option3">Mic 3</option>
                   </Select>
-                ) : undefined
+                )
               }
             </HStack>
             <HStack>
               <Button minW='40'> Toggle Camera </Button>
               {
                 // TODO: move to CameraSelect component
-                state.publishState === "Setup" ? (
+                state.publishState === "Setup" && (
                   <Select placeholder="Select Camera">
                     <option value="option1">Camera 1</option>
                     <option value="option2">Camera 2</option>
                     <option value="option3">Camera 3</option>
                   </Select>
-                ) : undefined
+                )
               }
             </HStack>
             {state.publishState == "Setup" || state.publishState == 'Connecting' ? (
@@ -117,21 +117,21 @@ function App() {
             ) : undefined}
             {
               /** TODO: create a streaming control component */
-            state.publishState == "Ready" ? (
+            state.publishState == "Ready" && (
               <Button onClick={() => dispatch({ type: "goLive" })}>
                 Go Live
               </Button>
-            ) : undefined}
-             { state.publishState === 'Streaming' ? (
+            ) }
+             { state.publishState === 'Streaming' && (
               <>
               <Button onClick={() => dispatch({ type: "stopLive" })}>
                 Stop Live
               </Button>
               <Text> This is a timer </Text>
               </>
-            ): undefined }
-            { state.publishState === 'Ready' || state.publishState === 'Streaming' ?
-            (<Switch onChange={() => setShouldRecord(!shouldRecord)}> enable recording </Switch>) : undefined }
+            ) }
+            { (state.publishState === 'Ready' || state.publishState === 'Streaming') &&
+            (<Switch onChange={() => setShouldRecord(!shouldRecord)}> enable recording </Switch>) }
           </VStack>
         </Center>
       </Box>
