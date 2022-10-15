@@ -16,6 +16,7 @@ declare namespace millicast {
         constructor(streamName: string, tokenGenerator: tokenGeneratorCallback, autoReconnect: boolean = true)
         connect(options: BroadcastOptions): Promise<void>
         stop()
+        isActive(): boolean
     }
 
     declare class Director {
