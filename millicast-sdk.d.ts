@@ -1,25 +1,23 @@
 declare namespace millicast {
-
-    declare interface BroadcastOptions {
+    interface BroadcastOptions {
         mediaStream: MediaStream | MediaStreamTrack[]
     }
-
-    declare interface DirectorResponse {
+    interface DirectorResponse {
         urls: string[],
         jwt: string,
         iceServers: RTCIceServer[]
     }
-
-    declare type tokenGeneratorCallback = () => Promise<DirectorResponse>
-
-    declare class Publish {
+    type tokenGeneratorCallback = () => Promise<DirectorResponse>
+    type EventEmitter = import('events').EventEmitter
+    class Publish {
         constructor(streamName: string, tokenGenerator: tokenGeneratorCallback, autoReconnect: boolean = true)
         connect(options: BroadcastOptions): Promise<void>
         stop()
         isActive(): boolean
     }
-
-    declare class Director {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Publish extends EventEmitter {}
+    class Director {
         static getPublisher({token: string, streamName: string}): Promise<DirectorResponse>
     }
 }
