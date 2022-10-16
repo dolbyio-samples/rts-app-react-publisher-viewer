@@ -1,5 +1,8 @@
-# stream-demo-react-milicast
+# WIP: stream-demo-react-milicast
 Internal MVP of Milicast SDK Demo
+
+**NOTE**: We are still actively developing this project
+
 
 ### Run the app in dev mode
 ```javascript
