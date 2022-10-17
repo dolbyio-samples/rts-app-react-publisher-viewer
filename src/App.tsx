@@ -35,10 +35,10 @@ function App() {
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
-  const streamToken = import.meta.env.VITE_MILLICAST_STREAM_ACCOUNT_ID;
+  const token = import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN;
   const streamId = import.meta.env.VITE_MILLICAST_STREAM_NAME;
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(streamToken, streamId);
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(token, streamId);
 
   const reducer = (state: AppState, action: { type: PublishAction }) => {
     switch (action.type) {
