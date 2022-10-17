@@ -33,19 +33,23 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     };
 
     const stopStreaming = async () => {
+        if (!publisher.current || publisher.current.isActive() || publisherState !== "streaming") return;
         await publisher.current.stop();
         setPublisherState("ready")
 
     }
 
-    // TODO yet to be properly tested
     const updateAudioSource = async (mediaStream: MediaStream) => {
-        await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
+        // TODO yet to be tested
+        // if (!publisher.current || publisher.current.isActive()) return;
+        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
     }
 
-    // TODO yet to be properly tested
+
     const updateVideoSource = async (mediaStream: MediaStream) => {
-        await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
+        // TODO yet to be tested
+        // if (!publisher.current || publisher.current.isActive()) return;
+        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
     }
 
     return {

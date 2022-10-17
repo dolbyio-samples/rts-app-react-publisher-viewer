@@ -13,14 +13,14 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-
+import usePublisher from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
+import type { Publisher, PublisherState } from './hooks/types/Publisher';
 
-type PublishState = "Setup" | "Connecting" | "Ready" | "Streaming";
 
 interface AppState {
-  publishState: PublishState;
+  publishState: PublisherState;
   mediaStream?: MediaStream;
 }
 
@@ -28,34 +28,39 @@ type PublishAction = "join" | "joined" | "goLive" | "stopLive";
 
 function App() {
   const initialState: AppState = {
-    publishState: "Setup",
+    publishState: "ready",
   };
 
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
+  const streamToken = import.meta.env.VITE_MILLICAST_STREAM_ACCOUNT_ID;
+  const streamId = import.meta.env.VITE_MILLICAST_STREAM_NAME;
+
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(streamToken, streamId);
+
   const reducer = (state: AppState, action: { type: PublishAction }) => {
     switch (action.type) {
       case "join": {
         // TODO: connect publisher
-        const newState: AppState = { ...state, publishState: "Connecting" };
+        const newState: AppState = { ...state, publishState: "connecting" };
         return newState;
       }
       case "joined": {
-        const newState: AppState = { ...state, publishState: "Ready" };
+        const newState: AppState = { ...state, publishState: "ready" };
         return newState;
       }
       case "goLive": {
         // TODO: kick off streaming
         const newState: AppState = {
           ...state,
-          publishState: "Streaming",
+          publishState: "streaming",
         };
         return newState;
       }
       case "stopLive": {
-        const newState: AppState = { ...state, publishState: "Ready" };
+        const newState: AppState = { ...state, publishState: "ready" };
         return newState;
       }
     }
@@ -92,7 +97,7 @@ function App() {
               <Button minW="40"> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
-                state.publishState === "Setup" && (
+                state.publishState === "ready" && (
                   <Select placeholder="Select Microphone">
                     <option value="option1">Mic 1</option>
                     <option value="option2">Mic 2</option>
@@ -123,7 +128,7 @@ function App() {
               </IconButton>
               {
                 // TODO: move to CameraSelect component
-                state.publishState === "Setup" && (
+                state.publishState === "ready" && (
                   <Select placeholder="Select Camera">
                     <option value="option1">Camera 1</option>
                     <option value="option2">Camera 2</option>
@@ -132,10 +137,10 @@ function App() {
                 )
               }
             </HStack>
-            {state.publishState == "Setup" ||
-            state.publishState == "Connecting" ? (
+            {state.publishState == "ready" ||
+              state.publishState == "connecting" ? (
               <Button
-                isLoading={state.publishState == "Connecting"}
+                  isLoading={state.publishState == "connecting"}
                 onClick={() => {
                   dispatch({ type: "join" });
                   setTimeout(() => {
@@ -148,13 +153,13 @@ function App() {
             ) : undefined}
             {
               /** TODO: create a streaming control component */
-              state.publishState == "Ready" && (
+              state.publishState == "ready" && (
                 <Button onClick={() => dispatch({ type: "goLive" })}>
                   Go Live
                 </Button>
               )
             }
-            {state.publishState === "Streaming" && (
+            {state.publishState === "streaming" && (
               <>
                 <Button onClick={() => dispatch({ type: "stopLive" })}>
                   Stop Live
@@ -162,8 +167,8 @@ function App() {
                 <Text> This is a timer </Text>
               </>
             )}
-            {(state.publishState === "Ready" ||
-              state.publishState === "Streaming") && (
+            {(state.publishState === "ready" ||
+              state.publishState === "streaming") && (
               <Switch onChange={() => setShouldRecord(!shouldRecord)}>
                 {" "}
                 enable recording{" "}
