@@ -22,7 +22,6 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     const publisher = useRef<Publish>();
 
     useEffect(() => {
-        console.log(token, streamName);
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator);
     }, [token, streamName]);
