@@ -20,16 +20,7 @@ import { useLocation } from 'react-router-dom';
 
 import type { Publisher, PublisherState } from './hooks/usePublisher';
 
-interface AppState {
-  publishState: PublisherState;
-  mediaStream?: MediaStream;
-}
-
-
 function App() {
-  const initialState: AppState = {
-    publishState: "ready",
-  };
   const location = useLocation();
 
   const accessToken = useMemo(() => {
@@ -46,34 +37,6 @@ function App() {
   const [participantsCount] = useState(0);
 
   const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
-
-  const reducer = (state: AppState, action: { type: PublishAction }) => {
-    switch (action.type) {
-      case "join": {
-        // TODO: connect publisher
-        const newState: AppState = { ...state, publishState: "connecting" };
-        return newState;
-      }
-      case "joined": {
-        const newState: AppState = { ...state, publishState: "ready" };
-        return newState;
-      }
-      case "goLive": {
-        // TODO: kick off streaming
-        const newState: AppState = {
-          ...state,
-          publishState: "streaming",
-        };
-        return newState;
-      }
-      case "stopLive": {
-        const newState: AppState = { ...state, publishState: "ready" };
-        return newState;
-      }
-    }
-  };
-
-  const [state, dispatch] = useReducer(reducer, initialState);
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -104,7 +67,7 @@ function App() {
               <Button minW="40"> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
-                state.publishState === "ready" && (
+                publisherState === "ready" && (
                   <Select placeholder="Select Microphone">
                     <option value="option1">Mic 1</option>
                     <option value="option2">Mic 2</option>
@@ -135,7 +98,7 @@ function App() {
               </IconButton>
               {
                 // TODO: move to CameraSelect component
-                state.publishState === "ready" && (
+                publisherState === "ready" && (
                   <Select placeholder="Select Camera">
                     <option value="option1">Camera 1</option>
                     <option value="option2">Camera 2</option>
@@ -144,38 +107,42 @@ function App() {
                 )
               }
             </HStack>
-            {state.publishState == "ready" ||
-              state.publishState == "connecting" ? (
+            {publisherState == "ready" ||
+              publisherState == "connecting" ? (
               <Button
-                  isLoading={state.publishState == "connecting"}
-                onClick={() => {
-                  dispatch({ type: "join" });
-                  setTimeout(() => {
-                    dispatch({ type: "joined" });
-                  }, 1000);
-                }}
+                  isLoading={publisherState == "connecting"}
+                  onClick={(async () => {
+                    await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
+                      console.log("Hi")
+                      startStreaming(mediaDevice);
+                    });
+                  })}
               >
                 Join
               </Button>
             ) : undefined}
             {
               /** TODO: create a streaming control component */
-              state.publishState == "ready" && (
-                <Button onClick={() => dispatch({ type: "goLive" })}>
+              publisherState == "ready" && (
+                <Button onClick={() => {
+                  // TODO 
+                }
+
+                }>
                   Go Live
                 </Button>
               )
             }
-            {state.publishState === "streaming" && (
+            {publisherState === "streaming" && (
               <>
-                <Button onClick={() => dispatch({ type: "stopLive" })}>
+                <Button onClick={() => { stopStreaming(); }}>
                   Stop Live
                 </Button>
                 <Text> This is a timer </Text>
               </>
             )}
-            {(state.publishState === "ready" ||
-              state.publishState === "streaming") && (
+            {(publisherState === "ready" ||
+              publisherState === "streaming") && (
               <Switch onChange={() => setShouldRecord(!shouldRecord)}>
                 {" "}
                 enable recording{" "}
