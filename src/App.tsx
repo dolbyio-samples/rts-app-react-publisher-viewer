@@ -114,21 +114,9 @@ function App() {
                     });
                   })}
               >
-                Join
+                  Go Live
               </Button>
             ) : undefined}
-            {
-              /** TODO: create a streaming control component */
-              publisherState == "ready" && (
-                <Button onClick={() => {
-                  // TODO 
-                }
-
-                }>
-                  Go Live
-                </Button>
-              )
-            }
             {publisherState === "streaming" && (
               <>
                 <Button onClick={() => { stopStreaming(); }}>
