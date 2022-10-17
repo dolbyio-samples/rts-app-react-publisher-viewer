@@ -6,12 +6,16 @@ import {
   Flex,
   Heading,
   HStack,
+  IconButton,
   Select,
   Spacer,
   Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
+
+import IconCamera from "./components/Icons/Camera";
+import IconCameraOff from "./components/Icons/CameraOff";
 
 type PublishState = "Setup" | "Connecting" | "Ready" | "Streaming";
 
@@ -28,6 +32,7 @@ function App() {
   };
 
   const [shouldRecord, setShouldRecord] = useState(false);
+  const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
   const reducer = (state: AppState, action: { type: PublishAction }) => {
@@ -58,15 +63,22 @@ function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
+  // TODO: move this to IconComponents
+  const purple400 = "var(--chakra-colors-dolbyPurple-400)";
+
   return (
     <VStack w="100%">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
-          <Heading size="md" p='4'> Dolbyio logo </Heading>
+          <Heading size="md" p="4">
+            {" "}
+            Dolbyio logo{" "}
+          </Heading>
         </Box>
-        <Spacer/>
-        <Box p='4'>
-        <Text> Participant number: {participantsCount} </Text>
+        <Spacer />
+        <Box p="4">
+          <Text> Participant number: {participantsCount} </Text>
         </Box>
       </Flex>
       <Box>
@@ -77,7 +89,7 @@ function App() {
               <Text color="white"> This is the video view </Text>
             </Box>
             <HStack>
-              <Button minW='40'> Toggle Mic </Button>
+              <Button minW="40"> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
                 state.publishState === "Setup" && (
@@ -90,7 +102,25 @@ function App() {
               }
             </HStack>
             <HStack>
-              <Button minW='40'> Toggle Camera </Button>
+              <IconButton
+                minW="40"
+                size="md"
+                aria-label="camera"
+                variant="outline"
+                icon={
+                  cameraOn ? (
+                    <IconCamera fill={purple400} />
+                  ) : (
+                    <IconCameraOff fill="red" />
+                  )
+                }
+                onClick={() => {
+                  setCameraOn(!cameraOn);
+                }}
+              >
+                {" "}
+                Toggle Camera{" "}
+              </IconButton>
               {
                 // TODO: move to CameraSelect component
                 state.publishState === "Setup" && (
@@ -102,9 +132,10 @@ function App() {
                 )
               }
             </HStack>
-            {state.publishState == "Setup" || state.publishState == 'Connecting' ? (
+            {state.publishState == "Setup" ||
+            state.publishState == "Connecting" ? (
               <Button
-                isLoading = {state.publishState == 'Connecting'}
+                isLoading={state.publishState == "Connecting"}
                 onClick={() => {
                   dispatch({ type: "join" });
                   setTimeout(() => {
@@ -117,21 +148,27 @@ function App() {
             ) : undefined}
             {
               /** TODO: create a streaming control component */
-            state.publishState == "Ready" && (
-              <Button onClick={() => dispatch({ type: "goLive" })}>
-                Go Live
-              </Button>
-            ) }
-             { state.publishState === 'Streaming' && (
+              state.publishState == "Ready" && (
+                <Button onClick={() => dispatch({ type: "goLive" })}>
+                  Go Live
+                </Button>
+              )
+            }
+            {state.publishState === "Streaming" && (
               <>
-              <Button onClick={() => dispatch({ type: "stopLive" })}>
-                Stop Live
-              </Button>
-              <Text> This is a timer </Text>
+                <Button onClick={() => dispatch({ type: "stopLive" })}>
+                  Stop Live
+                </Button>
+                <Text> This is a timer </Text>
               </>
-            ) }
-            { (state.publishState === 'Ready' || state.publishState === 'Streaming') &&
-            (<Switch onChange={() => setShouldRecord(!shouldRecord)}> enable recording </Switch>) }
+            )}
+            {(state.publishState === "Ready" ||
+              state.publishState === "Streaming") && (
+              <Switch onChange={() => setShouldRecord(!shouldRecord)}>
+                {" "}
+                enable recording{" "}
+              </Switch>
+            )}
           </VStack>
         </Center>
       </Box>
