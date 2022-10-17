@@ -27,8 +27,6 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         publisher.current = new Publish(streamName, tokenGenerator);
 
         return () => { stopStreaming() };
-            stopStreaming();
-        }
     }, [token, streamName]);
 
     // TODO, this param list can grow significantly when we add the broadcast settings option, but until such time this list will stay small
@@ -50,14 +48,14 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateAudioSource = async (track: MediaStreamTrack) => {
+    const updateAudioTrack = async (track: MediaStreamTrack) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateVideoSource = async (track: MediaStreamTrack) => {
+    const updateVideoTrack = async (track: MediaStreamTrack) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
@@ -66,8 +64,8 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     return {
         startStreaming,
         stopStreaming,
-        updateAudioTrack: updateAudioSource,
-        updateVideoTrack: updateVideoSource,
+        updateAudioTrack,
+        updateVideoTrack,
         publisherState
     };
 };
