@@ -18,8 +18,6 @@ import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 import { useLocation } from 'react-router-dom';
 
-import type { Publisher, PublisherState } from './hooks/usePublisher';
-
 function App() {
   const location = useLocation();
 

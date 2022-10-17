@@ -41,10 +41,8 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     };
 
     const stopStreaming = async () => {
-        if (!publisher.current || publisher.current.isActive() || publisherState !== "streaming") return;
-        await publisher.current.stop();
+        await publisher?.current?.stop();
         setPublisherState("ready")
-
     }
 
     const updateAudioSource = async (mediaStream: MediaStream) => {
