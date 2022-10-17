@@ -24,6 +24,10 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     useEffect(() => {
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator);
+
+        return function cleanup() {
+            stopStreaming();
+        }
     }, [token, streamName]);
 
     // TODO, this param list can grow significantly when we add the broadcast settings option, but until such time this list will stay small
