@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useMemo, useReducer, useState } from "react";
 import {
   Box,
   Button,
@@ -16,29 +16,36 @@ import {
 import usePublisher from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
-import type { Publisher, PublisherState } from './hooks/types/Publisher';
+import { useLocation } from 'react-router-dom';
 
+import type { Publisher, PublisherState } from './hooks/usePublisher';
 
 interface AppState {
   publishState: PublisherState;
   mediaStream?: MediaStream;
 }
 
-type PublishAction = "join" | "joined" | "goLive" | "stopLive";
 
 function App() {
   const initialState: AppState = {
     publishState: "ready",
   };
+  const location = useLocation();
+
+  const accessToken = useMemo(() => {
+    return encodeURIComponent(new URLSearchParams(window.location.search).get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
+  }, [location]);
+
+  const streamId = useMemo(() => {
+    return encodeURIComponent(new URLSearchParams(window.location.search).get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME);
+  }, [location]);
+
 
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
-  const token = import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN;
-  const streamId = import.meta.env.VITE_MILLICAST_STREAM_NAME;
-
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(token, streamId);
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
   const reducer = (state: AppState, action: { type: PublishAction }) => {
     switch (action.type) {

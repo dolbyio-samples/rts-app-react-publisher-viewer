@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Director, Publish } from '@millicast/sdk';
-import type { Publisher, PublisherState } from './types/Publisher';
 
+export type PublisherState = "ready" | "connecting" | "streaming";
+
+export interface Publisher {
+    startStreaming: (mediaStream: MediaStream) => Promise<void>;
+    stopStreaming: () => void;
+    updateAudioTrack: (mediaStream: MediaStream) => Promise<void>;
+    updateVideoTrack: (mediaStream: MediaStream) => Promise<void>;
+    publisherState: PublisherState;
+}
 
 const usePublisher = (token: string, streamName: string): Publisher => {
 
@@ -55,8 +63,8 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     return {
         startStreaming,
         stopStreaming,
-        updateAudioSource,
-        updateVideoSource,
+        updateAudioTrack: updateAudioSource,
+        updateVideoTrack: updateVideoSource,
         publisherState
     };
 };
