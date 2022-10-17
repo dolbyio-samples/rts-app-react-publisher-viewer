@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Director, Publish } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
@@ -45,13 +45,14 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         setPublisherState("ready")
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const updateAudioSource = async (mediaStream: MediaStream) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
     }
 
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const updateVideoSource = async (mediaStream: MediaStream) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
