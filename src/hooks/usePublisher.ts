@@ -45,7 +45,7 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     };
 
     const stopStreaming = async () => {
-        await publisher?.current?.stop();
+        await publisher.current?.stop();
         setPublisherState("ready")
     }
 
