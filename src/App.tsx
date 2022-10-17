@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import usePublisher from "./hooks/usePublisher";
+import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 import { useLocation } from 'react-router-dom';
@@ -112,9 +112,12 @@ function App() {
               <Button
                   isLoading={publisherState == "connecting"}
                   onClick={(async () => {
+                    // This needs to actually launch preview mode and not start streaming
                     await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
-                      console.log("Hi")
-                      startStreaming(mediaDevice);
+                      const broadcastOptions: BroadcastOptions = {
+                        mediaStream: mediaDevice
+                      }
+                      startStreaming(broadcastOptions);
                     });
                   })}
               >
