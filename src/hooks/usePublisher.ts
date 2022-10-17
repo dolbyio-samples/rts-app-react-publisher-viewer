@@ -13,7 +13,6 @@ export interface Publisher {
 
 export interface BroadcastOptions {
     mediaStream: MediaStream
-    // ADD More
 }
 
 const usePublisher = (token: string, streamName: string): Publisher => {
