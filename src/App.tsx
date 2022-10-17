@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -16,23 +16,18 @@ import {
 import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
-import { useLocation } from 'react-router-dom';
+
 
 function App() {
-  const location = useLocation();
-
-  const accessToken = useMemo(() => {
-    return encodeURIComponent(new URLSearchParams(window.location.search).get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-  }, [location]);
-
-  const streamId = useMemo(() => {
-    return encodeURIComponent(new URLSearchParams(window.location.search).get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME);
-  }, [location]);
-
 
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
+
+
+  const params = new URLSearchParams(window.location.search);
+  const accessToken = params.get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN;
+  const streamId = params.get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME;
 
   const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
