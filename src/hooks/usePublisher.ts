@@ -26,7 +26,7 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator);
 
-        return function cleanup() {
+        return () => { stopStreaming() };
             stopStreaming();
         }
     }, [token, streamName]);
