@@ -6,7 +6,7 @@ export type PublisherState = "ready" | "connecting" | "streaming";
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
-    updateAudioTrack: (mediaStream: MediaStream) => Promise<void>;
+    updateAudioTrack: (track: MediaStreamTrack) => Promise<void>;
     updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
     publisherState: PublisherState;
 }
@@ -45,14 +45,14 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateAudioSource = async (mediaStream: MediaStream) => {
+    const updateAudioSource = async (track: MediaStreamTrack) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateVideoSource = async (mediaStream: MediaStream) => {
+    const updateVideoSource = async (track: MediaStreamTrack) => {
         // TODO yet to be tested
         // if (!publisher.current || publisher.current.isActive()) return;
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
