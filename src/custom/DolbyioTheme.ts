@@ -5,6 +5,7 @@ const dolbyio = extendTheme({
   colors: {
     dolbyPurple: {
       400: "#aa33ff",
+      500: "#8829CC",
     },
   },
   components: {
