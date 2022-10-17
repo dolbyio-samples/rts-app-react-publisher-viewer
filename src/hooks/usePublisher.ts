@@ -22,7 +22,7 @@ const usePublisher = (token: string, streamName: string): Publisher => {
     const publisher = useRef<Publish>();
 
     useEffect(() => {
-
+        if (!token || !streamName) return; 
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator);
 

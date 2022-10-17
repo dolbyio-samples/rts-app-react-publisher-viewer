@@ -24,10 +24,15 @@ function App() {
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
+  const [accessToken, setAccessToken] = useState("");
+  const [streamId, setStreamId] = useState("");
 
-  const params = new URLSearchParams(window.location.search);
-  const accessToken = params.get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN;
-  const streamId = params.get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME;
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setAccessToken(params.get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
+    setStreamId(params.get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME);
+  }, []);
+
 
   const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
