@@ -7,7 +7,7 @@ export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
     updateAudioTrack: (mediaStream: MediaStream) => Promise<void>;
-    updateVideoTrack: (mediaStream: MediaStream) => Promise<void>;
+    updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
     publisherState: PublisherState;
 }
 
