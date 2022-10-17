@@ -3,12 +3,22 @@ import { Select } from "@chakra-ui/react";
 
 type CameraSelectType = {
     cameraList: InputDeviceInfo[];
+    setCamHandler: (groupId: string) => void;
+    selectedCamera?: InputDeviceInfo;
 }
 
-const CameraSelect = ({cameraList}: CameraSelectType) => {
+const CameraSelect = ({cameraList, setCamHandler, selectedCamera}: CameraSelectType) => {    
     return (
-        <Select placeholder="Select Camera">
-            {cameraList.map(camera => <option value={camera.deviceId} key={camera.deviceId}>{camera.label}</option>)}
+        <Select placeholder="Select Camera" defaultValue={selectedCamera?.groupId || cameraList[0].groupId} onChange={(e) => setCamHandler(e.target.value)}>
+            {cameraList.map(camera => {
+                return (
+                    <option 
+                        value={camera.groupId} 
+                        key={camera.groupId}
+                    >
+                        {camera.label}
+                    </option>
+                )})}
         </Select>
     )
 }

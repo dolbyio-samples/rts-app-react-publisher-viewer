@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, useRef, useMemo } from "react";
 import {
   Box,
   Button,
@@ -11,7 +11,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { Director, Publish } from '@millicast/sdk';
 import useMedia from './hooks/useMedia';
 
 import MicSelect from './components/MicSelect/MicSelect';
@@ -62,16 +61,25 @@ function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const tokenGenerator = () => Director.getPublisher(
-    {
-      token: 'baa6b7694b65896d42acf625ca7e7e54e6e6167ec8b83c20bb4d11d1344ed15e', 
-      streamName: 'new-stream-name'
-    });
-  const publisher = new Publish('new-stream-name', tokenGenerator);
+  const {cameraList, micList, selectedCamera, selectedMic, setCamera, setMic, mediaStream} = useMedia();
 
-  const [cameraList, micList] = useMedia()
-  console.log(cameraList)
-  console.log(micList)
+  const video = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (video?.current && (mediaStream instanceof MediaStream)) {
+      video.current.srcObject = mediaStream;
+    }
+  }, [mediaStream])
+
+  const setCamHandler = (groupId: string) => {
+    const device = cameraList.filter(cam => cam.groupId === groupId)
+    setCamera(device[0]);
+  }
+
+  const setMicHandler = (groupId: string) => {
+    const device = micList.filter(mic => mic.groupId === groupId)
+    setMic(device[0]);
+  }
 
   return (
     <VStack w="100%">
@@ -89,23 +97,22 @@ function App() {
           <VStack>
             {/* TODO: create a VideoView component */}
             <Box minH="640" minW="480" bg="black">
-              <Text color="white"> This is the video view </Text>
+              <video autoPlay ref={video}/>
             </Box>
             <HStack>
               <Button minW='40'> Toggle Mic </Button>
               {
-                state.publishState === "Setup" ? (
-                  <MicSelect micList={micList}/>
+                state.publishState === "Setup" && micList.length ? (
+                  <MicSelect selectedMic={selectedMic} micList={micList} setMicHandler={setMicHandler}/>
                 ) : undefined
               }
             </HStack>
             <HStack>
               <Button minW='40'> Toggle Camera </Button>
               {
-                state.publishState === "Setup" ? (
-                  <CameraSelect cameraList={cameraList}/>
-                ) : undefined
-              }
+                state.publishState === "Setup" && cameraList.length ? (
+                  <CameraSelect selectedCamera={selectedCamera} cameraList={cameraList} setCamHandler={setCamHandler}/>
+              ) : undefined}
             </HStack>
             {state.publishState == "Setup" || state.publishState == 'Connecting' ? (
               <Button
