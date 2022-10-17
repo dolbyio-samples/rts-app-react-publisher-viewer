@@ -110,7 +110,7 @@ function App() {
               <Button
                   isLoading={publisherState == "connecting"}
                   onClick={(async () => {
-                    // This needs to actually launch preview mode and not start streaming
+                    // TODO This needs to actually launch preview mode and not start streaming
                     await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
                       const broadcastOptions: BroadcastOptions = {
                         mediaStream: mediaDevice
