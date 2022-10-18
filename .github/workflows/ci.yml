@@ -23,5 +23,6 @@ jobs:
       - run: |
           yarn --frozen-lockfile
           yarn build
+          cat .env
 
   # TODO: test job for pull request
