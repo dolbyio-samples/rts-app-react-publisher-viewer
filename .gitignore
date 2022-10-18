@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Secrets and tokens
-.env
+.env.local
