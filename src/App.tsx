@@ -28,9 +28,8 @@ function App() {
   const [streamId, setStreamId] = useState("");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setAccessToken(params.get('publishingToken') || import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-    setStreamId(params.get('streamName') || import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
 
     console.log("Test, remove after validation complete");
     console.log(accessToken, streamId);
