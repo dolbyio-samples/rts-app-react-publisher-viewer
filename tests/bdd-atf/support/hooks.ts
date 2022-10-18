@@ -1,5 +1,8 @@
-import { Before, BeforeAll, AfterAll, After } from "@cucumber/cucumber";
+import { Before, BeforeAll, AfterAll, After, setDefaultTimeout } from "@cucumber/cucumber";
 import { chromium } from 'playwright';
+import { SetupPage } from '../pages/SetupPage'
+
+setDefaultTimeout(60 * 1000);
 
 BeforeAll(async () => {
     console.log('Hooks:: Launch browser')
@@ -15,6 +18,7 @@ Before(async () => {
     console.log('Hooks:: Open context and page');
     global.context = await global.brower.newContext();
     global.page = await global.context.newPage();
+    global.setupPage = new SetupPage(global.page);
 })
 
 After(async () => {

@@ -16,13 +16,14 @@ export class SetupPage{
 
     constructor(page: Page){
         this.page = page;
-       this.locators = new SetupPageLocators(page);
+        this.locators = new SetupPageLocators(page);
     }
 
     async open(url: string){
         console.log(`SetupPage: Open publisher application - ${url}`);
         await this.page.goto(url);
         await this.page.waitForLoadState();
+        //await new Promise(f => setTimeout(f, 5000));
     }
 
     async configureMicrophone(state: boolean){

@@ -5,7 +5,7 @@
     "dev-pub": "yarn workspace publisher dev",
     "build-pub": "yarn workspace publisher build",
     "preview-pub": "yarn workspace publisher preview",
-    "bdd-test": "yarn workspace app-bdd-test test"
+    "bdd-test": "yarn workspace bdd-atf test"
   },
   "workspaces": [
     "apps/*",

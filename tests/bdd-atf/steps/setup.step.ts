@@ -1,10 +1,8 @@
 import { Given, When, Then } from '@cucumber/cucumber';
-import { SetupPage } from '../pages/SetupPage'
-
-const setupPage = new SetupPage(global.page);
 
 Given('a publisher is on the setup page', async () => {
     console.log('SETUP-STEP:: Publisher is on the setup page')
+    await global.setupPage.open('https://dolby.io/')
 });
 
 When('the publisher turns off the microphone', async () => {
