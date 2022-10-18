@@ -2,9 +2,6 @@ name: CI-CD
 on: [push]
 env:
   prod-dist: 'product-distribution'
-  stream_name: ${{ secrets.STREAM_NAME }} 
-  publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-  account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -24,5 +21,6 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn build
+
 
   # TODO: test job for pull request
