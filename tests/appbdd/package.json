@@ -1,0 +1,13 @@
+{
+  "name": "app-bdd-test",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^8.7.0",
+    "@types/node": "^18.11.0",
+    "ts-node": "^10.9.1"
+  }
+}

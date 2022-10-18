@@ -1,35 +1,24 @@
 {
-  "name": "millicast-pub",
+  "name": "millicast-demo",
   "private": true,
-  "version": "0.0.1",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "prebuild": "sh ./setup.sh",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev-pub": "yarn workspace publisher dev",
+    "build-pub": "yarn workspace publisher build",
+    "preview-pub": "yarn workspace publisher preview",
+    "bdd-test": "yarn workspace app-bdd-test test"
   },
+  "workspaces": [
+    "apps/*",
+    "tests/*"
+  ],
   "dependencies": {
-    "@chakra-ui/react": "^2.3.5",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
-    "@millicast/sdk": "^0.1.33",
-    "framer-motion": "^6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/events": "^3.0.0",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
-    "@vitejs/plugin-react": "^2.1.0",
-    "eslint": "^8.25.0",
-    "eslint-plugin-react": "^7.31.10",
     "prettier": "^2.7.1",
-    "typescript": "^4.6.4",
-    "vite": "^3.1.0",
-    "vite-plugin-eslint": "^1.8.1"
+    "typescript": "^4.6.4"
   }
 }

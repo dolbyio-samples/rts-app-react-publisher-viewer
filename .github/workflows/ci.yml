@@ -3,7 +3,7 @@ on: [push]
 env:
   prod-dist: 'product-distribution'
 jobs:
-  build:
+  build-test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
@@ -20,7 +20,5 @@ jobs:
       - name: Build product
         run: |
           yarn --frozen-lockfile
-          yarn build
-
-
-  # TODO: test job for pull request
+          yarn build-pub
+          yarn bdd-test

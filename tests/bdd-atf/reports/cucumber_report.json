@@ -1,0 +1,145 @@
+[
+  {
+    "description": "    As a publisher\n    I want to setup the stream configuration",
+    "elements": [
+      {
+        "description": "",
+        "id": "publisher-setup-feature;publisher-should-be-able-to-turn-off-the-microphone",
+        "keyword": "Scenario",
+        "line": 5,
+        "name": "Publisher should be able to turn off the microphone",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 163521582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 6,
+            "name": "a publisher is on the setup page",
+            "match": {
+              "location": "steps/setup.step.ts:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6616947334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 7,
+            "name": "the publisher turns off the microphone",
+            "match": {
+              "location": "steps/setup.step.ts:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 316040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 8,
+            "name": "the microphone should be turned off",
+            "match": {
+              "location": "steps/setup.step.ts:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 102416
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 7676916
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "publisher-setup-feature;publisher-should-be-able-to-turn-off-the-camera",
+        "keyword": "Scenario",
+        "line": 10,
+        "name": "Publisher should be able to turn off the camera",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 67010209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 11,
+            "name": "a publisher is on the setup page",
+            "match": {
+              "location": "steps/setup.step.ts:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4558340707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 12,
+            "name": "the publisher turns off the camera",
+            "match": {
+              "location": "steps/setup.step.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 304708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "the camera should be turned off",
+            "match": {
+              "location": "steps/setup.step.ts:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 89833
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 6987458
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "publisher-setup-feature",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Publisher Setup Feature",
+    "tags": [],
+    "uri": "features/setup.feature"
+  }
+]
