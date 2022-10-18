@@ -21,7 +21,7 @@ jobs:
           node-version: 16
           cache: 'yarn'
       - name: Build product
-      - run: |
+        run: |
           yarn --frozen-lockfile
           yarn build
           cat .env
