@@ -2,7 +2,7 @@ name: CI-CD
 on: [push]
 env:
   prod-dist: 'product-distribution'
-  stream_name: ${{ secrets.MILLICAST_STREAM_NAME }} 
+  stream_name: ${{ secrets.STREAM_NAME }} 
   publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
   account_id: ${{secrets.STREAM_ACCOUNT_ID }}
 jobs:
