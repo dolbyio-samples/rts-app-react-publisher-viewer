@@ -30,11 +30,6 @@ function App() {
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
-
-    // TODO remove after complete
-    console.log("Test, remove after validation complete");
-    console.log(accessToken, streamId);
-    console.log("------");
   }, []);
 
 
