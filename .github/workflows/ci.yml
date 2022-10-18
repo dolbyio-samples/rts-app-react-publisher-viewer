@@ -2,6 +2,9 @@ name: CI-CD
 on: [push]
 env:
   prod-dist: 'product-distribution'
+  stream_name: ${{ secrets.MILLICAST_STREAM_NAME }} 
+  publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  account_id: ${{secrets.STREAM_ACCOUNT_ID }}
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -18,7 +21,6 @@ jobs:
           cache: 'yarn'
       - run: |
           yarn --frozen-lockfile
-          yarn prebuild
           yarn build
 
   # TODO: test job for pull request
