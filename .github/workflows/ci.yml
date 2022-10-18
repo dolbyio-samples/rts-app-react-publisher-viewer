@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Check out repository code 
         uses: actions/checkout@v3
+      - name: setup token environment
+      - run: |
+          yarn prebuild
       - name: Setup Nodejs 16.x then Build
         uses: actions/setup-node@v3
         with:
@@ -21,7 +24,6 @@ jobs:
           cache: 'yarn'
       - run: |
           yarn --frozen-lockfile
-          yarn prebuild
           yarn build
 
   # TODO: test job for pull request
