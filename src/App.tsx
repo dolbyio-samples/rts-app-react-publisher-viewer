@@ -117,13 +117,14 @@ function App() {
                       startStreaming(broadcastOptions);
                     });
                   })}
+                  test-ID='startStreamingButton'
               >
                   Go Live
               </Button>
             ) : undefined}
             {publisherState === "streaming" && (
               <>
-                <Button onClick={() => { stopStreaming(); }}>
+                <Button test-id="stopStreamingButton" onClick={() => { stopStreaming(); }}>
                   Stop Live
                 </Button>
                 <Text> This is a timer </Text>
