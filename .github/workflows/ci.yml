@@ -7,18 +7,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        # TODO: enable os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
     steps:
       - name: Check out repository code 
         uses: actions/checkout@v3
-
       - name: Setup Nodejs 16.x then Build
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
-      - run: |
+      - name: Build product
+        run: |
           yarn --frozen-lockfile
           yarn build
+
 
   # TODO: test job for pull request

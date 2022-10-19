@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,55 +13,27 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-
+import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 
-type PublishState = "Setup" | "Connecting" | "Ready" | "Streaming";
-
-interface AppState {
-  publishState: PublishState;
-  mediaStream?: MediaStream;
-}
-
-type PublishAction = "join" | "joined" | "goLive" | "stopLive";
 
 function App() {
-  const initialState: AppState = {
-    publishState: "Setup",
-  };
 
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
 
-  const reducer = (state: AppState, action: { type: PublishAction }) => {
-    switch (action.type) {
-      case "join": {
-        // TODO: connect publisher
-        const newState: AppState = { ...state, publishState: "Connecting" };
-        return newState;
-      }
-      case "joined": {
-        const newState: AppState = { ...state, publishState: "Ready" };
-        return newState;
-      }
-      case "goLive": {
-        // TODO: kick off streaming
-        const newState: AppState = {
-          ...state,
-          publishState: "Streaming",
-        };
-        return newState;
-      }
-      case "stopLive": {
-        const newState: AppState = { ...state, publishState: "Ready" };
-        return newState;
-      }
-    }
-  };
+  const [accessToken, setAccessToken] = useState("");
+  const [streamId, setStreamId] = useState("");
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+  }, []);
+
+
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -92,7 +64,7 @@ function App() {
               <Button minW="40"> Toggle Mic </Button>
               {
                 // TODO: move to MicSelect component
-                state.publishState === "Setup" && (
+                publisherState === "ready" && (
                   <Select placeholder="Select Microphone">
                     <option value="option1">Mic 1</option>
                     <option value="option2">Mic 2</option>
@@ -123,7 +95,7 @@ function App() {
               </IconButton>
               {
                 // TODO: move to CameraSelect component
-                state.publishState === "Setup" && (
+                publisherState === "ready" && (
                   <Select placeholder="Select Camera">
                     <option value="option1">Camera 1</option>
                     <option value="option2">Camera 2</option>
@@ -132,38 +104,34 @@ function App() {
                 )
               }
             </HStack>
-            {state.publishState == "Setup" ||
-            state.publishState == "Connecting" ? (
+            {publisherState == "ready" ||
+              publisherState == "connecting" ? (
               <Button
-                isLoading={state.publishState == "Connecting"}
-                onClick={() => {
-                  dispatch({ type: "join" });
-                  setTimeout(() => {
-                    dispatch({ type: "joined" });
-                  }, 1000);
-                }}
+                  isLoading={publisherState == "connecting"}
+                  onClick={(async () => {
+                    // TODO This needs to actually launch preview mode and not start streaming
+                    await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
+                      const broadcastOptions: BroadcastOptions = {
+                        mediaStream: mediaDevice
+                      }
+                      startStreaming(broadcastOptions);
+                    });
+                  })}
+                  test-ID='startStreamingButton'
               >
-                Join
+                  Go Live
               </Button>
             ) : undefined}
-            {
-              /** TODO: create a streaming control component */
-              state.publishState == "Ready" && (
-                <Button onClick={() => dispatch({ type: "goLive" })}>
-                  Go Live
-                </Button>
-              )
-            }
-            {state.publishState === "Streaming" && (
+            {publisherState === "streaming" && (
               <>
-                <Button onClick={() => dispatch({ type: "stopLive" })}>
+                <Button test-id="stopStreamingButton" onClick={() => { stopStreaming(); }}>
                   Stop Live
                 </Button>
                 <Text> This is a timer </Text>
               </>
             )}
-            {(state.publishState === "Ready" ||
-              state.publishState === "Streaming") && (
+            {(publisherState === "ready" ||
+              publisherState === "streaming") && (
               <Switch onChange={() => setShouldRecord(!shouldRecord)}>
                 {" "}
                 enable recording{" "}
