@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/no-unknown-property */
+import { useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -7,15 +8,18 @@ import {
   Heading,
   HStack,
   IconButton,
-  Select,
   Spacer,
   Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
+import useMediaDevices from './hooks/useMediaDevices';
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
+
+import MicrophoneSelect from './components/MicrophoneSelect/MicrophoneSelect';
+import CameraSelect from './components/CameraSelect/CameraSelect';
 
 
 function App() {
@@ -34,6 +38,26 @@ function App() {
 
 
   const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
+
+  const {cameraList, microphoneList, selectedCamera, selectedMicrophone, setCameraHandler, setMicrophoneHandler, mediaStream} = useMediaDevices();
+
+  const video = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (video.current && (mediaStream instanceof MediaStream)) {
+      video.current.srcObject = mediaStream;
+    }
+  }, [mediaStream])
+
+  const setCamHandler = (groupId: string) => {
+    const device = cameraList.filter(cam => cam.groupId === groupId)
+    device.length && setCameraHandler(device[0]);
+  }
+
+  const setMicHandler = (groupId: string) => {
+    const device = microphoneList.filter(microphone => microphone.groupId === groupId)
+    device.length && setMicrophoneHandler(device[0]);
+  }
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -55,20 +79,14 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            {/* TODO: create a VideoView component */}
             <Box minH="640" minW="480" bg="black">
-              <Text color="white"> This is the video view </Text>
+              <video test-id="videoFrame" autoPlay ref={video}/>
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
               {
-                // TODO: move to MicSelect component
-                publisherState === "ready" && (
-                  <Select placeholder="Select Microphone">
-                    <option value="option1">Mic 1</option>
-                    <option value="option2">Mic 2</option>
-                    <option value="option3">Mic 3</option>
-                  </Select>
+                publisherState === "ready" && microphoneList.length && (
+                  <MicrophoneSelect selectedMicrophone={selectedMicrophone} microphoneList={microphoneList} setMicrophone={setMicHandler}/>
                 )
               }
             </HStack>
@@ -93,15 +111,9 @@ function App() {
                 Toggle Camera{" "}
               </IconButton>
               {
-                // TODO: move to CameraSelect component
-                publisherState === "ready" && (
-                  <Select placeholder="Select Camera">
-                    <option value="option1">Camera 1</option>
-                    <option value="option2">Camera 2</option>
-                    <option value="option3">Camera 3</option>
-                  </Select>
-                )
-              }
+                publisherState === "ready" && cameraList.length && (
+                  <CameraSelect selectedCamera={selectedCamera} cameraList={cameraList} setCamera={setCamHandler}/>
+              )}
             </HStack>
             {publisherState == "ready" ||
               publisherState == "connecting" ? (
