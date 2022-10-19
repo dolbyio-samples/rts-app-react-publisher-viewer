@@ -1,13 +1,13 @@
 import React from 'react';
 import { Select } from "@chakra-ui/react";
 
-type MicrophoneSelectType = {
+type MicrophoneSelectProps = {
     microphoneList: InputDeviceInfo[];
     setMicrophone: (groupId: string) => void;
     selectedMicrophone?: InputDeviceInfo;
 }
 
-const MicrophoneSelect = ({microphoneList, setMicrophone, selectedMicrophone}: MicrophoneSelectType) => {
+const MicrophoneSelect = ({microphoneList, setMicrophone, selectedMicrophone}: MicrophoneSelectProps) => {
     return (
         <Select test-id="microphoneSelect" placeholder="Select Microphone" defaultValue={selectedMicrophone?.groupId || microphoneList[0].groupId} onChange={(e) => setMicrophone(e.target.value)} >
             {microphoneList.map(microphone => {
