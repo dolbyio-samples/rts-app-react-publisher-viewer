@@ -44,8 +44,7 @@ function App() {
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
           <Heading size="md" p="4">
-            {" "}
-            Dolbyio logo{" "}
+            Dolbyio logo
           </Heading>
         </Box>
         <Spacer />
@@ -133,8 +132,7 @@ function App() {
             {(publisherState === "ready" ||
               publisherState === "streaming") && (
               <Switch onChange={() => setShouldRecord(!shouldRecord)}>
-                {" "}
-                enable recording{" "}
+                enable recording
               </Switch>
             )}
           </VStack>

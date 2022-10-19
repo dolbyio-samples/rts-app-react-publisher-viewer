@@ -12,6 +12,7 @@ dist
 dist-ssr
 .env
 *.local
+cucumber_report.json*
 
 # Editor directories and files
 .vscode/*
