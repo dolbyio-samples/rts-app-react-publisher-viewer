@@ -9,7 +9,7 @@ type MicrophoneSelectType = {
 
 const MicrophoneSelect = ({microphoneList, setMicrophone, selectedMicrophone}: MicrophoneSelectType) => {
     return (
-        <Select placeholder="Select Microphone" defaultValue={selectedMicrophone?.groupId || microphoneList[0].groupId} onChange={(e) => setMicrophone(e.target.value)} >
+        <Select test-id="microphoneSelect" placeholder="Select Microphone" defaultValue={selectedMicrophone?.groupId || microphoneList[0].groupId} onChange={(e) => setMicrophone(e.target.value)} >
             {microphoneList.map(microphone => {
                 return (
                     <option 

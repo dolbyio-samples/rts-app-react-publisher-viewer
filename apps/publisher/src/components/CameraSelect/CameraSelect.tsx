@@ -9,7 +9,7 @@ type CameraSelectType = {
 
 const CameraSelect = ({cameraList, setCamera, selectedCamera}: CameraSelectType) => {    
     return (
-        <Select placeholder="Select Camera" defaultValue={selectedCamera?.groupId || cameraList[0].groupId} onChange={(e) => setCamera(e.target.value)}>
+        <Select test-id="cameraSelect" placeholder="Select Camera" defaultValue={selectedCamera?.groupId || cameraList[0].groupId} onChange={(e) => setCamera(e.target.value)}>
             {cameraList.map(camera => {
                 return (
                     <option 
