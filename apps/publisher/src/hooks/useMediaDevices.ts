@@ -38,22 +38,20 @@ const useMediaDevices: () => MediaDevices = () => {
         })
     }, [selectedCamera?.deviceId, selectedMicrophone?.deviceId])
     
-    const getMediaDevicesList = () => {
-        navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-            const tempMicrophoneList: InputDeviceInfo[] = [];
-            const tempCameraList: InputDeviceInfo[] = [];
-            devices.forEach(device => {
-                device.kind === 'audioinput' && isNewDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
-                device.kind === 'videoinput' && isNewDevice(tempCameraList, device) && tempCameraList.push(device);
-            })
-            setMicrophoneList(tempMicrophoneList);
-            setCameraList(tempCameraList);
+    const getMediaDevicesList = async () => {
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        
+        const tempMicrophoneList: InputDeviceInfo[] = [];
+        const tempCameraList: InputDeviceInfo[] = [];
+        devices.forEach(device => {
+            device.kind === 'audioinput' && isNewDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
+            device.kind === 'videoinput' && isNewDevice(tempCameraList, device) && tempCameraList.push(device);
         })
-        .then(() => {
-            setCamera(cameraList[0]);
-            setMicrophone(microphoneList[0]);
-        })
+        setMicrophoneList(tempMicrophoneList);
+        setCameraList(tempCameraList);
+    
+        cameraList.length && setCamera(cameraList[0]);
+        microphoneList.length && setMicrophone(microphoneList[0]);    
     }
 
     const isNewDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {

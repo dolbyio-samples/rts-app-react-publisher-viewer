@@ -1,13 +1,13 @@
 import React from 'react';
 import { Select } from "@chakra-ui/react";
 
-type CameraSelectType = {
+type CameraSelectProps = {
     cameraList: InputDeviceInfo[];
     setCamera: (groupId: string) => void;
     selectedCamera?: InputDeviceInfo;
 }
 
-const CameraSelect = ({cameraList, setCamera, selectedCamera}: CameraSelectType) => {    
+const CameraSelect = ({cameraList, setCamera, selectedCamera}: CameraSelectProps) => {    
     return (
         <Select test-id="cameraSelect" placeholder="Select Camera" defaultValue={selectedCamera?.groupId || cameraList[0].groupId} onChange={(e) => setCamera(e.target.value)}>
             {cameraList.map(camera => {
