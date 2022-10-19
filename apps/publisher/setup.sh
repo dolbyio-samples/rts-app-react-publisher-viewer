@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# TODO: need consider dev environment
 touch .env
 
 echo VITE_MILLICAST_STREAM_NAME=$STREAM_NAME >> .env

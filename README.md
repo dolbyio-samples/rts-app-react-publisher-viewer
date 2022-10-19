@@ -4,15 +4,20 @@ Internal MVP of Milicast SDK Demo
 **NOTE**: We are still actively developing this project
 
 
-### Run the app in dev mode
+### Run the publisher app in dev mode
 ```javascript
 yarn
-yarn dev
+yarn dev-pub
 ```
 
 
-### Build the app and preview it
+### Build the publisher app and preview it
 Run the command below in terminal and open the browser
 ```javascript
-yarn build && yarn preview
+yarn build-pub && yarn preview-pub
+```
+
+### Run the BDD test
+```javascript
+yarn bdd-test
 ```
