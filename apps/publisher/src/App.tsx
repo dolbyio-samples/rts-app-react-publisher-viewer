@@ -116,7 +116,7 @@ function App() {
                       startStreaming(broadcastOptions);
                     });
                   })}
-                  test-ID='startStreamingButton'
+                  test-id='startStreamingButton'
               >
                   Go Live
               </Button>

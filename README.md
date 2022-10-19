@@ -3,11 +3,14 @@ Internal MVP of Milicast SDK Demo
 
 **NOTE**: We are still actively developing this project
 
+### Install 
+```javascript
+yarn
+```
 
 ### Run the publisher app in dev mode
 ```javascript
-yarn
-yarn dev-pub
+STREAM_NAME=<your stream name> STREAM_PUBLISHING_TOKEN=<your stream token> yarn dev-pub
 ```
 
 
