@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 touch .env
 
 echo VITE_MILLICAST_STREAM_NAME=$STREAM_NAME >> .env
