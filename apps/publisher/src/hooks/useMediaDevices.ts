@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 type MediaDevices = {
     cameraList: InputDeviceInfo[];
     microphoneList: InputDeviceInfo[];
-    setCameraHandler: (device: InputDeviceInfo) => void;
-    setMicrophoneHandler: (device: InputDeviceInfo) => void;
-    selectedCamera?: InputDeviceInfo;
-    selectedMicrophone?: InputDeviceInfo;
-    mediaStream: MediaStream | undefined;
+    setCamera: (device: InputDeviceInfo) => void;
+    setMicrophone: (device: InputDeviceInfo) => void;
+    camera?: InputDeviceInfo;
+    microphone?: InputDeviceInfo;
+    mediaStream?: MediaStream;
 }
 
 const useMediaDevices: () => MediaDevices = () => {
     const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
     const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
     
-    const [selectedCamera, setCamera] = useState<InputDeviceInfo>();
-    const [selectedMicrophone, setMicrophone] = useState<InputDeviceInfo>();
+    const [camera, setCamera] = useState<InputDeviceInfo>();
+    const [microphone, setMicrophone] = useState<InputDeviceInfo>();
 
     const [mediaStream, setMediaStream] = useState<MediaStream | undefined>();
 
@@ -26,17 +26,17 @@ const useMediaDevices: () => MediaDevices = () => {
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({
             audio: {
-                deviceId: selectedMicrophone?.deviceId
+                deviceId: microphone?.deviceId
             },
             video: {
-                deviceId: selectedCamera?.deviceId
+                deviceId: camera?.deviceId
             }
         })
         .then((stream) => {
             stream.getTracks()
             setMediaStream(stream)
         })
-    }, [selectedCamera?.deviceId, selectedMicrophone?.deviceId])
+    }, [camera?.deviceId, microphone?.deviceId])
     
     const getMediaDevicesList = async () => {
         const devices = await navigator.mediaDevices.enumerateDevices()
@@ -54,21 +54,21 @@ const useMediaDevices: () => MediaDevices = () => {
         microphoneList.length && setMicrophone(microphoneList[0]);    
     }
 
-    const setCameraHandler = (device: InputDeviceInfo) => {
+    const setSelectedCamera = (device: InputDeviceInfo) => {
         setCamera(device);
     }
 
-    const setMicrophoneHandler = (device: InputDeviceInfo) => {
+    const setSelectedMicrophone = (device: InputDeviceInfo) => {
         setMicrophone(device);
     }
 
     return {
         cameraList,
         microphoneList,
-        setCameraHandler,
-        setMicrophoneHandler,
-        selectedCamera,
-        selectedMicrophone,
+        setCamera: setSelectedCamera,
+        setMicrophone: setSelectedMicrophone,
+        camera,
+        microphone,
         mediaStream
     }
 }
