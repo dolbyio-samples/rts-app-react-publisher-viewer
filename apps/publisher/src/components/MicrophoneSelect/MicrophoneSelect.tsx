@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Select } from "@chakra-ui/react";
 
 type MicrophoneSelectProps = {
@@ -23,4 +23,4 @@ const MicrophoneSelect = ({microphoneList, setMicrophone, selectedMicrophone}: M
     )
 }
 
-export default MicrophoneSelect;
+export default memo(MicrophoneSelect);

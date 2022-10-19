@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   Box,
   Button,
@@ -42,7 +42,7 @@ function App() {
 
   const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(accessToken, streamName, streamId);
 
-  const {cameraList, microphoneList, selectedCamera, selectedMicrophone, setCameraHandler, setMicrophoneHandler, mediaStream} = useMediaDevices();
+  const {cameraList, microphoneList, camera, microphone, setCamera, setMicrophone, mediaStream} = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null)
 
@@ -52,15 +52,15 @@ function App() {
     }
   }, [mediaStream])
 
-  const setCamHandler = (groupId: string) => {
+  const onSelectCamera = useCallback((groupId: string) => {
     const device = cameraList.filter(cam => cam.groupId === groupId)
-    device.length && setCameraHandler(device[0]);
-  }
+    device.length && setCamera(device[0]);
+  }, [cameraList])
 
-  const setMicHandler = (groupId: string) => {
+  const onSelectMicrophone = useCallback((groupId: string) => {
     const device = microphoneList.filter(microphone => microphone.groupId === groupId)
-    device.length && setMicrophoneHandler(device[0]);
-  }
+    device.length && setMicrophone(device[0]);
+  }, [microphoneList])
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -89,7 +89,7 @@ function App() {
               <Button minW="40"> Toggle Mic </Button>
               {
                 publisherState === "ready" && microphoneList.length && (
-                  <MicrophoneSelect selectedMicrophone={selectedMicrophone} microphoneList={microphoneList} setMicrophone={setMicHandler}/>
+                  <MicrophoneSelect selectedMicrophone={microphone} microphoneList={microphoneList} setMicrophone={onSelectMicrophone}/>
                 )
               }
             </HStack>
@@ -115,7 +115,7 @@ function App() {
               </IconButton>
               {
                 publisherState === "ready" && cameraList.length && (
-                  <CameraSelect selectedCamera={selectedCamera} cameraList={cameraList} setCamera={setCamHandler}/>
+                  <CameraSelect selectedCamera={camera} cameraList={cameraList} setCamera={onSelectCamera}/>
               )}
             </HStack>
             {publisherState == "ready" ||
