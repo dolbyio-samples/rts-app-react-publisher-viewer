@@ -44,21 +44,14 @@ const useMediaDevices: () => MediaDevices = () => {
         const tempMicrophoneList: InputDeviceInfo[] = [];
         const tempCameraList: InputDeviceInfo[] = [];
         devices.forEach(device => {
-            device.kind === 'audioinput' && isNewDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
-            device.kind === 'videoinput' && isNewDevice(tempCameraList, device) && tempCameraList.push(device);
+            device.kind === 'audioinput' && !tempMicrophoneList.some(item => item.groupId === device.groupId) && tempMicrophoneList.push(device);
+            device.kind === 'videoinput' && !tempCameraList.some(item => item.groupId === device.groupId) && tempCameraList.push(device);
         })
         setMicrophoneList(tempMicrophoneList);
         setCameraList(tempCameraList);
     
         cameraList.length && setCamera(cameraList[0]);
         microphoneList.length && setMicrophone(microphoneList[0]);    
-    }
-
-    const isNewDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
-        if (deviceList.some(item => item.groupId === device.groupId)) {
-            return false;
-        }
-        return true
     }
 
     const setCameraHandler = (device: InputDeviceInfo) => {
