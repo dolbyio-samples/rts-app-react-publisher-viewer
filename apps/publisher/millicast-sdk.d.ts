@@ -7,7 +7,7 @@ declare namespace millicast {
   interface BroadcastEvent {
     type: string;
     name: 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount'
-    data: string | Date | Array | unknown
+    data: string | Date | unknown
   }
   interface DirectorResponse {
     urls: string[];
@@ -20,20 +20,21 @@ declare namespace millicast {
     constructor(
       streamName: string,
       tokenGenerator: tokenGeneratorCallback,
-      autoReconnect: boolean = true
+      autoReconnect: boolean 
     );
     connect(options: BroadcastOptions): Promise<void>;
-    stop();
+    stop(): void;
     isActive(): boolean;
     webRTCPeer: PeerConnection;
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
+  interface DirectorPublisherOptions {
+    token: string,
+    streamName: string
+  }
   class Director {
-    static getPublisher({
-      token: string,
-      streamName: string,
-    }): Promise<DirectorResponse>;
+    static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
 
   /**
@@ -43,7 +44,7 @@ declare namespace millicast {
    * @example const peerConnection = new PeerConnection()
    * @constructor
    */
-  declare class PeerConnection {
+  class PeerConnection {
 
     /**
 	 * Replace current audio or video track that is being broadcasted.
@@ -59,16 +60,16 @@ declare namespace millicast {
 	updateBitrate(bitrate?: number): Promise<void>;
   }
 
-  declare type LogLevel = { 
+  type LogLevel = { 
     name: string,
     value: number
    }
 
-  declare interface Logger {
+  interface Logger {
     // TODO: add methods for instance here
     getHistory(): string[];
   }
-  declare class Logger {
+  class Logger {
     static get(name: string): Logger
     static getHistory(): string[]
     static getLevel(): LogLevel

@@ -19,10 +19,10 @@
     "@types/node": "^18.11.2",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
-    "nx": "15.0.0",
-    "prettier": "^2.7.1",
-    "typescript": "^4.6.4",
     "eslint": "^8.25.0",
-    "eslint-plugin-react": "^7.31.10"
+    "eslint-plugin-react": "^7.31.10",
+    "nx": "^15.0.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.6.4"
   }
 }
