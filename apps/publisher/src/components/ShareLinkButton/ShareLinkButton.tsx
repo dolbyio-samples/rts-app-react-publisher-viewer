@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, useClipboard } from "@chakra-ui/react";
-import IconCopy from "../Icons/Copy";
 
 export type ShareLinkButtonProps = {
     linkText: string
