@@ -99,8 +99,8 @@ const useMediaDevices: () => MediaDevices = () => {
         microphoneList,
         setCameraId: setSelectedCamera,
         setMicrophoneId: setSelectedMicrophone,
-        cameraId: cameraId,
-        microphoneId: microphoneId,
+        cameraId,
+        microphoneId,
         mediaStream
     }
 }
