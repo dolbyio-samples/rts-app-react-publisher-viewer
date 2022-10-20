@@ -48,7 +48,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        {publisherState == "streaming" ? <ParticipantCount count={subscriberCount} /> : undefined}
+        {publisherState == "streaming" && <ParticipantCount count={subscriberCount} /> }
       </Flex>
       <Box>
         <Center>
