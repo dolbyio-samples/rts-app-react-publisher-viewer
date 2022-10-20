@@ -38,7 +38,7 @@ function App() {
 
   const { startStreaming, stopStreaming, publisherState, subscriberCount } = usePublisher(accessToken, streamId);
 
-  const {cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream} = useMediaDevices();
+  const { cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream } = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null)
 
@@ -76,13 +76,13 @@ function App() {
           <VStack>
             <Box minH="640" minW="480" bg="black">
               {/* eslint-disable-next-line react/no-unknown-property*/}
-              <video playsInline test-id="videoFrame" autoPlay ref={video}/>
+              <video playsInline test-id="videoFrame" autoPlay ref={video} />
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
               {
                 publisherState === "ready" && microphoneList.length && (
-                  <MicrophoneSelect selectedMicrophoneId={microphoneId} microphoneList={microphoneList} setMicrophoneId={onSelectMicrophone}/>
+                  <MicrophoneSelect selectedMicrophoneId={microphoneId} microphoneList={microphoneList} onSelectMicrophoneId={onSelectMicrophone} />
                 )
               }
             </HStack>
@@ -108,25 +108,25 @@ function App() {
               </IconButton>
               {
                 publisherState === "ready" && cameraList.length && (
-                  <CameraSelect selectedCameraId={cameraId} cameraList={cameraList} setCameraId={onSelectCamera}/>
-              )}
+                  <CameraSelect selectedCameraId={cameraId} cameraList={cameraList} onSelectCameraId={onSelectCamera} />
+                )}
             </HStack>
             {publisherState == "ready" ||
               publisherState == "connecting" ? (
               <Button
-                  isLoading={publisherState == "connecting"}
-                  onClick={(async () => {
-                    // TODO This needs to actually launch preview mode and not start streaming
-                    await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
-                      const broadcastOptions: BroadcastOptions = {
+                isLoading={publisherState == "connecting"}
+                onClick={(async () => {
+                  // TODO This needs to actually launch preview mode and not start streaming
+                  await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
+                    const broadcastOptions: BroadcastOptions = {
                       mediaStream: mediaDevice
                     }
                     startStreaming(broadcastOptions);
                   });
-                  })}
-                  test-id='startStreamingButton'
+                })}
+                test-id='startStreamingButton'
               >
-                  Go Live
+                Go Live
               </Button>
             ) : undefined}
             {publisherState === "streaming" && (
