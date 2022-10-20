@@ -16,6 +16,7 @@ import {
 import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
+import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 
 
 function App() {
@@ -47,9 +48,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        <Box p="4">
-          <Text> Participant number: {subscriberCount} </Text>
-        </Box>
+        <ParticipantCount count={subscriberCount} />
       </Flex>
       <Box>
         <Center>
@@ -110,11 +109,10 @@ function App() {
                     // TODO This needs to actually launch preview mode and not start streaming
                     await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
                       const broadcastOptions: BroadcastOptions = {
-                        mediaStream: mediaDevice,
-                        events: ['viewercount']
-                      }
-                      startStreaming(broadcastOptions);
-                    });
+                      mediaStream: mediaDevice
+                    }
+                    startStreaming(broadcastOptions);
+                  });
                   })}
                   test-id='startStreamingButton'
               >
@@ -131,10 +129,10 @@ function App() {
             )}
             {(publisherState === "ready" ||
               publisherState === "streaming") && (
-              <Switch onChange={() => setShouldRecord(!shouldRecord)}>
-                enable recording
-              </Switch>
-            )}
+                <Switch onChange={() => setShouldRecord(!shouldRecord)}>
+                  enable recording
+                </Switch>
+              )}
           </VStack>
         </Center>
       </Box>
