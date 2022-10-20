@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   Box,
   Button,
@@ -7,19 +7,20 @@ import {
   Heading,
   HStack,
   IconButton,
-  Select,
   Spacer,
   Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
+import usePublisher from "./hooks/usePublisher";
+import useMediaDevices from "./hooks/useMediaDevices";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 
+import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
+import CameraSelect from "./components/CameraSelect/CameraSelect";
 
 function App() {
-
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [participantsCount] = useState(0);
@@ -27,13 +28,47 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
 
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(
+    accessToken,
+    streamId
+  );
+
+  const {
+    cameraList,
+    microphoneList,
+    cameraId,
+    microphoneId,
+    setCameraId,
+    setMicrophoneId,
+    mediaStream,
+  } = useMediaDevices();
+
+  const video = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
   }, []);
 
+  useEffect(() => {
+    if (video.current && mediaStream) {
+      video.current.srcObject = mediaStream;
+    }
+  }, [mediaStream]);
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
+  const onSelectCameraId = useCallback(
+    (deviceId: string) => {
+      setCameraId(deviceId);
+    },
+    [cameraList]
+  );
+
+  const onSelectMicrophoneId = useCallback(
+    (deviceId: string) => {
+      setMicrophoneId(deviceId);
+    },
+    [microphoneList]
+  );
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -55,22 +90,19 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            {/* TODO: create a VideoView component */}
             <Box minH="640" minW="480" bg="black">
-              <Text color="white"> This is the video view </Text>
+              {/* eslint-disable-next-line react/no-unknown-property*/}
+              <video playsInline test-id="videoFrame" autoPlay ref={video} />
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
-              {
-                // TODO: move to MicSelect component
-                publisherState === "ready" && (
-                  <Select placeholder="Select Microphone">
-                    <option value="option1">Mic 1</option>
-                    <option value="option2">Mic 2</option>
-                    <option value="option3">Mic 3</option>
-                  </Select>
-                )
-              }
+              {publisherState === "ready" && microphoneList.length && (
+                <MicrophoneSelect
+                  selectedMicrophoneId={microphoneId}
+                  microphoneList={microphoneList}
+                  onSelectMicrophoneId={onSelectMicrophoneId}
+                />
+              )}
             </HStack>
             <HStack>
               <IconButton
@@ -92,45 +124,41 @@ function App() {
                 {" "}
                 Toggle Camera{" "}
               </IconButton>
-              {
-                // TODO: move to CameraSelect component
-                publisherState === "ready" && (
-                  <Select placeholder="Select Camera">
-                    <option value="option1">Camera 1</option>
-                    <option value="option2">Camera 2</option>
-                    <option value="option3">Camera 3</option>
-                  </Select>
-                )
-              }
+              {publisherState === "ready" && cameraList.length && (
+                <CameraSelect
+                  selectedCameraId={cameraId}
+                  cameraList={cameraList}
+                  onSelectCameraId={onSelectCameraId}
+                />
+              )}
             </HStack>
-            {publisherState == "ready" ||
-              publisherState == "connecting" ? (
+            {publisherState == "ready" || publisherState == "connecting" ? (
               <Button
-                  isLoading={publisherState == "connecting"}
-                  onClick={(async () => {
-                    // TODO This needs to actually launch preview mode and not start streaming
-                    await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
-                      const broadcastOptions: BroadcastOptions = {
-                        mediaStream: mediaDevice
-                      }
-                      startStreaming(broadcastOptions);
-                    });
-                  })}
-                  test-id='startStreamingButton'
+                isLoading={publisherState == "connecting"}
+                onClick={() => {
+                  if (publisherState == "ready" && mediaStream) {
+                    startStreaming({ mediaStream });
+                  }
+                }}
+                test-id="startStreamingButton"
               >
-                  Go Live
+                Go Live
               </Button>
             ) : undefined}
             {publisherState === "streaming" && (
               <>
-                <Button test-id="stopStreamingButton" onClick={() => { stopStreaming(); }}>
+                <Button
+                  test-id="stopStreamingButton"
+                  onClick={() => {
+                    stopStreaming();
+                  }}
+                >
                   Stop Live
                 </Button>
                 <Text> This is a timer </Text>
               </>
             )}
-            {(publisherState === "ready" ||
-              publisherState === "streaming") && (
+            {(publisherState === "ready" || publisherState === "streaming") && (
               <Switch onChange={() => setShouldRecord(!shouldRecord)}>
                 enable recording
               </Switch>
