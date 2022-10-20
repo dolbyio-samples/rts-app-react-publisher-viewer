@@ -12,21 +12,37 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
-import useMediaDevices from './hooks/useMediaDevices';
+import usePublisher from "./hooks/usePublisher";
+import useMediaDevices from "./hooks/useMediaDevices";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
-import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
+  const [participantsCount] = useState(0);
 
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
+
+  const { startStreaming, stopStreaming, publisherState, subscriberCount } = usePublisher(
+    accessToken,
+    streamId
+  );
+
+  const {
+    cameraList,
+    microphoneList,
+    cameraId,
+    microphoneId,
+    setCameraId,
+    setMicrophoneId,
+    mediaStream,
+  } = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null);
 
@@ -34,11 +50,6 @@ function App() {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
   }, []);
-
-
-  const { startStreaming, stopStreaming, publisherState, subscriberCount } = usePublisher(accessToken, streamId);
-
-  const { cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream } = useMediaDevices();
 
   useEffect(() => {
     if (video.current && mediaStream) {
@@ -73,7 +84,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        {publisherState == "streaming" && <ParticipantCount count={subscriberCount} /> }
+        {publisherState == "streaming" && <ParticipantCount count={subscriberCount} />}
       </Flex>
       <Box>
         <Center>
