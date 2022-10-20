@@ -10,7 +10,7 @@ yarn
 
 ### Run the publisher app in dev mode
 ```javascript
-STREAM_NAME=<your stream name> STREAM_PUBLISHING_TOKEN=<your stream token> yarn dev-pub
+VITE_MILLICAST_STREAM_NAME=<your stream name> VITE_MILLICAST_STREAM_PUBLISHING_TOKEN=<your stream token> yarn dev-pub
 ```
 
 
