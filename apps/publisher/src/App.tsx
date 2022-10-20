@@ -50,12 +50,10 @@ function App() {
   }, [mediaStream])
 
   const onSelectCamera = useCallback((deviceId: string) => {
-    // const device = cameraList.filter(cam => cam.deviceId === deviceId)
     setCamera(deviceId);
   }, [cameraList])
 
   const onSelectMicrophone = useCallback((deviceId: string) => {
-    // const device = microphoneList.filter(microphone => microphone.deviceId === deviceId)
     setMicrophone(deviceId);
   }, [microphoneList])
 
