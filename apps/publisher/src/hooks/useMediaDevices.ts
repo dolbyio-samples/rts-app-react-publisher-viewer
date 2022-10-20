@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 type MediaDevices = {
     cameraList: InputDeviceInfo[];
     microphoneList: InputDeviceInfo[];
-    setCamera: (device: string) => void;
-    setMicrophone: (device: string) => void;
-    camera?: string;
-    microphone?: string;
+    setCameraId: (deviceId: string) => void;
+    setMicrophoneId: (deviceId: string) => void;
+    cameraId?: string;
+    microphoneId?: string;
     mediaStream?: MediaStream;
 }
 
@@ -14,31 +14,44 @@ const useMediaDevices: () => MediaDevices = () => {
     const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
     const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
     
-    const [camera, setCamera] = useState<string>();
-    const [microphone, setMicrophone] = useState<string>();
+    const [cameraId, setCameraId] = useState<string>();
+    const [microphoneId, setMicrophoneId] = useState<string>();
 
     const [mediaStream, setMediaStream] = useState<MediaStream>();
 
     useEffect(() => {
-        loadMediaStream()
-    }, [camera, microphone])
+         const getInitDevicesPermisson = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true
+                    })
+                if (stream) {
+                    getMediaDevicesList();
+                }
+            } catch (err) {
+                console.log('Camera or microphone permission denied.')
+            }
+        }
+        getInitDevicesPermisson() 
+    }, [])
 
-    const loadMediaStream = async () => {
+    useEffect(() => {
+        microphoneId && cameraId && loadMediaStream(microphoneId, cameraId)
+    }, [cameraId, microphoneId])
+
+    const loadMediaStream = async (microphoneId: string, cameraId: string) => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
-                deviceId: microphone
+                deviceId: microphoneId
             },
             video: {
-                deviceId: camera
+                deviceId: cameraId
             }
         })
 
         stream.getTracks()
         setMediaStream(stream)    
-        
-        if (!camera || !microphone) {
-            getMediaDevicesList()
-        }
     }
     
     const getMediaDevicesList = async () => {
@@ -59,8 +72,8 @@ const useMediaDevices: () => MediaDevices = () => {
             setMicrophoneList(tempMicrophoneList);            
         }
         
-        !camera && setCamera(tempCameraList[0].deviceId);
-        !microphone && setMicrophone(tempMicrophoneList[0].deviceId);    
+        !cameraId && setCameraId(tempCameraList[0].deviceId);
+        !microphoneId && setMicrophoneId(tempMicrophoneList[0].deviceId);    
     }
 
     const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
@@ -73,21 +86,21 @@ const useMediaDevices: () => MediaDevices = () => {
         return true;
     }
 
-    const setSelectedCamera = (device: string) => {
-        setCamera(device);
+    const setSelectedCamera = (deviceId: string) => {
+        setCameraId(deviceId);
     }
 
-    const setSelectedMicrophone = (device: string) => {
-        setMicrophone(device);
+    const setSelectedMicrophone = (deviceId: string) => {
+        setMicrophoneId(deviceId);
     }
 
     return {
         cameraList,
         microphoneList,
-        setCamera: setSelectedCamera,
-        setMicrophone: setSelectedMicrophone,
-        camera,
-        microphone,
+        setCameraId: setSelectedCamera,
+        setMicrophoneId: setSelectedMicrophone,
+        cameraId: cameraId,
+        microphoneId: microphoneId,
         mediaStream
     }
 }
