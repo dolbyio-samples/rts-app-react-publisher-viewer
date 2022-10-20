@@ -3,11 +3,11 @@ import { Select } from "@chakra-ui/react";
 
 type MicrophoneSelectProps = {
     microphoneList: InputDeviceInfo[];
-    setMicrophoneId: (deviceId: string) => void;
+    onSelectMicrophoneId: (deviceId: string) => void;
     selectedMicrophoneId?: string;
 }
 
-const MicrophoneSelect = ({microphoneList, setMicrophoneId, selectedMicrophoneId}: MicrophoneSelectProps) => {
+const MicrophoneSelect = ({microphoneList, onSelectMicrophoneId: setMicrophoneId, selectedMicrophoneId}: MicrophoneSelectProps) => {
     return (
         <Select test-id="microphoneSelect" placeholder="Select Microphone" defaultValue={selectedMicrophoneId || microphoneList[0].deviceId} onChange={(e) => setMicrophoneId(e.target.value)} >
             {microphoneList.map(microphone => {

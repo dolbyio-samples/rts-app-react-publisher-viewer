@@ -30,7 +30,7 @@ const useMediaDevices: () => MediaDevices = () => {
                     getMediaDevicesList();
                 }
             } catch (err) {
-                console.log('Camera or microphone permission denied.')
+                console.error('Camera or microphone permission denied.')
             }
         }
         getInitDevicesPermisson() 
@@ -64,13 +64,8 @@ const useMediaDevices: () => MediaDevices = () => {
             device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
         })
 
-        if (!cameraList.length) {
-            setCameraList(tempCameraList);            
-        }
-
-        if (!microphoneList.length) {
-            setMicrophoneList(tempMicrophoneList);            
-        }
+        setCameraList(tempCameraList);            
+        setMicrophoneList(tempMicrophoneList);            
         
         !cameraId && setCameraId(tempCameraList[0].deviceId);
         !microphoneId && setMicrophoneId(tempMicrophoneList[0].deviceId);    
@@ -86,19 +81,11 @@ const useMediaDevices: () => MediaDevices = () => {
         return true;
     }
 
-    const setSelectedCamera = (deviceId: string) => {
-        setCameraId(deviceId);
-    }
-
-    const setSelectedMicrophone = (deviceId: string) => {
-        setMicrophoneId(deviceId);
-    }
-
     return {
         cameraList,
         microphoneList,
-        setCameraId: setSelectedCamera,
-        setMicrophoneId: setSelectedMicrophone,
+        setCameraId,
+        setMicrophoneId,
         cameraId,
         microphoneId,
         mediaStream
