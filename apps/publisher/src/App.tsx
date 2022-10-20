@@ -47,7 +47,7 @@ function App() {
   const video = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (video.current && (mediaStream instanceof MediaStream)) {
+    if (video.current && mediaStream) {
       video.current.srcObject = mediaStream;
     }
   }, [mediaStream])
