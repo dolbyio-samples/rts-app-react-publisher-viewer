@@ -96,7 +96,7 @@ function App() {
           <VStack>
             <Box minH="640" minW="480" bg="black">
               {/* eslint-disable-next-line react/no-unknown-property*/}
-              <video playsInline test-id="videoFrame" autoPlay ref={video} />
+              <video playsInline test-id="videoFrame" autoPlay ref={video} muted />
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
