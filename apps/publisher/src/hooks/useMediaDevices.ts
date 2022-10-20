@@ -17,7 +17,7 @@ const useMediaDevices: () => MediaDevices = () => {
     const [camera, setCamera] = useState<string>();
     const [microphone, setMicrophone] = useState<string>();
 
-    const [mediaStream, setMediaStream] = useState<MediaStream | undefined>();
+    const [mediaStream, setMediaStream] = useState<MediaStream>();
 
     useEffect(() => {
         loadMediaStream()
@@ -34,12 +34,9 @@ const useMediaDevices: () => MediaDevices = () => {
         })
 
         stream.getTracks()
-        setMediaStream(stream)      
-
-        const cameraDevicesPermission = await navigator.permissions.query({name: 'camera' as PermissionName})
-        const microphoneDevicesPermission = await navigator.permissions.query({name: 'microphone' as PermissionName})
-
-        if(cameraDevicesPermission.state === 'granted' && microphoneDevicesPermission.state === 'granted') {
+        setMediaStream(stream)    
+        
+        if (!camera || !microphone) {
             getMediaDevicesList()
         }
     }
@@ -54,24 +51,16 @@ const useMediaDevices: () => MediaDevices = () => {
             device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
         })
 
-        console.log(cameraList.length)
         if (!cameraList.length) {
-            setCameraList(tempCameraList);
-            console.log('cameraList')
-            
+            setCameraList(tempCameraList);            
         }
 
-        console.log(microphoneList.length)
         if (!microphoneList.length) {
-            setMicrophoneList(tempMicrophoneList);
-            console.log('micList')
-            
+            setMicrophoneList(tempMicrophoneList);            
         }
         
         !camera && setCamera(tempCameraList[0].deviceId);
-        !microphone && setMicrophone(tempMicrophoneList[0].deviceId); 
-        console.log('fetched')
-   
+        !microphone && setMicrophone(tempMicrophoneList[0].deviceId);    
     }
 
     const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
