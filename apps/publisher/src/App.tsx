@@ -22,7 +22,6 @@ function App() {
 
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
-  const [participantsCount] = useState(0);
 
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
@@ -33,7 +32,7 @@ function App() {
   }, []);
 
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
+  const { startStreaming, stopStreaming, publisherState, subscriberCount } = usePublisher(accessToken, streamId);
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -49,7 +48,7 @@ function App() {
         </Box>
         <Spacer />
         <Box p="4">
-          <Text> Participant number: {participantsCount} </Text>
+          <Text> Participant number: {subscriberCount} </Text>
         </Box>
       </Flex>
       <Box>
@@ -111,7 +110,8 @@ function App() {
                     // TODO This needs to actually launch preview mode and not start streaming
                     await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaDevice) => {
                       const broadcastOptions: BroadcastOptions = {
-                        mediaStream: mediaDevice
+                        mediaStream: mediaDevice,
+                        events: ['viewercount']
                       }
                       startStreaming(broadcastOptions);
                     });
