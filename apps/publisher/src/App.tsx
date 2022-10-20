@@ -41,7 +41,7 @@ function App() {
 
   const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(accessToken, streamName, streamId);
 
-  const {cameraList, microphoneList, cameraId: camera, microphoneId: microphone, setCameraId: setCamera, setMicrophoneId: setMicrophone, mediaStream} = useMediaDevices();
+  const {cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream} = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null)
 
@@ -52,11 +52,11 @@ function App() {
   }, [mediaStream])
 
   const onSelectCamera = useCallback((deviceId: string) => {
-    setCamera(deviceId);
+    setCameraId(deviceId);
   }, [cameraList])
 
   const onSelectMicrophone = useCallback((deviceId: string) => {
-    setMicrophone(deviceId);
+    setMicrophoneId(deviceId);
   }, [microphoneList])
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
@@ -87,7 +87,7 @@ function App() {
               <Button minW="40"> Toggle Mic </Button>
               {
                 publisherState === "ready" && microphoneList.length && (
-                  <MicrophoneSelect selectedMicrophone={microphone} microphoneList={microphoneList} setMicrophone={onSelectMicrophone}/>
+                  <MicrophoneSelect selectedMicrophoneId={microphoneId} microphoneList={microphoneList} setMicrophoneId={onSelectMicrophone}/>
                 )
               }
             </HStack>
@@ -113,7 +113,7 @@ function App() {
               </IconButton>
               {
                 publisherState === "ready" && cameraList.length && (
-                  <CameraSelect selectedCamera={camera} cameraList={cameraList} setCamera={onSelectCamera}/>
+                  <CameraSelect selectedCameraId={cameraId} cameraList={cameraList} setCameraId={onSelectCamera}/>
               )}
             </HStack>
             {publisherState == "ready" ||
