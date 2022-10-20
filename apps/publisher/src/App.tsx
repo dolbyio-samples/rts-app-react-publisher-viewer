@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
+import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from './hooks/useMediaDevices';
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
@@ -36,7 +36,7 @@ function App() {
   }, []);
 
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
+  const { stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
   const {cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream} = useMediaDevices();
 
