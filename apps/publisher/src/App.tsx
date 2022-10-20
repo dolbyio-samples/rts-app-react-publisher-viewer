@@ -16,6 +16,7 @@ import {
 import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
+import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 
 function App() {
@@ -26,14 +27,16 @@ function App() {
 
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
+  const [streamName, setStreamName] = useState("")
 
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ACCOUNT_ID)
   }, []);
 
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
+  const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(accessToken, streamName, streamId);
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -135,6 +138,7 @@ function App() {
                 enable recording
               </Switch>
             )}
+            <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>
       </Box>
