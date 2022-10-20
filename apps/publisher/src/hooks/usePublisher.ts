@@ -45,11 +45,9 @@ const usePublisher = (token: string, streamName: string): Publisher => {
             await publisher.current.connect(options);
 
             publisher.current.on('broadcastEvent', (event) => {
-                console.log(event);
                 const { name, data } = event;
                 switch (name) {
                     case 'viewercount':
-                        console.log(data.viewercount);
                         setSubscriberCount(data.viewercount);
                         break;
                     default: break;
