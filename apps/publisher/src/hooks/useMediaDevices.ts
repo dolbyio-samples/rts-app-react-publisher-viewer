@@ -73,10 +73,6 @@ const useMediaDevices: () => MediaDevices = () => {
 
     const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
         return !(device.deviceId.includes('default') ||  deviceList.some(item => item.deviceId === device.deviceId))
-            return false;
-        } else if (deviceList.some(item => item.deviceId === device.deviceId)) {
-            return false;
-        }
 
         return true;
     }

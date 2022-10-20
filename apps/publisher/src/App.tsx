@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import usePublisher, { BroadcastOptions } from "./hooks/usePublisher";
+import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from './hooks/useMediaDevices';
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
@@ -41,7 +41,7 @@ function App() {
 
   const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(accessToken, streamName, streamId);
 
-  const {cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream} = useMediaDevices();
+  const { cameraList, microphoneList, cameraId, microphoneId, setCameraId, setMicrophoneId, mediaStream } = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null)
 
@@ -81,13 +81,13 @@ function App() {
           <VStack>
             <Box minH="640" minW="480" bg="black">
               {/* eslint-disable-next-line react/no-unknown-property*/}
-              <video playsInline test-id="videoFrame" autoPlay ref={video}/>
+              <video playsInline test-id="videoFrame" autoPlay ref={video} />
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
               {
                 publisherState === "ready" && microphoneList.length && (
-                  <MicrophoneSelect selectedMicrophoneId={microphoneId} microphoneList={microphoneList} onSelectMicrophoneId={onSelectMicrophone}/>
+                  <MicrophoneSelect selectedMicrophoneId={microphoneId} microphoneList={microphoneList} onSelectMicrophoneId={onSelectMicrophone} />
                 )
               }
             </HStack>
@@ -113,19 +113,19 @@ function App() {
               </IconButton>
               {
                 publisherState === "ready" && cameraList.length && (
-                  <CameraSelect selectedCameraId={cameraId} cameraList={cameraList} onSelectCameraId={onSelectCamera}/>
-              )}
+                  <CameraSelect selectedCameraId={cameraId} cameraList={cameraList} onSelectCameraId={onSelectCamera} />
+                )}
             </HStack>
             {publisherState == "ready" ||
               publisherState == "connecting" ? (
               <Button
-                  isLoading={publisherState == "connecting"}
-                  onClick={(() => {
-                    // TODO This needs to actually launch preview mode and not start streaming
-                  })}
-                  test-id='startStreamingButton'
+                isLoading={publisherState == "connecting"}
+                onClick={(() => {
+                  // TODO This needs to actually launch preview mode and not start streaming
+                })}
+                test-id='startStreamingButton'
               >
-                  Go Live
+                Go Live
               </Button>
             ) : undefined}
             {publisherState === "streaming" && (
@@ -138,10 +138,10 @@ function App() {
             )}
             {(publisherState === "ready" ||
               publisherState === "streaming") && (
-              <Switch onChange={() => setShouldRecord(!shouldRecord)}>
-                enable recording
-              </Switch>
-            )}
+                <Switch onChange={() => setShouldRecord(!shouldRecord)}>
+                  enable recording
+                </Switch>
+              )}
             <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>
