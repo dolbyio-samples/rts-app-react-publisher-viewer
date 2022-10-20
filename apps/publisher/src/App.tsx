@@ -39,7 +39,7 @@ function App() {
 
   const { startStreaming, stopStreaming, publisherState } = usePublisher(accessToken, streamId);
 
-  const {cameraList, microphoneList, camera, microphone, setCamera, setMicrophone, mediaStream} = useMediaDevices();
+  const {cameraList, microphoneList, cameraId: camera, microphoneId: microphone, setCameraId: setCamera, setMicrophoneId: setMicrophone, mediaStream} = useMediaDevices();
 
   const video = useRef<HTMLVideoElement>(null)
 
