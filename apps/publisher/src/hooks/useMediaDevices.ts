@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 type MediaDevices = {
     cameraList: InputDeviceInfo[];
     microphoneList: InputDeviceInfo[];
-    setCamera: (device: InputDeviceInfo) => void;
-    setMicrophone: (device: InputDeviceInfo) => void;
-    camera?: InputDeviceInfo;
-    microphone?: InputDeviceInfo;
+    setCamera: (device: string) => void;
+    setMicrophone: (device: string) => void;
+    camera?: string;
+    microphone?: string;
     mediaStream?: MediaStream;
 }
 
@@ -14,51 +14,81 @@ const useMediaDevices: () => MediaDevices = () => {
     const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
     const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
     
-    const [camera, setCamera] = useState<InputDeviceInfo>();
-    const [microphone, setMicrophone] = useState<InputDeviceInfo>();
+    const [camera, setCamera] = useState<string>();
+    const [microphone, setMicrophone] = useState<string>();
 
     const [mediaStream, setMediaStream] = useState<MediaStream | undefined>();
 
     useEffect(() => {
-        getMediaDevicesList();
-    }, [])
+        loadMediaStream()
+    }, [camera, microphone])
 
-    useEffect(() => {
-        navigator.mediaDevices.getUserMedia({
+    const loadMediaStream = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
-                deviceId: microphone?.deviceId
+                deviceId: microphone
             },
             video: {
-                deviceId: camera?.deviceId
+                deviceId: camera
             }
         })
-        .then((stream) => {
-            stream.getTracks()
-            setMediaStream(stream)
-        })
-    }, [camera?.deviceId, microphone?.deviceId])
+
+        stream.getTracks()
+        setMediaStream(stream)      
+
+        const cameraDevicesPermission = await navigator.permissions.query({name: 'camera' as PermissionName})
+        const microphoneDevicesPermission = await navigator.permissions.query({name: 'microphone' as PermissionName})
+
+        if(cameraDevicesPermission.state === 'granted' && microphoneDevicesPermission.state === 'granted') {
+            getMediaDevicesList()
+        }
+    }
     
     const getMediaDevicesList = async () => {
         const devices = await navigator.mediaDevices.enumerateDevices()
         
         const tempMicrophoneList: InputDeviceInfo[] = [];
         const tempCameraList: InputDeviceInfo[] = [];
-        devices.forEach(device => {
-            device.kind === 'audioinput' && !tempMicrophoneList.some(item => item.groupId === device.groupId) && tempMicrophoneList.push(device);
-            device.kind === 'videoinput' && !tempCameraList.some(item => item.groupId === device.groupId) && tempCameraList.push(device);
+        await devices.forEach(device => {
+            device.kind === 'audioinput' && isUniqueDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
+            device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
         })
-        setMicrophoneList(tempMicrophoneList);
-        setCameraList(tempCameraList);
-    
-        cameraList.length && setCamera(cameraList[0]);
-        microphoneList.length && setMicrophone(microphoneList[0]);    
+
+        console.log(cameraList.length)
+        if (!cameraList.length) {
+            setCameraList(tempCameraList);
+            console.log('cameraList')
+            
+        }
+
+        console.log(microphoneList.length)
+        if (!microphoneList.length) {
+            setMicrophoneList(tempMicrophoneList);
+            console.log('micList')
+            
+        }
+        
+        !camera && setCamera(tempCameraList[0].deviceId);
+        !microphone && setMicrophone(tempMicrophoneList[0].deviceId); 
+        console.log('fetched')
+   
     }
 
-    const setSelectedCamera = (device: InputDeviceInfo) => {
+    const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
+        if (device.deviceId.includes('default')) {
+            return false;
+        } else if (deviceList.some(item => item.deviceId === device.deviceId)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    const setSelectedCamera = (device: string) => {
         setCamera(device);
     }
 
-    const setSelectedMicrophone = (device: InputDeviceInfo) => {
+    const setSelectedMicrophone = (device: string) => {
         setMicrophone(device);
     }
 
