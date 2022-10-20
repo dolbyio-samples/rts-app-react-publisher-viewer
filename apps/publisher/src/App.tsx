@@ -49,14 +49,14 @@ function App() {
     }
   }, [mediaStream])
 
-  const onSelectCamera = useCallback((groupId: string) => {
-    const device = cameraList.filter(cam => cam.groupId === groupId)
-    device.length && setCamera(device[0]);
+  const onSelectCamera = useCallback((deviceId: string) => {
+    // const device = cameraList.filter(cam => cam.deviceId === deviceId)
+    setCamera(deviceId);
   }, [cameraList])
 
-  const onSelectMicrophone = useCallback((groupId: string) => {
-    const device = microphoneList.filter(microphone => microphone.groupId === groupId)
-    device.length && setMicrophone(device[0]);
+  const onSelectMicrophone = useCallback((deviceId: string) => {
+    // const device = microphoneList.filter(microphone => microphone.deviceId === deviceId)
+    setMicrophone(deviceId);
   }, [microphoneList])
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
@@ -78,7 +78,7 @@ function App() {
         <Center>
           <VStack>
             <Box minH="640" minW="480" bg="black">
-              <video test-id="videoFrame" autoPlay ref={video}/>
+              <video playsInline test-id="videoFrame" autoPlay ref={video}/>
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
