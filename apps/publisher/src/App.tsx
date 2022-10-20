@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import { useEffect, useState, useRef, useCallback } from "react";
 import {
   Box,
@@ -81,6 +80,7 @@ function App() {
         <Center>
           <VStack>
             <Box minH="640" minW="480" bg="black">
+              {/* eslint-disable-next-line react/no-unknown-property*/}
               <video playsInline test-id="videoFrame" autoPlay ref={video}/>
             </Box>
             <HStack>
