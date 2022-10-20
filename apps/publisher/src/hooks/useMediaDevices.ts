@@ -20,7 +20,7 @@ const useMediaDevices: () => MediaDevices = () => {
     const [mediaStream, setMediaStream] = useState<MediaStream>();
 
     useEffect(() => {
-         const getInitDevicesPermisson = async () => {
+         const initializeDeviceList = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true,
@@ -28,19 +28,21 @@ const useMediaDevices: () => MediaDevices = () => {
                     })
                 if (stream) {
                     getMediaDevicesList();
+                } else {
+                    throw `Cannot get user's media stream`;
                 }
             } catch (err) {
-                console.error('Camera or microphone permission denied.')
+                console.error(err)
             }
         }
-        getInitDevicesPermisson() 
+        initializeDeviceList() 
     }, [])
 
     useEffect(() => {
-        microphoneId && cameraId && loadMediaStream(microphoneId, cameraId)
+        (microphoneId || cameraId) && loadMediaStream(microphoneId, cameraId)
     }, [cameraId, microphoneId])
 
-    const loadMediaStream = async (microphoneId: string, cameraId: string) => {
+    const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
                 deviceId: microphoneId
@@ -50,7 +52,6 @@ const useMediaDevices: () => MediaDevices = () => {
             }
         })
 
-        stream.getTracks()
         setMediaStream(stream)    
     }
     
