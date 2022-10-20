@@ -24,7 +24,6 @@ import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
-  const [participantsCount] = useState(0);
 
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");

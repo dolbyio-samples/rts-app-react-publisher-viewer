@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, MillicastBroadcastOptions, Publish } from '@millicast/sdk';
+import { Director, MediaBroadcastOptions, Publish } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
@@ -37,7 +37,7 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
 
-            const options: MillicastBroadcastOptions = {
+            const options: MediaBroadcastOptions = {
                 mediaStream: broadcastOptions.mediaStream,
                 events: ['active', 'inactive', 'viewercount']
             }
