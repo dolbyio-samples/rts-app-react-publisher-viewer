@@ -126,7 +126,7 @@ function App() {
                     aria-label="settings"
                     variant="outline"
                     icon={<IconSettings fill={purple400} />}
-                  ></IconButton>
+                  />
                 </PopoverTrigger>
                 <PopoverContent minWidth='480'>
                   <PopoverHeader pt={4} fontWeight='bold' border='0'>
