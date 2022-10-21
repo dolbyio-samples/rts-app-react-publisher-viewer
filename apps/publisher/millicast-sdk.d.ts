@@ -1,6 +1,6 @@
 
 declare namespace millicast {
-  interface MediaBroadcastOptions {
+  interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
     events: string[]
   }
@@ -23,7 +23,7 @@ declare namespace millicast {
       tokenGenerator: tokenGeneratorCallback,
       autoReconnect: boolean 
     );
-    connect(options: MediaBroadcastOptions): Promise<void>;
+    connect(options: BroadcastOptions): Promise<void>;
     stop(): void;
     isActive(): boolean;
     webRTCPeer: PeerConnection;
