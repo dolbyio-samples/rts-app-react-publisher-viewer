@@ -33,8 +33,6 @@ import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [microphoneOn, setMicrophoneOn] = useState(true);
   const [participantsCount] = useState(0);
 
   const [accessToken, setAccessToken] = useState("");
@@ -117,6 +115,7 @@ function App() {
               <IconButton size='lg' p='4px'
                 aria-label="toggle microphone"
                 variant='outline'
+                test-id='toggleAudioButton'
                 isDisabled = { mediaStream && mediaStream.getAudioTracks().length ? false : true }
                 icon={ isAudioEnabled ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
                 onClick={() => { toggleAudio() }} />
@@ -124,6 +123,7 @@ function App() {
                 size="lg" p='4px'
                 aria-label="toggle camera"
                 variant="outline"
+                test-id='toggleVideoButton'
                 isDisabled = { mediaStream && mediaStream.getVideoTracks().length ? false : true }
                 icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
                 onClick={() => { toggleVideo() }} />
@@ -135,6 +135,7 @@ function App() {
                     p='4px'
                     aria-label="settings"
                     variant="outline"
+                    test-id='settingsButton'
                     icon={<IconSettings fill={purple400} />}
                   />
                 </PopoverTrigger>
