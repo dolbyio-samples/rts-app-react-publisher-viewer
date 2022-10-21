@@ -48,6 +48,23 @@ function App() {
 
   const video = useRef<HTMLVideoElement>(null);
 
+  const { startStreaming, stopStreaming, publisherState } = usePublisher(
+    accessToken,
+    streamId
+  );
+
+  const {
+    cameraList,
+    microphoneList,
+    cameraId,
+    microphoneId,
+    setCameraId,
+    setMicrophoneId,
+    mediaStream,
+  } = useMediaDevices();
+
+  const video = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
@@ -169,6 +186,7 @@ function App() {
                 </Switch>
               )}
             <ShareLinkButton linkText={linkText} />
+
           </VStack>
         </Center>
       </Box>
