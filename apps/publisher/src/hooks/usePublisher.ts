@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, Publish } from '@millicast/sdk';
+import { Director, Events, Publish } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
@@ -14,7 +14,7 @@ export interface Publisher {
 
 export interface BroadcastOptions {
     mediaStream: MediaStream,
-    events: string[]
+    events: Events[]
 }
 
 const usePublisher = (token: string, streamName: string): Publisher => {
