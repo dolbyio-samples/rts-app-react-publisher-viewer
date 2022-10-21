@@ -135,7 +135,7 @@ function App() {
                 isLoading={publisherState == "connecting"}
                 onClick={() => {
                   if (publisherState == "ready" && mediaStream) {
-                    startStreaming({ mediaStream });
+                    startStreaming({ mediaStream, events: ['active', 'inactive', 'viewercount'] });
                   }
                 }}
                 test-id="startStreamingButton"
