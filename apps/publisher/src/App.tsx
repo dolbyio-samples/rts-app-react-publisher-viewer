@@ -54,6 +54,10 @@ function App() {
     microphoneId,
     setCameraId,
     setMicrophoneId,
+    isAudioEnabled,
+    isVideoEnabled,
+    toggleAudio,
+    toggleVideo,
     mediaStream,
   } = useMediaDevices();
 
@@ -113,14 +117,16 @@ function App() {
               <IconButton size='lg' p='4px'
                 aria-label="toggle microphone"
                 variant='outline'
-                icon={microphoneOn ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
-                onClick={() => { setMicrophoneOn(!microphoneOn) }} />
+                isDisabled = { mediaStream && mediaStream.getAudioTracks().length ? false : true }
+                icon={ isAudioEnabled ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
+                onClick={() => { toggleAudio() }} />
               <IconButton
                 size="lg" p='4px'
                 aria-label="toggle camera"
                 variant="outline"
-                icon={cameraOn ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
-                onClick={() => { setCameraOn(!cameraOn) }} />
+                isDisabled = { mediaStream && mediaStream.getVideoTracks().length ? false : true }
+                icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
+                onClick={() => { toggleVideo() }} />
               {/* Popover */}
               <Popover>
                 <PopoverTrigger>
