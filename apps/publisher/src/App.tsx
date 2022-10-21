@@ -29,6 +29,7 @@ import IconSettings from "./components/Icons/Settings";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -38,10 +39,12 @@ function App() {
 
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
+  const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(
+  const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(
     accessToken,
-    streamId
+    streamName,
+    streamId,
   );
 
   const {
@@ -58,7 +61,8 @@ function App() {
 
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
 
   useEffect(() => {
@@ -194,6 +198,7 @@ function App() {
                 enable recording
               </Switch>
             )}
+            <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>
       </Box>
