@@ -2,7 +2,9 @@
 declare namespace millicast {
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
-    events: string[]
+    type Events = 'active' | 'inactive' | 'viewercount';
+    //then here
+    events: Events[];
   }
 
   interface BroadcastEvent {
