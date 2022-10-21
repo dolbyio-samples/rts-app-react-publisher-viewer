@@ -51,7 +51,7 @@ function App() {
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
-    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ACCOUNT_ID)
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
 
   useEffect(() => {
