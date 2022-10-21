@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 if [[ "$NETLIFY" = true ]]; then
 touch .env
 echo VITE_MILLICAST_STREAM_NAME=$STREAM_NAME >> .env
