@@ -31,8 +31,6 @@ const usePublisher = (token: string, streamName: string): Publisher => {
 
     }, [token, streamName]);
 
-
-    // TODO, this param list can grow significantly when we add the broadcast settings option, but until such time this list will stay small
     const startStreaming = async (broadcastOptions: BroadcastOptions) => {
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
