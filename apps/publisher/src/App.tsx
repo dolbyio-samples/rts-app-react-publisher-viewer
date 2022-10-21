@@ -16,10 +16,10 @@ import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
 import IconCamera from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
-import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -34,23 +34,6 @@ function App() {
     accessToken,
     streamName,
     streamId,
-  );
-
-  const {
-    cameraList,
-    microphoneList,
-    cameraId,
-    microphoneId,
-    setCameraId,
-    setMicrophoneId,
-    mediaStream,
-  } = useMediaDevices();
-
-  const video = useRef<HTMLVideoElement>(null);
-
-  const { startStreaming, stopStreaming, publisherState } = usePublisher(
-    accessToken,
-    streamId
   );
 
   const {
@@ -179,14 +162,12 @@ function App() {
                 <Text> This is a timer </Text>
               </>
             )}
-            {(publisherState === "ready" ||
-              publisherState === "streaming") && (
-                <Switch onChange={() => setShouldRecord(!shouldRecord)}>
-                  enable recording
-                </Switch>
-              )}
+            {(publisherState === "ready" || publisherState === "streaming") && (
+              <Switch onChange={() => setShouldRecord(!shouldRecord)}>
+                enable recording
+              </Switch>
+            )}
             <ShareLinkButton linkText={linkText} />
-
           </VStack>
         </Center>
       </Box>
