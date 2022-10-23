@@ -53,11 +53,11 @@ const useMediaDevices: () => MediaDevices = () => {
         if (mediaStream) {
             if (mediaStream.getAudioTracks().length) {
                 const track = mediaStream.getAudioTracks()[0];
-                setIsAudioEnabled(track.enabled);
+                track.enabled = isAudioEnabled;
             }
             if (mediaStream.getVideoTracks().length) {
                 const track = mediaStream.getVideoTracks()[0];
-                setIsVideoEnabled(track.enabled);
+                track.enabled = isVideoEnabled;
             }
         }
     }, [mediaStream]);
