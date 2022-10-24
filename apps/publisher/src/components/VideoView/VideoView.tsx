@@ -60,7 +60,7 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
             top="0" 
             right="0" 
             zIndex="1"
-            onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}>
+            onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setTimeout(() => {setIsHoveredOnVideo(false)}, 2000)}>
             {/* eslint-disable-next-line react/no-unknown-property */}
             <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
             <IconButton 
