@@ -15,6 +15,8 @@ export interface Publisher {
 
 export interface BroadcastOptions {
     mediaStream: MediaStream,
+    // TODO The app only supports the `viewercount` event right now, and none others. Subsribing to other events
+    // will not produce any results. 
     events: Event[]
 }
 
