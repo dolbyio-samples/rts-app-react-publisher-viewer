@@ -36,8 +36,6 @@ import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [participantsCount] = useState(0);
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")

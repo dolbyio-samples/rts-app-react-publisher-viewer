@@ -44,12 +44,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
             publisher.current.on('broadcastEvent', (event) => {
                 const { name, data } = event;
-                switch (name) {
-                    case 'viewercount':
-                        setViewerCount(data.viewercount);
-                        break;
-                    default: break;
-                }
+                if (broadcastOptions.events.includes(name)) setViewerCount(data.viewercount);
             });
 
             setPublisherState("streaming")
