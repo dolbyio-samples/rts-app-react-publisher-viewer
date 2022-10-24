@@ -26,12 +26,10 @@ import IconMicrophoneOff from './components/Icons/MicrophoneOff';
 import IconCameraOn from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 import IconSettings from "./components/Icons/Settings";
-
-import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
-import CameraSelect from "./components/CameraSelect/CameraSelect";
 import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
+import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
 
 
 function App() {
@@ -148,10 +146,12 @@ function App() {
                         <Text> Camera: </Text>
                         <Spacer />
                         { cameraList.length && (
-                          <CameraSelect
-                            selectedCameraId={cameraId}
-                            cameraList={cameraList}
-                            onSelectCameraId={onSelectCameraId}
+                          <MediaDeviceSelect
+                            testId="camera-select"
+                            placeHolder="Select Camera"
+                            selectedDeviceId={cameraId}
+                            deviceList={cameraList}
+                            onSelectDeviceId={onSelectCameraId}
                           />
                         )}
                       </HStack>
@@ -159,10 +159,12 @@ function App() {
                         <Text> Microphone: </Text>
                         <Spacer />
                         { microphoneList.length && (
-                          <MicrophoneSelect
-                            selectedMicrophoneId={microphoneId}
-                            microphoneList={microphoneList}
-                            onSelectMicrophoneId={onSelectMicrophoneId}
+                          <MediaDeviceSelect
+                            testId="microphone-select"
+                            placeHolder="Select Microphone"
+                            selectedDeviceId={microphoneId}
+                            deviceList={microphoneList}
+                            onSelectDeviceId={onSelectMicrophoneId}
                           />
                         )}
                       </HStack>
