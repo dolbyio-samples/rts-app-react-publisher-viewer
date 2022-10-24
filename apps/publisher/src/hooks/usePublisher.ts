@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, Publish } from '@millicast/sdk';
+import { Director, Publish, Event } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
@@ -9,17 +9,18 @@ export interface Publisher {
     updateAudioTrack: (track: MediaStreamTrack) => Promise<void>;
     updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
     publisherState: PublisherState;
-    subscriberCount: number;
+    viewerCount: number;
 }
 
 export interface BroadcastOptions {
     mediaStream: MediaStream,
+    events: Event[]
 }
 
 const usePublisher = (token: string, streamName: string): Publisher => {
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
-    const [subscriberCount, setSubscriberCount] = useState(0);
+    const [viewerCount, setViewerCount] = useState(0);
 
     const publisher = useRef<Publish>();
 
@@ -36,16 +37,13 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         try {
 
             setPublisherState("connecting");
-            await publisher.current.connect({
-                ...broadcastOptions,
-                events: ['active', 'inactive', 'viewercount']
-            });
+            await publisher.current.connect(broadcastOptions);
 
             publisher.current.on('broadcastEvent', (event) => {
                 const { name, data } = event;
                 switch (name) {
                     case 'viewercount':
-                        setSubscriberCount(data.viewercount);
+                        setViewerCount(data.viewercount);
                         break;
                     default: break;
                 }
@@ -83,7 +81,7 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         updateAudioTrack,
         updateVideoTrack,
         publisherState,
-        subscriberCount
+        viewerCount
     };
 };
 

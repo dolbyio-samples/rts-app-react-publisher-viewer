@@ -28,7 +28,7 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
 
-  const { startStreaming, stopStreaming, publisherState, subscriberCount } = usePublisher(
+  const { startStreaming, stopStreaming, publisherState, viewerCount } = usePublisher(
     accessToken,
     streamId
   );
@@ -83,7 +83,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        {publisherState == "streaming" && <ParticipantCount count={subscriberCount} />}
+        {publisherState == "streaming" && <ParticipantCount count={viewerCount} />}
       </Flex>
       <Box>
         <Center>
@@ -135,7 +135,7 @@ function App() {
                 isLoading={publisherState == "connecting"}
                 onClick={() => {
                   if (publisherState == "ready" && mediaStream) {
-                    startStreaming({ mediaStream });
+                    startStreaming({ mediaStream, events: ['viewercount'] });
                   }
                 }}
                 test-id="startStreamingButton"
