@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "sh ./setup.sh",
+    "prebuild": "bash ./setup.sh",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
