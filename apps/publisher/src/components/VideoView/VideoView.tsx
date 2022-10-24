@@ -21,7 +21,7 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
     return (
         <Box test-id="video-view-wrapper" sx={{ '.video': { transform: 'scaleX(-1)' }, '.video--fullscreen': { width: '100vw', height: '100vh', overflowY: 'hidden'}}} pos="relative">
             {/* eslint-disable-next-line react/no-unknown-property */}
-            <video className={`video ${isFullScreenOn && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} />
+            <video className={`video ${isFullScreenOn && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
             <IconButton 
                 aria-label="Full screen" 
                 p="10px" 
