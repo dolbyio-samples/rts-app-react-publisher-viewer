@@ -7,6 +7,13 @@ import {
   Heading,
   HStack,
   IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Spacer,
   Switch,
   Text,
@@ -14,23 +21,31 @@ import {
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
-import IconCamera from "./components/Icons/Camera";
+import IconMicrophoneOn from './components/Icons/Microphone';
+import IconMicrophoneOff from './components/Icons/MicrophoneOff';
+import IconCameraOn from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
+import IconSettings from "./components/Icons/Settings";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
+import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
+
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
-
+  const [participantsCount] = useState(0);
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
+  const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState, viewerCount } = usePublisher(
+  const { startStreaming, stopStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
-    streamId
+    streamName,
+    streamId,
   );
 
   const {
@@ -40,6 +55,10 @@ function App() {
     microphoneId,
     setCameraId,
     setMicrophoneId,
+    isAudioEnabled,
+    isVideoEnabled,
+    toggleAudio,
+    toggleVideo,
     mediaStream,
   } = useMediaDevices();
 
@@ -47,7 +66,8 @@ function App() {
 
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
+    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
 
   useEffect(() => {
@@ -93,42 +113,67 @@ function App() {
               <video playsInline test-id="videoFrame" autoPlay ref={video} muted />
             </Box>
             <HStack>
-              <Button minW="40"> Toggle Mic </Button>
-              {publisherState === "ready" && microphoneList.length && (
-                <MicrophoneSelect
-                  selectedMicrophoneId={microphoneId}
-                  microphoneList={microphoneList}
-                  onSelectMicrophoneId={onSelectMicrophoneId}
-                />
-              )}
-            </HStack>
-            <HStack>
+              <IconButton size='lg' p='4px'
+                aria-label="toggle microphone"
+                variant='outline'
+                test-id='toggleAudioButton'
+                isDisabled = { mediaStream && mediaStream.getAudioTracks().length ? false : true }
+                icon={ isAudioEnabled ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
+                onClick={() => { toggleAudio() }} />
               <IconButton
-                minW="40"
-                size="md"
-                aria-label="camera"
+                size="lg" p='4px'
+                aria-label="toggle camera"
                 variant="outline"
-                icon={
-                  cameraOn ? (
-                    <IconCamera fill={purple400} />
-                  ) : (
-                    <IconCameraOff fill="red" />
-                  )
-                }
-                onClick={() => {
-                  setCameraOn(!cameraOn);
-                }}
-              >
-                {" "}
-                Toggle Camera{" "}
-              </IconButton>
-              {publisherState === "ready" && cameraList.length && (
-                <CameraSelect
-                  selectedCameraId={cameraId}
-                  cameraList={cameraList}
-                  onSelectCameraId={onSelectCameraId}
-                />
-              )}
+                test-id='toggleVideoButton'
+                isDisabled = { mediaStream && mediaStream.getVideoTracks().length ? false : true }
+                icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
+                onClick={() => { toggleVideo() }} />
+              {/* Popover */}
+              <Popover>
+                <PopoverTrigger>
+                  <IconButton
+                    size='lg'
+                    p='4px'
+                    aria-label="settings"
+                    variant="outline"
+                    test-id='settingsButton'
+                    icon={<IconSettings fill={purple400} />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent minWidth='480'>
+                  <PopoverHeader pt={4} fontWeight='bold' border='0'>
+                    Manage Your Devices
+                  </PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <VStack>
+                      <HStack width='100%'>
+                        <Text> Camera: </Text>
+                        <Spacer />
+                        {publisherState === "ready" && cameraList.length && (
+                          <CameraSelect
+                            selectedCameraId={cameraId}
+                            cameraList={cameraList}
+                            onSelectCameraId={onSelectCameraId}
+                          />
+                        )}
+                      </HStack>
+                      <HStack width='100%'>
+                        <Text> Microphone: </Text>
+                        <Spacer />
+                        {publisherState === "ready" && microphoneList.length && (
+                          <MicrophoneSelect
+                            selectedMicrophoneId={microphoneId}
+                            microphoneList={microphoneList}
+                            onSelectMicrophoneId={onSelectMicrophoneId}
+                          />
+                        )}
+                      </HStack>
+                    </VStack>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </HStack>
             {publisherState == "ready" || publisherState == "connecting" ? (
               <Button
@@ -161,6 +206,7 @@ function App() {
                 enable recording
               </Switch>
             )}
+            <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>
       </Box>

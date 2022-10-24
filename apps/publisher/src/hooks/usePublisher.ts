@@ -10,6 +10,7 @@ export interface Publisher {
     updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
     publisherState: PublisherState;
     viewerCount: number;
+    linkText: string;
 }
 
 export interface BroadcastOptions {
@@ -17,7 +18,7 @@ export interface BroadcastOptions {
     events: Event[]
 }
 
-const usePublisher = (token: string, streamName: string): Publisher => {
+const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
@@ -75,13 +76,16 @@ const usePublisher = (token: string, streamName: string): Publisher => {
         // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
     }
 
+    const linkText = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
+
     return {
         startStreaming,
         stopStreaming,
         updateAudioTrack,
         updateVideoTrack,
         publisherState,
-        viewerCount
+        viewerCount,
+        linkText
     };
 };
 

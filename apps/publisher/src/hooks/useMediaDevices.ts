@@ -7,6 +7,10 @@ type MediaDevices = {
     setMicrophoneId: (deviceId: string) => void;
     cameraId?: string;
     microphoneId?: string;
+    isAudioEnabled: boolean;
+    isVideoEnabled: boolean;
+    toggleAudio: () => void;
+    toggleVideo: () => void;
     mediaStream?: MediaStream;
 }
 
@@ -16,6 +20,9 @@ const useMediaDevices: () => MediaDevices = () => {
     
     const [cameraId, setCameraId] = useState<string>();
     const [microphoneId, setMicrophoneId] = useState<string>();
+
+    const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(true);
+    const [isVideoEnabled, setIsVideoEnabled] = useState<boolean>(true);
 
     const [mediaStream, setMediaStream] = useState<MediaStream>();
 
@@ -32,15 +39,28 @@ const useMediaDevices: () => MediaDevices = () => {
                     throw `Cannot get user's media stream`;
                 }
             } catch (err) {
-                console.error(err)
+                console.error(err);
             }
         }
-        initializeDeviceList() 
+        initializeDeviceList();
     }, [])
 
     useEffect(() => {
         (microphoneId || cameraId) && loadMediaStream(microphoneId, cameraId)
     }, [cameraId, microphoneId])
+
+    useEffect(() => {
+        if (mediaStream) {
+            if (mediaStream.getAudioTracks().length) {
+                const track = mediaStream.getAudioTracks()[0];
+                track.enabled = isAudioEnabled;
+            }
+            if (mediaStream.getVideoTracks().length) {
+                const track = mediaStream.getVideoTracks()[0];
+                track.enabled = isVideoEnabled;
+            }
+        }
+    }, [mediaStream]);
 
     const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -50,9 +70,9 @@ const useMediaDevices: () => MediaDevices = () => {
             video: {
                 deviceId: cameraId
             }
-        })
+        });
 
-        setMediaStream(stream)    
+        setMediaStream(stream);
     }
     
     const getMediaDevicesList = async () => {
@@ -76,6 +96,22 @@ const useMediaDevices: () => MediaDevices = () => {
         return !(device.deviceId.includes('default') ||  deviceList.some(item => item.deviceId === device.deviceId))
     }
 
+    const toggleAudio = () => {
+        const audioTracks = mediaStream?.getAudioTracks();
+        if (audioTracks && audioTracks.length) {
+            audioTracks[0].enabled = !isAudioEnabled;
+            setIsAudioEnabled(!isAudioEnabled);
+        }
+    }
+
+    const toggleVideo = () => {
+        const videoTracks = mediaStream?.getVideoTracks();
+        if (videoTracks && videoTracks.length) {
+            videoTracks[0].enabled = !isVideoEnabled;
+            setIsVideoEnabled(!isVideoEnabled);
+        }
+    }
+
     return {
         cameraList,
         microphoneList,
@@ -83,6 +119,10 @@ const useMediaDevices: () => MediaDevices = () => {
         setMicrophoneId,
         cameraId,
         microphoneId,
+        isAudioEnabled,
+        isVideoEnabled,
+        toggleAudio,
+        toggleVideo,
         mediaStream
     }
 }
