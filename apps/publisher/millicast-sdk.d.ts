@@ -43,9 +43,7 @@ declare namespace millicast {
     streamName: string;
   }
   class Director {
-    static getPublisher(
-      options: DirectorPublisherOptions
-    ): Promise<DirectorResponse>;
+    static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
 
   /**
