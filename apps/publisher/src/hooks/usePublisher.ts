@@ -6,8 +6,7 @@ export type PublisherState = "ready" | "connecting" | "streaming";
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
-    updateAudioTrack: (track: MediaStreamTrack) => Promise<void>;
-    updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
+    updateStreaming: (mediaStream: MediaStream) => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
@@ -59,18 +58,17 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         setPublisherState("ready")
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateAudioTrack = async (track: MediaStreamTrack) => {
-        // TODO yet to be tested
-        // if (!publisher.current || publisher.current.isActive()) return;
-        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateVideoTrack = async (track: MediaStreamTrack) => {
-        // TODO yet to be tested
-        // if (!publisher.current || publisher.current.isActive()) return;
-        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
+    const updateStreaming = (stream: MediaStream) => {
+        if (publisher.current && publisher.current.isActive()) {
+            const audioTracks = stream.getAudioTracks();
+            if (audioTracks.length) {
+                publisher.current.webRTCPeer.replaceTrack(audioTracks[0]);
+            }
+            const videoTracks = stream.getVideoTracks();
+            if (videoTracks.length) {
+                publisher.current.webRTCPeer.replaceTrack(videoTracks[0]);
+            }
+        }
     }
 
     const linkText = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
@@ -78,8 +76,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     return {
         startStreaming,
         stopStreaming,
-        updateAudioTrack,
-        updateVideoTrack,
+        updateStreaming,
         publisherState,
         viewerCount,
         linkText

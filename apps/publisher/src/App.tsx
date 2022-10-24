@@ -26,12 +26,10 @@ import IconMicrophoneOff from './components/Icons/MicrophoneOff';
 import IconCameraOn from "./components/Icons/Camera";
 import IconCameraOff from "./components/Icons/CameraOff";
 import IconSettings from "./components/Icons/Settings";
-
-import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
-import CameraSelect from "./components/CameraSelect/CameraSelect";
 import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
+import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
 
 
 function App() {
@@ -40,7 +38,7 @@ function App() {
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState,viewerCount, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, updateStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -65,6 +63,12 @@ function App() {
     setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
+
+  useEffect(() => {
+    if (mediaStream) {
+      updateStreaming(mediaStream);
+    }
+  }, [mediaStream]);
 
   const onSelectCameraId = useCallback(
     (deviceId: string) => {
@@ -140,22 +144,28 @@ function App() {
                       <HStack width='100%'>
                         <Text> Camera: </Text>
                         <Spacer />
-                        {publisherState === "ready" && cameraList.length && (
-                          <CameraSelect
-                            selectedCameraId={cameraId}
-                            cameraList={cameraList}
-                            onSelectCameraId={onSelectCameraId}
+                        { cameraList.length && (
+                          <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
+                            testId="camera-select"
+                            placeHolder="Select Camera"
+                            selectedDeviceId={cameraId}
+                            deviceList={cameraList}
+                            onSelectDeviceId={onSelectCameraId}
                           />
                         )}
                       </HStack>
                       <HStack width='100%'>
                         <Text> Microphone: </Text>
                         <Spacer />
-                        {publisherState === "ready" && microphoneList.length && (
-                          <MicrophoneSelect
-                            selectedMicrophoneId={microphoneId}
-                            microphoneList={microphoneList}
-                            onSelectMicrophoneId={onSelectMicrophoneId}
+                        { microphoneList.length && (
+                          <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
+                            testId="microphone-select"
+                            placeHolder="Select Microphone"
+                            selectedDeviceId={microphoneId}
+                            deviceList={microphoneList}
+                            onSelectDeviceId={onSelectMicrophoneId}
                           />
                         )}
                       </HStack>
