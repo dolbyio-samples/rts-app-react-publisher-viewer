@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import IconCameraOff from "./components/Icons/CameraOff";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+import VideoView from './components/VideoView/VideoView';
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -43,18 +44,10 @@ function App() {
     mediaStream,
   } = useMediaDevices();
 
-  const video = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_NAME);
   }, []);
-
-  useEffect(() => {
-    if (video.current && mediaStream) {
-      video.current.srcObject = mediaStream;
-    }
-  }, [mediaStream]);
 
   const onSelectCameraId = useCallback(
     (deviceId: string) => {
@@ -90,9 +83,8 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            <Box minH="640" minW="480" bg="black">
-              {/* eslint-disable-next-line react/no-unknown-property*/}
-              <video playsInline test-id="videoFrame" autoPlay ref={video} />
+            <Box minH="360" minW="480" bg="black">
+              <VideoView mediaStream={mediaStream}/>
             </Box>
             <HStack>
               <Button minW="40"> Toggle Mic </Button>
