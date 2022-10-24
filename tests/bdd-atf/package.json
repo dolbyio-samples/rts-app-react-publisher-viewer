@@ -3,15 +3,40 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "cucumber-js --config cucumber.ts",
-    "cucumber": "cucumber-js ./features/**/*.feature --require-module ts-node/register --require ./support/**/*.ts --require ./steps/**/**/*.ts"
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "cleanup": "rimraf reports/*",
+    "test": "yarn cleanup && cucumber-js --config cucumber.ts",
+    "test:smoke": "cucumber-js --config cucumber.ts --tags @smoke",
+    "cucumber": "cucumber-js ./features/**/*.feature --require-module ts-node/register --require ./support/**/*.ts --require ./steps/**/**/*.ts",
+    "report": "ts-node ./reporter/cucumber-report.ts"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^8.7.0",
+    "cucumber-html-reporter": "^5.5.0",
+    "lodash.clonedeep": "^4.5.0",
+    "playwright": "^1.27.1",
+    "@playwright/test": "^1.27.1"
   },
   "devDependencies": {
-    "playwright": "^1.27.1",
-    "@playwright/test": "^1.27.1",
-    "@cucumber/cucumber": "^8.7.0",
+    "@babel/core": "^7.19.6",
     "@cucumber/pretty-formatter": "^1.0.0",
-    "cucumber-html-reporter": "^5.5.0",
+    "allure-cucumberjs": "^2.0.0-beta.18",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
     "ts-node": "^10.9.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "jest": true
+    },
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "no-console": "off"
+    }
   }
 }

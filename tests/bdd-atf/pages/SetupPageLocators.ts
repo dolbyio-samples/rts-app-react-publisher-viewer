@@ -1,23 +1,14 @@
-import { Locator, Page } from 'playwright'
+import { Locator, Page } from "playwright";
 
-export default class SetupPageLocators{
+import CommonLocators from "./CommonLocators";
 
-    private page: Page;
-    readonly joinBtn: Locator;
-    readonly nameInput: Locator;
-    readonly microphoneBtn: Locator;
-    readonly CameraBtn: Locator;
-    readonly microphoneSelect: Locator;
-    readonly cameraSelect: Locator;
-  
-    constructor(page: Page){
-        this.page = page;
-        this.joinBtn = page.locator('<selector>')
-        this.nameInput = page.locator('<selector>')
-        this.microphoneBtn = page.locator('<selector>')
-        this.CameraBtn = page.locator('<selector>')
-        this.microphoneSelect = page.locator('<selector>')
-        this.cameraSelect = page.locator('<selector>')
-    }
+export default class SetupPageLocators extends CommonLocators {
+  readonly goLiveBtn: Locator;
+
+  readonly goLiveBtnSelector = "[test-id=startStreamingButton]";
+
+  constructor(page: Page) {
+    super(page);
+    this.goLiveBtn = page.locator(this.goLiveBtnSelector);
+  }
 }
-

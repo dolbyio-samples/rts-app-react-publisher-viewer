@@ -1,22 +1,21 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+/* eslint-disable no-unused-vars */
+import { Given, When, Then } from "@cucumber/cucumber";
 
-Given('a publisher is on the setup page', async () => {
-    console.log('SETUP-STEP:: Publisher is on the setup page')
-    await global.setupPage.open('https://dolby.io/')
+import { SetupPage } from "../pages/SetupPage";
+import { options } from "../playwright.config";
+import { ScenarioWorld } from "../support/ScenarioWorld";
+
+let setupPage: SetupPage;
+
+Given("a publisher is on the setup page", async function (this: ScenarioWorld) {
+  setupPage = new SetupPage(this.publisherPage);
+  await setupPage.open(options?.publisherURL as string);
 });
 
-When('the publisher turns off the microphone', async () => {
-    console.log('SETUP-STEP:: Publisher turns off the microphone')
+When("the publisher starts live event", async () => {
+  await setupPage.goLive();
 });
 
-Then('the microphone should be turned off', async () => {
-    console.log('SETUP-STEP:: Publisher microphone should be turned off')
-});
-
-When('the publisher turns off the camera', async () => {
-    console.log('SETUP-STEP:: Publisher turns off the camera')
-});
-
-Then('the camera should be turned off', async () => {
-    console.log('SETUP-STEP:: Publisher camera should be turned off')
+Then("the publisher should be redirected to setup page", async () => {
+  await setupPage.waitForPageLoad();
 });
