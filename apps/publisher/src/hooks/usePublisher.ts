@@ -6,8 +6,7 @@ export type PublisherState = "ready" | "connecting" | "streaming";
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
-    updateAudioTrack: (track: MediaStreamTrack) => Promise<void>;
-    updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
+    updateStreamingMediaStream: (mediaStream: MediaStream) => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
@@ -59,18 +58,21 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         setPublisherState("ready")
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateAudioTrack = async (track: MediaStreamTrack) => {
-        // TODO yet to be tested
-        // if (!publisher.current || publisher.current.isActive()) return;
-        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getAudioTracks()[0]);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updateVideoTrack = async (track: MediaStreamTrack) => {
-        // TODO yet to be tested
-        // if (!publisher.current || publisher.current.isActive()) return;
-        // await publisher.current.webRTCPeer.replaceTrack(mediaStream.getVideoTracks()[0]);
+    const updateStreamingMediaStream = (stream: MediaStream) => {
+        if (publisher.current && publisher.current.isActive()) {
+            const currentTracks = publisher.current.webRTCPeer.getTracks();
+            console.log('current streaming tracks', currentTracks);
+            const audioTracks = stream.getAudioTracks();
+            if (audioTracks.length && !currentTracks.some((track) => track.kind === 'audio' && track.id === audioTracks[0].id)) {
+                console.log('replace audio track', audioTracks[0].id);
+                publisher.current.webRTCPeer.replaceTrack(audioTracks[0]);
+            }
+            const videoTracks = stream.getVideoTracks();
+            if (videoTracks.length && !currentTracks.some((track) => track.kind === 'video' && track.id === videoTracks[0].id)) {
+                console.log('replace video track', videoTracks[0].id);
+                publisher.current.webRTCPeer.replaceTrack(videoTracks[0]);
+            }
+        }
     }
 
     const linkText = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
@@ -78,8 +80,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     return {
         startStreaming,
         stopStreaming,
-        updateAudioTrack,
-        updateVideoTrack,
+        updateStreamingMediaStream,
         publisherState,
         viewerCount,
         linkText

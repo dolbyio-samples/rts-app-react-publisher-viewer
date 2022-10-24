@@ -55,6 +55,12 @@ declare namespace millicast {
 	 */
 	replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
 
+  /**
+	 * Get sender tracks
+	 * @returns {Array<MediaStreamTrack>} An array with all tracks in sender peer.
+	 */
+  getTracks(): MediaStreamTrack[];
+
     /**
 	 * Set SDP information to remote peer with bandwidth restriction.
 	 * @param {Number} bitrate - New bitrate value in kbps or 0 unlimited bitrate.

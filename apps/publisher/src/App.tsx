@@ -40,7 +40,7 @@ function App() {
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState,viewerCount, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, updateStreamingMediaStream, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -65,6 +65,13 @@ function App() {
     setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
+
+  useEffect(() => {
+    if (video.current && mediaStream) {
+      video.current.srcObject = mediaStream;
+      updateStreamingMediaStream(mediaStream);
+    }
+  }, [mediaStream]);
 
   const onSelectCameraId = useCallback(
     (deviceId: string) => {
@@ -140,7 +147,7 @@ function App() {
                       <HStack width='100%'>
                         <Text> Camera: </Text>
                         <Spacer />
-                        {publisherState === "ready" && cameraList.length && (
+                        { cameraList.length && (
                           <CameraSelect
                             selectedCameraId={cameraId}
                             cameraList={cameraList}
@@ -151,7 +158,7 @@ function App() {
                       <HStack width='100%'>
                         <Text> Microphone: </Text>
                         <Spacer />
-                        {publisherState === "ready" && microphoneList.length && (
+                        { microphoneList.length && (
                           <MicrophoneSelect
                             selectedMicrophoneId={microphoneId}
                             microphoneList={microphoneList}
