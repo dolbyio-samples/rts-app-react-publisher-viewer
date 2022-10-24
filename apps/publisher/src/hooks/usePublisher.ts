@@ -6,7 +6,7 @@ export type PublisherState = "ready" | "connecting" | "streaming";
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
-    updateStreamingMediaStream: (mediaStream: MediaStream) => void;
+    updateStreaming: (mediaStream: MediaStream) => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
@@ -58,7 +58,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         setPublisherState("ready")
     }
 
-    const updateStreamingMediaStream = (stream: MediaStream) => {
+    const updateStreaming = (stream: MediaStream) => {
         if (publisher.current && publisher.current.isActive()) {
             const audioTracks = stream.getAudioTracks();
             if (audioTracks.length) {
@@ -76,7 +76,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     return {
         startStreaming,
         stopStreaming,
-        updateStreamingMediaStream,
+        updateStreaming,
         publisherState,
         viewerCount,
         linkText

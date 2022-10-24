@@ -38,7 +38,7 @@ function App() {
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, updateStreamingMediaStream, publisherState,viewerCount, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, updateStreaming: updateStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -65,9 +65,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (video.current && mediaStream) {
-      video.current.srcObject = mediaStream;
-      updateStreamingMediaStream(mediaStream);
+    if (mediaStream) {
+      updateStreaming(mediaStream);
     }
   }, [mediaStream]);
 
@@ -147,6 +146,7 @@ function App() {
                         <Spacer />
                         { cameraList.length && (
                           <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
                             testId="camera-select"
                             placeHolder="Select Camera"
                             selectedDeviceId={cameraId}
@@ -160,6 +160,7 @@ function App() {
                         <Spacer />
                         { microphoneList.length && (
                           <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
                             testId="microphone-select"
                             placeHolder="Select Microphone"
                             selectedDeviceId={microphoneId}

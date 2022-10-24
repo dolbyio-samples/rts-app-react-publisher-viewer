@@ -1,13 +1,13 @@
 import React, { memo } from "react";
 import { Select } from "@chakra-ui/react";
 
-type MediaDeviceSelectProps = {
+interface MediaDeviceSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   deviceList: InputDeviceInfo[];
   onSelectDeviceId: (deviceId: string) => void;
   selectedDeviceId?: string;
   testId?: string;
   placeHolder?: string;
-};
+}
 
 const MediaDeviceSelect = ({
   deviceList,
@@ -15,9 +15,11 @@ const MediaDeviceSelect = ({
   selectedDeviceId,
   testId,
   placeHolder,
+  ...props
 }: MediaDeviceSelectProps) => {
   return (
     <Select
+      disabled = {props.disabled}
       test-id={testId}
       placeholder={placeHolder}
       defaultValue={selectedDeviceId || deviceList[0].deviceId}
