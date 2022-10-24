@@ -60,16 +60,12 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
     const updateStreamingMediaStream = (stream: MediaStream) => {
         if (publisher.current && publisher.current.isActive()) {
-            const currentTracks = publisher.current.webRTCPeer.getTracks();
-            console.log('current streaming tracks', currentTracks);
             const audioTracks = stream.getAudioTracks();
-            if (audioTracks.length && !currentTracks.some((track) => track.kind === 'audio' && track.id === audioTracks[0].id)) {
-                console.log('replace audio track', audioTracks[0].id);
+            if (audioTracks.length) {
                 publisher.current.webRTCPeer.replaceTrack(audioTracks[0]);
             }
             const videoTracks = stream.getVideoTracks();
-            if (videoTracks.length && !currentTracks.some((track) => track.kind === 'video' && track.id === videoTracks[0].id)) {
-                console.log('replace video track', videoTracks[0].id);
+            if (videoTracks.length) {
                 publisher.current.webRTCPeer.replaceTrack(videoTracks[0]);
             }
         }
