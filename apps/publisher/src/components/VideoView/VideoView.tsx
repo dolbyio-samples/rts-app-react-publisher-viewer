@@ -20,13 +20,6 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
         }
     }, [mediaStream]);
 
-    useEffect(() => {
-        fullScreenButton.current?.classList.add('icon-button--hover')
-        setTimeout(() => {
-            fullScreenButton.current?.classList.remove('icon-button--hover');
-        }, 2000)
-    }, [])
-
     const componentElementsStyle = { 
         '.video': { 
             transform: 'scaleX(-1)' 
@@ -60,7 +53,7 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
             top="0" 
             right="0" 
             zIndex="1"
-            onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setTimeout(() => {setIsHoveredOnVideo(false)}, 2000)}>
+            onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}>
             {/* eslint-disable-next-line react/no-unknown-property */}
             <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
             <IconButton 
