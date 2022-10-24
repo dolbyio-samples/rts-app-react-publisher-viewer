@@ -29,17 +29,18 @@ import IconSettings from "./components/Icons/Settings";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
+
+import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
+
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
-  const [participantsCount] = useState(0);
-
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -100,9 +101,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        <Box p="4">
-          <Text> Participant number: {participantsCount} </Text>
-        </Box>
+        {publisherState == "streaming" && <ParticipantCount count={viewerCount} />}
       </Flex>
       <Box>
         <Center>
@@ -179,7 +178,7 @@ function App() {
                 isLoading={publisherState == "connecting"}
                 onClick={() => {
                   if (publisherState == "ready" && mediaStream) {
-                    startStreaming({ mediaStream });
+                    startStreaming({ mediaStream, events: ['viewercount'] });
                   }
                 }}
                 test-id="startStreamingButton"

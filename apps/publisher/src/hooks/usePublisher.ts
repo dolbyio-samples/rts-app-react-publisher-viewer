@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, Publish } from '@millicast/sdk';
+import { Director, Publish, Event } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
@@ -9,33 +9,44 @@ export interface Publisher {
     updateAudioTrack: (track: MediaStreamTrack) => Promise<void>;
     updateVideoTrack: (track: MediaStreamTrack) => Promise<void>;
     publisherState: PublisherState;
-    linkText: string
-
+    viewerCount: number;
+    linkText: string;
 }
 
 export interface BroadcastOptions {
-    mediaStream: MediaStream
+    mediaStream: MediaStream,
+    // TODO The app only supports the `viewercount` event right now, and none others. Subsribing to other events
+    // will not produce any results. 
+    events: Event[]
 }
 
 const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
+    const [viewerCount, setViewerCount] = useState(0);
+
     const publisher = useRef<Publish>();
 
     useEffect(() => {
         if (!token || !streamName) return; 
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator, true);
-
         return () => { stopStreaming() };
+
     }, [token, streamName]);
 
-    // TODO, this param list can grow significantly when we add the broadcast settings option, but until such time this list will stay small
     const startStreaming = async (broadcastOptions: BroadcastOptions) => {
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
+
             setPublisherState("connecting");
             await publisher.current.connect(broadcastOptions);
+
+            publisher.current.on('broadcastEvent', (event) => {
+                const { name, data } = event;
+                if (broadcastOptions.events.includes(name)) setViewerCount(data.viewercount);
+            });
+
             setPublisherState("streaming")
         } catch (e) {
             setPublisherState("ready");
@@ -70,6 +81,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         updateAudioTrack,
         updateVideoTrack,
         publisherState,
+        viewerCount,
         linkText
     };
 };
