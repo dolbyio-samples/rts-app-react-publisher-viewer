@@ -38,7 +38,7 @@ function App() {
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, updateStreaming: updateStreaming, publisherState,viewerCount, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, updateStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
