@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -29,7 +29,7 @@ import IconSettings from "./components/Icons/Settings";
 
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
-
+import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 
@@ -60,19 +60,11 @@ function App() {
     mediaStream,
   } = useMediaDevices();
 
-  const video = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
     setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
     setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
     setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
   }, []);
-
-  useEffect(() => {
-    if (video.current && mediaStream) {
-      video.current.srcObject = mediaStream;
-    }
-  }, [mediaStream]);
 
   const onSelectCameraId = useCallback(
     (deviceId: string) => {
@@ -106,9 +98,8 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            <Box minH="640" minW="480" bg="black">
-              {/* eslint-disable-next-line react/no-unknown-property*/}
-              <video playsInline test-id="videoFrame" autoPlay ref={video} muted />
+            <Box bg="black">
+              <VideoView mediaStream={mediaStream}/>
             </Box>
             <HStack>
               <IconButton size='lg' p='4px'
