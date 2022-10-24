@@ -9,6 +9,7 @@ type VideoViewProps = {
 
 const VideoView = ({mediaStream}: VideoViewProps) => {
     const video = useRef<HTMLVideoElement>(null);
+    const fullScreenButton = useRef<HTMLButtonElement>(null);
 
     const [ isFullScreenOn, setFullScreenStatus ] = useState(false);
 
@@ -18,8 +19,14 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
         }
     }, [mediaStream]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            fullScreenButton.current?.classList.remove('icon-button--init-status');
+        }, 2000)
+    }, [])
+
     return (
-        <Box test-id="video-view-wrapper" sx={{ '.video': { transform: 'scaleX(-1)' }, '.video--fullscreen': { width: '100vw', height: '100vh', overflowY: 'hidden'}}} pos="relative">
+        <Box test-id="video-view-wrapper" sx={{ '.video': { transform: 'scaleX(-1)' }, '.video--fullscreen': { width: '100vw', height: '100vh', overflowY: 'hidden'}, '.icon-button--init-status': {background: 'white', border: '1px solid black'}}} pos="relative">
             {/* eslint-disable-next-line react/no-unknown-property */}
             <video className={`video ${isFullScreenOn && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
             <IconButton 
@@ -31,7 +38,10 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
                 right="0" 
                 bottom="0" 
                 borderRadius="0"
+                border="1px solid transparent"
+                className="icon-button--init-status"
                 _hover={{bg: 'white', border: '1px solid black'}}
+                ref={fullScreenButton}
                 onClick={() => setFullScreenStatus(!isFullScreenOn)}
                 icon={isFullScreenOn ? <FullScreenExit fill="black" /> : <FullScreen fill="black" />}/>
         </Box>
