@@ -30,19 +30,17 @@ import IconSettings from "./components/Icons/Settings";
 import MicrophoneSelect from "./components/MicrophoneSelect/MicrophoneSelect";
 import CameraSelect from "./components/CameraSelect/CameraSelect";
 import VideoView from './components/VideoView/VideoView';
+import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
+
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [microphoneOn, setMicrophoneOn] = useState(true);
-  const [participantsCount] = useState(0);
-
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, publisherState, linkText } = usePublisher(
+  const { startStreaming, stopStreaming, publisherState,viewerCount, linkText } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -55,6 +53,10 @@ function App() {
     microphoneId,
     setCameraId,
     setMicrophoneId,
+    isAudioEnabled,
+    isVideoEnabled,
+    toggleAudio,
+    toggleVideo,
     mediaStream,
   } = useMediaDevices();
 
@@ -91,9 +93,7 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        <Box p="4">
-          <Text> Participant number: {participantsCount} </Text>
-        </Box>
+        {publisherState == "streaming" && <ParticipantCount count={viewerCount} />}
       </Flex>
       <Box>
         <Center>
@@ -105,14 +105,18 @@ function App() {
               <IconButton size='lg' p='4px'
                 aria-label="toggle microphone"
                 variant='outline'
-                icon={microphoneOn ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
-                onClick={() => { setMicrophoneOn(!microphoneOn) }} />
+                test-id='toggleAudioButton'
+                isDisabled = { mediaStream && mediaStream.getAudioTracks().length ? false : true }
+                icon={ isAudioEnabled ? (<IconMicrophoneOn fill={purple400} />) : (<IconMicrophoneOff fill='red' />)}
+                onClick={() => { toggleAudio() }} />
               <IconButton
                 size="lg" p='4px'
                 aria-label="toggle camera"
                 variant="outline"
-                icon={cameraOn ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
-                onClick={() => { setCameraOn(!cameraOn) }} />
+                test-id='toggleVideoButton'
+                isDisabled = { mediaStream && mediaStream.getVideoTracks().length ? false : true }
+                icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
+                onClick={() => { toggleVideo() }} />
               {/* Popover */}
               <Popover>
                 <PopoverTrigger>
@@ -121,6 +125,7 @@ function App() {
                     p='4px'
                     aria-label="settings"
                     variant="outline"
+                    test-id='settingsButton'
                     icon={<IconSettings fill={purple400} />}
                   />
                 </PopoverTrigger>
@@ -164,7 +169,7 @@ function App() {
                 isLoading={publisherState == "connecting"}
                 onClick={() => {
                   if (publisherState == "ready" && mediaStream) {
-                    startStreaming({ mediaStream });
+                    startStreaming({ mediaStream, events: ['viewercount'] });
                   }
                 }}
                 test-id="startStreamingButton"
