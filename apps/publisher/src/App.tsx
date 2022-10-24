@@ -98,7 +98,7 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            <Box minH="360" minW="480" bg="black">
+            <Box bg="black">
               <VideoView mediaStream={mediaStream}/>
             </Box>
             <HStack>

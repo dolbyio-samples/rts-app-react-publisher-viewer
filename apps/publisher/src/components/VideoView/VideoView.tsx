@@ -11,8 +11,8 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
     const video = useRef<HTMLVideoElement>(null);
     const fullScreenButton = useRef<HTMLButtonElement>(null);
 
-    const [ isFullScreenOn, setFullScreenStatus ] = useState(false);
-    const [ videoIsHovered, setVideoHoverStatus ] = useState(false);
+    const [ isFullScreen, setIsFullScreen ] = useState(false);
+    const [ isHoveredOnVideo, setIsHoveredOnVideo ] = useState(false);
 
     useEffect(() => {
         if (video.current && mediaStream) {
@@ -21,46 +21,56 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
     }, [mediaStream]);
 
     useEffect(() => {
-        fullScreenButton.current?.classList.add('icon-button--on')
+        fullScreenButton.current?.classList.add('icon-button--hover')
         setTimeout(() => {
-            fullScreenButton.current?.classList.remove('icon-button--on');
+            fullScreenButton.current?.classList.remove('icon-button--hover');
         }, 2000)
     }, [])
 
-    const VideoViewWrapper = (isFullScreenOn: boolean) => {
-        if (isFullScreenOn) {
-            return "absolute";
+    const componentElementsStyle = { 
+        '.video': { 
+            transform: 'scaleX(-1)' 
+        }, 
+        '.video--fullscreen': { 
+            width: '100vw', 
+            height: '100vh', 
+            overflowY: 'hidden'
+        }, 
+        '.icon-button--default': {
+            padding: "10px",
+            background: "transparent",
+            position: "absolute",
+            right: "0",
+            bottom: "0",
+            borderRadius: "0",
+            border: "1px solid transparent"
+        },
+        '.icon-button--hover': {
+            background: 'white',
+            border: '1px solid black'
         }
-
-        return "relative";
     }
 
     return (
         <Box 
             test-id="video-view-wrapper" 
-            sx={{ '.video': { transform: 'scaleX(-1)' }, '.video--fullscreen': { width: '100vw', height: '100vh', overflowY: 'hidden'}, '.icon-button--on': {background: 'white', border: '1px solid black'}}} 
-            pos={VideoViewWrapper(isFullScreenOn)} 
+            sx={componentElementsStyle} 
+            pos={isFullScreen ? "fixed" : "relative"} 
             bg="black" 
             top="0" 
             right="0" 
-            zIndex="1">
+            zIndex="1"
+            onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}>
             {/* eslint-disable-next-line react/no-unknown-property */}
-            <video className={`video ${isFullScreenOn && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted onMouseMove={() => setVideoHoverStatus(true)} onMouseOut={() => setVideoHoverStatus(false)}/>
+            <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
             <IconButton 
                 aria-label="Full screen" 
-                p="10px" 
                 size="md"
-                bg="transparent" 
-                pos="absolute" 
-                right="0" 
-                bottom="0" 
-                borderRadius="0"
-                border="1px solid transparent"
-                className={`${videoIsHovered && "icon-button--on"}`}
-                _hover={{bg: 'white', border: '1px solid black'}}
+                className={`icon-button--default ${isHoveredOnVideo && "icon-button--hover"}`}
+                _hover={componentElementsStyle[".icon-button--hover"]}
                 ref={fullScreenButton}
-                onClick={() => setFullScreenStatus(!isFullScreenOn)}
-                icon={isFullScreenOn ? <FullScreenExit fill="black" /> : <FullScreen fill="black" />}/>
+                onClick={() => setIsFullScreen(!isFullScreen)}
+                icon={isFullScreen ? <FullScreenExit fill="black" /> : <FullScreen fill="black" />}/>
         </Box>
     );
 };
