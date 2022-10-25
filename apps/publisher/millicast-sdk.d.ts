@@ -25,7 +25,7 @@ declare namespace millicast {
      * - An array specifying the URI of the header extension, as described in RFC 5285.
      */
     headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
-  };
+  }
 
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
