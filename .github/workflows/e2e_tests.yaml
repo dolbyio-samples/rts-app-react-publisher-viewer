@@ -25,9 +25,9 @@ jobs:
         run: |
           yarn bdd-test
           yarn bdd-test-report
-      - uses: actions/upload-artifact@v2
-        if: always()
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-        name: test-artifacts
-        path: ./tests/bdd-atf/reports
-        retention-days: 2
+          name: test-artifacts
+          path: ./tests/bdd-atf/reports/
+          retention-days: 2
