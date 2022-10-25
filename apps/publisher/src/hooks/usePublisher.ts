@@ -3,6 +3,41 @@ import { Director, Publish, Event } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
+export type streamStats = {
+    audio: {
+      inbounds: [];
+      outbounds: {
+        bitrate: number;
+        id: string;
+        mid: string;
+        mimeType: string;
+        timestamp: number;
+        totalBytesSent: number;
+      }[]
+    },
+    availableOutgoingBitrate: number;
+    candidateType: string;
+    currentRoundTripTime: number;
+    raw: {
+      size: number;
+    },
+    totalRoundTripTime: number;
+    video: {
+      inbounds: [];
+      outbounds: {
+        bitrate: number;
+        frameHeight: number;
+        frameWidth: number;
+        framesPerSecond: number;
+        id: string;
+        mid: string;
+        mimeType: string;
+        qualityLimitationReason: string;
+        timestamp: number;
+        totalBytesSent: number;
+      }[]
+    },
+  }
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
@@ -10,7 +45,7 @@ export interface Publisher {
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
-    stats: any;
+    stats: streamStats | undefined;
 }
 
 export interface BroadcastOptions {
@@ -24,7 +59,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
-    const [stats, setStats] = useState({})
+    const [stats, setStats] = useState<streamStats>()
 
     const publisher = useRef<Publish>();
 
@@ -65,6 +100,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     const stopStreaming = async () => {
         await publisher.current?.stop();
         setPublisherState("ready")
+        setStats(undefined)
     }
 
     const updateStreaming = (stream: MediaStream) => {

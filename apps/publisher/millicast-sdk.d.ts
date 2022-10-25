@@ -42,6 +42,41 @@ declare namespace millicast {
     token: string;
     streamName: string;
   }
+export type streamStats = {
+    audio: {
+      inbounds: [];
+      outbounds: {
+        bitrate: number;
+        id: string;
+        mid: string;
+        mimeType: string;
+        timestamp: number;
+        totalBytesSent: number;
+      }[]
+    },
+    availableOutgoingBitrate: number;
+    candidateType: string;
+    currentRoundTripTime: number;
+    raw: {
+      size: number;
+    },
+    totalRoundTripTime: number;
+    video: {
+      inbounds: [];
+      outbounds: {
+        bitrate: number;
+        frameHeight: number;
+        frameWidth: number;
+        framesPerSecond: number;
+        id: string;
+        mid: string;
+        mimeType: string;
+        qualityLimitationReason: string;
+        timestamp: number;
+        totalBytesSent: number;
+      }[]
+    },
+  }
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
@@ -60,7 +95,7 @@ declare namespace millicast {
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
     initStats: () => void;
-    on: (event: string, callBackFunction: (stats: any) => void) => void;
+    on: (event: string, callBackFunction: (stats: streamStats) => void) => void;
 
     /**
      * Get sender tracks
