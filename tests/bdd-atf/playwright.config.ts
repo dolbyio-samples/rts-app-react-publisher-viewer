@@ -29,14 +29,14 @@ export const launchOptionsFirefox: LaunchOptions = {
   },
 };
 
-export const contextOptions: BrowserContextOptions = {};
+export const browserContextOptions: BrowserContextOptions = {};
 
 export const options: PlaywrightOptions = {
   browserName: (process.env.BROWSER_NAME as BrowserName) || "chrome",
   headless: process.env.HEADLESS?.toLowerCase() === "true" || false,
-  viewport: null,
   timeout: 60 * 1000,
-  video: "on",
+  viewport: null,
+  video: "retain-on-failure",
   screenshot: "only-on-failure",
   trace: "retain-on-failure",
   baseURL: "http://localhost:3000",
@@ -48,5 +48,5 @@ export const options: PlaywrightOptions = {
     chrome: launchOptionsChrome,
     firefox: launchOptionsFirefox,
   },
-  contextOptions,
+  contextOptions: browserContextOptions,
 };

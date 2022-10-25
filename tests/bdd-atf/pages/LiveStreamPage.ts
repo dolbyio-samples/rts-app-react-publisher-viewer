@@ -2,15 +2,14 @@
 import { expect } from "@playwright/test";
 import { Page } from "playwright";
 
+import CommonPage from "./CommonPage";
 import LiveStreamPageLocators from "./LiveStreamPageLocators";
 
-export class LiveStreamPage {
-  readonly page: Page;
-
+export class LiveStreamPage extends CommonPage {
   readonly locators: LiveStreamPageLocators;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.locators = new LiveStreamPageLocators(page);
   }
 

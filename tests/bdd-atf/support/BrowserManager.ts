@@ -81,6 +81,7 @@ export class BrowserManager {
     if (!contextOptions?.recordVideo && this.options.video !== "off") {
       contextOptions.recordVideo = {
         dir: `./reports/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
+        size: { width: 1280, height: 720 },
       };
     }
     return contextOptions;

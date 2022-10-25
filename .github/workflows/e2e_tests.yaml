@@ -1,0 +1,33 @@
+name: E2E_TESTS
+on: [pull_request]
+env:
+  prod-dist: 'product-distribution'
+jobs:
+  e2e_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: 
+        # TODO: enable os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Setup Nodejs 16.x then Build
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - name: Deploy the App
+        run: |
+          yarn --frozen-lockfile
+          yarn deploy-test-setup
+      - name: Run tests
+        run: |
+          yarn bdd-test
+          yarn bdd-test-report
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+        name: test-artifacts
+        path: ./tests/bdd-atf/reports
+        retention-days: 2

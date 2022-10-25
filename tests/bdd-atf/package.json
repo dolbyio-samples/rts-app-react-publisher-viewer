@@ -5,17 +5,20 @@
   "scripts": {
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "cleanup": "rimraf reports/*",
+    "deploy-setup": "./scripts/deploy.sh",
     "test": "yarn cleanup && cucumber-js --config cucumber.ts",
-    "test:smoke": "cucumber-js --config cucumber.ts --tags @smoke",
+    "test:smoke": "yarn cleanup && cucumber-js --config cucumber.ts --tags @smoke",
+    "test:only": "yarn cleanup && cucumber-js --config cucumber.ts --tags @only",
     "cucumber": "cucumber-js ./features/**/*.feature --require-module ts-node/register --require ./support/**/*.ts --require ./steps/**/**/*.ts",
     "report": "ts-node ./reporter/cucumber-report.ts"
   },
   "dependencies": {
     "@cucumber/cucumber": "^8.7.0",
+    "@playwright/test": "^1.27.1",
+    "clipboardy": "^2.3.0",
     "cucumber-html-reporter": "^5.5.0",
     "lodash.clonedeep": "^4.5.0",
-    "playwright": "^1.27.1",
-    "@playwright/test": "^1.27.1"
+    "playwright": "^1.27.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",

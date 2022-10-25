@@ -16,6 +16,21 @@ When("the publisher starts live event", async () => {
   await setupPage.goLive();
 });
 
+When("the publisher copy the viewer link", async () => {
+  await setupPage.copyViewerLink();
+});
+
 Then("the publisher should be redirected to setup page", async () => {
   await setupPage.waitForPageLoad();
+});
+
+Then(
+  "the copy link button text should be changed to {string}",
+  async (text) => {
+    await setupPage.verifyCopyLinkButtonText(text);
+  }
+);
+
+Then("the viewer link should be correct", async () => {
+  await setupPage.verifyViewerLink();
 });
