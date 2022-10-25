@@ -4,7 +4,7 @@ import type { streamStats } from '../../hooks/usePublisher';
 import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 
 type StatisticInfo = {
-    stats: streamStats;
+    stats?: streamStats;
 }
 
 const StatisticInfo = ({stats}: StatisticInfo) => {

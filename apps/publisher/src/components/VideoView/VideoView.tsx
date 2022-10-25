@@ -6,10 +6,11 @@ import FullScreenExit from "../Icons/FullScreenExit";
 import Info from "../Icons/Info";
 
 import StatisticInfo from '../StatisticInfo/StatisticInfo';
+import type { streamStats } from '../../hooks/usePublisher';
 
 type VideoViewProps = {
     mediaStream?: MediaStream;
-    stats: any;
+    stats?: streamStats;
 }
 
 const VideoView = ({mediaStream, stats}: VideoViewProps) => {

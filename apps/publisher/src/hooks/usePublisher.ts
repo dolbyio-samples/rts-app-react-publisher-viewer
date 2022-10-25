@@ -45,7 +45,7 @@ export interface Publisher {
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
-    stats: streamStats | undefined;
+    stats?: streamStats;
 }
 
 export interface BroadcastOptions {
@@ -88,8 +88,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
             publisher.current.webRTCPeer.initStats()
 
             publisher.current.webRTCPeer.on('stats', (stats) => {
-                console.log('Stats from event: ', stats)
                 setStats(stats);
+                console.log('Stats from event: ', stats)
              })
         } catch (e) {
             setPublisherState("ready");
