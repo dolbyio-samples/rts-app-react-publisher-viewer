@@ -26,7 +26,7 @@ Feature: Publisher Real Time Stream Feature
         Given a publisher is on the setup page
         When the publisher copy the viewer link
         Then the copy link button text should be changed to 'Copied!'
-        And the viewer link should be correct
+        #And the viewer link should be correct
         And the copy link button text should be changed to 'Copy link'
 
     @regression
@@ -36,5 +36,5 @@ Feature: Publisher Real Time Stream Feature
         Then the publisher should be on live stream page
         When the publisher copy the viewer link
         Then the copy link button text should be changed to 'Copied!'
-        And the viewer link should be correct
+        #And the viewer link should be correct
         And the copy link button text should be changed to 'Copy link'

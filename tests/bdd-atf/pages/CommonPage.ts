@@ -30,6 +30,6 @@ export default class CommonPage {
 
   async verifyViewerLink() {
     console.log(`Common:: Verify viewer link`);
-    await expect(await clipboard.read()).toEqual(this.expectedViewerLink);
+    expect(await clipboard.read()).toEqual(this.expectedViewerLink);
   }
 }
