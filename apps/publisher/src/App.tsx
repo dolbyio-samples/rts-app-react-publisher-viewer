@@ -37,14 +37,14 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
-  const [enableSimulcast, setEnableSimulcast] = useState(false);
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const { startStreaming,
     stopStreaming,
     updateStreaming,
     codec,
     codecList,
-    onSelectCodec,
+    updateCodec,
     publisherState,
     viewerCount,
     linkText
@@ -183,7 +183,7 @@ function App() {
                             test-id="codecSelect"
                             placeholder="Select Codec"
                             defaultValue={codec || codecList[0]}
-                            onChange={(e) => onSelectCodec(e.target.value)}
+                            onChange={(e) => updateCodec(e.target.value)}
                           >
                             {codecList.map((codec) => {
                               return (
@@ -196,7 +196,7 @@ function App() {
                         }
                       </HStack>
                       <Switch test-id="simulcastSwitch"
-                        onChange={() => setEnableSimulcast(!enableSimulcast)}
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         disabled={publisherState !== "ready"}
                       >
                         Simulcast
@@ -216,7 +216,7 @@ function App() {
                       {
                         mediaStream,
                         events: ['viewercount'],
-                        simulcast: enableSimulcast,
+                        isSimulcastEnabled: isSimulcastEnabled,
                         codec: codec
                       });
                   }

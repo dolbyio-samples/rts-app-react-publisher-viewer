@@ -1,10 +1,36 @@
 declare namespace millicast {
   type Event = 'active' | 'inactive' | 'viewercount';
 
+  type CapabilityKind = 'audio' | 'video';
+
+  interface Capabilities {
+    codecs: Array<CodecInfo>;
+    /**
+     * - Audio or video codec name.
+     */
+    codec: string;
+    /**
+     * - Audio or video codec mime type.
+     */
+    mimeType: string;
+    /**
+     * - In case of SVC support, a list of scalability modes supported.
+     */
+    scalabilityModes?: Array<string>;
+    /**
+     * - Only for audio, the number of audio channels supported.
+     */
+    channels?: number;
+    /**
+     * - An array specifying the URI of the header extension, as described in RFC 5285.
+     */
+    headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
+  };
+
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
     events: Event[];
-    simulcast: boolean;
+    isSimulcastEnabled: boolean;
     codec: string
   }
 
@@ -53,6 +79,8 @@ declare namespace millicast {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
 
+
+
   /**
    * @class PeerConnection
    * @extends EventEmitter
@@ -80,29 +108,7 @@ declare namespace millicast {
      */
     updateBitrate(bitrate?: number): Promise<void>;
 
-    static getCapabilities(kind: "audio" | "video"): {
-      codecs: Array<CodecInfo>;
-      /**
-       * - Audio or video codec name.
-       */
-      codec: string;
-      /**
-       * - Audio or video codec mime type.
-       */
-      mimeType: string;
-      /**
-       * - In case of SVC support, a list of scalability modes supported.
-       */
-      scalabilityModes?: Array<string>;
-      /**
-       * - Only for audio, the number of audio channels supported.
-       */
-      channels?: number;
-      /**
-       * - An array specifying the URI of the header extension, as described in RFC 5285.
-       */
-      headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
-    };
+    static getCapabilities(kind: CapabilityKind): Capabilities;
   }
 
   type LogLevel = {
