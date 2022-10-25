@@ -10,7 +10,7 @@ type StatisticInfo = {
 const StatisticInfo = ({stats}: StatisticInfo) => {
 
     return (
-        <VStack minW="350px" pos="absolute" top="0" left="0" p="10px" bg="rgba(0,0,0,0.6)" color="white">
+        <VStack test-id='statisticInfo' minW="350px" pos="absolute" top="0" left="0" p="10px" bg="rgba(0,0,0,0.6)" color="white">
             {
                 stats ? 
                 <>
