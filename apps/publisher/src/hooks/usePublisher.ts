@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, Publish, Event, VideoCodec, Logger } from '@millicast/sdk';
+import { Director, Publish, Event, PeerConnection } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
@@ -7,9 +7,9 @@ export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;
     updateStreaming: (mediaStream: MediaStream) => void;
-    codec: VideoCodec;
-    codecList: VideoCodec[],
-    onSelectCodec: (codec: VideoCodec) => void;
+    codec: string;
+    codecList: string[],
+    onSelectCodec: (codec: string) => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
@@ -21,28 +21,35 @@ export interface BroadcastOptions {
     // will not produce any results. 
     events: Event[],
     simulcast: boolean,
-    codec: VideoCodec
+    codec: string
 }
 
 const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
-    const [codec, setCodec] = useState<VideoCodec>("vp8")
+    const [codec, setCodec] = useState<string>("")
+    const [codecList, setCodecList] = useState<string[]>([]);
     const publisher = useRef<Publish>();
 
     useEffect(() => {
-        if (!token || !streamName) return; 
+        if (!token || !streamName) return;
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator, true);
         return () => { stopStreaming() };
 
     }, [token, streamName]);
 
+    useEffect(() => {
+        const capabilities = PeerConnection.getCapabilities('video');
+        const supportedCodecs = capabilities.codecs.map(item => item.codec).filter(item => item.toLowerCase() !== "av1")
+        setCodecList(supportedCodecs);
+        setCodec(supportedCodecs[0]);
+    }, []);
+
     const startStreaming = async (broadcastOptions: BroadcastOptions) => {
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
-
             setPublisherState("connecting");
             await publisher.current.connect(broadcastOptions);
 
@@ -75,10 +82,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         }
     }
 
-    const codecList: VideoCodec[] = ['vp8', 'vp9', 'h264'];
-
-    const onSelectCodec = (codecValue: VideoCodec) => {
-        if (publisherState !== 'ready' && !codecList.includes(codecValue)) return;
+    const onSelectCodec = (codecValue: string) => {
+        if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
         setCodec(codecValue);
     }
 

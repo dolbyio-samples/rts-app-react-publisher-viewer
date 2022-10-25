@@ -1,13 +1,16 @@
 declare namespace millicast {
   type Event = 'active' | 'inactive' | 'viewercount';
 
-  type VideoCodec = "vp8" | "vp9" | "h264";
-
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
     events: Event[];
     simulcast: boolean;
-    codec: VideoCodec
+    codec: string
+  }
+
+  interface CodecInfo {
+    codec: string;
+    mimetype: string;
   }
 
   interface BroadcastEvent {
@@ -76,6 +79,30 @@ declare namespace millicast {
      * @returns {Promise<void>} Promise object which resolves when bitrate was successfully updated.
      */
     updateBitrate(bitrate?: number): Promise<void>;
+
+    static getCapabilities(kind: "audio" | "video"): {
+      codecs: Array<CodecInfo>;
+      /**
+       * - Audio or video codec name.
+       */
+      codec: string;
+      /**
+       * - Audio or video codec mime type.
+       */
+      mimeType: string;
+      /**
+       * - In case of SVC support, a list of scalability modes supported.
+       */
+      scalabilityModes?: Array<string>;
+      /**
+       * - Only for audio, the number of audio channels supported.
+       */
+      channels?: number;
+      /**
+       * - An array specifying the URI of the header extension, as described in RFC 5285.
+       */
+      headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
+    };
   }
 
   type LogLevel = {

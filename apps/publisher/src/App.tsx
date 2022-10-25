@@ -31,8 +31,6 @@ import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
-import { VideoCodec } from "@millicast/sdk";
-
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -185,7 +183,7 @@ function App() {
                             test-id="codecSelect"
                             placeholder="Select Codec"
                             defaultValue={codec || codecList[0]}
-                            onChange={(e) => onSelectCodec(e.target.value as VideoCodec)}
+                            onChange={(e) => onSelectCodec(e.target.value)}
                           >
                             {codecList.map((codec) => {
                               return (
