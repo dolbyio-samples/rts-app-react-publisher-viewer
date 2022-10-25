@@ -1,9 +1,13 @@
 declare namespace millicast {
   type Event = 'active' | 'inactive' | 'viewercount';
 
+  type VideoCodec = "vp8" | "vp9" | "h264";
+
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
     events: Event[];
+    simulcast: boolean;
+    codec: VideoCodec
   }
 
   interface BroadcastEvent {
