@@ -47,6 +47,12 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
             });
 
             setPublisherState("streaming")
+
+            publisher.current.webRTCPeer.initStats()
+
+            // publisher.current.webRTCPeer.on('stats', (stats) => {
+            //     console.log('Stats from event: ', stats)
+            //  })
         } catch (e) {
             setPublisherState("ready");
             console.error(e);

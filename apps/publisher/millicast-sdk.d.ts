@@ -59,6 +59,7 @@ declare namespace millicast {
      * @param {MediaStreamTrack} mediaStreamTrack - New audio or video track to replace the current one.
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
+    initStats: () => void;
 
     /**
      * Get sender tracks
