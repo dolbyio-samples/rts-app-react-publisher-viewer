@@ -35,6 +35,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     }, [token, streamName]);
 
     const startStreaming = async (broadcastOptions: BroadcastOptions) => {
+
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
 
@@ -47,12 +48,11 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
             });
 
             setPublisherState("streaming")
-
             publisher.current.webRTCPeer.initStats()
 
-            // publisher.current.webRTCPeer.on('stats', (stats) => {
-            //     console.log('Stats from event: ', stats)
-            //  })
+            publisher.current.webRTCPeer.on('stats', (stats) => {
+                console.log('Stats from event: ', stats)
+             })
         } catch (e) {
             setPublisherState("ready");
             console.error(e);

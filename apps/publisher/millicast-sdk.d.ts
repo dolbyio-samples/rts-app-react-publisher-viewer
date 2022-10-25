@@ -60,6 +60,7 @@ declare namespace millicast {
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
     initStats: () => void;
+    on: (event: string, callBackFunction: (stats: any) => void) => void;
 
     /**
      * Get sender tracks
