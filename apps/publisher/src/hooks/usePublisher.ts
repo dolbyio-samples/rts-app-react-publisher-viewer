@@ -10,6 +10,7 @@ export interface Publisher {
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
+    stats: any;
 }
 
 export interface BroadcastOptions {
@@ -23,6 +24,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
+    const [stats, setStats] = useState({})
 
     const publisher = useRef<Publish>();
 
@@ -52,6 +54,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
             publisher.current.webRTCPeer.on('stats', (stats) => {
                 console.log('Stats from event: ', stats)
+                setStats(stats);
              })
         } catch (e) {
             setPublisherState("ready");
@@ -85,7 +88,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         updateStreaming,
         publisherState,
         viewerCount,
-        linkText
+        linkText,
+        stats
     };
 };
 

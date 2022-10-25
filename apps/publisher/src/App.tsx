@@ -31,14 +31,21 @@ import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
 
-
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
 
-  const { startStreaming, stopStreaming, updateStreaming, publisherState,viewerCount, linkText } = usePublisher(
+  const { 
+    startStreaming, 
+    stopStreaming, 
+    updateStreaming, 
+    publisherState,
+    viewerCount, 
+    linkText,
+    stats
+  } = usePublisher(
     accessToken,
     streamName,
     streamId,
@@ -103,7 +110,7 @@ function App() {
         <Center>
           <VStack>
             <Box bg="black">
-              <VideoView mediaStream={mediaStream}/>
+              <VideoView mediaStream={mediaStream} stats={stats}/>
             </Box>
             <HStack>
               <IconButton size='lg' p='4px'
