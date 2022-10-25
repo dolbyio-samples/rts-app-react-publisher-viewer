@@ -7,6 +7,7 @@ installDependencies(){
   yarn install
   yarn global add pm2
   yarn workspace bdd-atf install
+  sudo apt-get install -y xsel
   #npx playwright install --force chrome
 }
 

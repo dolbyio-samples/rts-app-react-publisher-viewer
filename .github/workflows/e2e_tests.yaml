@@ -23,8 +23,7 @@ jobs:
           yarn deploy-test-setup
       - name: Run tests
         run: |
-          yarn bdd-test
-          yarn bdd-test-report
+          yarn bdd-test || yarn bdd-test-report
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         if: always()
