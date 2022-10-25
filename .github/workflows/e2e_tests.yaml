@@ -27,6 +27,7 @@ jobs:
           yarn bdd-test-report
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: test-artifacts
           path: ./tests/bdd-atf/reports/
