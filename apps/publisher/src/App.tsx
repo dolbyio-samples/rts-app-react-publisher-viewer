@@ -18,7 +18,7 @@ import {
   Switch,
   Text,
   VStack,
-  Stack
+  HStack
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
@@ -142,7 +142,7 @@ function App() {
                   <PopoverCloseButton />
                   <PopoverBody>
                     <VStack>
-                      <Stack width='100%'>
+                      <HStack width='100%'>
                         <Text> Camera: </Text>
                         <Spacer />
                         { cameraList.length && (
@@ -155,7 +155,7 @@ function App() {
                             onSelectDeviceId={onSelectCameraId}
                           />
                         )}
-                      </Stack>
+                      </HStack>
                       <HStack width='100%'>
                         <Text> Microphone: </Text>
                         <Spacer />
