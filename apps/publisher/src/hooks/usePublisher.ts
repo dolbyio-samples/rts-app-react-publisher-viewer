@@ -88,7 +88,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
             publisher.current.webRTCPeer.initStats()
 
             publisher.current.webRTCPeer.on('stats', (stats) => {
-                setStats(stats);
+                setStatistic(statistic);
                 console.log('Stats from event: ', stats)
              })
         } catch (e) {
@@ -125,7 +125,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         publisherState,
         viewerCount,
         linkText,
-        stats
+        statistic
     };
 };
 
