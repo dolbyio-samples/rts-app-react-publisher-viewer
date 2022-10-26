@@ -59,7 +59,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
-    const [stats, setStats] = useState<streamStats>()
+    const [statistic, setStatistic] = useState<streamStats>()
 
     const publisher = useRef<Publish>();
 
