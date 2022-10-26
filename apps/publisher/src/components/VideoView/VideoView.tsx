@@ -66,7 +66,7 @@ const VideoView = ({mediaStream, statistic}: VideoViewProps) => {
             {/* eslint-disable-next-line react/no-unknown-property */}
             <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}/>
             {showStatisticInfo && <StatisticInfo statistic={statistic} />}
-            <HStack pos="absolute" bottom="0" right="0" spacing="0">
+            <HStack pos="absolute" bottom={isFullScreen ? ["120px", "120px", 0] : 0} right="0" spacing="0">
                 <IconButton 
                     aria-label="Full screen" 
                     size="md"
