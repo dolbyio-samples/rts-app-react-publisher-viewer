@@ -20,12 +20,11 @@ export interface BroadcastOptions {
     // TODO The app only supports the `viewercount` event right now, and none others. Subsribing to other events
     // will not produce any results. 
     events: Event[],
-    isSimulcastEnabled: boolean,
+    simulcast: boolean,
     codec: string
 }
 
 const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
-
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
     const [codec, setCodec] = useState<string>("")

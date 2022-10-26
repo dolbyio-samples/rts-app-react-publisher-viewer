@@ -216,7 +216,7 @@ function App() {
                       {
                         mediaStream,
                         events: ['viewercount'],
-                        isSimulcastEnabled: isSimulcastEnabled,
+                        simulcast: isSimulcastEnabled,
                         codec: codec
                       });
                   }
