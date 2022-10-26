@@ -3,7 +3,7 @@ import type { streamStats } from '../../hooks/usePublisher';
 
 import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 
-type StatisticInfo = {
+type StatisticInfoProps = {
     stats?: streamStats;
 }
 
