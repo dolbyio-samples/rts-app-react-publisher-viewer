@@ -18,6 +18,7 @@ import {
   Switch,
   Text,
   VStack,
+  Stack
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
@@ -122,7 +123,7 @@ function App() {
                 icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
                 onClick={() => { toggleVideo() }} />
               {/* Popover */}
-              <Popover>
+              <Popover placement="top">
                 <PopoverTrigger>
                   <IconButton
                     size='lg'
@@ -141,7 +142,7 @@ function App() {
                   <PopoverCloseButton />
                   <PopoverBody>
                     <VStack>
-                      <HStack width='100%'>
+                      <Stack width='100%'>
                         <Text> Camera: </Text>
                         <Spacer />
                         { cameraList.length && (
@@ -154,7 +155,7 @@ function App() {
                             onSelectDeviceId={onSelectCameraId}
                           />
                         )}
-                      </HStack>
+                      </Stack>
                       <HStack width='100%'>
                         <Text> Microphone: </Text>
                         <Spacer />
