@@ -1,43 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Director, Publish, Event } from '@millicast/sdk';
 
+import type { streamStats } from '@millicast/sdk';
+
 export type PublisherState = "ready" | "connecting" | "streaming";
 
-export type streamStats = {
-    audio: {
-      inbounds: [];
-      outbounds: {
-        bitrate: number;
-        id: string;
-        mid: string;
-        mimeType: string;
-        timestamp: number;
-        totalBytesSent: number;
-      }[]
-    },
-    availableOutgoingBitrate: number;
-    candidateType: string;
-    currentRoundTripTime: number;
-    raw: {
-      size: number;
-    },
-    totalRoundTripTime: number;
-    video: {
-      inbounds: [];
-      outbounds: {
-        bitrate: number;
-        frameHeight: number;
-        frameWidth: number;
-        framesPerSecond: number;
-        id: string;
-        mid: string;
-        mimeType: string;
-        qualityLimitationReason: string;
-        timestamp: number;
-        totalBytesSent: number;
-      }[]
-    },
-  }
 export interface Publisher {
     startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
     stopStreaming: () => void;

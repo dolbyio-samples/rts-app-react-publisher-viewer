@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import type { streamStats } from '../../hooks/usePublisher';
+import type { streamStats } from '@millicast/sdk';
 
 import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 

@@ -6,7 +6,7 @@ import FullScreenExit from "../Icons/FullScreenExit";
 import Info from "../Icons/Info";
 
 import StatisticInfo from '../StatisticInfo/StatisticInfo';
-import type { streamStats } from '../../hooks/usePublisher';
+import type { streamStats } from '@millicast/sdk';
 
 type VideoViewProps = {
     mediaStream?: MediaStream;
