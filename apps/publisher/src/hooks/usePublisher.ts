@@ -45,7 +45,7 @@ export interface Publisher {
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
-    stats?: streamStats;
+    statistic?: streamStats;
 }
 
 export interface BroadcastOptions {
@@ -87,9 +87,9 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
             setPublisherState("streaming")
             publisher.current.webRTCPeer.initStats()
 
-            publisher.current.webRTCPeer.on('stats', (stats) => {
+            publisher.current.webRTCPeer.on('stats', (statistic) => {
                 setStatistic(statistic);
-                console.log('Stats from event: ', stats)
+                console.log('Stats from event: ', statistic)
              })
         } catch (e) {
             setPublisherState("ready");
@@ -100,7 +100,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     const stopStreaming = async () => {
         await publisher.current?.stop();
         setPublisherState("ready")
-        setStats(undefined)
+        setStatistic(undefined)
     }
 
     const updateStreaming = (stream: MediaStream) => {

@@ -10,10 +10,10 @@ import type { streamStats } from '../../hooks/usePublisher';
 
 type VideoViewProps = {
     mediaStream?: MediaStream;
-    stats?: streamStats;
+    statistic?: streamStats;
 }
 
-const VideoView = ({mediaStream, stats}: VideoViewProps) => {
+const VideoView = ({mediaStream, statistic}: VideoViewProps) => {
     const video = useRef<HTMLVideoElement>(null);
     const fullScreenButton = useRef<HTMLButtonElement>(null);
 
@@ -60,7 +60,7 @@ const VideoView = ({mediaStream, stats}: VideoViewProps) => {
             >
             {/* eslint-disable-next-line react/no-unknown-property */}
             <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}/>
-            {showStatisticInfo && <StatisticInfo stats={stats} />}
+            {showStatisticInfo && <StatisticInfo statistic={statistic} />}
             <HStack pos="absolute" bottom="0" right="0">
             <IconButton 
                 aria-label="Full screen" 
