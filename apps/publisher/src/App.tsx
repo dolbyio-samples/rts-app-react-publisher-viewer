@@ -134,7 +134,7 @@ function App() {
                     icon={<IconSettings fill={purple400} />}
                   />
                 </PopoverTrigger>
-                <PopoverContent minWidth='480'>
+                <PopoverContent minWidth='350'>
                   <PopoverHeader pt={4} fontWeight='bold' border='0'>
                     Manage Your Devices
                   </PopoverHeader>
