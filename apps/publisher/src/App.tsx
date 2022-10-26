@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Select,
   Spacer,
   Switch,
   Text,
@@ -36,11 +37,15 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const { 
     startStreaming, 
     stopStreaming, 
     updateStreaming, 
+    codec,
+    codecList,
+    updateCodec,
     publisherState,
     viewerCount, 
     linkText,
@@ -129,7 +134,7 @@ function App() {
                 icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
                 onClick={() => { toggleVideo() }} />
               {/* Popover */}
-              <Popover>
+              <Popover placement="top">
                 <PopoverTrigger>
                   <IconButton
                     size='lg'
@@ -140,7 +145,7 @@ function App() {
                     icon={<IconSettings fill={purple400} />}
                   />
                 </PopoverTrigger>
-                <PopoverContent minWidth='480'>
+                <PopoverContent minWidth='360'>
                   <PopoverHeader pt={4} fontWeight='bold' border='0'>
                     Manage Your Devices
                   </PopoverHeader>
@@ -176,7 +181,34 @@ function App() {
                           />
                         )}
                       </HStack>
+                      <HStack width='100%'>
+                        <Text> Codec </Text>
+                        {
+                          <Select
+                            disabled={publisherState !== "ready" || codecList.length === 0}
+                            test-id="codecSelect"
+                            placeholder="Select Codec"
+                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
+                            onChange={(e) => updateCodec(e.target.value)}
+                          >
+                            {codecList.map((codec) => {
+                              return (
+                                <option value={codec} key={codec}>
+                                  {codec}
+                                </option>
+                              );
+                            })}
+                          </Select>
+                        }
+                      </HStack>
+                      <Switch test-id="simulcastSwitch"
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        disabled={publisherState !== "ready"}
+                      >
+                        Simulcast
+                      </Switch>
                     </VStack>
+
                   </PopoverBody>
                 </PopoverContent>
               </Popover>
@@ -186,7 +218,13 @@ function App() {
                 isLoading={publisherState == "connecting"}
                 onClick={() => {
                   if (publisherState == "ready" && mediaStream) {
-                    startStreaming({ mediaStream, events: ['viewercount'] });
+                    startStreaming(
+                      {
+                        mediaStream,
+                        events: ['viewercount'],
+                        simulcast: isSimulcastEnabled,
+                        codec: codec
+                      });
                   }
                 }}
                 test-id="startStreamingButton"
