@@ -18,7 +18,6 @@ import {
   Switch,
   Text,
   VStack,
-  HStack
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
