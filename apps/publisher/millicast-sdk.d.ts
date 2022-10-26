@@ -42,7 +42,7 @@ declare namespace millicast {
     token: string;
     streamName: string;
   }
-export type streamStats = {
+type streamStats = {
     audio: {
       inbounds: [];
       outbounds: {
