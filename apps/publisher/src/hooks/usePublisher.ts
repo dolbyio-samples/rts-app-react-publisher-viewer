@@ -1,30 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Director, Publish, Event, PeerConnection } from '@millicast/sdk';
+import { Director, Publish, PeerConnection, BroadcastOptions } from '@millicast/sdk';
 
 import type { streamStats } from '@millicast/sdk';
 
 export type PublisherState = "ready" | "connecting" | "streaming";
 
+export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'sourceId'>;
+
+// TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
+// presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
-    startStreaming: (broadcastOptions: BroadcastOptions) => Promise<void>;
+    startStreaming: (options: BroadcastOptions) => void;
     stopStreaming: () => void;
     updateStreaming: (mediaStream: MediaStream) => void;
     codec: string;
     codecList: string[],
     updateCodec: (codec: string) => void;
+    startDisplayStreaming: (options: DisplayStreamingOptions) => void;
+    stopDisplayStreaming: () => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
     statistics?: streamStats;
-}
-
-export interface BroadcastOptions {
-    mediaStream: MediaStream,
-    // TODO The app only supports the `viewercount` event right now, and none others. Subsribing to other events
-    // will not produce any results. 
-    events: Event[],
-    simulcast: boolean,
-    codec: string
 }
 
 const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
@@ -36,12 +33,14 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     const [codecList, setCodecList] = useState<string[]>([]);
 
     const publisher = useRef<Publish>();
+    const displayPublisher = useRef<Publish>();
 
     useEffect(() => {
         if (!token || !streamName) return;
         const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
         publisher.current = new Publish(streamName, tokenGenerator, true);
-        return () => { stopStreaming() };
+        displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+        return () => { stopDisplayStreaming(); stopStreaming(); };
 
     }, [token, streamName]);
 
@@ -53,16 +52,15 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         setCodec(supportedCodecs[0]);
     }, []);
 
-    const startStreaming = async (broadcastOptions: BroadcastOptions) => {
-
+    const startStreaming = async (options: BroadcastOptions) => {
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
             setPublisherState("connecting");
-            await publisher.current.connect(broadcastOptions);
+            await publisher.current.connect(options);
 
             publisher.current.on('broadcastEvent', (event) => {
                 const { name, data } = event;
-                if (broadcastOptions.events.includes(name)) setViewerCount(data.viewercount);
+                if (options.events?.includes(name)) setViewerCount(data.viewercount);
             });
             setPublisherState("streaming")
             publisher.current.webRTCPeer.initStats()
@@ -77,7 +75,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     };
 
     const stopStreaming = async () => {
-        await publisher.current?.stop();
+        publisher.current?.stop();
         setPublisherState("ready")
         setStatistics(undefined)
     }
@@ -99,6 +97,19 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
         setCodec(codecValue);
     }
+    
+    const startDisplayStreaming = async (options: DisplayStreamingOptions) => {
+        if (!displayPublisher.current || displayPublisher.current.isActive()) return;
+        try {
+            await displayPublisher.current.connect(options);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const stopDisplayStreaming = () => {
+        displayPublisher.current?.stop();
+    }
 
     const linkText = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
 
@@ -109,6 +120,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         codec,
         codecList,
         updateCodec,
+        startDisplayStreaming ,
+        stopDisplayStreaming,
         publisherState,
         viewerCount,
         linkText,

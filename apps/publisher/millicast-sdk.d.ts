@@ -29,9 +29,10 @@ declare namespace millicast {
 
   interface BroadcastOptions {
     mediaStream: MediaStream | MediaStreamTrack[];
-    events: Event[];
-    simulcast: boolean;
-    codec: string
+    events?: Event[];
+    sourceId?: string;
+    simulcast?: boolean;
+    codec?: string
   }
 
   interface CodecInfo {
