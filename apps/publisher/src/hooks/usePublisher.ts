@@ -42,7 +42,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
     useEffect(() => {
         const capabilities = PeerConnection.getCapabilities('video');
-        const supportedCodecs = capabilities.codecs.filter(item => item.codec.toLowerCase() !== "av1").map(item => item.codec)
+        const supportedCodecs = capabilities.codecs.filter(item => item.codec.toLowerCase() !== "av1").map(item => item.codec);
+        if (supportedCodecs.length === 0) return;
         setCodecList(supportedCodecs);
         setCodec(supportedCodecs[0]);
     }, []);

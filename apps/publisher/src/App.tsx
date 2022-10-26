@@ -179,10 +179,10 @@ function App() {
                         <Text> Codec </Text>
                         {
                           <Select
-                            disabled={publisherState !== "ready"}
+                            disabled={publisherState !== "ready" || codecList.length === 0}
                             test-id="codecSelect"
                             placeholder="Select Codec"
-                            defaultValue={codec || codecList[0]}
+                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
                             {codecList.map((codec) => {
