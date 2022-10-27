@@ -75,40 +75,45 @@ declare namespace millicast {
     token: string;
     streamName: string;
   }
-type streamStats = {
-    audio: {
-      inbounds: [];
-      outbounds: {
-        bitrate: number;
-        id: string;
-        mid: string;
-        mimeType: string;
-        timestamp: number;
-        totalBytesSent: number;
-      }[]
-    },
+
+  type streamAudioStats = {
+    inbounds: [];
+    outbounds: {
+      bitrate: number;
+      id: string;
+      mid: string;
+      mimeType: string;
+      timestamp: number;
+      totalBytesSent: number;
+    }[]
+  }
+
+  type streamVideoStatus = {
+    inbounds: [];
+    outbounds: {
+      bitrate: number;
+      frameHeight: number;
+      frameWidth: number;
+      framesPerSecond: number;
+      id: string;
+      mid: string;
+      mimeType: string;
+      qualityLimitationReason: string;
+      timestamp: number;
+      totalBytesSent: number;
+    }[]
+  }
+
+  type streamStats = {
+    audio: streamAudioStats,
     availableOutgoingBitrate: number;
     candidateType: string;
     currentRoundTripTime: number;
     raw: {
       size: number;
-    },
+    };
     totalRoundTripTime: number;
-    video: {
-      inbounds: [];
-      outbounds: {
-        bitrate: number;
-        frameHeight: number;
-        frameWidth: number;
-        framesPerSecond: number;
-        id: string;
-        mid: string;
-        mimeType: string;
-        qualityLimitationReason: string;
-        timestamp: number;
-        totalBytesSent: number;
-      }[]
-    },
+    video: streamVideoStatus
   }
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
@@ -130,7 +135,7 @@ type streamStats = {
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
     initStats: () => void;
-    on: (event: string, callBackFunction: (stats: streamStats) => void) => void;
+    on: (event: string, listener: (stats: streamStats) => void) => void;
 
     /**
      * Get sender tracks
