@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
+
 import IconMicrophoneOn from './components/Icons/Microphone';
 import IconMicrophoneOff from './components/Icons/MicrophoneOff';
 import IconCameraOn from "./components/Icons/Camera";
@@ -31,6 +32,7 @@ import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
+import Timer from "./components/Timer/Timer";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -236,7 +238,7 @@ function App() {
                 >
                   Stop Live
                 </Button>
-                <Text> This is a timer </Text>
+                <Timer />
               </>
             )}
             {(publisherState === "ready" || publisherState === "streaming") && (
