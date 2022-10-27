@@ -21,4 +21,3 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn build-pub
-          yarn bdd-test
