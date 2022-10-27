@@ -35,7 +35,7 @@ export const options: PlaywrightOptions = {
   browserName: (process.env.BROWSER_NAME as BrowserName) || "chrome",
   headless: process.env.HEADLESS?.toLowerCase() === "true" || true,
   timeout: 60 * 1000,
-  viewport: null,
+  viewport: { width: 1280, height: 1024 },
   video: "retain-on-failure",
   screenshot: "only-on-failure",
   trace: "retain-on-failure",

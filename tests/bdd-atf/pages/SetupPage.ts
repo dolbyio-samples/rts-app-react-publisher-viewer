@@ -30,7 +30,7 @@ export class SetupPage extends CommonPage {
 
   async goLive() {
     console.log(`SetupPage: Publisher go live`);
-    await delay(500);
+    await delay(1000);
     await this.page.bringToFront();
     await this.locators.goLiveBtn.click();
   }
