@@ -1,5 +1,10 @@
 name: CI-CD
-on: [push]
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+  
 env:
   prod-dist: 'product-distribution'
 jobs:
@@ -21,4 +26,22 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn build-pub
-          yarn bdd-test
+      # - name: Launch for test
+      #   run: |
+      #     yarn deploy-test-setup
+      # - name: Run tests
+      #   run: |
+      #     yarn bdd-test || yarn bdd-test-report
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: test-artifacts
+      #     path: ./tests/bdd-atf/reports/
+      #     retention-days: 2 
+      - name: Deploy to netlify 
+        env:
+          NETLIFY_AUTH_TOKEN : ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          BRANCH_REF : ${{ github.ref }}
+          PR_TITLE : ${{ github.event.pull_request.title }}
+        run: bash deploy.sh
