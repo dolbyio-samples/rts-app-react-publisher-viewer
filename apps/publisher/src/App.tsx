@@ -49,7 +49,7 @@ function App() {
     publisherState,
     viewerCount, 
     linkText,
-    statistic
+    statistics
   } = usePublisher(
     accessToken,
     streamName,
@@ -115,7 +115,7 @@ function App() {
         <Center>
           <VStack>
             <Box bg="black">
-              <VideoView mediaStream={mediaStream} statistic={statistic}/>
+              <VideoView mediaStream={mediaStream} statistics={statistics}/>
             </Box>
             <HStack>
               <IconButton size='lg' p='4px'
