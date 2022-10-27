@@ -61,7 +61,8 @@ After(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   const traceFile = await stopTrace(this);
   await screenshot(this, scenario);
 
-  await this.page.close();
+  await this.viewerPage.close();
+  await this.publisherPage.close();
   await this.context.close();
 
   retainArtifacts(videoFile, traceFile, this, scenario);

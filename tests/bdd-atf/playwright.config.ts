@@ -33,16 +33,17 @@ export const browserContextOptions: BrowserContextOptions = {};
 
 export const options: PlaywrightOptions = {
   browserName: (process.env.BROWSER_NAME as BrowserName) || "chrome",
-  headless: process.env.HEADLESS?.toLowerCase() === "true" || true,
+  headless: process.env.HEADLESS?.toLowerCase() === "true" || false,
   timeout: 60 * 1000,
   viewport: null,
   video: "retain-on-failure",
   screenshot: "only-on-failure",
   trace: "retain-on-failure",
   baseURL: "http://localhost:3000",
-  publisherURL:
-    "https://deploy-preview-26--astounding-lily-fa33fc.netlify.app/",
-  viewerURL: "https://viewer.millicast.com/?streamId=KtpPTK/l9c58zkw",
+  publisherURL: process.env.PUBLISHER_URL || "http://localhost:5173/",
+  viewerURL:
+    process.env.VIEWER_URL ||
+    "https://viewer.millicast.com/?streamId=KtpPTK/l9c58zkw",
   launchOptions: {
     chromium: launchOptionsChromium,
     chrome: launchOptionsChrome,
