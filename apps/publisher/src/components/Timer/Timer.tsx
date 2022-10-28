@@ -14,7 +14,7 @@ const Timer = () => {
             const minute = Math.floor(currentTime / 60 % 60);
             const second = Math.floor(currentTime % 60 % 60 );
 
-            setSessionTime(`${hour === 0 ? '00' : hour.toLocaleString('en-US', {minimumIntegerDigits: 2})}:${minute === 0 ? '00' : minute.toLocaleString('en-US', {minimumIntegerDigits: 2})}:${second === 0 ? '00' : second.toLocaleString('en-US', {minimumIntegerDigits: 2})}`);
+            setSessionTime(`${reformatTime(hour)}:${reformatTime(minute)}:${reformatTime(second)}`);
         }
         
             startTime = Date.now();
@@ -22,6 +22,10 @@ const Timer = () => {
 
             return () => clearInterval(interval);
     }, []);
+
+    const reformatTime = (time: number) => {
+        return time === 0 ? '00' : time.toLocaleString('en-US', {minimumIntegerDigits: 2})
+    }
 
     return (
         <Box test-id="timer" textAlign="center">
