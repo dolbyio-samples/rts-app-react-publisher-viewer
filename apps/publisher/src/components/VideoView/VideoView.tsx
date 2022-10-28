@@ -8,12 +8,13 @@ import Info from "../Icons/Info";
 import StatisticsInfo from '../StatisticsInfo/StatisticsInfo';
 import type { streamStats } from '@millicast/sdk';
 
-type VideoViewProps = {
+export type VideoViewProps = {
+    mirrored?: boolean;
     mediaStream?: MediaStream;
     statistics?: streamStats;
 }
 
-const VideoView = ({mediaStream, statistics}: VideoViewProps) => {
+const VideoView = ({mirrored = true, mediaStream, statistics } : VideoViewProps) => {
     const video = useRef<HTMLVideoElement>(null);
     const fullScreenButton = useRef<HTMLButtonElement>(null);
 
@@ -29,7 +30,7 @@ const VideoView = ({mediaStream, statistics}: VideoViewProps) => {
 
     const componentElementsStyle = { 
         '.video': { 
-            transform: 'scaleX(-1)' 
+            transform: `${ mirrored ? 'scaleX(-1)' : ''}` 
         }, 
         '.video--fullscreen': { 
             width: '100vw', 
