@@ -14,7 +14,7 @@ const Timer = () => {
             const minute = Math.floor(currentTime / 60 % 60);
             const second = Math.floor(currentTime % 60 % 60 );
 
-            setSessionTime(`${reformatTime(hour)}:${reformatTime(minute)}:${reformatTime(second)}`);
+            setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
         }
         
             startTime = Date.now();
@@ -23,7 +23,7 @@ const Timer = () => {
             return () => clearInterval(interval);
     }, []);
 
-    const reformatTime = (time: number) => {
+    const formatTime = (time: number) => {
         return time === 0 ? '00' : time.toLocaleString('en-US', {minimumIntegerDigits: 2})
     }
 
