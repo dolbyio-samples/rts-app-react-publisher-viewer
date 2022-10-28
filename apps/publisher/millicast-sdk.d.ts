@@ -76,22 +76,22 @@ declare namespace millicast {
     streamName: string;
   }
 
-  type streamAudioStats = {
-    inbounds: [];
-    outbounds: {
-      bitrate: number;
-      id: string;
-      mid: string;
-      mimeType: string;
-      timestamp: number;
-      totalBytesSent: number;
-    }[]
+  type streamAudioOutboundsStatus = {
+    bitrate: number;
+    id: string;
+    mid: string;
+    mimeType: string;
+    timestamp: number;
+    totalBytesSent: number;
   }
 
-  type streamVideoStatus = {
+  type streamAudioStats = {
     inbounds: [];
-    outbounds: {
-      bitrate: number;
+    outbounds: streamAudioOutboundsStatus[];
+  }
+
+  type streamVideoOutboundsStatus = {
+    bitrate: number;
       frameHeight: number;
       frameWidth: number;
       framesPerSecond: number;
@@ -101,7 +101,11 @@ declare namespace millicast {
       qualityLimitationReason: string;
       timestamp: number;
       totalBytesSent: number;
-    }[]
+  }
+
+  type streamVideoStatus = {
+    inbounds: [];
+    outbounds: streamVideoOutboundsStatus[];
   }
 
   type streamStats = {
