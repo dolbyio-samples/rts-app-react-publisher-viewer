@@ -6,6 +6,6 @@ if [[ $BRANCH_REF == 'refs/heads/main' ]]
 then
 command="${command}  --prod"
 else
-command="${command}  --alias=$PR_TITLE"
+command="${command}  --alias=DP-$PR_NUM"
 fi
 eval $command

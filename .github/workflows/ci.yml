@@ -42,4 +42,5 @@ jobs:
           NETLIFY_AUTH_TOKEN : ${{ secrets.NETLIFY_AUTH_TOKEN }}
           BRANCH_REF : ${{ github.ref }}
           PR_TITLE : ${{ github.event.pull_request.title }}
+          PR_NUM : ${{ github.event.number }}
         run: bash deploy.sh
