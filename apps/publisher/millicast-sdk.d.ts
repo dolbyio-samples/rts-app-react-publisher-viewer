@@ -75,6 +75,50 @@ declare namespace millicast {
     token: string;
     streamName: string;
   }
+
+  type streamAudioOutboundsStatus = {
+    bitrate: number;
+    id: string;
+    mid: string;
+    mimeType: string;
+    timestamp: number;
+    totalBytesSent: number;
+  }
+
+  type streamAudioStats = {
+    inbounds: [];
+    outbounds: streamAudioOutboundsStatus[];
+  }
+
+  type streamVideoOutboundsStatus = {
+    bitrate: number;
+      frameHeight: number;
+      frameWidth: number;
+      framesPerSecond: number;
+      id: string;
+      mid: string;
+      mimeType: string;
+      qualityLimitationReason: string;
+      timestamp: number;
+      totalBytesSent: number;
+  }
+
+  type streamVideoStatus = {
+    inbounds: [];
+    outbounds: streamVideoOutboundsStatus[];
+  }
+
+  type streamStats = {
+    audio: streamAudioStats,
+    availableOutgoingBitrate: number;
+    candidateType: string;
+    currentRoundTripTime: number;
+    raw: {
+      size: number;
+    };
+    totalRoundTripTime: number;
+    video: streamVideoStatus
+  }
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
@@ -94,6 +138,8 @@ declare namespace millicast {
      * @param {MediaStreamTrack} mediaStreamTrack - New audio or video track to replace the current one.
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
+    initStats: () => void;
+    on: (event: string, listener: (stats: streamStats) => void) => void;
 
     /**
      * Get sender tracks

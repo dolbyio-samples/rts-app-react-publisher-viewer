@@ -41,16 +41,22 @@ function App() {
   const [streamName, setStreamName] = useState("")
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
-  const { startStreaming,
-    stopStreaming,
-    updateStreaming,
+  const { 
+    startStreaming, 
+    stopStreaming, 
+    updateStreaming, 
     codec,
     codecList,
     updateCodec,
     publisherState,
-    viewerCount,
-    linkText
-  } = usePublisher(accessToken, streamName, streamId,);
+    viewerCount, 
+    linkText,
+    statistics
+  } = usePublisher(
+    accessToken,
+    streamName,
+    streamId,
+  );
 
   const {
     cameraList,
@@ -111,7 +117,7 @@ function App() {
         <Center>
           <VStack>
             <Box bg="black">
-              <VideoView mediaStream={mediaStream}/>
+              <VideoView mediaStream={mediaStream} statistics={statistics}/>
             </Box>
             <HStack>
               <IconButton size='lg' p='4px'

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Director, Publish, Event, PeerConnection } from '@millicast/sdk';
 
+import type { streamStats } from '@millicast/sdk';
+
 export type PublisherState = "ready" | "connecting" | "streaming";
 
 export interface Publisher {
@@ -13,6 +15,7 @@ export interface Publisher {
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
+    statistics?: streamStats;
 }
 
 export interface BroadcastOptions {
@@ -27,8 +30,11 @@ export interface BroadcastOptions {
 const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
     const [publisherState, setPublisherState] = useState<PublisherState>("ready");
     const [viewerCount, setViewerCount] = useState(0);
+    const [statistics, setStatistics] = useState<streamStats>()
+
     const [codec, setCodec] = useState<string>("")
     const [codecList, setCodecList] = useState<string[]>([]);
+
     const publisher = useRef<Publish>();
 
     useEffect(() => {
@@ -48,6 +54,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     }, []);
 
     const startStreaming = async (broadcastOptions: BroadcastOptions) => {
+
         if (!publisher.current || publisher.current.isActive() || publisherState !== "ready") return;
         try {
             setPublisherState("connecting");
@@ -58,6 +65,11 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
                 if (broadcastOptions.events.includes(name)) setViewerCount(data.viewercount);
             });
             setPublisherState("streaming")
+            publisher.current.webRTCPeer.initStats()
+
+            publisher.current.webRTCPeer.on('stats', (statistics) => {
+                setStatistics(statistics);
+             })
         } catch (e) {
             setPublisherState("ready");
             console.error(e);
@@ -67,6 +79,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     const stopStreaming = async () => {
         await publisher.current?.stop();
         setPublisherState("ready")
+        setStatistics(undefined)
     }
 
     const updateStreaming = (stream: MediaStream) => {
@@ -98,7 +111,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         updateCodec,
         publisherState,
         viewerCount,
-        linkText
+        linkText,
+        statistics: statistics
     };
 };
 
