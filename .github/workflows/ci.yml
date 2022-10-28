@@ -21,6 +21,10 @@ jobs:
           node-version: 16
           cache: 'yarn'
       - name: Build product
+        env:
+          VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+          VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+          VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
         run: |
           yarn --frozen-lockfile
           yarn build-pub
