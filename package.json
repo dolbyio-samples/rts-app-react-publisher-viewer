@@ -7,7 +7,8 @@
     "preview-pub": "yarn workspace publisher preview",
     "deploy-test-setup": "./tests/bdd-atf/scripts/deploy.sh",
     "bdd-test": "yarn workspace bdd-atf test",
-    "bdd-test-report": "yarn workspace bdd-atf report"
+    "bdd-test-report": "yarn workspace bdd-atf report",
+    "deploy-pub": "yarn workspace publisher deploy"
   },
   "workspaces": [
     "apps/*",
@@ -23,6 +24,7 @@
     "@types/react-dom": "^18.0.6",
     "eslint": "^8.25.0",
     "eslint-plugin-react": "^7.31.10",
+    "netlify-cli": "^12",
     "nx": "^15.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.6.4"

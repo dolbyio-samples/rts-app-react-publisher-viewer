@@ -4,9 +4,7 @@ installDependencies(){
   echo "#################################"
   echo "Install Dependencies"
   echo "#################################"
-  yarn install
   yarn global add pm2
-  yarn workspace bdd-atf install
   sudo apt-get install -y xsel
   #npx playwright install --force chrome
 }
@@ -20,7 +18,7 @@ runApp(){
   pm2 flush ${NAME}
   pm2 flush
   
-  pm2 start npm --name ${NAME} -- run  dev-pub  
+  pm2 start npm --name ${NAME} -- run preview-pub  
 }
 
 verifyServerLogs(){
