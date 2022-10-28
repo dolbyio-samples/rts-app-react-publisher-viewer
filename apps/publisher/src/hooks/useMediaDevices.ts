@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Resolution } from "../components/ResolutionSelect/ResolutionSelect";
 
 type MediaDevices = {
     cameraList: InputDeviceInfo[];
@@ -12,6 +13,7 @@ type MediaDevices = {
     toggleAudio: () => void;
     toggleVideo: () => void;
     mediaStream?: MediaStream;
+    updateVideoResolution: (resolution: Resolution) => void;
 }
 
 const useMediaDevices: () => MediaDevices = () => {
@@ -112,6 +114,23 @@ const useMediaDevices: () => MediaDevices = () => {
         }
     }
 
+    const updateVideoResolution = (resolution: Resolution) => {
+        const videoTracks = mediaStream?.getVideoTracks();
+        if (videoTracks && videoTracks.length) {
+            videoTracks[0].applyConstraints({
+                width: { min: 640, max: 1920 },
+                height: { min: 360, max: 1080 },
+                advanced: [
+                    {
+                        width: resolution.width,
+                        height: resolution.height
+                    },
+                    { aspectRatio: (4 / 3) }
+                ]
+            });
+        }
+    };
+
     return {
         cameraList,
         microphoneList,
@@ -123,7 +142,8 @@ const useMediaDevices: () => MediaDevices = () => {
         isVideoEnabled,
         toggleAudio,
         toggleVideo,
-        mediaStream
+        mediaStream,
+        updateVideoResolution
     }
 }
 

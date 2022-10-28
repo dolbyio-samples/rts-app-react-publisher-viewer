@@ -31,6 +31,7 @@ import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
 import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
+import ResolutionSelect, { Resolution } from "./components/ResolutionSelect/ResolutionSelect";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -62,6 +63,7 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
+    updateVideoResolution,
   } = useMediaDevices();
 
   useEffect(() => {
@@ -195,6 +197,12 @@ function App() {
                           </Select>
                         }
                       </HStack>
+                      <HStack>
+                        <Text> Resolution </Text>
+                        <ResolutionSelect updateResolution={(newResolution: Resolution) => {
+                          updateVideoResolution(newResolution);
+                        }} />
+                      </HStack>
                       <Switch test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         disabled={publisherState !== "ready"}
@@ -202,7 +210,6 @@ function App() {
                         Simulcast
                       </Switch>
                     </VStack>
-
                   </PopoverBody>
                 </PopoverContent>
               </Popover>
