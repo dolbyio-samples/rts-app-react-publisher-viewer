@@ -18,12 +18,22 @@
     "paths": {
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
-      "@millicast-react/media-device-select": ["libs/media-device-select/src/index.tsx"],
-      "@millicast-react/participant-count": ["libs/participant-count/src/index.tsx"],
-      "@millicast-react/share-link-button": ["libs/share-link-button/src/index.tsx"],
-      "@millicast-react/statistics-info": ["libs/statistics-info/src/index.tsx"],
+      "@millicast-react/media-device-select": [
+        "libs/media-device-select/src/index.tsx"
+      ],
+      "@millicast-react/participant-count": [
+        "libs/participant-count/src/index.tsx"
+      ],
+      "@millicast-react/share-link-button": [
+        "libs/share-link-button/src/index.tsx"
+      ],
+      "@millicast-react/statistics-info": [
+        "libs/statistics-info/src/index.tsx"
+      ],
       "@millicast-react/timer": ["libs/timer/src/index.tsx"],
-      "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
+      "@millicast-react/use-media-devices": [
+        "libs/use-media-devices/src/index.ts"
+      ],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]
     }

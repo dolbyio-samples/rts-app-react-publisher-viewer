@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+  VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
+  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  BRANCH_REF: ${{ github.ref }}
+  PR_TITLE: ${{ github.event.pull_request.title }}
+  PR_NUM: ${{ github.event.number }}
+
+jobs:
+  main:
+    name: Nx Cloud - Build & Test
+    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.8
+    with:
+      number-of-agents: 3
+      init-commands: |
+        yarn nx-cloud start-ci-run --stop-agents-after="e2e" --agent-count=3
+      parallel-commands: |
+        yarn nx-cloud record -- yarn nx workspace-lint
+        yarn nx-cloud record -- yarn nx format:check
+      parallel-commands-on-agents: |
+        yarn nx affected --target=lint --parallel=3
+        yarn nx affected --target=test --parallel=3 --ci --code-coverage
+        yarn nx affected --target=build --parallel=3
+        yarn nx affected --target=e2e --parallel=3
+        yarn nx affected --target=deploy
+  agents:
+    name: Nx Cloud - Agents
+    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.8
+    with:
+      number-of-agents: 3
