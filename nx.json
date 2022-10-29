@@ -1,26 +1,38 @@
 {
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "npmScope": "millicast-react",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx/tasks-runners/default",
+      "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": []
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "Y2IzZDg4MjEtZDRiNS00MzJjLThkZmEtNTk1NDUzNDBmYTQ0fHJlYWQtd3JpdGU="
       }
     }
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/apps/publisher/dist"
-      ]
+      "dependsOn": ["^build"]
     },
-    "preview": {
-      "dependsOn": [
-        "^preview"
-      ]
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     }
   },
-  "defaultBase": "main"
+  "cli": {
+    "defaultCollection": "@nxext/vite"
+  },
+  "generators": {
+    "@nxext/vite": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "publisher"
 }
