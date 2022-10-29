@@ -23,11 +23,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Setup Nodejs 16.x & install
+      - name: Setup Nodejs 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
+      - name: install
         run:  yarn --frozen-lockfile
       - uses: nrwl/nx-set-shas@v3
       - name: lint & check
