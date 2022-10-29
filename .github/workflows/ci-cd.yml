@@ -29,7 +29,7 @@ jobs:
           node-version: 16
       - name: install
         run:  yarn --frozen-lockfile
-      - uses: nrwl/nx-set-shas@v3
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
       - name: lint & check
         run: |
           yarn nx workspace-lint
