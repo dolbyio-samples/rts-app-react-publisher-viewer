@@ -64,12 +64,10 @@
         "passWithNoTests": true
       }
     },
-    "e2e" : {
+    "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx test-publisher bdd-test"
-        ]
+        "commands": ["nx test-publisher bdd-test"]
       }
     },
     "deploy": {

@@ -1,15 +1,15 @@
 /* eslint-disable */
 export default {
-  displayName: 'media-device-select',
-  preset: '../../jest.preset.js',
+  displayName: "media-device-select",
+  preset: "../../jest.preset.js",
   globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.spec.json",
     },
   },
   transform: {
-    '^.+\\.[tj]sx?$': 'ts-jest',
+    "^.+\\.[tj]sx?$": "ts-jest",
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/media-device-select',
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  coverageDirectory: "../../coverage/libs/media-device-select",
 };

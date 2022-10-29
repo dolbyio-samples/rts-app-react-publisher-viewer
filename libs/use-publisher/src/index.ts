@@ -1,11 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions } from '@millicast/sdk';
+import { useEffect, useRef, useState } from "react";
+import {
+  Director,
+  Publish,
+  PeerConnection,
+  BroadcastOptions,
+} from "@millicast/sdk";
 
-import type { streamStats } from '@millicast/sdk';
+import type { streamStats } from "@millicast/sdk";
 
-export type PublisherState = 'ready' | 'connecting' | 'streaming';
+export type PublisherState = "ready" | "connecting" | "streaming";
 
-export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'sourceId'>;
+export type DisplayStreamingOptions = Pick<
+  BroadcastOptions,
+  "mediaStream" | "sourceId"
+>;
 
 // TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
 // presenter stream should be the main stream, other source streams will depend on it.
@@ -24,12 +32,16 @@ export interface Publisher {
   statistics?: streamStats;
 }
 
-const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
-  const [publisherState, setPublisherState] = useState<PublisherState>('ready');
+const usePublisher = (
+  token: string,
+  streamName: string,
+  streamId: string
+): Publisher => {
+  const [publisherState, setPublisherState] = useState<PublisherState>("ready");
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<streamStats>();
 
-  const [codec, setCodec] = useState<string>('');
+  const [codec, setCodec] = useState<string>("");
   const [codecList, setCodecList] = useState<string[]>([]);
 
   const publisher = useRef<Publish>();
@@ -37,7 +49,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
   useEffect(() => {
     if (!token || !streamName) return;
-    const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
+    const tokenGenerator = () =>
+      Director.getPublisher({ token: token, streamName: streamName });
     publisher.current = new Publish(streamName, tokenGenerator, true);
     displayPublisher.current = new Publish(streamName, tokenGenerator, true);
     return () => {
@@ -47,40 +60,45 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
   }, [token, streamName]);
 
   useEffect(() => {
-    const capabilities = PeerConnection.getCapabilities('video');
+    const capabilities = PeerConnection.getCapabilities("video");
     const supportedCodecs = capabilities.codecs
-      .filter(item => item.codec.toLowerCase() !== 'av1')
-      .map(item => item.codec);
+      .filter((item) => item.codec.toLowerCase() !== "av1")
+      .map((item) => item.codec);
     if (supportedCodecs.length === 0) return;
     setCodecList(supportedCodecs);
     setCodec(supportedCodecs[0]);
   }, []);
 
   const startStreaming = async (options: BroadcastOptions) => {
-    if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
+    if (
+      !publisher.current ||
+      publisher.current.isActive() ||
+      publisherState !== "ready"
+    )
+      return;
     try {
-      setPublisherState('connecting');
+      setPublisherState("connecting");
       await publisher.current.connect(options);
 
-      publisher.current.on('broadcastEvent', event => {
+      publisher.current.on("broadcastEvent", (event) => {
         const { name, data } = event;
         if (options.events?.includes(name)) setViewerCount(data.viewercount);
       });
-      setPublisherState('streaming');
+      setPublisherState("streaming");
       publisher.current.webRTCPeer.initStats();
 
-      publisher.current.webRTCPeer.on('stats', statistics => {
+      publisher.current.webRTCPeer.on("stats", (statistics) => {
         setStatistics(statistics);
       });
     } catch (e) {
-      setPublisherState('ready');
+      setPublisherState("ready");
       console.error(e);
     }
   };
 
   const stopStreaming = async () => {
     publisher.current?.stop();
-    setPublisherState('ready');
+    setPublisherState("ready");
     setStatistics(undefined);
   };
 
@@ -98,12 +116,18 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
   };
 
   const updateCodec = (codecValue: string) => {
-    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
+    if (
+      publisherState !== "ready" &&
+      codecList != undefined &&
+      !codecList.includes(codecValue)
+    )
+      return;
     setCodec(codecValue);
   };
 
   const startDisplayStreaming = async (options: DisplayStreamingOptions) => {
-    if (!displayPublisher.current || displayPublisher.current.isActive()) return;
+    if (!displayPublisher.current || displayPublisher.current.isActive())
+      return;
     try {
       await displayPublisher.current.connect(options);
     } catch (error) {

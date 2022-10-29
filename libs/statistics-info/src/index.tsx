@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import type { streamStats } from '@millicast/sdk';
+import React, { memo } from "react";
+import type { streamStats } from "@millicast/sdk";
 
-import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
+import { VStack, Flex, Box, Text, Heading } from "@chakra-ui/react";
 
 type StatisticsInfoProps = {
   statistics?: streamStats;
@@ -41,7 +41,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Current RTT:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.currentRoundTripTime * 1000} ms</Text>
+              <Text fontSize="sm">
+                {statistics.currentRoundTripTime * 1000} ms
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -49,7 +51,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Available Outgoing Bitrate:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.availableOutgoingBitrate / 1000} kbps</Text>
+              <Text fontSize="sm">
+                {statistics.availableOutgoingBitrate / 1000} kbps
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -66,7 +70,8 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               <Text fontSize="sm">
-                {statistics.video?.outbounds[0].frameWidth}x{statistics.video?.outbounds[0].frameHeight}
+                {statistics.video?.outbounds[0].frameWidth}x
+                {statistics.video?.outbounds[0].frameHeight}
               </Text>
             </Box>
           </Flex>
@@ -75,7 +80,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Quality Limitation Reason:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.video?.outbounds[0].qualityLimitationReason}</Text>
+              <Text fontSize="sm">
+                {statistics.video?.outbounds[0].qualityLimitationReason}
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -83,7 +90,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">FPS:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.video?.outbounds[0].framesPerSecond}</Text>
+              <Text fontSize="sm">
+                {statistics.video?.outbounds[0].framesPerSecond}
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -91,7 +100,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Video Bitrate:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.video?.outbounds[0].bitrate / 1000} kbps</Text>
+              <Text fontSize="sm">
+                {statistics.video?.outbounds[0].bitrate / 1000} kbps
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -99,7 +110,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Audio Bitrate:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.audio?.outbounds[0].bitrate / 1000} kbps</Text>
+              <Text fontSize="sm">
+                {statistics.audio?.outbounds[0].bitrate / 1000} kbps
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -107,7 +120,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Video Total Sent:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.video?.outbounds[0].totalBytesSent / 1000} KB</Text>
+              <Text fontSize="sm">
+                {statistics.video?.outbounds[0].totalBytesSent / 1000} KB
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -115,7 +130,9 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               <Text fontSize="sm">Audio Total Sent:</Text>
             </Box>
             <Box flex="1">
-              <Text fontSize="sm">{statistics.audio?.outbounds[0].totalBytesSent / 1000} KB</Text>
+              <Text fontSize="sm">
+                {statistics.audio?.outbounds[0].totalBytesSent / 1000} KB
+              </Text>
             </Box>
           </Flex>
           <Flex w="100%">
@@ -124,7 +141,8 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               <Text fontSize="sm">
-                {statistics.video?.outbounds[0].mimeType}, {statistics.audio?.outbounds[0].mimeType}
+                {statistics.video?.outbounds[0].mimeType},{" "}
+                {statistics.audio?.outbounds[0].mimeType}
               </Text>
             </Box>
           </Flex>
@@ -134,7 +152,8 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               <Text fontSize="sm">
-                {statistics.video?.outbounds[0].timestamp || statistics.audio?.outbounds[0].timestamp}
+                {statistics.video?.outbounds[0].timestamp ||
+                  statistics.audio?.outbounds[0].timestamp}
               </Text>
             </Box>
           </Flex>

@@ -16,7 +16,7 @@ env:
   PR_NUM: ${{ github.event.number }}
 
 jobs:
-  main:
+  CI-CD:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 16
       - name: install
-        run:  yarn --frozen-lockfile
+        run: yarn --frozen-lockfile
       # waiting for approval - uses: nrwl/nx-set-shas@v3
       - name: lint & check
         run: |

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -19,31 +19,31 @@ import {
   Switch,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import usePublisher from '@millicast-react/use-publisher';
-import useMediaDevices from '@millicast-react/use-media-devices';
+import usePublisher from "@millicast-react/use-publisher";
+import useMediaDevices from "@millicast-react/use-media-devices";
 import {
   IconMicrophoneOn,
   IconMicrophoneOff,
   IconCameraOn,
   IconCameraOff,
   IconSettings,
-} from '@millicast-react/dolbyio-icons';
-import VideoView from '@millicast-react/video-view';
-import ParticipantCount from '@millicast-react/participant-count';
-import ShareLinkButton from '@millicast-react/share-link-button';
-import MediaDeviceSelect from '@millicast-react/media-device-select';
-import Timer from '@millicast-react/timer';
-import React from 'react';
+} from "@millicast-react/dolbyio-icons";
+import VideoView from "@millicast-react/video-view";
+import ParticipantCount from "@millicast-react/participant-count";
+import ShareLinkButton from "@millicast-react/share-link-button";
+import MediaDeviceSelect from "@millicast-react/media-device-select";
+import Timer from "@millicast-react/timer";
+import React from "react";
 
 function App() {
-  const displayShareSourceId = 'DisplayShare';
-  const presenterSourceId = 'PresenterMedia';
+  const displayShareSourceId = "DisplayShare";
+  const presenterSourceId = "PresenterMedia";
 
-  const [accessToken, setAccessToken] = useState('');
-  const [streamId, setStreamId] = useState('');
-  const [streamName, setStreamName] = useState('');
+  const [accessToken, setAccessToken] = useState("");
+  const [streamId, setStreamId] = useState("");
+  const [streamName, setStreamName] = useState("");
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const {
@@ -92,7 +92,7 @@ function App() {
 
   useEffect(() => {
     if (!displayStream) stopDisplayStreaming();
-    else if (publisherState === 'streaming')
+    else if (publisherState === "streaming")
       startDisplayStreaming({
         mediaStream: displayStream,
         sourceId: displayShareSourceId,
@@ -115,7 +115,7 @@ function App() {
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
-  const purple400 = 'var(--chakra-colors-dolbyPurple-400)';
+  const purple400 = "var(--chakra-colors-dolbyPurple-400)";
 
   return (
     <VStack w="100%">
@@ -126,7 +126,9 @@ function App() {
           </Heading>
         </Box>
         <Spacer />
-        {publisherState == 'streaming' && <ParticipantCount count={viewerCount} />}
+        {publisherState == "streaming" && (
+          <ParticipantCount count={viewerCount} />
+        )}
       </Flex>
       <Box>
         <Center>
@@ -135,7 +137,7 @@ function App() {
               <Box>
                 <VideoView mediaStream={mediaStream} statistics={statistics} />
               </Box>
-              <Box display={displayStream ? 'block' : 'none'}>
+              <Box display={displayStream ? "block" : "none"}>
                 <VideoView mirrored={false} mediaStream={displayStream} />
               </Box>
             </HStack>
@@ -146,8 +148,16 @@ function App() {
                 aria-label="toggle microphone"
                 variant="outline"
                 test-id="toggleAudioButton"
-                isDisabled={!(mediaStream && mediaStream.getAudioTracks().length)}
-                icon={isAudioEnabled ? <IconMicrophoneOn fill={purple400} /> : <IconMicrophoneOff fill="red" />}
+                isDisabled={
+                  !(mediaStream && mediaStream.getAudioTracks().length)
+                }
+                icon={
+                  isAudioEnabled ? (
+                    <IconMicrophoneOn fill={purple400} />
+                  ) : (
+                    <IconMicrophoneOff fill="red" />
+                  )
+                }
                 onClick={() => {
                   toggleAudio();
                 }}
@@ -158,8 +168,16 @@ function App() {
                 aria-label="toggle camera"
                 variant="outline"
                 test-id="toggleVideoButton"
-                isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-                icon={isVideoEnabled ? <IconCameraOn fill={purple400} /> : <IconCameraOff fill="red" />}
+                isDisabled={
+                  !(mediaStream && mediaStream.getVideoTracks().length)
+                }
+                icon={
+                  isVideoEnabled ? (
+                    <IconCameraOn fill={purple400} />
+                  ) : (
+                    <IconCameraOff fill="red" />
+                  )
+                }
                 onClick={() => {
                   toggleVideo();
                 }}
@@ -189,7 +207,7 @@ function App() {
                         <Spacer />
                         {cameraList.length && (
                           <MediaDeviceSelect
-                            disabled={publisherState === 'connecting'}
+                            disabled={publisherState === "connecting"}
                             testId="camera-select"
                             placeHolder="Select Camera"
                             selectedDeviceId={cameraId}
@@ -203,7 +221,7 @@ function App() {
                         <Spacer />
                         {microphoneList.length && (
                           <MediaDeviceSelect
-                            disabled={publisherState === 'connecting'}
+                            disabled={publisherState === "connecting"}
                             testId="microphone-select"
                             placeHolder="Select Microphone"
                             selectedDeviceId={microphoneId}
@@ -216,13 +234,21 @@ function App() {
                         <Text> Codec </Text>
                         {
                           <Select
-                            disabled={publisherState !== 'ready' || codecList.length === 0}
+                            disabled={
+                              publisherState !== "ready" ||
+                              codecList.length === 0
+                            }
                             test-id="codecSelect"
                             placeholder="Select Codec"
-                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
-                            onChange={e => updateCodec(e.target.value)}
+                            defaultValue={
+                              codec ||
+                              (codecList.length !== 0
+                                ? codecList[0]
+                                : undefined)
+                            }
+                            onChange={(e) => updateCodec(e.target.value)}
                           >
-                            {codecList.map(codec => {
+                            {codecList.map((codec) => {
                               return (
                                 <option value={codec} key={codec}>
                                   {codec}
@@ -234,8 +260,10 @@ function App() {
                       </HStack>
                       <Switch
                         test-id="simulcastSwitch"
-                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                        disabled={publisherState !== 'ready'}
+                        onChange={() =>
+                          setIsSimulcastEnabled(!isSimulcastEnabled)
+                        }
+                        disabled={publisherState !== "ready"}
                       >
                         Simulcast
                       </Switch>
@@ -245,16 +273,17 @@ function App() {
               </Popover>
             </HStack>
             <HStack>
-              {(publisherState == 'ready' || publisherState == 'connecting') && (
+              {(publisherState == "ready" ||
+                publisherState == "connecting") && (
                 <Button
-                  isLoading={publisherState == 'connecting'}
+                  isLoading={publisherState == "connecting"}
                   onClick={() => {
-                    if (publisherState == 'ready' && mediaStream) {
+                    if (publisherState == "ready" && mediaStream) {
                       startStreaming({
                         mediaStream,
                         simulcast: isSimulcastEnabled,
                         codec,
-                        events: ['viewercount'],
+                        events: ["viewercount"],
                         sourceId: presenterSourceId,
                       });
                       if (displayStream)
@@ -269,7 +298,7 @@ function App() {
                   Go Live
                 </Button>
               )}
-              {publisherState === 'streaming' && (
+              {publisherState === "streaming" && (
                 <>
                   <Button
                     test-id="stopStreamingButton"
@@ -288,10 +317,10 @@ function App() {
                   displayStream ? stopDisplayCapture() : startDisplayCapture();
                 }}
               >
-                {displayStream ? 'Stop Presenting' : 'Present'}
+                {displayStream ? "Stop Presenting" : "Present"}
               </Button>
             </HStack>
-            {publisherState === 'streaming' && <Timer />}
+            {publisherState === "streaming" && <Timer />}
             <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>

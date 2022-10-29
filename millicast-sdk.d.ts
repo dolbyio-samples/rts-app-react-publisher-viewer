@@ -1,7 +1,7 @@
 declare namespace millicast {
-  type Event = 'active' | 'inactive' | 'viewercount';
+  type Event = "active" | "inactive" | "viewercount";
 
-  type CapabilityKind = 'audio' | 'video';
+  type CapabilityKind = "audio" | "video";
 
   interface Capabilities {
     codecs: Array<CodecInfo>;
@@ -32,7 +32,7 @@ declare namespace millicast {
     events?: Event[];
     sourceId?: string;
     simulcast?: boolean;
-    codec?: string
+    codec?: string;
   }
 
   interface CodecInfo {
@@ -43,13 +43,13 @@ declare namespace millicast {
   interface BroadcastEvent {
     type: string;
     name:
-    | "active"
-    | "inactive"
-    | "stopped"
-    | "vad"
-    | "layers"
-    | "migrate"
-    | "viewercount";
+      | "active"
+      | "inactive"
+      | "stopped"
+      | "vad"
+      | "layers"
+      | "migrate"
+      | "viewercount";
     data: string | Date | unknown;
   }
   interface DirectorResponse {
@@ -71,7 +71,7 @@ declare namespace millicast {
     webRTCPeer: PeerConnection;
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface Publish extends EventEmitter { }
+  interface Publish extends EventEmitter {}
   interface DirectorPublisherOptions {
     token: string;
     streamName: string;
@@ -84,33 +84,33 @@ declare namespace millicast {
     mimeType: string;
     timestamp: number;
     totalBytesSent: number;
-  }
+  };
 
   type streamAudioStats = {
     inbounds: [];
     outbounds: streamAudioOutboundsStatus[];
-  }
+  };
 
   type streamVideoOutboundsStatus = {
     bitrate: number;
-      frameHeight: number;
-      frameWidth: number;
-      framesPerSecond: number;
-      id: string;
-      mid: string;
-      mimeType: string;
-      qualityLimitationReason: string;
-      timestamp: number;
-      totalBytesSent: number;
-  }
+    frameHeight: number;
+    frameWidth: number;
+    framesPerSecond: number;
+    id: string;
+    mid: string;
+    mimeType: string;
+    qualityLimitationReason: string;
+    timestamp: number;
+    totalBytesSent: number;
+  };
 
   type streamVideoStatus = {
     inbounds: [];
     outbounds: streamVideoOutboundsStatus[];
-  }
+  };
 
   type streamStats = {
-    audio: streamAudioStats,
+    audio: streamAudioStats;
     availableOutgoingBitrate: number;
     candidateType: string;
     currentRoundTripTime: number;
@@ -118,13 +118,13 @@ declare namespace millicast {
       size: number;
     };
     totalRoundTripTime: number;
-    video: streamVideoStatus
-  }
+    video: streamVideoStatus;
+  };
   class Director {
-    static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
+    static getPublisher(
+      options: DirectorPublisherOptions
+    ): Promise<DirectorResponse>;
   }
-
-
 
   /**
    * @class PeerConnection

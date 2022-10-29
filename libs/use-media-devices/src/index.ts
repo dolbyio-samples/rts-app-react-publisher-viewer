@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -84,9 +84,13 @@ const useMediaDevices: () => MediaDevices = () => {
 
     const tempMicrophoneList: InputDeviceInfo[] = [];
     const tempCameraList: InputDeviceInfo[] = [];
-    await devices.forEach(device => {
-      device.kind === 'audioinput' && isUniqueDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
-      device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
+    await devices.forEach((device) => {
+      device.kind === "audioinput" &&
+        isUniqueDevice(tempMicrophoneList, device) &&
+        tempMicrophoneList.push(device);
+      device.kind === "videoinput" &&
+        isUniqueDevice(tempCameraList, device) &&
+        tempCameraList.push(device);
     });
 
     setCameraList(tempCameraList);
@@ -96,8 +100,14 @@ const useMediaDevices: () => MediaDevices = () => {
     !microphoneId && setMicrophoneId(tempMicrophoneList[0].deviceId);
   };
 
-  const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
-    return !(device.deviceId.includes('default') || deviceList.some(item => item.deviceId === device.deviceId));
+  const isUniqueDevice = (
+    deviceList: InputDeviceInfo[],
+    device: InputDeviceInfo
+  ) => {
+    return !(
+      device.deviceId.includes("default") ||
+      deviceList.some((item) => item.deviceId === device.deviceId)
+    );
   };
 
   const toggleAudio = () => {
@@ -119,24 +129,25 @@ const useMediaDevices: () => MediaDevices = () => {
   const startDisplayCapture = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: 'always' },
+        video: { cursor: "always" },
         audio: true,
       } as DisplayMediaStreamConstraints);
       if (stream) {
-        if (!stream.getVideoTracks().length) throw 'No video steram for sharing';
+        if (!stream.getVideoTracks().length)
+          throw "No video steram for sharing";
         setDisplayStream(stream);
-        stream.getVideoTracks()[0].addEventListener('ended', () => {
+        stream.getVideoTracks()[0].addEventListener("ended", () => {
           setDisplayStream(undefined);
         });
       }
     } catch (error) {
-      console.log('failed to get display stream', error);
+      console.log("failed to get display stream", error);
     }
   };
 
   const stopDisplayCapture = () => {
     if (!displayStream) return;
-    displayStream.getTracks().forEach(track => track.stop());
+    displayStream.getTracks().forEach((track) => track.stop());
     setDisplayStream(undefined);
   };
 
