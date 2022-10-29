@@ -1,4 +1,4 @@
-name: CI
+name: CI-CD
 
 on:
   push:
@@ -17,23 +17,28 @@ env:
 
 jobs:
   main:
-    name: Nx Cloud - Build & Test
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.8
-    with:
-      number-of-agents: 3
-      init-commands: |
-        yarn nx-cloud start-ci-run --stop-agents-after="e2e" --agent-count=3
-      parallel-commands: |
-        yarn nx-cloud record -- yarn nx workspace-lint
-        yarn nx-cloud record -- yarn nx format:check
-      parallel-commands-on-agents: |
-        yarn nx affected --target=lint --parallel=3
-        yarn nx affected --target=test --parallel=3 --ci --code-coverage
-        yarn nx affected --target=build --parallel=3
-        yarn nx affected --target=e2e --parallel=3
-        yarn nx affected --target=deploy
-  agents:
-    name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.8
-    with:
-      number-of-agents: 3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x & install
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+        run:  yarn --frozen-lockfile
+      - uses: nrwl/nx-set-shas@v3
+      - name: lint & check
+        run: |
+          yarn nx workspace-lint
+          yarn nx format:check
+          yarn nx affected --target=lint --parallel=3
+      - name: test
+        run: |
+          yarn nx affected --target=test --parallel=3 --ci --code-coverage
+          yarn nx affected --target=build --parallel=3
+          yarn nx affected --target=e2e --parallel=3
+      - name: deploy
+        run: yarn nx affected --target=deploy
