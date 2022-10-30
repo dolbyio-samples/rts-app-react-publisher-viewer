@@ -1,0 +1,43 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+  VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
+  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  BRANCH_REF: ${{ github.ref }}
+  PR_TITLE: ${{ github.event.pull_request.title }}
+  PR_NUM: ${{ github.event.number }}
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: lint & check
+        run: |
+          yarn nx workspace-lint
+          yarn nx format:check
+          yarn nx affected --target=lint --base=remotes/origin/main --parallel=3
+      - name: build & test
+        run: |
+          yarn nx affected --target=build --base=remotes/origin/main --parallel=3
+          yarn nx affected --target=e2e --base=remotes/origin/main --parallel=3
+      - name: deploy
+        run: yarn nx affected --base=remotes/origin/main --target=deploy

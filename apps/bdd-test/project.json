@@ -1,0 +1,28 @@
+{
+  "name": "bdd-test",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/bdd-test/src",
+  "projectType": "application",
+  "targets": {
+    "test-publisher": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["echo 'run publisher test cases'"]
+      }
+    },
+    "test-viewer": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["echo 'run viewer test cases'"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/bdd-test/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
