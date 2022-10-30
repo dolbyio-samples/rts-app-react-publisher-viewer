@@ -30,24 +30,22 @@ jobs:
       - name: install
         run: yarn --frozen-lockfile
       # waiting for approval - uses: nrwl/nx-set-shas@v3
-      - name: setup base to main
-        if: startsWith(github.ref, 'refs/pull/')
+      - name: set base branch
         run: |
-          echo 'BASE_BRANCH=remotes/origin/main' >> $GITHUB_ENV
-
-      - name: setup base to main~1
-        if: startsWith(github.ref, 'refs/heads/main')
-        run: |
-          echo 'BASE_BRANCH=remotes/origin/main~1' >> $GITHUB_ENV
-
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then 
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: lint & check
         run: |
           yarn nx workspace-lint
           yarn nx format:check
-          eval "yarn nx affected --target=lint --base=$BASE_BRANCH --parallel=3"
+          git fetch origin main
+          yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
       - name: build & test
         run: |
-          eval "yarn nx affected --target=build --base=$BASE_BRANCH --parallel=3"
-          eval "yarn nx affected --target=e2e --base=$BASE_BRANCH --parallel=3"
+          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
+          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=3"
       - name: deploy
-        run: eval "yarn nx affected --base=$BASE_BRANCH --target=deploy"
+        run: eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"
