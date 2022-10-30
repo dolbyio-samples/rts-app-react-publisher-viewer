@@ -1,7 +1,7 @@
-import { World, IWorldOptions, setWorldConstructor } from "@cucumber/cucumber";
-import { Browser, BrowserContext, Page } from "playwright";
+import { World, IWorldOptions, setWorldConstructor } from '@cucumber/cucumber';
+import { Browser, BrowserContext, Page } from 'playwright';
 
-import { Screen, GlobalVariables, PlaywrightOptions } from "../utils/type";
+import { Screen, GlobalVariables, PlaywrightOptions } from '../utils/type';
 
 export class ScenarioWorld extends World {
   screen!: Screen;
@@ -36,7 +36,7 @@ export class ScenarioWorld extends World {
     super(options);
 
     this.globalVariables = {
-      currentPage: "",
+      currentPage: '',
     };
   }
 }

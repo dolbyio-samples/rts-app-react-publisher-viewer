@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-expressions */
-import { expect } from "@playwright/test";
-import { Page } from "playwright";
+import { expect } from '@playwright/test';
+import { Page } from 'playwright';
 
-import CommonPage from "./CommonPage";
-import LiveStreamPageLocators from "./LiveStreamPageLocators";
+import CommonPage from './CommonPage';
+import LiveStreamPageLocators from './LiveStreamPageLocators';
 
 export class LiveStreamPage extends CommonPage {
   readonly locators: LiveStreamPageLocators;
@@ -14,11 +14,11 @@ export class LiveStreamPage extends CommonPage {
   }
 
   async waitForPageLoad() {
-    console.log("LiveStreamPage:: Wait for page to load");
+    console.log('LiveStreamPage:: Wait for page to load');
     await this.page.bringToFront();
     await this.page.waitForSelector(this.locators.stopLiveBtnSelector);
     await expect(this.locators.stopLiveBtn).toBeVisible();
-    await expect(this.locators.stopLiveBtn).toHaveText("Stop Live");
+    await expect(this.locators.stopLiveBtn).toHaveText('Stop Live');
   }
 
   async stopLive() {

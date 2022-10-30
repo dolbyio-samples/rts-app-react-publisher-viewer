@@ -1,17 +1,16 @@
 /* eslint-disable no-unused-expressions */
-import { expect } from "@playwright/test";
-import clipboard from "clipboardy";
-import { Page } from "playwright";
+import { expect } from '@playwright/test';
+import clipboard from 'clipboardy';
+import { Page } from 'playwright';
 
-import CommonLocators from "./CommonLocators";
+import CommonLocators from './CommonLocators';
 
 export default class CommonPage {
   readonly page: Page;
 
   readonly clocators: CommonLocators;
 
-  readonly expectedViewerLink =
-    "https://viewer.millicast.com/?streamId=KtpPTK/l9c58zkw";
+  readonly expectedViewerLink = 'https://viewer.millicast.com/?streamId=KtpPTK/l9c58zkw';
 
   constructor(page: Page) {
     this.page = page;

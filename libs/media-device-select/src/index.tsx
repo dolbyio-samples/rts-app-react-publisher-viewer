@@ -1,8 +1,7 @@
-import React, { memo } from "react";
-import { Select } from "@chakra-ui/react";
+import React, { memo } from 'react';
+import { Select } from '@chakra-ui/react';
 
-interface MediaDeviceSelectProps
-  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface MediaDeviceSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   deviceList: InputDeviceInfo[];
   onSelectDeviceId: (deviceId: string) => void;
   selectedDeviceId?: string;

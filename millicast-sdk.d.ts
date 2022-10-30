@@ -1,7 +1,7 @@
 declare namespace millicast {
-  type Event = "active" | "inactive" | "viewercount";
+  type Event = 'active' | 'inactive' | 'viewercount';
 
-  type CapabilityKind = "audio" | "video";
+  type CapabilityKind = 'audio' | 'video';
 
   interface Capabilities {
     codecs: Array<CodecInfo>;
@@ -42,14 +42,7 @@ declare namespace millicast {
 
   interface BroadcastEvent {
     type: string;
-    name:
-      | "active"
-      | "inactive"
-      | "stopped"
-      | "vad"
-      | "layers"
-      | "migrate"
-      | "viewercount";
+    name: 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
     data: string | Date | unknown;
   }
   interface DirectorResponse {
@@ -58,13 +51,9 @@ declare namespace millicast {
     iceServers: RTCIceServer[];
   }
   type tokenGeneratorCallback = () => Promise<DirectorResponse>;
-  type EventEmitter = import("events").EventEmitter;
+  type EventEmitter = import('events').EventEmitter;
   class Publish {
-    constructor(
-      streamName: string,
-      tokenGenerator: tokenGeneratorCallback,
-      autoReconnect: boolean
-    );
+    constructor(streamName: string, tokenGenerator: tokenGeneratorCallback, autoReconnect: boolean);
     connect(options: BroadcastOptions): Promise<void>;
     stop(): void;
     isActive(): boolean;
@@ -121,9 +110,7 @@ declare namespace millicast {
     video: streamVideoStatus;
   };
   class Director {
-    static getPublisher(
-      options: DirectorPublisherOptions
-    ): Promise<DirectorResponse>;
+    static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
   }
 
   /**
@@ -182,6 +169,6 @@ declare namespace millicast {
   }
 }
 
-declare module "@millicast/sdk" {
+declare module '@millicast/sdk' {
   export = millicast;
 }

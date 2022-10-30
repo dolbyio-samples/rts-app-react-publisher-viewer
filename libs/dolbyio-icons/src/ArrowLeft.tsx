@@ -1,5 +1,5 @@
-import type { SVGProps } from "react";
-import React from "react";
+import type { SVGProps } from 'react';
+import React from 'react';
 
 const SvgArrowLeft = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -7,11 +7,11 @@ const SvgArrowLeft = (props: SVGProps<SVGSVGElement>) => (
     width="100%"
     height="100%"
     viewBox="0 0 256 256"
-    fill={props.fill || "currentColor"}
+    fill={props.fill || 'currentColor'}
   >
     <path
       fill="none"
-      stroke={props.fill || "currentColor"}
+      stroke={props.fill || 'currentColor'}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={16}

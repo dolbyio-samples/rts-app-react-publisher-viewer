@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-expressions */
-import { expect } from "@playwright/test";
-import { Page } from "playwright";
+import { expect } from '@playwright/test';
+import { Page } from 'playwright';
 
-import CommonPage from "./CommonPage";
-import SetupPageLocators from "./SetupPageLocators";
+import CommonPage from './CommonPage';
+import SetupPageLocators from './SetupPageLocators';
 
 export class SetupPage extends CommonPage {
   readonly locators: SetupPageLocators;
@@ -21,7 +21,7 @@ export class SetupPage extends CommonPage {
   }
 
   async waitForPageLoad() {
-    console.log("LiveStreamPage:: Wait for page to load");
+    console.log('LiveStreamPage:: Wait for page to load');
     await this.page.waitForSelector(this.locators.goLiveBtnSelector);
     await expect(this.locators.goLiveBtn).toBeVisible();
   }

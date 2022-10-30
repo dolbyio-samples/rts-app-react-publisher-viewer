@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -85,10 +85,10 @@ const useMediaDevices: () => MediaDevices = () => {
     const tempMicrophoneList: InputDeviceInfo[] = [];
     const tempCameraList: InputDeviceInfo[] = [];
     await devices.forEach((device) => {
-      device.kind === "audioinput" &&
+      device.kind === 'audioinput' &&
         isUniqueDevice(tempMicrophoneList, device) &&
         tempMicrophoneList.push(device);
-      device.kind === "videoinput" &&
+      device.kind === 'videoinput' &&
         isUniqueDevice(tempCameraList, device) &&
         tempCameraList.push(device);
     });
@@ -100,12 +100,9 @@ const useMediaDevices: () => MediaDevices = () => {
     !microphoneId && setMicrophoneId(tempMicrophoneList[0].deviceId);
   };
 
-  const isUniqueDevice = (
-    deviceList: InputDeviceInfo[],
-    device: InputDeviceInfo
-  ) => {
+  const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
     return !(
-      device.deviceId.includes("default") ||
+      device.deviceId.includes('default') ||
       deviceList.some((item) => item.deviceId === device.deviceId)
     );
   };
@@ -129,19 +126,18 @@ const useMediaDevices: () => MediaDevices = () => {
   const startDisplayCapture = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: "always" },
+        video: { cursor: 'always' },
         audio: true,
       } as DisplayMediaStreamConstraints);
       if (stream) {
-        if (!stream.getVideoTracks().length)
-          throw "No video steram for sharing";
+        if (!stream.getVideoTracks().length) throw 'No video steram for sharing';
         setDisplayStream(stream);
-        stream.getVideoTracks()[0].addEventListener("ended", () => {
+        stream.getVideoTracks()[0].addEventListener('ended', () => {
           setDisplayStream(undefined);
         });
       }
     } catch (error) {
-      console.log("failed to get display stream", error);
+      console.log('failed to get display stream', error);
     }
   };
 

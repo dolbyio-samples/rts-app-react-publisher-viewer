@@ -1,15 +1,15 @@
 /* eslint-disable */
 export default {
-  displayName: "use-publisher",
-  preset: "../../jest.preset.js",
+  displayName: 'use-publisher',
+  preset: '../../jest.preset.js',
   globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.spec.json",
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.spec.json',
     },
   },
   transform: {
-    "^.+\\.[tj]sx?$": "ts-jest",
+    '^.+\\.[tj]sx?$': 'ts-jest',
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/libs/use-publisher",
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  coverageDirectory: '../../coverage/libs/use-publisher',
 };

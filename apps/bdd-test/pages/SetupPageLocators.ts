@@ -1,11 +1,11 @@
-import { Locator, Page } from "playwright";
+import { Locator, Page } from 'playwright';
 
-import CommonLocators from "./CommonLocators";
+import CommonLocators from './CommonLocators';
 
 export default class SetupPageLocators extends CommonLocators {
   readonly goLiveBtn: Locator;
 
-  readonly goLiveBtnSelector = "[test-id=startStreamingButton]";
+  readonly goLiveBtnSelector = '[test-id=startStreamingButton]';
 
   constructor(page: Page) {
     super(page);

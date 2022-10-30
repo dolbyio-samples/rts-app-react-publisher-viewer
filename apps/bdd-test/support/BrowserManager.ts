@@ -1,11 +1,11 @@
-import cloneDeep from "lodash.clonedeep";
-import playwright, { Browser } from "playwright";
+import cloneDeep from 'lodash.clonedeep';
+import playwright, { Browser } from 'playwright';
 
-import { defaultTimeout } from "../config/defaults";
-import { options } from "../playwright.config";
-import { PlaywrightOptions } from "../utils/type";
+import { defaultTimeout } from '../config/defaults';
+import { options } from '../playwright.config';
+import { PlaywrightOptions } from '../utils/type';
 
-import { ScenarioWorld } from "./ScenarioWorld";
+import { ScenarioWorld } from './ScenarioWorld';
 
 export class BrowserManager {
   private options: PlaywrightOptions;
@@ -32,7 +32,7 @@ export class BrowserManager {
     const contextOptions = this.getContextOptions(scenarioWorld);
     const context = await this.browser.newContext(contextOptions);
 
-    if (this.options.trace !== "off") {
+    if (this.options.trace !== 'off') {
       console.log(`BrowserManager:: Starting the trace`);
       await context.tracing.start({
         screenshots: true,
@@ -50,7 +50,7 @@ export class BrowserManager {
 
   private getBrowserEngine() {
     const { browserName } = this.options;
-    return browserName === "firefox" ? "firefox" : "chromium";
+    return browserName === 'firefox' ? 'firefox' : 'chromium';
   }
 
   private getLaunchOptions() {
@@ -58,27 +58,25 @@ export class BrowserManager {
     const { browserName } = this.options;
 
     switch (browserName) {
-      case "chromium":
+      case 'chromium':
         launchOptions = this.options.launchOptions?.chromium || {};
         break;
-      case "firefox":
+      case 'firefox':
         launchOptions = this.options.launchOptions?.firefox || {};
         break;
       default:
         launchOptions = this.options.launchOptions?.chrome || {};
-        launchOptions.channel = launchOptions?.channel || "chrome";
+        launchOptions.channel = launchOptions?.channel || 'chrome';
     }
 
     launchOptions.headless =
-      "headless" in launchOptions
-        ? launchOptions.headless
-        : this.options.headless;
+      'headless' in launchOptions ? launchOptions.headless : this.options.headless;
     return launchOptions;
   }
 
   private getContextOptions(scenarioWorld: ScenarioWorld) {
     const contextOptions = cloneDeep(this.options.contextOptions);
-    if (!contextOptions?.recordVideo && this.options.video !== "off") {
+    if (!contextOptions?.recordVideo && this.options.video !== 'off') {
       contextOptions.recordVideo = {
         dir: `./reports/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
         size: { width: 1280, height: 720 },
@@ -88,18 +86,17 @@ export class BrowserManager {
   }
 
   private manageDefaults() {
-    console.log("BrowserManager:: Set default options");
+    console.log('BrowserManager:: Set default options');
     this.options.timeout = this.options.timeout || defaultTimeout;
-    this.options.headless =
-      "headless" in this.options ? this.options.headless : true;
-    this.options.video = this.options?.video || "off";
-    this.options.screenshot = this.options?.screenshot || "off";
-    this.options.trace = this.options?.trace || "off";
+    this.options.headless = 'headless' in this.options ? this.options.headless : true;
+    this.options.video = this.options?.video || 'off';
+    this.options.screenshot = this.options?.screenshot || 'off';
+    this.options.trace = this.options?.trace || 'off';
 
     this.options.launchOptions = this.options?.launchOptions || {};
 
     this.options.contextOptions = this.options?.contextOptions || {};
-    if (typeof this.options.viewport !== "undefined") {
+    if (typeof this.options.viewport !== 'undefined') {
       this.options.contextOptions.viewport = this.options.viewport;
     }
   }

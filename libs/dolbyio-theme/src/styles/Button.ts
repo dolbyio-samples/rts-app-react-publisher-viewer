@@ -1,27 +1,27 @@
-import { defineStyleConfig } from "@chakra-ui/react";
+import { defineStyleConfig } from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
     _loading: {
       _hover: {
-        bg: "dolbyPurple.500",
+        bg: 'dolbyPurple.500',
       },
     },
   },
   variants: {
     solid: {
-      color: "white",
+      color: 'white',
       _hover: {
-        bg: "dolbyPurple.500",
-        boxShadow: "0 8px 14px rgba(106, 106, 109, 0.28)",
+        bg: 'dolbyPurple.500',
+        boxShadow: '0 8px 14px rgba(106, 106, 109, 0.28)',
       },
       _focus: {
-        boxShadow: "none",
+        boxShadow: 'none',
       },
-      bg: "dolbyPurple.400",
+      bg: 'dolbyPurple.400',
     },
     outline: {
-      borderColor: "dolbyPurple.400",
+      borderColor: 'dolbyPurple.400',
     },
   },
 });

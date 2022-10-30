@@ -1,4 +1,4 @@
-import { Locator, Page } from "playwright";
+import { Locator, Page } from 'playwright';
 
 export default class CommonLocators {
   private page: Page;
@@ -7,6 +7,6 @@ export default class CommonLocators {
 
   constructor(page: Page) {
     this.page = page;
-    this.shareLinkBtn = page.locator("[test-id=shareLinkButton]");
+    this.shareLinkBtn = page.locator('[test-id=shareLinkButton]');
   }
 }

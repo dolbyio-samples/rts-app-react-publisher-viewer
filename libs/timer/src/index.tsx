@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useState } from "react";
-import { Box, Text, Heading } from "@chakra-ui/react";
+import React, { memo, useEffect, useState } from 'react';
+import { Box, Text, Heading } from '@chakra-ui/react';
 
 const Timer = () => {
   let startTime = 0;
   let currentTime = 0;
-  const [sessionTime, setSessionTime] = useState<string>("00:00:00");
+  const [sessionTime, setSessionTime] = useState<string>('00:00:00');
 
   useEffect(() => {
     const startTimer = () => {
@@ -14,9 +14,7 @@ const Timer = () => {
       const minute = Math.floor((currentTime / 60) % 60);
       const second = Math.floor((currentTime % 60) % 60);
 
-      setSessionTime(
-        `${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`
-      );
+      setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
     };
 
     startTime = Date.now();
@@ -26,9 +24,7 @@ const Timer = () => {
   }, []);
 
   const formatTime = (time: number) => {
-    return time === 0
-      ? "00"
-      : time.toLocaleString("en-US", { minimumIntegerDigits: 2 });
+    return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
   };
 
   return (

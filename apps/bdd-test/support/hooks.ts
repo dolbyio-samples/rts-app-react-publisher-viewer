@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
 
 import {
   Before,
@@ -10,41 +10,35 @@ import {
   ITestCaseHookParameter,
   Status,
   BeforeStep,
-} from "@cucumber/cucumber";
-import { ITestStepHookParameter } from "@cucumber/cucumber/lib/support_code_library_builder/types";
+} from '@cucumber/cucumber';
+import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
-import { options } from "../playwright.config";
+import { options } from '../playwright.config';
 
-import { BrowserManager } from "./BrowserManager";
-import { ScenarioWorld } from "./ScenarioWorld";
+import { BrowserManager } from './BrowserManager';
+import { ScenarioWorld } from './ScenarioWorld';
 
 const browserMgr = new BrowserManager();
 setDefaultTimeout(options.timeout as number);
 
 BeforeAll(async () => {
-  console.log("Hooks:: BeforeAll:: Launch browser");
-  console.log(
-    `Hooks:: BeforeAll:: Options \n ${JSON.stringify(options, null, 2)}`
-  );
+  console.log('Hooks:: BeforeAll:: Launch browser');
+  console.log(`Hooks:: BeforeAll:: Options \n ${JSON.stringify(options, null, 2)}`);
   await browserMgr.launch();
 });
 
 AfterAll(async () => {
-  console.log("Hooks:: AfterAll:: Close browser");
+  console.log('Hooks:: AfterAll:: Close browser');
   await browserMgr.browser.close();
 });
 
 Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
-  console.log("Hooks:: Before:: Open context and page");
+  console.log('Hooks:: Before:: Open context and page');
   this.startTime = new Date();
   this.featureName = scenario.gherkinDocument.feature?.name as string;
   this.scenarioName = scenario.pickle.name;
-  this.featureNameFormated = this.featureName
-    .toLowerCase()
-    .replace(/\s+/gi, "-");
-  this.scenarioNameFormated = this.scenarioName
-    .toLowerCase()
-    .replace(/\s+/gi, "-");
+  this.featureNameFormated = this.featureName.toLowerCase().replace(/\s+/gi, '-');
+  this.scenarioNameFormated = this.scenarioName.toLowerCase().replace(/\s+/gi, '-');
   this.options = options;
 
   this.browser = browserMgr.browser;
@@ -56,7 +50,7 @@ Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
 });
 
 After(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
-  console.log("Hooks:: After:: Close context and page");
+  console.log('Hooks:: After:: Close context and page');
   const videoFile = (await this.page.video()?.path()) as string;
   const traceFile = await stopTrace(this);
   await screenshot(this, scenario);
@@ -74,9 +68,9 @@ BeforeStep(async function (step: ITestStepHookParameter) {
 });
 
 async function stopTrace(scenarioWorld: ScenarioWorld) {
-  console.log("Hooks:: Stop trace");
+  console.log('Hooks:: Stop trace');
   const traceFile = `./reports/traces/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}-trace.zip`;
-  if (scenarioWorld.options.trace !== "off") {
+  if (scenarioWorld.options.trace !== 'off') {
     await scenarioWorld.context.tracing.stop({
       path: traceFile,
     });
@@ -84,26 +78,18 @@ async function stopTrace(scenarioWorld: ScenarioWorld) {
   return traceFile;
 }
 
-async function screenshot(
-  scenarioWorld: ScenarioWorld,
-  scenario: ITestCaseHookParameter
-) {
-  console.log("Hooks:: Take screenshot");
+async function screenshot(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParameter) {
+  console.log('Hooks:: Take screenshot');
   const screenshotOption = scenarioWorld.options.screenshot;
   const scenarioStatus = scenario.result?.status;
   const screenshotFile = `./reports/screenshots/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}.png`;
 
-  if (screenshotOption !== "off") {
-    if (
-      !(
-        scenarioStatus === Status.PASSED &&
-        screenshotOption === "only-on-failure"
-      )
-    ) {
+  if (screenshotOption !== 'off') {
+    if (!(scenarioStatus === Status.PASSED && screenshotOption === 'only-on-failure')) {
       const screenshot = await scenarioWorld.page.screenshot({
         path: screenshotFile,
       });
-      await scenarioWorld.attach(screenshot, "image/png");
+      await scenarioWorld.attach(screenshot, 'image/png');
     }
   }
   return screenshotFile;
@@ -115,28 +101,20 @@ async function retainArtifacts(
   scenarioWorld: ScenarioWorld,
   scenario: ITestCaseHookParameter
 ) {
-  console.log("Hooks:: Retain video and trace artifacts");
+  console.log('Hooks:: Retain video and trace artifacts');
   const scenarioStatus = scenario.result?.status;
   const scenarioDuration = scenario.result?.duration;
 
-  await scenarioWorld.attach(
-    `Status: ${scenarioStatus}. Duration:${scenarioDuration?.seconds}s`
-  );
+  await scenarioWorld.attach(`Status: ${scenarioStatus}. Duration:${scenarioDuration?.seconds}s`);
 
-  if (
-    scenarioStatus === Status.PASSED &&
-    scenarioWorld.options.video === "retain-on-failure"
-  ) {
+  if (scenarioStatus === Status.PASSED && scenarioWorld.options.video === 'retain-on-failure') {
     const videoDir = path.dirname(videoFile);
     fs.rmSync(videoDir, { recursive: true, force: true });
   } else {
     await scenarioWorld.attach(`Video File: ${videoFile}`);
   }
 
-  if (
-    scenarioStatus === Status.PASSED &&
-    scenarioWorld.options.trace === "retain-on-failure"
-  ) {
+  if (scenarioStatus === Status.PASSED && scenarioWorld.options.trace === 'retain-on-failure') {
     fs.rmSync(traceFile, { recursive: true, force: true });
   } else {
     await scenarioWorld.attach(`Trace File: ${traceFile}`);
