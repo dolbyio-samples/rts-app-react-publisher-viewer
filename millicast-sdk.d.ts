@@ -45,15 +45,11 @@ declare namespace millicast {
     name: 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
     data: string | Date | unknown;
   }
-  interface DirectorResponse {
-    urls: string[];
-    jwt: string;
-    iceServers: RTCIceServer[];
-  }
-  type tokenGeneratorCallback = () => Promise<DirectorResponse>;
+
+  type TokenGeneratorCallback = () => Promise<DirectorResponse>;
   type EventEmitter = import('events').EventEmitter;
   class Publish {
-    constructor(streamName: string, tokenGenerator: tokenGeneratorCallback, autoReconnect: boolean);
+    constructor(streamName: string, tokenGenerator: TokenGeneratorCallback, autoReconnect: boolean);
     connect(options: BroadcastOptions): Promise<void>;
     stop(): void;
     isActive(): boolean;
@@ -61,10 +57,6 @@ declare namespace millicast {
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
-  interface DirectorPublisherOptions {
-    token: string;
-    streamName: string;
-  }
 
   type streamAudioOutboundsStatus = {
     bitrate: number;
@@ -109,8 +101,33 @@ declare namespace millicast {
     totalRoundTripTime: number;
     video: streamVideoStatus;
   };
+
+  type DirectorResponse = {
+    urls: string[];
+    jwt: string;
+    iceServers: RTCIceServer[];
+  };
+
+  type DirectorPublisherOptions = {
+    token: string;
+    streamName: string;
+  };
+
+  type DirectorSubscriberOptions = {
+    streamName: string;
+    streamAccountId: string;
+    subscriberToken?: string;
+  };
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
+    static getSubscriber(options: DirectorSubscriberOptions): Promise<DirectorResponse>;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface View extends EventEmitter {}
+  class View {
+    constructor(streamName: string, tokenGenerator: TokenGeneratorCallback);
+    stop(): void;
   }
 
   /**

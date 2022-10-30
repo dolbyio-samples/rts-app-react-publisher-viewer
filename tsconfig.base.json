@@ -25,6 +25,7 @@
       "@millicast-react/timer": ["libs/timer/src/index.tsx"],
       "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
+      "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]
     }
   },

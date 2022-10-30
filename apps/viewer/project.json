@@ -11,7 +11,7 @@
       "options": {
         "outputPath": "dist/apps/viewer",
         "baseHref": "/",
-        "configFile": "@nxext/vite/plugins/vite"
+        "configFile": "apps/viewer/vite.config.ts"
       },
       "configurations": {
         "production": {
@@ -29,7 +29,7 @@
       "options": {
         "outputPath": "dist/apps/viewer",
         "baseHref": "/",
-        "configFile": "@nxext/vite/plugins/vite"
+        "configFile": "apps/viewer/vite.config.ts"
       },
       "configurations": {
         "production": {
