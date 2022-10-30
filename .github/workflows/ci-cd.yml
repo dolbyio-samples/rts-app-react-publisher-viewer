@@ -37,7 +37,7 @@ jobs:
           yarn nx affected --target=lint --base=remotes/origin/main --parallel=3
       - name: test
         run: |
-          yarn nx affected --target=test --base=remotes/origin/main --parallel=3 --ci --code-coverage
+          # yarn nx affected --target=test --base=remotes/origin/main --parallel=3 --ci --code-coverage
           yarn nx affected --target=build --base=remotes/origin/main --parallel=3
           yarn nx affected --target=e2e --base=remotes/origin/main --parallel=3
       - name: deploy
