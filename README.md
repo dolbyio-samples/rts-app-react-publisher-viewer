@@ -41,7 +41,9 @@ yarn nx e2e publisher
 ```
 
 ### Add a new component in libs
+
 After the command below, your component should be in `libs/<your component name>`
+
 ```javascript
-yarn nx g @nxext/vite:library <your component name> 
+yarn nx g @nxext/vite:library <your component name>
 ```
