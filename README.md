@@ -34,8 +34,14 @@ Run the command below in terminal and open the browser
 yarn nx preview publisher
 ```
 
-### Run the end to end test
+#### Run the end to end test
 
 ```javascript
 yarn nx e2e publisher
+```
+
+### Add a new component in libs
+After the command below, your component should be in `libs/<your component name>`
+```javascript
+yarn nx g @nxext/vite:library <your component name> 
 ```
