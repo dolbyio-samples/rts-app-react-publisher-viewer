@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import dolbyioTheme from "@millicast-react/dolbyio-theme";
 
-import App from "./app";
+import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
