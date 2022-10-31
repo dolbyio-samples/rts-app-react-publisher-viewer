@@ -24,10 +24,9 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
         '.video': { 
             transform: 'scaleX(-1)',
             width: '640px',
-            height: '360px',
+            height: '480px',
             maxWidth: '100vw',
             overflowX: 'hidden'
-
         }, 
         '.video--fullscreen': { 
             width: '100vw', 
@@ -65,7 +64,7 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
                 <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
                 :
                 <Box className="video" bg="black">
-                    <Text>No media stream available for now.</Text>
+                    <Text color="white">No media stream available for now.</Text>
                 </Box>
             }
             <IconButton 
