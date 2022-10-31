@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { BroadcastEvent, Director, View, ViewOptions } from '@millicast/sdk';
-import type { MediaStreamSource } from '@millicast/sdk';
+import { Director, View, Logger } from '@millicast/sdk';
+import type { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 /**
+ * TODO: add more state for differernt sources
  * ready: initial state
  * connecting: connecting to millicast backend
  * connected: connected to millicast backend
@@ -11,24 +12,27 @@ import type { MediaStreamSource } from '@millicast/sdk';
  * inactive: live stream is not broadcasting, but still available
  * stopped: live stream is off, no longer available
  */
-export type ViewerState = 'ready' | 'connecting' | 'connected' | 'active' | 'inactive' | 'stopped';
+export type ViewerState = 'ready' | 'connecting' | 'connected';
 
 export type Viewer = {
   viewerState: ViewerState;
   setupViewer: (streamName: string, streamAccountId: string, subscriberToken?: string) => void;
   connect: (options?: ViewOptions) => void;
+  project: (sourceId: string) => void;
   viewerStreams: MediaStream[];
-  viewerMediaSources?: MediaStreamSource[];
-  projectingSourceId?: string;
+  viewerMediaSources: MediaStreamSource[];
 };
 
 const useViewer = (): Viewer => {
   const [viewerState, setViewerState] = useState<ViewerState>('ready');
   const [viewerStreams, setViewerStreams] = useState<MediaStream[]>([]);
   const [viewerMediaSources, setViewerMediaSources] = useState<MediaStreamSource[]>([]);
-  const [projectingSourceId, setProjectingSourceId] = useState<string>();
   const millicastView = useRef<View>();
   const handleError = useErrorHandler();
+
+  useEffect(() => {
+    Logger.setLevel(Logger.DEBUG);
+  }, []);
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
     console.log('setup view');
@@ -39,15 +43,6 @@ const useViewer = (): Viewer => {
     millicastView.current.on('track', (event: RTCTrackEvent) => {
       console.log('get a new track', event.streams);
       setViewerStreams([...viewerStreams, ...event.streams]);
-      if (!projectingSourceId && millicastView.current && viewerMediaSources.length) {
-        millicastView.current.project({
-          sourceId: viewerMediaSources[0].sourceId,
-          mapping: viewerMediaSources[0].tracks.map((track) => {
-            return { trackId: track.trackId, mediaId: track.media };
-          }),
-        });
-        setProjectingSourceId(viewerMediaSources[0].sourceId);
-      }
     });
     millicastView.current.on('broadcastEvent', (event: BroadcastEvent) => {
       console.log('get event', event.name, event.data);
@@ -57,15 +52,19 @@ const useViewer = (): Viewer => {
             const source = event.data as MediaStreamSource;
             if (viewerMediaSources.some((src) => src.sourceId === source.sourceId)) return;
             setViewerMediaSources([...viewerMediaSources, source]);
-            setViewerState('active');
           }
           break;
         case 'inactive':
-          // TODO: remove the source from media sources and project another one if available
-          setViewerState('inactive');
+          {
+            // TODO: remove the source from media sources and project another one if available
+            const source = event.data as MediaStreamSource;
+            const newSources = viewerMediaSources.filter((src) => {
+              src.sourceId !== source.sourceId;
+            });
+            setViewerMediaSources(newSources);
+          }
           break;
         case 'stopped':
-          setViewerState('stopped');
           break;
         case 'layers':
           console.log('video layers', event.data);
@@ -88,13 +87,29 @@ const useViewer = (): Viewer => {
     }
   };
 
+  const project = async (sourceId: string) => {
+    const sources = viewerMediaSources.filter((src) => {
+      return src.sourceId === sourceId;
+    });
+    console.log('find source', sources, millicastView.current?.isActive()); // why it's not active here??
+    if (millicastView.current && sources.length) {
+      millicastView.current.project(
+        sourceId,
+        sources[0].tracks.map((track) => {
+          return { trackId: track.trackId };
+        })
+      );
+      // console.log(Logger.getHistory());
+    }
+  };
+
   return {
     viewerState,
     setupViewer,
     connect,
+    project,
     viewerStreams,
     viewerMediaSources,
-    projectingSourceId,
   };
 };
 

@@ -4,7 +4,8 @@ import useViewer from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, setupViewer, viewerStreams, connect } = useViewer();
+  const { viewerState, setupViewer, viewerStreams, connect, project, viewerMediaSources } =
+    useViewer();
   console.log(viewerState);
   useEffect(() => {
     const href = new URL(window.location.href);
@@ -15,6 +16,13 @@ function App() {
     setupViewer(streamName, streamAccountId);
     // TODO: return a clean up function which stops the viewer
   }, []);
+
+  useEffect(() => {
+    console.log(viewerMediaSources, viewerStreams);
+    if (viewerStreams.length && viewerMediaSources.length) {
+      project(viewerMediaSources[0].sourceId);
+    }
+  }, [viewerStreams, viewerMediaSources]);
 
   return (
     <VStack w="100%">

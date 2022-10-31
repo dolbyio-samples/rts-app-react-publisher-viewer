@@ -138,12 +138,8 @@ declare namespace millicast {
   }
 
   interface ViewProjectSourceMapping {
-    trackId: string;
-    mediaId: string;
-  }
-  interface ViewProjectSource {
-    sourceId: string;
-    mapping: ViewProjectSourceMapping[];
+    trackId?: string;
+    mediaId?: string;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -153,7 +149,7 @@ declare namespace millicast {
     stop(): void;
     isActive(): boolean;
     connect(options?: ViewOptions): Promise<void>;
-    project(source: ViewProjectSource): Promise<void>;
+    project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
   }
 
   type ViewOptions = {
