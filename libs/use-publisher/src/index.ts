@@ -10,6 +10,7 @@ export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'so
 // TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
 // presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
+  setupPublisher: (token: string, streamName: string, streamId: string) => void;
   startStreaming: (options: BroadcastOptions) => void;
   stopStreaming: () => void;
   updateStreaming: (mediaStream: MediaStream) => void;
@@ -24,7 +25,7 @@ export interface Publisher {
   statistics?: streamStats;
 }
 
-const usePublisher = (token: string, streamName: string, streamId: string): Publisher => {
+const usePublisher = (): Publisher => {
   const [publisherState, setPublisherState] = useState<PublisherState>('ready');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<streamStats>();
@@ -34,17 +35,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
 
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-
-  useEffect(() => {
-    if (!token || !streamName) return;
-    const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
-    publisher.current = new Publish(streamName, tokenGenerator, true);
-    displayPublisher.current = new Publish(streamName, tokenGenerator, true);
-    return () => {
-      stopDisplayStreaming();
-      stopStreaming();
-    };
-  }, [token, streamName]);
+  const linkText = useRef<string>('https://viewer.millicast.com/?streamId=/');
 
   useEffect(() => {
     const capabilities = PeerConnection.getCapabilities('video');
@@ -55,6 +46,15 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     setCodecList(supportedCodecs);
     setCodec(supportedCodecs[0]);
   }, []);
+
+  const setupPublisher = (token: string, streamName: string, streamId: string) => {
+    if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
+    if (publisher.current && publisher.current.isActive()) stopStreaming();
+    const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
+    publisher.current = new Publish(streamName, tokenGenerator, true);
+    displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+    linkText.current = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
+  };
 
   const startStreaming = async (options: BroadcastOptions) => {
     if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
@@ -116,9 +116,8 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     displayPublisher.current?.stop();
   };
 
-  const linkText = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
-
   return {
+    setupPublisher,
     startStreaming,
     stopStreaming,
     updateStreaming,
@@ -129,7 +128,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
     stopDisplayStreaming,
     publisherState,
     viewerCount,
-    linkText,
+    linkText: linkText.current,
     statistics: statistics,
   };
 };

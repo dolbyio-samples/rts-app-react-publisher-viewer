@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useViewer from '@millicast-react/use-viewer';
 
 function App() {
-  const { viewerState, setupView, viewerStreams } = useViewer();
+  const { viewerState, setupViewer, viewerStreams } = useViewer();
 
   useEffect(() => {
     const href = new URL(window.location.href);
@@ -11,7 +11,7 @@ function App() {
       href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
     const streamAccountId =
       href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
-    setupView(streamName, streamAccountId);
+    setupViewer(streamName, streamAccountId);
     // TODO: return a clean up function which stops the viewer
   }, []);
 

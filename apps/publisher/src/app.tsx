@@ -41,12 +41,10 @@ function App() {
   const displayShareSourceId = 'DisplayShare';
   const presenterSourceId = 'PresenterMedia';
 
-  const [accessToken, setAccessToken] = useState('');
-  const [streamId, setStreamId] = useState('');
-  const [streamName, setStreamName] = useState('');
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const {
+    setupPublisher,
     startStreaming,
     stopStreaming,
     updateStreaming,
@@ -59,7 +57,7 @@ function App() {
     viewerCount,
     linkText,
     statistics,
-  } = usePublisher(accessToken, streamName, streamId);
+  } = usePublisher();
 
   const {
     cameraList,
@@ -79,9 +77,11 @@ function App() {
   } = useMediaDevices();
 
   useEffect(() => {
-    setAccessToken(import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN);
-    setStreamName(import.meta.env.VITE_MILLICAST_STREAM_NAME);
-    setStreamId(import.meta.env.VITE_MILLICAST_STREAM_ID);
+    setupPublisher(
+      import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+      import.meta.env.VITE_MILLICAST_STREAM_NAME,
+      import.meta.env.VITE_MILLICAST_STREAM_ID
+    );
   }, []);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ export type ViewerState = 'ready' | 'connecting' | 'subscribed';
 
 export type Viewer = {
   viewerState: ViewerState;
-  setupView: (streamName: string, streamAccountId: string, subscriberToken?: string) => void;
+  setupViewer: (streamName: string, streamAccountId: string, subscriberToken?: string) => void;
   viewerStreams: MediaStream[];
 };
 
@@ -15,7 +15,7 @@ const useViewer = (): Viewer => {
   const [viewerStreams, setViewerStreams] = useState<MediaStream[]>([]);
   const millicastView = useRef<View>();
 
-  const setupView = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
+  const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
     millicastView.current?.stop();
     const tokenGenerator = () =>
       Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
@@ -27,7 +27,7 @@ const useViewer = (): Viewer => {
 
   return {
     viewerState,
-    setupView,
+    setupViewer,
     viewerStreams,
   };
 };

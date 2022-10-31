@@ -56,6 +56,12 @@
         "jestConfig": "apps/viewer/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bash apps/deploy.sh 'dist/apps/viewer' 'cosmic-dango-2cc8f7'"
+      }
     }
   },
   "tags": []
