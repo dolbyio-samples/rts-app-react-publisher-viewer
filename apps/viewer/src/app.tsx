@@ -1,10 +1,11 @@
-import { Box, Center, Flex, Heading, Spacer, VStack, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Box, Center, Flex, Heading, Spacer, VStack, Text, Button } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import useViewer from '@millicast-react/use-viewer';
+import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, setupViewer, viewerStreams } = useViewer();
-
+  const { viewerState, setupViewer, viewerStreams, connect } = useViewer();
+  console.log(viewerState);
   useEffect(() => {
     const href = new URL(window.location.href);
     const streamName =
@@ -28,11 +29,23 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            {viewerState === 'ready' ? (
-              <Text> Please connect first </Text>
+            {viewerState === 'ready' && (
+              <>
+                <Text> Please connect first </Text>
+                <Button
+                  onClick={() => {
+                    connect();
+                    // todo: get pinnedSourceId from URL param, then connect({ pinnedSourceId: 'PresenterMedia' });
+                  }}
+                >
+                  connect
+                </Button>
+              </>
+            )}
+            {viewerStreams && viewerStreams.length ? (
+              <VideoView mediaStream={viewerStreams[0]} />
             ) : (
-              // TODO: add more logic for streaming
-              <Text> Presenter is not live now, please stay tuned. </Text>
+              <Text> No stream </Text>
             )}
           </VStack>
         </Center>

@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions } from '@millicast/sdk';
+import {
+  Director,
+  Publish,
+  PeerConnection,
+  BroadcastOptions,
+  BroadcastEvent,
+  ViewerCount,
+} from '@millicast/sdk';
 
 import type { streamStats } from '@millicast/sdk';
 
@@ -54,21 +61,19 @@ const usePublisher = (): Publisher => {
     publisher.current = new Publish(streamName, tokenGenerator, true);
     displayPublisher.current = new Publish(streamName, tokenGenerator, true);
     linkText.current = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
+    publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
+      if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
+    });
   };
 
   const startStreaming = async (options: BroadcastOptions) => {
     if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
     try {
+      //TODO: refine the state by broadcastEvent
       setPublisherState('connecting');
       await publisher.current.connect(options);
-
-      publisher.current.on('broadcastEvent', (event) => {
-        const { name, data } = event;
-        if (options.events?.includes(name)) setViewerCount(data.viewercount);
-      });
       setPublisherState('streaming');
       publisher.current.webRTCPeer.initStats();
-
       publisher.current.webRTCPeer.on('stats', (statistics) => {
         setStatistics(statistics);
       });
