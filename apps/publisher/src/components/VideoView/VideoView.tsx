@@ -1,5 +1,5 @@
 import React, { memo, useRef, useEffect, useState } from "react";
-import { Box, IconButton } from '@chakra-ui/react';
+import { Box, IconButton, Text } from '@chakra-ui/react';
 import FullScreen from '../Icons/FullScreen';
 import FullScreenExit from "../Icons/FullScreenExit";
 
@@ -22,7 +22,12 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
 
     const componentElementsStyle = { 
         '.video': { 
-            transform: 'scaleX(-1)' 
+            transform: 'scaleX(-1)',
+            width: '640px',
+            height: '360px',
+            maxWidth: '100vw',
+            overflowX: 'hidden'
+
         }, 
         '.video--fullscreen': { 
             width: '100vw', 
@@ -55,7 +60,14 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
             zIndex="1"
             onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}>
             {/* eslint-disable-next-line react/no-unknown-property */}
-            <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
+            {mediaStream ?
+                /* eslint-disable-next-line react/no-unknown-property */
+                <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
+                :
+                <Box className="video" bg="black">
+                    <Text>No media stream available for now.</Text>
+                </Box>
+            }
             <IconButton 
                 aria-label="Full screen" 
                 size="md"
