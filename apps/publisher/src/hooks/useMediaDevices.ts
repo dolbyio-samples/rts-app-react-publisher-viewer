@@ -31,8 +31,8 @@ const useMediaDevices: () => MediaDevices = () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true,
-                    video: true
-                    })
+                    video: { width: 1920, height: 1080 }
+                })
                 if (stream) {
                     getMediaDevicesList();
                 } else {
@@ -68,7 +68,9 @@ const useMediaDevices: () => MediaDevices = () => {
                 deviceId: microphoneId
             },
             video: {
-                deviceId: cameraId
+                deviceId: cameraId,
+                width: 1920, 
+                height: 1080
             }
         });
 
