@@ -11,7 +11,7 @@
       "options": {
         "outputPath": "dist/apps/viewer",
         "baseHref": "/",
-        "configFile": "@nxext/vite/plugins/vite"
+        "configFile": "apps/viewer/vite.config.ts"
       },
       "configurations": {
         "production": {
@@ -29,7 +29,7 @@
       "options": {
         "outputPath": "dist/apps/viewer",
         "baseHref": "/",
-        "configFile": "@nxext/vite/plugins/vite"
+        "configFile": "apps/viewer/vite.config.ts"
       },
       "configurations": {
         "production": {
@@ -55,6 +55,12 @@
       "options": {
         "jestConfig": "apps/viewer/jest.config.ts",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bash apps/deploy.sh 'dist/apps/viewer' 'cosmic-dango-2cc8f7'"
       }
     }
   },

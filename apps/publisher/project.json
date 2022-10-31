@@ -73,7 +73,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash apps/publisher/deploy.sh 'dist/apps/publisher' 'astounding-lily-fa33fc'"
+        "command": "bash apps/deploy.sh 'dist/apps/publisher' 'astounding-lily-fa33fc'"
       }
     }
   },
