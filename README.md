@@ -12,7 +12,7 @@ yarn;
 
 #### Your millicast token and stream name, id
 
-```
+```bash
 VITE_MILLICAST_STREAM_NAME=<your stream name>
 VITE_MILLICAST_STREAM_PUBLISHING_TOKEN=<your stream token>
 VITE_MILLICAST_STREAM_ID=<your stream id>
