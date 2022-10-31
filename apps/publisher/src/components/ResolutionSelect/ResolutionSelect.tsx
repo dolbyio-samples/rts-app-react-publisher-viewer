@@ -23,10 +23,10 @@ const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
                 updateResolution({ width: 1920, height: 1080 });
                 break;
             case "720p":
-                updateResolution({ width: 1920, height: 1080 });
+                updateResolution({ width: 1280, height: 720 });
                 break;
             case "480p":
-                updateResolution({ width: 854, height: 480 });
+                updateResolution({ width: 720, height: 480 });
                 break;
             case "360p":
                 updateResolution({ width: 640, height: 360 });
