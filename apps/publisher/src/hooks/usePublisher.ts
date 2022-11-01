@@ -9,7 +9,7 @@ export interface Publisher {
     updateStreaming: (mediaStream: MediaStream) => void;
     codec: string;
     codecList: string[],
-    onSelectCodec: (codec: string) => void;
+    updateCodec: (codec: string) => void;
     publisherState: PublisherState;
     viewerCount: number;
     linkText: string;
@@ -82,7 +82,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         }
     }
 
-    const onSelectCodec = (codecValue: string) => {
+    const updateCodec = (codecValue: string) => {
         if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
         setCodec(codecValue);
     }
@@ -95,7 +95,7 @@ const usePublisher = (token: string, streamName: string, streamId: string): Publ
         updateStreaming,
         codec,
         codecList,
-        onSelectCodec,
+        updateCodec,
         publisherState,
         viewerCount,
         linkText

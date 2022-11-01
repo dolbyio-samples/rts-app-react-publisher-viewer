@@ -38,14 +38,14 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
-  const [isSimulcastEnabled, onEnableSimulcast] = useState(false);
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const { startStreaming,
     stopStreaming,
     updateStreaming,
     codec,
     codecList,
-    onSelectCodec,
+    updateCodec,
     publisherState,
     viewerCount,
     linkText
@@ -54,8 +54,6 @@ function App() {
   const {
     cameraList,
     microphoneList,
-    cameraId,
-    microphoneId,
     setCameraId,
     setMicrophoneId,
     isAudioEnabled,
@@ -154,7 +152,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled = { publisherState === 'connecting' }
                             testId="camera-select"
-                            selectedDeviceId={cameraId}
                             deviceList={cameraList}
                             onSelectDeviceId={onSelectCameraId}
                           />
@@ -167,7 +164,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled = { publisherState === 'connecting' }
                             testId="microphone-select"
-                            selectedDeviceId={microphoneId}
                             deviceList={microphoneList}
                             onSelectDeviceId={onSelectMicrophoneId}
                           />
@@ -181,7 +177,7 @@ function App() {
                             test-id="codecSelect"
                             placeholder="Select Codec"
                             defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
-                            onChange={(e) => onSelectCodec(e.target.value)}
+                            onChange={(e) => updateCodec(e.target.value)}
                           >
                           {codecList.map((codec: string) => {
                               return (
@@ -194,7 +190,7 @@ function App() {
                         }
                       </HStack>
                       <Switch test-id="simulcastSwitch"
-                        onChange={() => onEnableSimulcast(!isSimulcastEnabled)}
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         disabled={publisherState !== "ready"}
                       >
                       Simulcast
