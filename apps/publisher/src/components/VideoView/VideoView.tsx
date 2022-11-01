@@ -28,6 +28,12 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
             maxWidth: '100vw',
             overflowX: 'hidden'
         }, 
+        '.video--text-placeholder': {
+            width: '640px',
+            height: '480px',
+            maxWidth: '100vw',
+            overflowX: 'hidden'
+        },
         '.video--fullscreen': { 
             width: '100vw', 
             height: '100vh', 
@@ -58,12 +64,11 @@ const VideoView = ({mediaStream}: VideoViewProps) => {
             right="0" 
             zIndex="1"
             onMouseOver={() => setIsHoveredOnVideo(true)} onMouseOut={() => setIsHoveredOnVideo(false)}>
-            {/* eslint-disable-next-line react/no-unknown-property */}
             {mediaStream ?
                 /* eslint-disable-next-line react/no-unknown-property */
                 <video className={`video ${isFullScreen && 'video--fullscreen'}`} playsInline test-id="video-view" autoPlay ref={video} muted />
                 :
-                <Box className="video" bg="black">
+                <Box className="video--text-placeholder" bg="black">
                     <Text color="white">No media stream available for now.</Text>
                 </Box>
             }

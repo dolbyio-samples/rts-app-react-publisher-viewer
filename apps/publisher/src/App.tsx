@@ -11,9 +11,18 @@ import {
   Switch,
   Text,
   VStack,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Select,
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
 import useMediaDevices from "./hooks/useMediaDevices";
+
 import IconMicrophoneOn from './components/Icons/Microphone';
 import IconMicrophoneOff from './components/Icons/MicrophoneOff';
 import IconCameraOn from "./components/Icons/Camera";
@@ -21,7 +30,8 @@ import IconCameraOff from "./components/Icons/CameraOff";
 import VideoView from './components/VideoView/VideoView';
 import ParticipantCount from "./components/ParticipantCount/ParticipantCount";
 import ShareLinkButton from "./components/ShareLinkButton/ShareLinkButton";
-import DevicesPopover from "./components/DevicesPopover/DevicesPopover";
+import IconSettings from './components/Icons/Settings';
+import MediaDeviceSelect from "./components/MediaDeviceSelect/MediaDeviceSelect";
 
 function App() {
   const [shouldRecord, setShouldRecord] = useState(false);
@@ -35,7 +45,7 @@ function App() {
     updateStreaming,
     codec,
     codecList,
-    updateCodec,
+    onSelectCodec,
     publisherState,
     viewerCount,
     linkText
@@ -118,20 +128,81 @@ function App() {
                 isDisabled = { mediaStream && mediaStream.getVideoTracks().length ? false : true }
                 icon={ isVideoEnabled ? (<IconCameraOn fill={purple400} />) : (<IconCameraOff fill="red" />)}
                 onClick={() => { toggleVideo() }} />
-              <DevicesPopover 
-                publisherState={publisherState}
-                cameraList={cameraList}
-                cameraId={cameraId}
-                onSelectCameraId={onSelectCameraId}
-                microphoneList={microphoneList}
-                microphoneId={microphoneId}
-                onSelectMicrophoneId={onSelectMicrophoneId}
-                codecList={codecList}
-                codec={codec}
-                updateCodec={updateCodec}
-                setIsSimulcastEnabled={setIsSimulcastEnabled}
-                isSimulcastEnabled={isSimulcastEnabled}
-              />
+              <Popover placement="bottom">
+                <PopoverTrigger>
+                  <IconButton
+                    size='lg'
+                    p='4px'
+                    aria-label="settings"
+                    variant="outline"
+                    test-id='settingsButton'
+                    icon={<IconSettings fill={purple400} />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent minWidth='360'>
+                  <PopoverHeader pt={4} fontWeight='bold' border='0'>
+                  Manage Your Devices
+                  </PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <VStack>
+                      <HStack width='100%'>
+                        <Text> Camera: </Text>
+                        <Spacer />
+                        { cameraList.length && (
+                          <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
+                            testId="camera-select"
+                            selectedDeviceId={cameraId}
+                            deviceList={cameraList}
+                            onSelectDeviceId={onSelectCameraId}
+                          />
+                        )}
+                      </HStack>
+                      <HStack width='100%'>
+                        <Text> Microphone: </Text>
+                        <Spacer />
+                        { microphoneList.length && (
+                          <MediaDeviceSelect
+                            disabled = { publisherState === 'connecting' }
+                            testId="microphone-select"
+                            selectedDeviceId={microphoneId}
+                            deviceList={microphoneList}
+                            onSelectDeviceId={onSelectMicrophoneId}
+                          />
+                        )}
+                      </HStack>
+                      <HStack width='100%'>
+                        <Text> Codec </Text>
+                        {
+                          <Select
+                            disabled={publisherState !== "ready" || codecList.length === 0}
+                            test-id="codecSelect"
+                            placeholder="Select Codec"
+                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
+                            onChange={(e) => onSelectCodec(e.target.value)}
+                          >
+                          {codecList.map((codec: string) => {
+                              return (
+                              <option value={codec} key={codec}>
+                                  {codec}
+                              </option>
+                              );
+                          })}
+                          </Select>
+                        }
+                      </HStack>
+                      <Switch test-id="simulcastSwitch"
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        disabled={publisherState !== "ready"}
+                      >
+                      Simulcast
+                      </Switch>
+                    </VStack>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </HStack>
             {publisherState == "ready" || publisherState == "connecting" ? (
               <Button
