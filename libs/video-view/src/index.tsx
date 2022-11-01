@@ -11,7 +11,7 @@ export type VideoViewProps = {
   statistics?: streamStats;
 };
 
-const VideoView = ({ mirrored = true, mediaStream, statistics }: VideoViewProps) => {
+const VideoView = ({ mirrored = false, mediaStream, statistics }: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
   const fullScreenButton = useRef<HTMLButtonElement>(null);
 

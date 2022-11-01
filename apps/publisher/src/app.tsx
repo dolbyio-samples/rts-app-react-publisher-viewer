@@ -39,7 +39,7 @@ import React from 'react';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-  const presenterSourceId = 'PresenterMedia';
+  const mainSourceId = 'Main';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
@@ -133,10 +133,10 @@ function App() {
           <VStack>
             <HStack bg="black">
               <Box>
-                <VideoView mediaStream={mediaStream} statistics={statistics} />
+                <VideoView mirrored={true} mediaStream={mediaStream} statistics={statistics} />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
-                <VideoView mirrored={false} mediaStream={displayStream} />
+                <VideoView mediaStream={displayStream} />
               </Box>
             </HStack>
             <HStack>
@@ -255,7 +255,7 @@ function App() {
                         simulcast: isSimulcastEnabled,
                         codec,
                         events: ['viewercount'],
-                        sourceId: presenterSourceId,
+                        sourceId: mainSourceId,
                       });
                       if (displayStream)
                         startDisplayStreaming({

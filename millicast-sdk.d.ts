@@ -140,6 +140,7 @@ declare namespace millicast {
   interface ViewProjectSourceMapping {
     trackId?: string;
     mediaId?: string;
+    media?: string;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -150,6 +151,8 @@ declare namespace millicast {
     isActive(): boolean;
     connect(options?: ViewOptions): Promise<void>;
     project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
+    unproject(mediaIds: string[]): Promise<void>;
+    addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
   }
 
   type ViewOptions = {
