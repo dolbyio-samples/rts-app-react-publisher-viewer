@@ -117,7 +117,8 @@ function App() {
   const onSelectVideoResolution = (resolution: Resolution) => {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
-      echoCancellation
+      echoCancellation,
+      resolution
     };
     updateMediaConstraints(constraints);
   };
@@ -227,12 +228,13 @@ function App() {
                           </Select>
                         }
                       </HStack>
+                      {mediaStream && 
                       <HStack>
                         <Text> Resolution </Text>
                         <ResolutionSelect updateResolution={(newResolution: Resolution) => {
                           onSelectVideoResolution(newResolution);
                         }} />
-                      </HStack>
+                      </HStack>}
                       <Switch test-id="channelCountSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                       >
