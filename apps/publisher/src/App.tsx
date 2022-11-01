@@ -38,7 +38,7 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const [isSimulcastEnabled, onEnableSimulcast] = useState(false);
 
   const { startStreaming,
     stopStreaming,
@@ -194,7 +194,7 @@ function App() {
                         }
                       </HStack>
                       <Switch test-id="simulcastSwitch"
-                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        onChange={() => onEnableSimulcast(!isSimulcastEnabled)}
                         disabled={publisherState !== "ready"}
                       >
                       Simulcast
