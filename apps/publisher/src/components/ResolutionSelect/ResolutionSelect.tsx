@@ -10,7 +10,7 @@ export type Resolution = {
     height: number;
 }
 
-type Resolutions = "1080p" | "720p" | "480p" | "360p";
+type Resolutions = "2160p" | "1080p" | "720p" | "480p";
 
 const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
 
@@ -28,8 +28,8 @@ const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
             case "480p":
                 updateResolution({ width: 720, height: 480 });
                 break;
-            case "360p":
-                updateResolution({ width: 640, height: 360 });
+            case "2160p":
+                updateResolution({ width: 3840, height: 2160 });
                 break;
         }
         setResolution(selectedResolution);
@@ -42,10 +42,10 @@ const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
             placeholder='Select Resolution'
             defaultValue={resolution}
             onChange={(event) => onResolutionChange(event.target.value as Resolutions)}>
+            <option value="2160p">2160p</option>
             <option value="1080p">1080p</option>
             <option value="720p">720p</option>
             <option value="480p">480p</option>
-            <option value="360p">360p</option>
         </Select>
     );
 };

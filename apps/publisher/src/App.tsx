@@ -21,7 +21,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import usePublisher from "./hooks/usePublisher";
-import useMediaDevices from "./hooks/useMediaDevices";
+import useMediaDevices, { AudioChannels, MediaConstraints } from "./hooks/useMediaDevices";
 import IconMicrophoneOn from './components/Icons/Microphone';
 import IconMicrophoneOff from './components/Icons/MicrophoneOff';
 import IconCameraOn from "./components/Icons/Camera";
@@ -39,6 +39,8 @@ function App() {
   const [streamId, setStreamId] = useState("");
   const [streamName, setStreamName] = useState("")
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const [channels, setChannels] = useState<number>(1);
+  const [echoCancellation, setEchoCancellation] = useState<boolean>(true);
 
   const { startStreaming,
     stopStreaming,
@@ -63,7 +65,7 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
-    updateVideoResolution,
+    updateMediaConstraints,
   } = useMediaDevices();
 
   useEffect(() => {
@@ -91,6 +93,34 @@ function App() {
     },
     [microphoneList]
   );
+
+  // TODO wire these events correctly to `useMediaDevices
+  const onSelectEchoCancellation = (echoCancellation: boolean) => {
+    const constraints: MediaConstraints = {
+      channelCount: channels as AudioChannels,
+      echoCancellation
+    };
+    updateMediaConstraints(constraints);
+
+  };
+
+  // TODO wire these events correctly to `useMediaDevices
+  const onSelectAudioChannels = (channels: AudioChannels) => {
+    const constraints: MediaConstraints = {
+      channelCount: channels as AudioChannels,
+      echoCancellation
+    };
+    updateMediaConstraints(constraints);
+  };
+
+  // TODO wire these events correctly to `useMediaDevices
+  const onSelectVideoResolution = (resolution: Resolution) => {
+    const constraints: MediaConstraints = {
+      channelCount: channels as AudioChannels,
+      echoCancellation
+    };
+    updateMediaConstraints(constraints);
+  };
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -200,13 +230,22 @@ function App() {
                       <HStack>
                         <Text> Resolution </Text>
                         <ResolutionSelect updateResolution={(newResolution: Resolution) => {
-                          updateVideoResolution(newResolution);
+                          onSelectVideoResolution(newResolution);
                         }} />
                       </HStack>
+                      <Switch test-id="channelCountSwitch"
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                      >
+                        Mono or Stereo
+                      </Switch>
+                      <Switch test-id="echoCancellationSwitch"
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                      >
+                        Echo Cancellation
+                      </Switch>
                       <Switch test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                        disabled={publisherState !== "ready"}
-                      >
+                        disabled={publisherState !== "ready"}>
                         Simulcast
                       </Switch>
                     </VStack>

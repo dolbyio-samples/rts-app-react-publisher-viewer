@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { Resolution } from "../components/ResolutionSelect/ResolutionSelect";
 
+
+export type AudioChannels = 1 | 2;
+
+export type MediaConstraints = {
+    resolution: Resolution;
+    echoCancellation: boolean;
+    channelCount: AudioChannels;
+};
+
+const DEFAULT_ASPECT_RATIO = (16 / 9);
+
 type MediaDevices = {
     cameraList: InputDeviceInfo[];
     microphoneList: InputDeviceInfo[];
@@ -13,7 +24,7 @@ type MediaDevices = {
     toggleAudio: () => void;
     toggleVideo: () => void;
     mediaStream?: MediaStream;
-    updateVideoResolution: (resolution: Resolution) => void;
+    updateMediaConstraints: (constraints: MediaConstraints) => void;
 }
 
 const useMediaDevices: () => MediaDevices = () => {
@@ -114,7 +125,7 @@ const useMediaDevices: () => MediaDevices = () => {
         }
     }
 
-    const updateVideoResolution = (resolution: Resolution) => {
+    const updateMediaConstraints = ({ resolution, echoCancellation, channelCount }: MediaConstraints) => {
         const videoTracks = mediaStream?.getVideoTracks();
         if (videoTracks && videoTracks.length) {
             videoTracks[0].applyConstraints({
@@ -125,9 +136,19 @@ const useMediaDevices: () => MediaDevices = () => {
                         width: resolution.width,
                         height: resolution.height
                     },
-                    { aspectRatio: (4 / 3) }
+                    { aspectRatio: DEFAULT_ASPECT_RATIO }
                 ]
             });
+        }
+
+        const audioTracks = mediaStream?.getAudioTracks();
+        if (audioTracks && audioTracks.length) {
+            audioTracks[0].applyConstraints(
+                {
+                    echoCancellation,
+                    channelCount
+                }
+            );
         }
     };
 
@@ -143,7 +164,7 @@ const useMediaDevices: () => MediaDevices = () => {
         toggleAudio,
         toggleVideo,
         mediaStream,
-        updateVideoResolution
+        updateMediaConstraints
     }
 }
 
