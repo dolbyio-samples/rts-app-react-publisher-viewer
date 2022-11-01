@@ -85,12 +85,8 @@ const useMediaDevices: () => MediaDevices = () => {
     const tempMicrophoneList: InputDeviceInfo[] = [];
     const tempCameraList: InputDeviceInfo[] = [];
     await devices.forEach((device) => {
-      device.kind === 'audioinput' &&
-        isUniqueDevice(tempMicrophoneList, device) &&
-        tempMicrophoneList.push(device);
-      device.kind === 'videoinput' &&
-        isUniqueDevice(tempCameraList, device) &&
-        tempCameraList.push(device);
+      device.kind === 'audioinput' && isUniqueDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
+      device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
     });
 
     setCameraList(tempCameraList);
@@ -101,10 +97,7 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
-    return !(
-      device.deviceId.includes('default') ||
-      deviceList.some((item) => item.deviceId === device.deviceId)
-    );
+    return !(device.deviceId.includes('default') || deviceList.some((item) => item.deviceId === device.deviceId));
   };
 
   const toggleAudio = () => {

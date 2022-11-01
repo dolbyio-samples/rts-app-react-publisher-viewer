@@ -73,21 +73,14 @@ const VideoView = ({ mirrored = true, mediaStream, statistics }: VideoViewProps)
         onMouseOut={() => setIsHoveredOnVideo(false)}
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
-      <HStack
-        pos="absolute"
-        bottom={isFullScreen ? ['120px', '120px', 0] : 0}
-        right="0"
-        spacing="0"
-      >
+      <HStack pos="absolute" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
         <IconButton
           aria-label="Full screen"
           size="md"
           className={`icon-button ${isHoveredOnVideo && 'icon-button--video-on-hover'}`}
           ref={fullScreenButton}
           onClick={() => setIsFullScreen(!isFullScreen)}
-          icon={
-            isFullScreen ? <IconFullScreenExit fill="black" /> : <IconFullScreen fill="black" />
-          }
+          icon={isFullScreen ? <IconFullScreenExit fill="black" /> : <IconFullScreen fill="black" />}
           onMouseOver={() => setIsHoveredOnVideo(true)}
           onMouseOut={() => setIsHoveredOnVideo(false)}
         />

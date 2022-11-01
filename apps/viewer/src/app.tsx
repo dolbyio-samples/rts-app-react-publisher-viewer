@@ -4,21 +4,18 @@ import useViewer from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, setupViewer, viewerStreams, connect, project, viewerMediaSources } =
-    useViewer();
-  console.log(viewerState);
+  const { viewerState, setupViewer, stop, viewerStreams, connect, project, viewerMediaSources } = useViewer();
   useEffect(() => {
     const href = new URL(window.location.href);
-    const streamName =
-      href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
-    const streamAccountId =
-      href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
+    const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
+    const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
     setupViewer(streamName, streamAccountId);
-    // TODO: return a clean up function which stops the viewer
+    return stop;
   }, []);
 
   useEffect(() => {
-    console.log(viewerMediaSources, viewerStreams);
+    // TODO: play the selected source by user instead of the first
+    // this should not run if it's not multi-source broadcast
     if (viewerStreams.length && viewerMediaSources.length) {
       project(viewerMediaSources[0].sourceId);
     }
@@ -51,7 +48,7 @@ function App() {
               </>
             )}
             {viewerStreams && viewerStreams.length ? (
-              <VideoView mediaStream={viewerStreams[0]} />
+              <VideoView mirrored={false} mediaStream={viewerStreams[0]} />
             ) : (
               <Text> No stream </Text>
             )}

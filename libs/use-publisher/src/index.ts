@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  Director,
-  Publish,
-  PeerConnection,
-  BroadcastOptions,
-  BroadcastEvent,
-  ViewerCount,
-} from '@millicast/sdk';
+import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
 
 import type { streamStats } from '@millicast/sdk';
 
@@ -42,7 +35,8 @@ const usePublisher = (): Publisher => {
 
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const linkText = useRef<string>('https://viewer.millicast.com/?streamId=/');
+
+  const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
   useEffect(() => {
     const capabilities = PeerConnection.getCapabilities('video');
@@ -60,7 +54,7 @@ const usePublisher = (): Publisher => {
     const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
     publisher.current = new Publish(streamName, tokenGenerator, true);
     displayPublisher.current = new Publish(streamName, tokenGenerator, true);
-    linkText.current = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
+    setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
     publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
       if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
     });
@@ -103,8 +97,7 @@ const usePublisher = (): Publisher => {
   };
 
   const updateCodec = (codecValue: string) => {
-    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue))
-      return;
+    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
     setCodec(codecValue);
   };
 
@@ -133,7 +126,7 @@ const usePublisher = (): Publisher => {
     stopDisplayStreaming,
     publisherState,
     viewerCount,
-    linkText: linkText.current,
+    linkText,
     statistics: statistics,
   };
 };
