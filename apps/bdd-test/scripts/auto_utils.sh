@@ -66,7 +66,7 @@ getAppURL(){
   echo "####################"
   local NAME=$1
 
-  local URL=$(pm2 logs ${NAME} --nostream | grep "Local" | awk '{print $NF}')
+  local URL=$(pm2 logs ${NAME} --nostream --raw | grep "Local" | awk '{print $NF}')
   echo "URL: ${URL}"
 
   if [[ ${NAME} == publisher ]];then
