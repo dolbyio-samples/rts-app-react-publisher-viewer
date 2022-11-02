@@ -38,19 +38,21 @@ function App() {
                 </Button>
               </>
             )}
-            {mainStream && viewerState === 'liveOn' ? (
-              <VideoView mediaStream={mainStream} />
-            ) : (
-              <Text> No stream is live </Text>
-            )}
             <HStack>
-              {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
-                return (
-                  <Box maxW="640" maxH="480px" key={trackSource.id}>
-                    <VideoView mediaStream={trackSource.source.mediaStream} />
-                  </Box>
-                );
-              })}
+              {mainStream && viewerState === 'liveOn' ? (
+                <VideoView mediaStream={mainStream} />
+              ) : (
+                <Text> No stream is live </Text>
+              )}
+              <VStack>
+                {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
+                  return (
+                    <Box maxW="640" maxH="480px" key={trackSource.id}>
+                      <VideoView mediaStream={trackSource.source.mediaStream} />
+                    </Box>
+                  );
+                })}
+              </VStack>
             </HStack>
           </VStack>
         </Center>
