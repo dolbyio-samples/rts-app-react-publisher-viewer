@@ -44,7 +44,10 @@ const useMediaDevices: () => MediaDevices = () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true,
-                    video: true
+                    video: {
+                        width: 1280, // set default as 720p
+                        height: 720,
+                    }
                     })
                 if (stream) {
                     getMediaDevicesList();
@@ -82,8 +85,8 @@ const useMediaDevices: () => MediaDevices = () => {
             },
             video: {
                 deviceId: cameraId,
-                // width: { min: 640, ideal: 1280, max: 1920 },
-                // height: { min: 360, ideal: 720, max: 1080 },
+                width: 1280, // set default as 720p
+                height: 720,
             }
         });
 
@@ -131,8 +134,8 @@ const useMediaDevices: () => MediaDevices = () => {
         const videoTracks = mediaStream?.getVideoTracks();
         if (videoTracks && videoTracks.length) {
             videoTracks[0].applyConstraints({
-                // width: { min: 640, ideal: 1280, max: 1920 },
-                // height: { min: 360, ideal: 720, max: 1080 },
+                width: { min: 640, max: 1920 },
+                height: { min: 360, max: 1080 },
                 advanced: [
                     {
                         width: resolution.width,
@@ -141,8 +144,6 @@ const useMediaDevices: () => MediaDevices = () => {
                     { aspectRatio: DEFAULT_ASPECT_RATIO }
                 ]
             });
-
-            console.log("test2", resolution.width)
         }
 
         const audioTracks = mediaStream?.getAudioTracks();

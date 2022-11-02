@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Select } from '@chakra-ui/react';
 
 type ResolutionSelectProps = {
@@ -35,10 +35,6 @@ const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
         setResolution(selectedResolution);
     };
 
-    useEffect(() => {
-        onResolutionChange("720p")
-        console.log("test")
-    }, [])
 
     return (
         <Select
