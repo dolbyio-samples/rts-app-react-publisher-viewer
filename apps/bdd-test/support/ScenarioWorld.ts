@@ -30,6 +30,14 @@ export class ScenarioWorld extends World {
 
   debug?: boolean = false;
 
+  publisherConsoleLogs: string[] = [];
+
+  publisherConsoleErrorLogs: string[] = [];
+
+  viewerConsoleLogs: string[] = [];
+
+  viewerConsoleErrorLogs: string[] = [];
+
   globalVariables?: GlobalVariables;
 
   constructor(options: IWorldOptions) {

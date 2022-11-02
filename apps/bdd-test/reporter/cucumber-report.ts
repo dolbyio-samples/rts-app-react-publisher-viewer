@@ -1,20 +1,23 @@
-import reporter, { Options } from 'cucumber-html-reporter';
+import { generate, Options } from 'cucumber-html-reporter';
 
-const options: Options = {
+import { options } from '../playwright.config';
+
+const reportOptions: Options = {
   theme: 'bootstrap',
-  jsonFile: './reports/cucumber_report.json',
-  output: './reports/cucumber_report.html',
-  screenshotsDirectory: './reports/screenshots',
+  jsonFile: `${options.reportPath}/cucumber_report.json`,
+  output: `${options.reportPath}/cucumber_report.html`,
+  screenshotsDirectory: `${options.reportPath}/screenshots`,
   storeScreenshots: true,
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
   launchReport: false,
   metadata: {
-    'App Version': '2.0.0',
+    'App Version': '0.0.1',
     'Test Environment': 'DEV',
-    Browser: 'Chrome',
-    Platform: 'MAC',
+    Browser: `${options.browserName}`,
+    Platform: `${process.platform}`,
+    Time: `${new Date()}`,
   },
 };
 
-reporter.generate(options);
+generate(reportOptions);

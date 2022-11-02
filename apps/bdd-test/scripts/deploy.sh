@@ -1,13 +1,14 @@
 #!/bin/bash
 
 if [[ -z "${GITHUB_WORKSPACE}" ]]; then
-  . ${PWD}/tests/bdd-atf/scripts/auto_utils.sh
+  . ${PWD}/apps/bdd-test/scripts/auto_utils.sh
 else
-  . ${GITHUB_WORKSPACE}/tests/bdd-atf/scripts/auto_utils.sh
+  . ${GITHUB_WORKSPACE}/apps/bdd-test/scripts/auto_utils.sh
 fi
 
-APP_NAME=publisher-app
-
+PUBLISHER_APP_NAME=publisher
+VIEWER_APP_NAME=viewer
+echo "" > .app
 # Check if OS is supported
 checkOS osType
 
@@ -15,8 +16,19 @@ checkOS osType
 installDependencies
 
 # Deploy publisher app locally
-runApp ${APP_NAME}
+runApp ${PUBLISHER_APP_NAME}
 
-# Verify server logs
-verifyServerLogs ${APP_NAME}
+# Verify publisher app server logs
+verifyServerLogs ${PUBLISHER_APP_NAME}
 
+# Set App URL Environment variable
+setAppURL ${PUBLISHER_APP_NAME}
+
+# Deploy viewer app locally
+runApp ${VIEWER_APP_NAME}
+
+# Verify viewer app server logs
+verifyServerLogs ${VIEWER_APP_NAME}
+
+# Set App URL Environment variable
+setAppURL ${VIEWER_APP_NAME}

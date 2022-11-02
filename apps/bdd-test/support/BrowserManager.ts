@@ -1,5 +1,5 @@
-import cloneDeep from 'lodash.clonedeep';
-import playwright, { Browser } from 'playwright';
+// import cloneDeep from 'lodash.clonedeep';
+import playwright, { Browser, Page } from 'playwright';
 
 import { defaultTimeout } from '../config/defaults';
 import { options } from '../playwright.config';
@@ -75,11 +75,12 @@ export class BrowserManager {
   }
 
   private getContextOptions(scenarioWorld: ScenarioWorld) {
-    const contextOptions = cloneDeep(this.options.contextOptions);
+    // const contextOptions = cloneDeep(this.options.contextOptions);
+    const contextOptions = { ...this.options.contextOptions };
     if (!contextOptions?.recordVideo && this.options.video !== 'off') {
       contextOptions.recordVideo = {
-        dir: `./reports/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
-        size: { width: 1280, height: 720 },
+        dir: `${this.options.reportPath}/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
+        size: { width: 1280, height: 1024 },
       };
     }
     return contextOptions;
@@ -99,5 +100,24 @@ export class BrowserManager {
     if (typeof this.options.viewport !== 'undefined') {
       this.options.contextOptions.viewport = this.options.viewport;
     }
+  }
+
+  static monitorConsoleErrorLogs(page: Page) {
+    const consoleLogs: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && !msg.text().toLowerCase().includes('roboto')) {
+        console.log(`Console Error Log: "${msg.text()}"`);
+        consoleLogs.push(msg.text());
+      }
+    });
+    return consoleLogs;
+  }
+
+  static monitorConsoleLogs(page: Page) {
+    const consoleLogs: string[] = [];
+    page.on('console', (msg) => {
+      consoleLogs.push(msg.text());
+    });
+    return consoleLogs;
   }
 }

@@ -1,14 +1,15 @@
 const all = [
-  './features/**/*.feature',
+  './apps/bdd-test/features/**/*.feature',
   '--require-module ts-node/register',
-  '--require ./support/**/*.ts',
-  '--require ./steps/**/*.ts',
-  '-f json:./reports/cucumber_report.json',
+  '--require ./apps/bdd-test/support/**/*.ts',
+  '--require ./apps/bdd-test/steps/**/*.ts',
+  '-f json:./apps/bdd-test/reports/cucumber_report.json',
   '--publish-quiet',
 ].join(' ');
 
 const smoke = `${all} --tags @smoke`;
-const regression = `${all} --tags @regression`;
+const publisher = `${all} --tags @publisher`;
+const viewer = `${all} --tags @viewer`;
 const only = `${all} --tags @only`;
 
-module.exports = { default: all, smoke, regression, only };
+module.exports = { default: all, smoke, publisher, viewer, only };

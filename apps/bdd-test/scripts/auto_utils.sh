@@ -5,37 +5,36 @@ installDependencies(){
   echo "Install Dependencies"
   echo "#################################"
   yarn global add pm2
-  sudo apt-get install -y xsel
-  #npx playwright install --force chrome
+  # npx playwright install --force chrome
 }
 
 runApp(){
   echo "######################"
-  echo "Start the app in dev mode"
+  echo "Start the $1 app in dev mode"
   echo "######################"
   local NAME=$1
 
   pm2 flush ${NAME}
-  pm2 flush
-  
-  pm2 start npm --name ${NAME} -- run preview-pub  
+  rm -f ~/.pm2/logs/${NAME}*
+
+  pm2 start npm --name ${NAME} -- start ${NAME}
 }
 
 verifyServerLogs(){
   echo "###################"
-  echo "Verify dev server logs"
+  echo "Verify $1 server logs"
   echo "####################"
   local NAME=$1
 
   local started="false"
-  local SUCCESS="ready in"
-  local FAIL="error Command failed with exit code|Build failed|ERROR"
+  local SUCCESS="Local:"
+  local FAIL="error Command failed with exit code|Build failed|ERROR|ERR"
 
   local retry=1
   while [ ${retry} -lt 20 ]
   do
       sleep 2
-      local LOGS=$(pm2 logs ${NAME} --nostream --lines 4)
+      local LOGS=$(pm2 logs ${NAME} --nostream --lines 8)
       echo "${LOGS}"
       if [[ ${LOGS} =~ ${FAIL} ]]; then
         echo "Failed to start the development server"
@@ -58,6 +57,23 @@ verifyServerLogs(){
     exit 1
   fi
 }
+
+setAppURL(){
+  echo "###################"
+  echo "Set $1 App URL as env variable"
+  echo "####################"
+  local NAME=$1
+
+  local URL=$(pm2 logs ${NAME} --nostream | grep "Local:.*http:" | awk '{print $NF}')
+  echo "URL: ${URL}"
+
+  if [[ ${NAME} == publisher ]];then
+    echo "export PUBLISHER_URL=$URL" >> .app
+  else
+    echo "export VIEWER_URL=$URL" >> .app
+  fi
+}
+
 
 stopApp(){
   echo "###################"

@@ -4,16 +4,53 @@
   "sourceRoot": "apps/bdd-test/src",
   "projectType": "application",
   "targets": {
+    "cleanup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["rimraf ./apps/bdd-test/reports/*"]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./apps/bdd-test/scripts/deploy.sh"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts"]
+      },
+      "dependsOn": ["cleanup"]
+    },
     "test-publisher": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["echo 'run publisher test cases'"]
+        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @publisher"]
       }
     },
     "test-viewer": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["echo 'run viewer test cases'"]
+        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @viewer"]
+      }
+    },
+    "smoke": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @smoke"]
+      }
+    },
+    "only": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @only"]
+      }
+    },
+    "test-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn ts-node ./apps/bdd-test/reporter/cucumber-report.ts"]
       }
     },
     "lint": {
