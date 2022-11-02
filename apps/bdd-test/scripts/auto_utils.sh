@@ -36,11 +36,13 @@ verifyServerLogs(){
       sleep 2
       local LOGS=$(pm2 logs ${NAME} --nostream --lines 8)
       echo "${LOGS}"
-      if [[ ${LOGS} =~ ${FAIL} ]]; then
+      local LOG_LINE=$(pm2 logs ${NAME} --nostream | grep "Local:.*http:")
+      echo "Server Status: ${LOG_LINE}"
+      if [[ ${LOG_LINE} =~ ${FAIL} ]]; then
         echo "Failed to start the development server"
         pm2 logs ${NAME} --nostream
         exit 1 
-      elif [[ ${LOGS} =~ ${SUCCESS} ]]; then
+      elif [[ ${LOG_LINE} =~ ${SUCCESS} ]]; then
         echo "App compiled and started successfully!"
         pm2 logs ${NAME} --nostream
         started="true"
@@ -72,6 +74,9 @@ setAppURL(){
   else
     echo "export VIEWER_URL=$URL" >> .app
   fi
+
+  pwd
+  ls -la .app
 }
 
 
