@@ -30,6 +30,13 @@ const useMediaDevices: () => MediaDevices = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
+  const mediaConstraints = {
+    video: {
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+    },
+  };
+
   useEffect(() => {
     const initializeDeviceList = async () => {
       try {
@@ -68,6 +75,7 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({
+      ...mediaConstraints,
       audio: {
         deviceId: microphoneId,
       },
