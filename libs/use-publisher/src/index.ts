@@ -3,7 +3,7 @@ import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, Vi
 
 import type { streamStats } from '@millicast/sdk';
 
-export type PublisherState = 'ready' | 'connecting' | 'streaming';
+export type PublisherState = 'initial' | 'ready' | 'connecting' | 'streaming';
 
 export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'sourceId'>;
 
@@ -26,7 +26,7 @@ export interface Publisher {
 }
 
 const usePublisher = (): Publisher => {
-  const [publisherState, setPublisherState] = useState<PublisherState>('ready');
+  const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<streamStats>();
 
@@ -58,6 +58,7 @@ const usePublisher = (): Publisher => {
     publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
       if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
     });
+    setPublisherState('ready');
   };
 
   const startStreaming = async (options: BroadcastOptions) => {

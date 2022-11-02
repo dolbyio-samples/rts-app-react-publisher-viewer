@@ -1,10 +1,10 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
 import { Director, MediaTrackInfo, View } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
-export type ViewerState = 'ready' | 'connecting' | 'liveOn' | 'liveOff';
+export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
 
 export type RemoteTrackSource = {
   mediaStream: MediaStream;
@@ -25,7 +25,7 @@ export type Viewer = {
 };
 
 const useViewer = (): Viewer => {
-  const [viewerState, setViewerState] = useState<ViewerState>('ready');
+  const [viewerState, setViewerState] = useState<ViewerState>('initial');
   const [remoteTrackSources, setRemoteTrackSources, remoteTrackSourcesRef] = useState<Map<SourceId, RemoteTrackSource>>(
     new Map()
   );
@@ -77,6 +77,7 @@ const useViewer = (): Viewer => {
           break;
       }
     });
+    setViewerState('ready');
   };
 
   const startViewer = async (options?: ViewOptions) => {
