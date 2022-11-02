@@ -10,7 +10,7 @@ export type Resolution = {
     height: number;
 }
 
-type Resolutions = "2160p" | "1080p" | "720p" | "480p";
+export type Resolutions = "2160p" | "1080p" | "720p" | "480p";
 
 const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
 

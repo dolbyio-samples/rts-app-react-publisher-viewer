@@ -40,7 +40,8 @@ function App() {
   const [streamName, setStreamName] = useState("")
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
   const [channels, setChannels] = useState<number>(1);
-  const [echoCancellation, setEchoCancellation] = useState<boolean>(true);
+  const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
+  const [resolution, setResolution] = useState<Resolution>({width: 1280, height: 720})
 
   const { startStreaming,
     stopStreaming,
@@ -94,32 +95,35 @@ function App() {
     [microphoneList]
   );
 
-  // TODO wire these events correctly to `useMediaDevices
   const onSelectEchoCancellation = (echoCancellation: boolean) => {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
-      echoCancellation
+      echoCancellation,
+      resolution
     };
-    updateMediaConstraints(constraints);
 
+    setEchoCancellation(echoCancellation)
+    updateMediaConstraints(constraints);
   };
 
-  // TODO wire these events correctly to `useMediaDevices
-  const onSelectAudioChannels = (channels: AudioChannels) => {
+  const onSelectAudioChannels = () => {
     const constraints: MediaConstraints = {
-      channelCount: channels as AudioChannels,
-      echoCancellation
+      channelCount: channels === 1 ? 2 : 1,
+      echoCancellation,
+      resolution
     };
+
+    setChannels(channels === 1 ? 2 : 1);
     updateMediaConstraints(constraints);
   };
 
-  // TODO wire these events correctly to `useMediaDevices
   const onSelectVideoResolution = (resolution: Resolution) => {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
       echoCancellation,
       resolution
     };
+    setResolution(resolution)
     updateMediaConstraints(constraints);
   };
 
@@ -236,12 +240,12 @@ function App() {
                         }} />
                       </HStack>}
                       <Switch test-id="channelCountSwitch"
-                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        onChange={() => onSelectAudioChannels()}
                       >
                         Mono or Stereo
                       </Switch>
                       <Switch test-id="echoCancellationSwitch"
-                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        onChange={() => onSelectEchoCancellation(!echoCancellation)}
                       >
                         Echo Cancellation
                       </Switch>

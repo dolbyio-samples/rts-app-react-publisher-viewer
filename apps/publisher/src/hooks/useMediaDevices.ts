@@ -43,7 +43,10 @@ const useMediaDevices: () => MediaDevices = () => {
          const initializeDeviceList = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
+                    audio: {
+                        channelCount: 1,
+                        echoCancellation: false
+                    },
                     video: {
                         width: 1280, // set default as 720p
                         height: 720,
@@ -81,7 +84,9 @@ const useMediaDevices: () => MediaDevices = () => {
     const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
-                deviceId: microphoneId
+                deviceId: microphoneId,
+                channelCount: 1,
+                echoCancellation: false
             },
             video: {
                 deviceId: cameraId,
@@ -151,9 +156,9 @@ const useMediaDevices: () => MediaDevices = () => {
             audioTracks[0].applyConstraints(
                 {
                     echoCancellation,
-                    channelCount
+                    channelCount: channelCount
                 }
-            );
+            )
         }
     };
 
