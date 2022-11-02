@@ -43,10 +43,7 @@ const useMediaDevices: () => MediaDevices = () => {
          const initializeDeviceList = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        channelCount: 1,
-                        echoCancellation: false
-                    },
+                    audio: true,
                     video: {
                         width: 1280, // set default as 720p
                         height: 720,
@@ -85,8 +82,6 @@ const useMediaDevices: () => MediaDevices = () => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
                 deviceId: microphoneId,
-                channelCount: 1,
-                echoCancellation: false
             },
             video: {
                 deviceId: cameraId,
