@@ -16,7 +16,7 @@ env:
   PR_NUM: ${{ github.event.number }}
 
 jobs:
-  CI-CD:
+  BDD-Tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -39,3 +39,10 @@ jobs:
       - name: Execute BDD Tests
         run: |
           yarn nx test bdd-test --skip-nx-cache && yarn nx test-report bdd-test
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/bdd-test/reports/
+          retention-days: 2

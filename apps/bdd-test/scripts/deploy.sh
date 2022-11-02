@@ -17,18 +17,22 @@ installDependencies
 
 # Deploy publisher app locally
 runApp ${PUBLISHER_APP_NAME}
+sleep 5
+pm2 logs ${PUBLISHER_APP_NAME} --nostream
 
 # Verify publisher app server logs
-verifyServerLogs ${PUBLISHER_APP_NAME}
+# verifyServerLogs ${PUBLISHER_APP_NAME}
 
 # Set App URL Environment variable
-setAppURL ${PUBLISHER_APP_NAME}
+# setAppURL ${PUBLISHER_APP_NAME}
 
 # Deploy viewer app locally
 runApp ${VIEWER_APP_NAME}
+sleep 5
+pm2 logs ${VIEWER_APP_NAME} --nostream
 
 # Verify viewer app server logs
-verifyServerLogs ${VIEWER_APP_NAME}
+# verifyServerLogs ${VIEWER_APP_NAME}
 
 # Set App URL Environment variable
-setAppURL ${VIEWER_APP_NAME}
+# setAppURL ${VIEWER_APP_NAME}
