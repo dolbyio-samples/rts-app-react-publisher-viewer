@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
 import { Director, MediaTrackInfo, View } from '@millicast/sdk';
-import { MediaStreamSource, ViewOptions, BroadcastEvent, Logger } from '@millicast/sdk';
+import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 export type ViewerState = 'ready' | 'connecting' | 'liveOn' | 'liveOff';
 
@@ -34,10 +34,6 @@ const useViewer = (): Viewer => {
   const sourceIds = useRef<Set<string>>(new Set());
   const handleError = useErrorHandler();
   const mainSourceId = 'Main';
-
-  useEffect(() => {
-    // Logger.setLevel(Logger.DEBUG);
-  }, []);
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
     millicastView.current?.stop();
@@ -105,15 +101,15 @@ const useViewer = (): Viewer => {
       videoTransceiver = await millicastView.current.addRemoteTrack('video', [mediaStream]);
     if (trackInfos.some((info) => info.media == 'audio'))
       audioTransceiver = await millicastView.current.addRemoteTrack('audio', [mediaStream]);
-    const vmid = videoTransceiver?.mid ?? undefined;
-    const amid = audioTransceiver?.mid ?? undefined;
-    if (!vmid && !amid) throw 'No valid video or video in remote track';
+    const videoMid = videoTransceiver?.mid ?? undefined;
+    const audioMid = audioTransceiver?.mid ?? undefined;
+    if (!videoMid && !audioMid) throw 'No valid video or video in remote track';
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
-    newRemoteTrackSources.set(sourceId, { mediaStream, videoMediaId: vmid, audioMediaId: vmid });
+    newRemoteTrackSources.set(sourceId, { mediaStream, videoMediaId: videoMid, audioMediaId: videoMid });
     setRemoteTrackSources(newRemoteTrackSources);
     const mapping = [];
-    if (vmid) mapping.push({ trackId: 'video', mediaId: vmid, media: 'video' });
-    if (amid) mapping.push({ trackId: 'audio', mediaId: amid, media: 'audio' });
+    if (videoMid) mapping.push({ trackId: 'video', mediaId: videoMid, media: 'video' });
+    if (audioMid) mapping.push({ trackId: 'audio', mediaId: audioMid, media: 'audio' });
     try {
       await millicastView.current.project(sourceId, mapping);
     } catch (error) {
