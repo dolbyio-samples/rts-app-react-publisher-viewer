@@ -70,14 +70,14 @@ getAppURL(){
   echo "URL: ${URL}"
 
   if [[ ${NAME} == publisher ]];then
-    echo "PUBLISHER_URL=$URL" >> .test.env
+    echo "PUBLISHER_URL=$URL" >> .test_urls.env
   else
-    echo "VIEWER_URL=$URL" >> .test.env
+    echo "VIEWER_URL=$URL" >> .test_urls.env
   fi
 
   pwd
-  ls -la .test.env
-  cat .test.env
+  ls -la .test_urls.env
+  cat .test_urls.env
 }
 
 

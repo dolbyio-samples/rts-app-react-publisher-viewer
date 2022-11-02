@@ -8,7 +8,7 @@ fi
 
 PUBLISHER_APP_NAME=publisher
 VIEWER_APP_NAME=viewer
-echo "" > .test.env
+echo "" > .test_urls.env
 # Check if OS is supported
 checkOS osType
 
@@ -32,3 +32,7 @@ verifyServerLogs ${VIEWER_APP_NAME}
 
 # Set App URL Environment variable
 getAppURL ${VIEWER_APP_NAME}
+
+# Remove color codes
+cat .test_urls.env |  sed "s,\\\u001b\[[0-9;]*m,,g" > .test.env
+cat .test.env
