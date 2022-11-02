@@ -38,7 +38,11 @@ jobs:
           yarn nx deploy bdd-test --skip-nx-cache
       - name: Execute BDD Tests
         run: |
-          yarn nx test bdd-test --skip-nx-cache && yarn nx test-report bdd-test
+          yarn nx test bdd-test --skip-nx-cache
+      - name: Generate Test Report
+        if: always()
+        run: |
+          yarn nx test-report bdd-test --skip-nx-cache
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         if: always()
