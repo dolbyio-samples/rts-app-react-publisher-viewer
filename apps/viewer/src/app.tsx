@@ -4,7 +4,7 @@ import useViewer from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, mainStream, setupViewer, stopViewer, connect, remoteTrackSources } = useViewer();
+  const { viewerState, mainStream, setupViewer, stopViewer, startViewer, remoteTrackSources } = useViewer();
   useEffect(() => {
     const href = new URL(window.location.href);
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
@@ -31,7 +31,7 @@ function App() {
                 <Text> Please connect first </Text>
                 <Button
                   onClick={() => {
-                    connect();
+                    startViewer();
                   }}
                 >
                   connect

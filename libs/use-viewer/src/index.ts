@@ -19,7 +19,7 @@ export type Viewer = {
   mainStream?: MediaStream;
   setupViewer: (streamName: string, streamAccountId: string, subscriberToken?: string) => void;
   stopViewer: () => void;
-  connect: (options?: ViewOptions) => void;
+  startViewer: (options?: ViewOptions) => void;
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
   mainSourceId: string;
 };
@@ -79,7 +79,7 @@ const useViewer = (): Viewer => {
     });
   };
 
-  const connect = async (options?: ViewOptions) => {
+  const startViewer = async (options?: ViewOptions) => {
     if (!millicastView.current) throw 'Please set up Viewer first';
     if (millicastView.current && millicastView.current.isActive()) return;
     try {
@@ -141,7 +141,7 @@ const useViewer = (): Viewer => {
     mainStream,
     setupViewer,
     stopViewer,
-    connect,
+    startViewer,
     remoteTrackSources,
     mainSourceId,
   };
