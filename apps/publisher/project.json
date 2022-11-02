@@ -67,7 +67,7 @@
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx test-publisher bdd-test"]
+        "commands": ["nx test bdd-test --profile publisher"]
       }
     },
     "deploy": {
