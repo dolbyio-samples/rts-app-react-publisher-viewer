@@ -27,22 +27,22 @@ verifyServerLogs(){
   local NAME=$1
 
   local started="false"
-  local SUCCESS="Local:"
+  local SUCCESS="Local"
   local FAIL="error Command failed with exit code|Build failed|ERROR|ERR"
 
   local retry=1
   while [ ${retry} -lt 20 ]
   do
       sleep 2
-      local LOGS=$(pm2 logs ${NAME} --nostream --lines 8)
+      local LOGS=$(pm2 logs ${NAME} --nostream)
       echo "${LOGS}"
-      local LOG_LINE=$(pm2 logs ${NAME} --nostream | grep "Local:.*http:")
+      local URL_LINE=$(pm2 logs ${NAME} --nostream | grep "Local")
       echo "Server Status: ${LOG_LINE}"
-      if [[ ${LOG_LINE} =~ ${FAIL} ]]; then
+      if [[ ${URL_LINE} =~ ${FAIL} ]]; then
         echo "Failed to start the development server"
         pm2 logs ${NAME} --nostream
-        exit 1 
-      elif [[ ${LOG_LINE} =~ ${SUCCESS} ]]; then
+        #exit 1 
+      elif [[ ${URL_LINE} =~ ${SUCCESS} ]]; then
         echo "App compiled and started successfully!"
         pm2 logs ${NAME} --nostream
         started="true"
@@ -56,17 +56,17 @@ verifyServerLogs(){
   if [[ ${started} != "true" ]]; then
     echo "Failed to start the development server"
     pm2 logs ${NAME} --nostream
-    exit 1
+    #exit 1
   fi
 }
 
-setAppURL(){
+getAppURL(){
   echo "###################"
-  echo "Set $1 App URL as env variable"
+  echo "Get $1 App URL as env variable"
   echo "####################"
   local NAME=$1
 
-  local URL=$(pm2 logs ${NAME} --nostream | grep "Local:.*http:" | awk '{print $NF}')
+  local URL=$(pm2 logs ${NAME} --nostream | grep "Local" | awk '{print $NF}')
   echo "URL: ${URL}"
 
   if [[ ${NAME} == publisher ]];then
@@ -77,6 +77,7 @@ setAppURL(){
 
   pwd
   ls -la .app
+  cat .app
 }
 
 
