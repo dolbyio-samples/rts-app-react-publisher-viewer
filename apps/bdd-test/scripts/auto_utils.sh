@@ -41,7 +41,7 @@ verifyServerLogs(){
       if [[ ${URL_LINE} =~ ${FAIL} ]]; then
         echo "Failed to start the development server"
         pm2 logs ${NAME} --nostream
-        #exit 1 
+        exit 1 
       elif [[ ${URL_LINE} =~ ${SUCCESS} ]]; then
         echo "App compiled and started successfully!"
         pm2 logs ${NAME} --nostream
@@ -56,7 +56,7 @@ verifyServerLogs(){
   if [[ ${started} != "true" ]]; then
     echo "Failed to start the development server"
     pm2 logs ${NAME} --nostream
-    #exit 1
+    exit 1
   fi
 }
 
@@ -70,14 +70,14 @@ getAppURL(){
   echo "URL: ${URL}"
 
   if [[ ${NAME} == publisher ]];then
-    echo "export PUBLISHER_URL=$URL" >> .app
+    echo "PUBLISHER_URL=$URL" >> .test.env
   else
-    echo "export VIEWER_URL=$URL" >> .app
+    echo "VIEWER_URL=$URL" >> .test.env
   fi
 
   pwd
-  ls -la .app
-  cat .app
+  ls -la .test.env
+  cat .test.env
 }
 
 

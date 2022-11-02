@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import { BrowserContextOptions, LaunchOptions } from 'playwright';
 
 import { BrowserName, PlaywrightOptions } from './utils/type';
+
+dotenv.config({ path: '.test.env' });
 
 export const launchOptionsChromium: LaunchOptions = {
   args: [

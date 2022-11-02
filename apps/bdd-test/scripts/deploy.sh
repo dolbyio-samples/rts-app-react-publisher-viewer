@@ -8,7 +8,7 @@ fi
 
 PUBLISHER_APP_NAME=publisher
 VIEWER_APP_NAME=viewer
-echo "" > .app
+echo "" > .test.env
 # Check if OS is supported
 checkOS osType
 
