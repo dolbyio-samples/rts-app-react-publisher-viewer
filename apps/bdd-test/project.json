@@ -19,7 +19,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["source .app && cucumber-js --config ./apps/bdd-test/cucumber.ts"]
+        "commands": ["cucumber-js --config ./apps/bdd-test/cucumber.ts"]
       },
       "dependsOn": ["cleanup"]
     },
