@@ -211,7 +211,6 @@ function App() {
                           <Select
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
-                            placeholder="Select Codec"
                             defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
