@@ -39,7 +39,6 @@ import React from 'react';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-  const presenterSourceId = 'PresenterMedia';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
@@ -133,10 +132,10 @@ function App() {
           <VStack>
             <HStack bg="black">
               <Box>
-                <VideoView mediaStream={mediaStream} statistics={statistics} />
+                <VideoView mirrored={true} mediaStream={mediaStream} statistics={statistics} />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
-                <VideoView mirrored={false} mediaStream={displayStream} />
+                <VideoView mediaStream={displayStream} />
               </Box>
             </HStack>
             <HStack>
@@ -147,13 +146,7 @@ function App() {
                 variant="outline"
                 test-id="toggleAudioButton"
                 isDisabled={!(mediaStream && mediaStream.getAudioTracks().length)}
-                icon={
-                  isAudioEnabled ? (
-                    <IconMicrophoneOn fill={purple400} />
-                  ) : (
-                    <IconMicrophoneOff fill="red" />
-                  )
-                }
+                icon={isAudioEnabled ? <IconMicrophoneOn fill={purple400} /> : <IconMicrophoneOff fill="red" />}
                 onClick={() => {
                   toggleAudio();
                 }}
@@ -165,9 +158,7 @@ function App() {
                 variant="outline"
                 test-id="toggleVideoButton"
                 isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-                icon={
-                  isVideoEnabled ? <IconCameraOn fill={purple400} /> : <IconCameraOff fill="red" />
-                }
+                icon={isVideoEnabled ? <IconCameraOn fill={purple400} /> : <IconCameraOff fill="red" />}
                 onClick={() => {
                   toggleVideo();
                 }}
@@ -227,9 +218,7 @@ function App() {
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
                             placeholder="Select Codec"
-                            defaultValue={
-                              codec || (codecList.length !== 0 ? codecList[0] : undefined)
-                            }
+                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
                             {codecList.map((codec) => {
@@ -265,7 +254,6 @@ function App() {
                         simulcast: isSimulcastEnabled,
                         codec,
                         events: ['viewercount'],
-                        sourceId: presenterSourceId,
                       });
                       if (displayStream)
                         startDisplayStreaming({

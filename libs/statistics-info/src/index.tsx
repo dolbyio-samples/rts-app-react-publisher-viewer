@@ -66,8 +66,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               <Text fontSize="sm">
-                {statistics.video?.outbounds[0].frameWidth}x
-                {statistics.video?.outbounds[0].frameHeight}
+                {statistics.video?.outbounds[0].frameWidth}x{statistics.video?.outbounds[0].frameHeight}
               </Text>
             </Box>
           </Flex>
@@ -135,8 +134,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               <Text fontSize="sm">
-                {statistics.video?.outbounds[0].timestamp ||
-                  statistics.audio?.outbounds[0].timestamp}
+                {statistics.video?.outbounds[0].timestamp || statistics.audio?.outbounds[0].timestamp}
               </Text>
             </Box>
           </Flex>

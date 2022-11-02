@@ -1,5 +1,5 @@
 declare namespace millicast {
-  type Event = 'active' | 'inactive' | 'viewercount';
+  type Event = 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
 
   type CapabilityKind = 'audio' | 'video';
 
@@ -40,10 +40,24 @@ declare namespace millicast {
     mimetype: string;
   }
 
+  interface ViewerCount {
+    viewercount: number;
+  }
+
+  interface MediaTrackInfo {
+    trackId: string;
+    media: 'audio' | 'video';
+  }
+  interface MediaStreamSource {
+    streamId: string;
+    sourceId: string;
+    tracks: MediaTrackInfo[];
+  }
+
   interface BroadcastEvent {
     type: string;
-    name: 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
-    data: string | Date | unknown;
+    name: Event;
+    data: string | Date | ViewerCount | MediaStreamSource;
   }
 
   type TokenGeneratorCallback = () => Promise<DirectorResponse>;
@@ -123,12 +137,28 @@ declare namespace millicast {
     static getSubscriber(options: DirectorSubscriberOptions): Promise<DirectorResponse>;
   }
 
+  interface ViewProjectSourceMapping {
+    trackId?: string;
+    mediaId?: string;
+    media?: string;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface View extends EventEmitter {}
   class View {
     constructor(streamName: string, tokenGenerator: TokenGeneratorCallback);
     stop(): void;
+    isActive(): boolean;
+    connect(options?: ViewOptions): Promise<void>;
+    project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
+    unproject(mediaIds: string[]): Promise<void>;
+    addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
   }
+
+  type ViewOptions = {
+    pinnedSourceId?: string;
+    events?: Event[];
+  };
 
   /**
    * @class PeerConnection

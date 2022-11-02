@@ -1,18 +1,16 @@
-import { Box, Center, Flex, Heading, Spacer, VStack, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Box, Center, Flex, Heading, Spacer, VStack, Text, Button, HStack } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import useViewer from '@millicast-react/use-viewer';
+import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, setupViewer, viewerStreams } = useViewer();
-
+  const { viewerState, mainStream, setupViewer, stopViewer, startViewer, remoteTrackSources } = useViewer();
   useEffect(() => {
     const href = new URL(window.location.href);
-    const streamName =
-      href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
-    const streamAccountId =
-      href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
+    const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
+    const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
     setupViewer(streamName, streamAccountId);
-    // TODO: return a clean up function which stops the viewer
+    return stopViewer;
   }, []);
 
   return (
@@ -28,12 +26,34 @@ function App() {
       <Box>
         <Center>
           <VStack>
-            {viewerState === 'ready' ? (
-              <Text> Please connect first </Text>
-            ) : (
-              // TODO: add more logic for streaming
-              <Text> Presenter is not live now, please stay tuned. </Text>
+            {viewerState === 'ready' && (
+              <>
+                <Text> Please connect first </Text>
+                <Button
+                  onClick={() => {
+                    startViewer();
+                  }}
+                >
+                  connect
+                </Button>
+              </>
             )}
+            <HStack>
+              {mainStream && viewerState === 'liveOn' ? (
+                <VideoView mediaStream={mainStream} />
+              ) : (
+                <Text> No stream is live </Text>
+              )}
+              <VStack>
+                {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
+                  return (
+                    <Box maxW="640" maxH="480px" key={trackSource.id}>
+                      <VideoView mediaStream={trackSource.source.mediaStream} />
+                    </Box>
+                  );
+                })}
+              </VStack>
+            </HStack>
           </VStack>
         </Center>
       </Box>
