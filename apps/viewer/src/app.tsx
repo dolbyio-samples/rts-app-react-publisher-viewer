@@ -4,7 +4,7 @@ import useViewer from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 
 function App() {
-  const { viewerState, setupViewer, stopViewer, connect, remoteTrackSources } = useViewer();
+  const { viewerState, mainStream, setupViewer, stopViewer, connect, remoteTrackSources } = useViewer();
   useEffect(() => {
     const href = new URL(window.location.href);
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
@@ -38,7 +38,11 @@ function App() {
                 </Button>
               </>
             )}
-            {remoteTrackSources.size === 0 && <Text> No stream is live </Text>}
+            {mainStream && viewerState === 'liveOn' ? (
+              <VideoView mediaStream={mainStream} />
+            ) : (
+              <Text> No stream is live </Text>
+            )}
             <HStack>
               {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
                 return (

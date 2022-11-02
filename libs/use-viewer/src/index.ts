@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, View } from '@millicast/sdk';
+import { Director, MediaTrackInfo, View } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent, Logger } from '@millicast/sdk';
 
-export type ViewerState = 'ready' | 'connecting' | 'connected';
+export type ViewerState = 'ready' | 'connecting' | 'liveOn' | 'liveOff';
 
 export type RemoteTrackSource = {
   mediaStream: MediaStream;
@@ -16,6 +16,7 @@ type SourceId = string;
 
 export type Viewer = {
   viewerState: ViewerState;
+  mainStream?: MediaStream;
   setupViewer: (streamName: string, streamAccountId: string, subscriberToken?: string) => void;
   stopViewer: () => void;
   connect: (options?: ViewOptions) => void;
@@ -28,6 +29,7 @@ const useViewer = (): Viewer => {
   const [remoteTrackSources, setRemoteTrackSources, remoteTrackSourcesRef] = useState<Map<SourceId, RemoteTrackSource>>(
     new Map()
   );
+  const [mainStream, setMainStream] = useState<MediaStream>();
   const millicastView = useRef<View>();
   const sourceIds = useRef<Set<string>>(new Set());
   const handleError = useErrorHandler();
@@ -41,22 +43,31 @@ const useViewer = (): Viewer => {
     millicastView.current?.stop();
     const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
     millicastView.current = new View(streamName, tokenGenerator);
+    millicastView.current.on('track', (event: RTCTrackEvent) => {
+      if (event.streams.length === 0) return; // other sources
+      setMainStream(event.streams[0]);
+    });
     millicastView.current.on('broadcastEvent', (event: BroadcastEvent) => {
       switch (event.name) {
         case 'active':
           {
             const source = event.data as MediaStreamSource;
-            console.log('active source', source);
-            const sourceId = source.sourceId || mainSourceId;
-            sourceIds.current.add(sourceId);
-            addRemoteVideoTrackAndProject(source.sourceId);
+            if (!source.sourceId) {
+              setViewerState('liveOn');
+              return;
+            }
+            sourceIds.current.add(source.sourceId);
+            addRemoteVideoTrackAndProject(source.sourceId, source.tracks);
           }
           break;
         case 'inactive':
           {
             const source = event.data as MediaStreamSource;
-            const sourceId = source.sourceId || mainSourceId;
-            console.log('inactive', sourceId);
+            if (!source.sourceId) {
+              setViewerState('liveOff');
+              return;
+            }
+            const sourceId = source.sourceId;
             sourceIds.current.delete(sourceId);
             unprojectAndRemoveRemoteTrack(sourceId);
           }
@@ -78,7 +89,6 @@ const useViewer = (): Viewer => {
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
-      setViewerState('connected');
     } catch (error) {
       // TODO: try reconnect
       setViewerState('ready');
@@ -86,30 +96,26 @@ const useViewer = (): Viewer => {
     }
   };
 
-  const addRemoteVideoTrackAndProject = async (sourceId: string) => {
+  const addRemoteVideoTrackAndProject = async (sourceId: string, trackInfos: MediaTrackInfo[]) => {
     if (!millicastView.current) return;
-    console.log('add remote video track and project');
+    let videoTransceiver: RTCRtpTransceiver | undefined;
+    let audioTransceiver: RTCRtpTransceiver | undefined;
     const mediaStream = new MediaStream();
-    const videoTransceiver = await millicastView.current.addRemoteTrack('video', [mediaStream]);
-    const audioTransceiver = await millicastView.current.addRemoteTrack('audio', [mediaStream]);
-    const vmid = videoTransceiver.mid ?? undefined;
-    const amid = audioTransceiver.mid ?? undefined;
+    if (trackInfos.some((info) => info.media == 'video'))
+      videoTransceiver = await millicastView.current.addRemoteTrack('video', [mediaStream]);
+    if (trackInfos.some((info) => info.media == 'audio'))
+      audioTransceiver = await millicastView.current.addRemoteTrack('audio', [mediaStream]);
+    const vmid = videoTransceiver?.mid ?? undefined;
+    const amid = audioTransceiver?.mid ?? undefined;
+    if (!vmid && !amid) throw 'No valid video or video in remote track';
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
-    newRemoteTrackSources.set(sourceId, { mediaStream, videoMediaId: vmid, audioMediaId: amid });
+    newRemoteTrackSources.set(sourceId, { mediaStream, videoMediaId: vmid, audioMediaId: vmid });
     setRemoteTrackSources(newRemoteTrackSources);
+    const mapping = [];
+    if (vmid) mapping.push({ trackId: 'video', mediaId: vmid, media: 'video' });
+    if (amid) mapping.push({ trackId: 'audio', mediaId: amid, media: 'audio' });
     try {
-      await millicastView.current.project(sourceId, [
-        {
-          trackId: 'video',
-          mediaId: vmid,
-          media: 'video',
-        },
-        {
-          trackId: 'audio',
-          mediaId: amid,
-          media: 'audio',
-        },
-      ]);
+      await millicastView.current.project(sourceId, mapping);
     } catch (error) {
       setViewerState('ready');
       handleError(error);
@@ -136,6 +142,7 @@ const useViewer = (): Viewer => {
 
   return {
     viewerState,
+    mainStream,
     setupViewer,
     stopViewer,
     connect,

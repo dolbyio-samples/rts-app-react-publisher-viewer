@@ -39,7 +39,6 @@ import React from 'react';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-  const mainSourceId = 'Main';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
@@ -255,7 +254,6 @@ function App() {
                         simulcast: isSimulcastEnabled,
                         codec,
                         events: ['viewercount'],
-                        sourceId: mainSourceId,
                       });
                       if (displayStream)
                         startDisplayStreaming({
