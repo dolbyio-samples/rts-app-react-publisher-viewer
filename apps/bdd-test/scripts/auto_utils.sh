@@ -37,7 +37,7 @@ verifyServerLogs(){
       local LOGS=$(pm2 logs ${NAME} --nostream)
       echo "${LOGS}"
       local URL_LINE=$(pm2 logs ${NAME} --nostream | grep "Local")
-      echo "Server Status: ${LOG_LINE}"
+      echo "Server Status: ${URL_LINE}"
       if [[ ${URL_LINE} =~ ${FAIL} ]]; then
         echo "Failed to start the development server"
         pm2 logs ${NAME} --nostream
@@ -103,4 +103,9 @@ checkOS(){
   esac
   echo ${machine}
   eval "${1}=${machine}"
+}
+
+formatEnvFile(){
+  cat .test_urls.env |  sed "s,\\\u001b\[[0-9;]*m,,g" > .test.env
+  cat .test.env
 }
