@@ -214,13 +214,13 @@ function App() {
                             defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
-                          {codecList.map((codec: string) => {
+                            {codecList.map((codec: string) => {
                               return (
-                              <option value={codec} key={codec}>
+                                <option value={codec} key={codec}>
                                   {codec}
-                              </option>
+                                </option>
                               );
-                          })}
+                            })}
                           </Select>
                         }
                       </HStack>
@@ -229,7 +229,7 @@ function App() {
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         disabled={publisherState !== 'ready'}
                       >
-                      Simulcast
+                        Simulcast
                       </Switch>
                     </VStack>
                   </PopoverBody>

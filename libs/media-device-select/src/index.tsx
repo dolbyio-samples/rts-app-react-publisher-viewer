@@ -8,13 +8,7 @@ interface MediaDeviceSelectProps extends React.SelectHTMLAttributes<HTMLSelectEl
   placeHolder?: string;
 }
 
-const MediaDeviceSelect = ({
-  deviceList,
-  onSelectDeviceId,
-  testId,
-  placeHolder,
-  ...props
-}: MediaDeviceSelectProps) => {
+const MediaDeviceSelect = ({ deviceList, onSelectDeviceId, testId, placeHolder, ...props }: MediaDeviceSelectProps) => {
   return (
     <Select
       disabled={props.disabled}
