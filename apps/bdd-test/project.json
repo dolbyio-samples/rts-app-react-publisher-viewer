@@ -10,7 +10,7 @@
         "commands": ["rimraf ./apps/bdd-test/reports/*"]
       }
     },
-    "deploy": {
+    "launch-server": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["./apps/bdd-test/scripts/deploy.sh"]

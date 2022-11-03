@@ -67,7 +67,11 @@
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx test bdd-test --profile publisher"]
+        "parallel": false,
+        "commands": [
+          "yarn nx launch-server bdd-test --skip-nx-cache",
+          "nx test bdd-test --profile publisher"
+        ]
       }
     },
     "deploy": {

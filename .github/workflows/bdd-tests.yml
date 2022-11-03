@@ -35,7 +35,7 @@ jobs:
           yarn nx lint bdd-test --skip-nx-cache
       - name: Start Publisher and Viewer App Locally
         run: |
-          yarn nx deploy bdd-test --skip-nx-cache
+          yarn nx launch-server bdd-test --skip-nx-cache
       - name: Execute BDD Tests
         run: |
           yarn nx test bdd-test --skip-nx-cache
