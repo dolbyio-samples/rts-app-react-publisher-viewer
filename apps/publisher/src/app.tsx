@@ -35,7 +35,7 @@ import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
-import ResolutionSelect, { Resolution } from "./components/ResolutionSelect/ResolutionSelect";
+import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -261,6 +261,29 @@ function App() {
                           </Select>
                         }
                       </HStack>
+
+                      {mediaStream && 
+                      <HStack>
+                        <Text> Resolution </Text>
+                        <ResolutionSelect updateResolution={(newResolution: Resolution) => {
+                          onSelectVideoResolution(newResolution);
+                        }} />
+                      </HStack>}
+                      <Switch test-id="channelCountSwitch"
+                        onChange={() => onSelectAudioChannels()}
+                      >
+                        Mono or Stereo
+                      </Switch>
+                      <Switch test-id="echoCancellationSwitch"
+                        onChange={() => onSelectEchoCancellation(!echoCancellation)}
+                      >
+                        Echo Cancellation
+                      </Switch>
+                      <Switch test-id="simulcastSwitch"
+                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        disabled={publisherState !== "ready"}>
+                        Simulcast
+                      </Switch>
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}

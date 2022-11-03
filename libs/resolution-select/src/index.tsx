@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Select } from '@chakra-ui/react';
 
 type ResolutionSelectProps = {
@@ -50,4 +50,4 @@ const ResolutionSelect = ({ updateResolution }: ResolutionSelectProps) => {
     );
 };
 
-export default ResolutionSelect;
+export default memo(ResolutionSelect);
