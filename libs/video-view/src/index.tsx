@@ -40,7 +40,7 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
       borderRadius: '0',
       border: '1px solid transparent',
       width: 'min-content',
-      boxShadow: 'unset'
+      boxShadow: 'unset',
     },
   };
 
