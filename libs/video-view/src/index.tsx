@@ -7,11 +7,12 @@ import type { streamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
   mirrored?: boolean;
+  muted?: boolean;
   mediaStream?: MediaStream;
   statistics?: streamStats;
 };
 
-const VideoView = ({ mirrored = false, mediaStream, statistics }: VideoViewProps) => {
+const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
   const fullScreenButton = useRef<HTMLButtonElement>(null);
 
@@ -68,7 +69,7 @@ const VideoView = ({ mirrored = false, mediaStream, statistics }: VideoViewProps
         test-id="video-view"
         autoPlay
         ref={video}
-        muted
+        muted={muted}
         onMouseOver={() => setIsHoveredOnVideo(true)}
         onMouseOut={() => setIsHoveredOnVideo(false)}
       />

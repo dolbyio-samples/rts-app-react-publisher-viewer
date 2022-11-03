@@ -130,7 +130,7 @@ function App() {
           <VStack>
             <HStack bg="black">
               <Box>
-                <VideoView mirrored={true} mediaStream={mediaStream} statistics={statistics} />
+                <VideoView mirrored={true} muted={true} mediaStream={mediaStream} statistics={statistics} />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
                 <VideoView mediaStream={displayStream} />
