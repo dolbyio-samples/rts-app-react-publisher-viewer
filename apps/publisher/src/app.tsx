@@ -286,13 +286,6 @@ function App() {
                       >
                         Simulcast
                       </Switch>
-                      <Switch
-                        test-id="simulcastSwitch"
-                        onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                        disabled={publisherState !== 'ready'}
-                      >
-                        Simulcast
-                      </Switch>
                     </VStack>
                   </PopoverBody>
                 </PopoverContent>
