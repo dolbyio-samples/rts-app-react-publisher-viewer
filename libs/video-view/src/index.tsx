@@ -7,11 +7,12 @@ import type { streamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
   mirrored?: boolean;
+  muted?: boolean;
   mediaStream?: MediaStream;
   statistics?: streamStats;
 };
 
-const VideoView = ({ mirrored = true, mediaStream, statistics }: VideoViewProps) => {
+const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
   const fullScreenButton = useRef<HTMLButtonElement>(null);
 
@@ -68,26 +69,19 @@ const VideoView = ({ mirrored = true, mediaStream, statistics }: VideoViewProps)
         test-id="video-view"
         autoPlay
         ref={video}
-        muted
+        muted={muted}
         onMouseOver={() => setIsHoveredOnVideo(true)}
         onMouseOut={() => setIsHoveredOnVideo(false)}
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
-      <HStack
-        pos="absolute"
-        bottom={isFullScreen ? ['120px', '120px', 0] : 0}
-        right="0"
-        spacing="0"
-      >
+      <HStack pos="absolute" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
         <IconButton
           aria-label="Full screen"
           size="md"
           className={`icon-button ${isHoveredOnVideo && 'icon-button--video-on-hover'}`}
           ref={fullScreenButton}
           onClick={() => setIsFullScreen(!isFullScreen)}
-          icon={
-            isFullScreen ? <IconFullScreenExit fill="black" /> : <IconFullScreen fill="black" />
-          }
+          icon={isFullScreen ? <IconFullScreenExit fill="black" /> : <IconFullScreen fill="black" />}
           onMouseOver={() => setIsHoveredOnVideo(true)}
           onMouseOut={() => setIsHoveredOnVideo(false)}
         />

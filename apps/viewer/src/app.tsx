@@ -1,19 +1,22 @@
-import { Box, Center, Flex, Heading, Spacer, VStack, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import useViewer from '@millicast-react/use-viewer';
+import { Box, Button, Flex, Heading, Spacer, VStack, Text, Center } from '@chakra-ui/react';
+import React from 'react';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import Content from './components/content';
 
 function App() {
-  const { viewerState, setupViewer, viewerStreams } = useViewer();
-
-  useEffect(() => {
-    const href = new URL(window.location.href);
-    const streamName =
-      href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
-    const streamAccountId =
-      href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
-    setupViewer(streamName, streamAccountId);
-    // TODO: return a clean up function which stops the viewer
-  }, []);
+  const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+    return (
+      <Box borderWidth="1px" p="4">
+        <Text fontSize="lg">Something went wrong:</Text>
+        <Text fontSize="md" p="2">
+          {error.message}
+        </Text>
+        <Center mt="4">
+          <Button onClick={resetErrorBoundary}>Try again</Button>
+        </Center>
+      </Box>
+    );
+  };
 
   return (
     <VStack w="100%">
@@ -25,18 +28,9 @@ function App() {
         </Box>
         <Spacer />
       </Flex>
-      <Box>
-        <Center>
-          <VStack>
-            {viewerState === 'ready' ? (
-              <Text> Please connect first </Text>
-            ) : (
-              // TODO: add more logic for streaming
-              <Text> Presenter is not live now, please stay tuned. </Text>
-            )}
-          </VStack>
-        </Center>
-      </Box>
+      <ErrorBoundary fallbackRender={ErrorFallback}>
+        <Content />
+      </ErrorBoundary>
     </VStack>
   );
 }

@@ -69,8 +69,7 @@ export class BrowserManager {
         launchOptions.channel = launchOptions?.channel || 'chrome';
     }
 
-    launchOptions.headless =
-      'headless' in launchOptions ? launchOptions.headless : this.options.headless;
+    launchOptions.headless = 'headless' in launchOptions ? launchOptions.headless : this.options.headless;
     return launchOptions;
   }
 

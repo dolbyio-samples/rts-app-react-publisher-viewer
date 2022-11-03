@@ -39,7 +39,6 @@ import React from 'react';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-  const presenterSourceId = 'PresenterMedia';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
@@ -62,8 +61,6 @@ function App() {
   const {
     cameraList,
     microphoneList,
-    cameraId,
-    microphoneId,
     setCameraId,
     setMicrophoneId,
     isAudioEnabled,
@@ -133,10 +130,10 @@ function App() {
           <VStack>
             <HStack bg="black">
               <Box>
-                <VideoView mediaStream={mediaStream} statistics={statistics} />
+                <VideoView mirrored={true} muted={true} mediaStream={mediaStream} statistics={statistics} />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
-                <VideoView mirrored={false} mediaStream={displayStream} />
+                <VideoView mediaStream={displayStream} />
               </Box>
             </HStack>
             <HStack>
@@ -147,13 +144,7 @@ function App() {
                 variant="outline"
                 test-id="toggleAudioButton"
                 isDisabled={!(mediaStream && mediaStream.getAudioTracks().length)}
-                icon={
-                  isAudioEnabled ? (
-                    <IconMicrophoneOn fill={purple400} />
-                  ) : (
-                    <IconMicrophoneOff fill="red" />
-                  )
-                }
+                icon={isAudioEnabled ? <IconMicrophoneOn fill={purple400} /> : <IconMicrophoneOff fill="red" />}
                 onClick={() => {
                   toggleAudio();
                 }}
@@ -165,9 +156,7 @@ function App() {
                 variant="outline"
                 test-id="toggleVideoButton"
                 isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-                icon={
-                  isVideoEnabled ? <IconCameraOn fill={purple400} /> : <IconCameraOff fill="red" />
-                }
+                icon={isVideoEnabled ? <IconCameraOn fill={purple400} /> : <IconCameraOff fill="red" />}
                 onClick={() => {
                   toggleVideo();
                 }}
@@ -199,8 +188,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="camera-select"
-                            placeHolder="Select Camera"
-                            selectedDeviceId={cameraId}
                             deviceList={cameraList}
                             onSelectDeviceId={onSelectCameraId}
                           />
@@ -213,8 +200,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="microphone-select"
-                            placeHolder="Select Microphone"
-                            selectedDeviceId={microphoneId}
                             deviceList={microphoneList}
                             onSelectDeviceId={onSelectMicrophoneId}
                           />
@@ -226,13 +211,10 @@ function App() {
                           <Select
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
-                            placeholder="Select Codec"
-                            defaultValue={
-                              codec || (codecList.length !== 0 ? codecList[0] : undefined)
-                            }
+                            defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
-                            {codecList.map((codec) => {
+                            {codecList.map((codec: string) => {
                               return (
                                 <option value={codec} key={codec}>
                                   {codec}
@@ -265,7 +247,6 @@ function App() {
                         simulcast: isSimulcastEnabled,
                         codec,
                         events: ['viewercount'],
-                        sourceId: presenterSourceId,
                       });
                       if (displayStream)
                         startDisplayStreaming({

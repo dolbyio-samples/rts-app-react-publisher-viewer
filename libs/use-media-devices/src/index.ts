@@ -30,6 +30,13 @@ const useMediaDevices: () => MediaDevices = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
+  const mediaConstraints = {
+    video: {
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+    },
+  };
+
   useEffect(() => {
     const initializeDeviceList = async () => {
       try {
@@ -68,6 +75,7 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({
+      ...mediaConstraints,
       audio: {
         deviceId: microphoneId,
       },
@@ -85,12 +93,8 @@ const useMediaDevices: () => MediaDevices = () => {
     const tempMicrophoneList: InputDeviceInfo[] = [];
     const tempCameraList: InputDeviceInfo[] = [];
     await devices.forEach((device) => {
-      device.kind === 'audioinput' &&
-        isUniqueDevice(tempMicrophoneList, device) &&
-        tempMicrophoneList.push(device);
-      device.kind === 'videoinput' &&
-        isUniqueDevice(tempCameraList, device) &&
-        tempCameraList.push(device);
+      device.kind === 'audioinput' && isUniqueDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
+      device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
     });
 
     setCameraList(tempCameraList);
@@ -101,10 +105,7 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
-    return !(
-      device.deviceId.includes('default') ||
-      deviceList.some((item) => item.deviceId === device.deviceId)
-    );
+    return !(device.deviceId.includes('default') || deviceList.some((item) => item.deviceId === device.deviceId));
   };
 
   const toggleAudio = () => {

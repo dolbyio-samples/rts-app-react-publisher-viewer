@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions } from '@millicast/sdk';
+import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
 
 import type { streamStats } from '@millicast/sdk';
 
-export type PublisherState = 'ready' | 'connecting' | 'streaming';
+export type PublisherState = 'initial' | 'ready' | 'connecting' | 'streaming';
 
 export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'sourceId'>;
 
@@ -26,7 +26,7 @@ export interface Publisher {
 }
 
 const usePublisher = (): Publisher => {
-  const [publisherState, setPublisherState] = useState<PublisherState>('ready');
+  const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<streamStats>();
 
@@ -35,7 +35,8 @@ const usePublisher = (): Publisher => {
 
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const linkText = useRef<string>('https://viewer.millicast.com/?streamId=/');
+
+  const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
   useEffect(() => {
     const capabilities = PeerConnection.getCapabilities('video');
@@ -53,22 +54,21 @@ const usePublisher = (): Publisher => {
     const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
     publisher.current = new Publish(streamName, tokenGenerator, true);
     displayPublisher.current = new Publish(streamName, tokenGenerator, true);
-    linkText.current = `https://viewer.millicast.com/?streamId=${streamId}/${streamName}`;
+    setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
+    publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
+      if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
+    });
+    setPublisherState('ready');
   };
 
   const startStreaming = async (options: BroadcastOptions) => {
     if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
     try {
+      //TODO: refine the state by broadcastEvent
       setPublisherState('connecting');
       await publisher.current.connect(options);
-
-      publisher.current.on('broadcastEvent', (event) => {
-        const { name, data } = event;
-        if (options.events?.includes(name)) setViewerCount(data.viewercount);
-      });
       setPublisherState('streaming');
       publisher.current.webRTCPeer.initStats();
-
       publisher.current.webRTCPeer.on('stats', (statistics) => {
         setStatistics(statistics);
       });
@@ -98,8 +98,7 @@ const usePublisher = (): Publisher => {
   };
 
   const updateCodec = (codecValue: string) => {
-    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue))
-      return;
+    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
     setCodec(codecValue);
   };
 
@@ -128,7 +127,7 @@ const usePublisher = (): Publisher => {
     stopDisplayStreaming,
     publisherState,
     viewerCount,
-    linkText: linkText.current,
+    linkText,
     statistics: statistics,
   };
 };
