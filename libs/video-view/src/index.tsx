@@ -4,6 +4,7 @@ import { Box, HStack, IconButton } from '@chakra-ui/react';
 import { IconFullScreen, IconFullScreenExit, IconInfo } from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import type { streamStats } from '@millicast/sdk';
+import { NONAME } from 'dns';
 
 export type VideoViewProps = {
   mirrored?: boolean;
@@ -14,11 +15,9 @@ export type VideoViewProps = {
 
 const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
-  const fullScreenButton = useRef<HTMLButtonElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showStatisticsInfo, setshowStatisticsInfo] = useState(false);
-  const [isHoveredOnVideo, setIsHoveredOnVideo] = useState(false);
 
   useEffect(() => {
     if (video.current && mediaStream) {
@@ -35,20 +34,13 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
       height: '100vh',
       overflowY: 'hidden',
     },
-    '.icon-button': {
+    '.icon-button, .icon-button: hover': {
       padding: '10px',
-      background: 'transparent',
+      background: 'rgba(0,0,0,0.6)',
       borderRadius: '0',
       border: '1px solid transparent',
       width: 'min-content',
-    },
-    '.icon-button--video-on-hover': {
-      background: 'white',
-      border: '1px solid black',
-    },
-    '.icon-button: hover': {
-      background: 'white',
-      border: '1px solid black',
+      boxShadow: 'unset'
     },
   };
 
@@ -70,27 +62,22 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
         autoPlay
         ref={video}
         muted={muted}
-        onMouseOver={() => setIsHoveredOnVideo(true)}
-        onMouseOut={() => setIsHoveredOnVideo(false)}
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
       <HStack pos="absolute" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
         <IconButton
           aria-label="Full screen"
           size="md"
-          className={`icon-button ${isHoveredOnVideo && 'icon-button--video-on-hover'}`}
-          ref={fullScreenButton}
+          className="icon-button"
           onClick={() => setIsFullScreen(!isFullScreen)}
-          icon={isFullScreen ? <IconFullScreenExit fill="black" /> : <IconFullScreen fill="black" />}
-          onMouseOver={() => setIsHoveredOnVideo(true)}
-          onMouseOut={() => setIsHoveredOnVideo(false)}
+          icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
         />
         <IconButton
           aria-label="Stream Information"
           size="md"
           className="icon-button"
           onClick={() => setshowStatisticsInfo(!showStatisticsInfo)}
-          icon={<IconInfo fill="black" />}
+          icon={<IconInfo fill="white" />}
         />
       </HStack>
     </Box>
