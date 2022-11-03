@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, MediaTrackInfo, View } from '@millicast/sdk';
+import { Director, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
@@ -22,6 +22,7 @@ export type Viewer = {
   startViewer: (options?: ViewOptions) => void;
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
   mainSourceId: string;
+  viewerCount: number;
 };
 
 const useViewer = (): Viewer => {
@@ -32,6 +33,7 @@ const useViewer = (): Viewer => {
   const [mainStream, setMainStream] = useState<MediaStream>();
   const millicastView = useRef<View>();
   const sourceIds = useRef<Set<string>>(new Set());
+  const [viewerCount, setViewerCount] = useState<number>(0);
   const handleError = useErrorHandler();
   const mainSourceId = 'Main';
 
@@ -67,6 +69,9 @@ const useViewer = (): Viewer => {
             sourceIds.current.delete(sourceId);
             unprojectAndRemoveRemoteTrack(sourceId);
           }
+          break;
+        case 'viewercount':
+          setViewerCount((event.data as ViewerCount).viewercount);
           break;
         case 'stopped':
           // TODO: what data can we get from this event? should we call setViewerStreams([]) ?
@@ -145,6 +150,7 @@ const useViewer = (): Viewer => {
     startViewer,
     remoteTrackSources,
     mainSourceId,
+    viewerCount,
   };
 };
 
