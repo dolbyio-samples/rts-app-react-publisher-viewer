@@ -61,8 +61,6 @@ function App() {
   const {
     cameraList,
     microphoneList,
-    cameraId,
-    microphoneId,
     setCameraId,
     setMicrophoneId,
     isAudioEnabled,
@@ -190,8 +188,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="camera-select"
-                            placeHolder="Select Camera"
-                            selectedDeviceId={cameraId}
                             deviceList={cameraList}
                             onSelectDeviceId={onSelectCameraId}
                           />
@@ -204,8 +200,6 @@ function App() {
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="microphone-select"
-                            placeHolder="Select Microphone"
-                            selectedDeviceId={microphoneId}
                             deviceList={microphoneList}
                             onSelectDeviceId={onSelectMicrophoneId}
                           />
@@ -217,11 +211,10 @@ function App() {
                           <Select
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
-                            placeholder="Select Codec"
                             defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                             onChange={(e) => updateCodec(e.target.value)}
                           >
-                            {codecList.map((codec) => {
+                            {codecList.map((codec: string) => {
                               return (
                                 <option value={codec} key={codec}>
                                   {codec}

@@ -4,25 +4,17 @@ import { Select } from '@chakra-ui/react';
 interface MediaDeviceSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   deviceList: InputDeviceInfo[];
   onSelectDeviceId: (deviceId: string) => void;
-  selectedDeviceId?: string;
   testId?: string;
   placeHolder?: string;
 }
 
-const MediaDeviceSelect = ({
-  deviceList,
-  onSelectDeviceId,
-  selectedDeviceId,
-  testId,
-  placeHolder,
-  ...props
-}: MediaDeviceSelectProps) => {
+const MediaDeviceSelect = ({ deviceList, onSelectDeviceId, testId, placeHolder, ...props }: MediaDeviceSelectProps) => {
   return (
     <Select
       disabled={props.disabled}
       test-id={testId}
       placeholder={placeHolder}
-      defaultValue={selectedDeviceId || deviceList[0].deviceId}
+      defaultValue={deviceList[0].deviceId}
       onChange={(e) => onSelectDeviceId(e.target.value)}
     >
       {deviceList.map((device) => {
