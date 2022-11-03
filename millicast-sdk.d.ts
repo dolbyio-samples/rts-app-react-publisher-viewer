@@ -1,6 +1,6 @@
 declare namespace millicast {
   type Event = 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
-
+  type ViewEvent = 'active' | 'inactive' | 'vad' | 'layers' | 'viewercount';
   type CapabilityKind = 'audio' | 'video';
 
   interface Capabilities {
@@ -54,10 +54,35 @@ declare namespace millicast {
     tracks: MediaTrackInfo[];
   }
 
+  interface MediaStreamLayers {
+    medias: Media[];
+  }
+
+  interface Media {
+    active: MediaLayer[];
+    inactive: MediaLayer[];
+    layers: MediaLayer[];
+  }
+
+  interface MediaLayer {
+    bitrate: number;
+    id: string;
+    simulcastIdx: number;
+    layers: Layer[];
+  }
+
+  interface Layer {
+    encodingId: string;
+    bitrate: number;
+    simulcastIdx: number;
+    spatialLayerId: number;
+    temporalLayerId: number;
+  }
+
   interface BroadcastEvent {
     type: string;
     name: Event;
-    data: string | Date | ViewerCount | MediaStreamSource;
+    data: string | Date | ViewerCount | MediaStreamSource | MediaStreamLayers;
   }
 
   type TokenGeneratorCallback = () => Promise<DirectorResponse>;
@@ -153,6 +178,7 @@ declare namespace millicast {
     project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
+    select(layer: Layer): Promise<void>;
   }
 
   type ViewOptions = {

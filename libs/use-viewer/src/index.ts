@@ -1,10 +1,17 @@
 import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
+import { Director, Layer, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
+
+export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
+
+export type SimulcastQuality = {
+  streamQuality: StreamQuality;
+  simulcastLayer?: MediaLayer; // Auto has an idx of null
+};
 
 export type RemoteTrackSource = {
   mediaStream: MediaStream;
@@ -23,6 +30,9 @@ export type Viewer = {
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
   mainSourceId: string;
   viewerCount: number;
+  streamQuality: StreamQuality;
+  streamQualityOptions: SimulcastQuality[];
+  updateStreamQuality: (selectedQuality: StreamQuality) => void;
 };
 
 const useViewer = (): Viewer => {
@@ -36,6 +46,69 @@ const useViewer = (): Viewer => {
   const [viewerCount, setViewerCount] = useState<number>(0);
   const handleError = useErrorHandler();
   const mainSourceId = 'Main';
+
+  const [streamQuality, setStreamQuality] = useState<StreamQuality>('Auto');
+  const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
+
+  const constructLayers = (layers: MediaLayer[]) => {
+    layers.sort((a, b) => (a.bitrate < b.bitrate ? 1 : -1));
+    switch (layers.length) {
+      case 2:
+        setStreamQualityOptions([
+          {
+            streamQuality: 'Auto',
+          },
+          {
+            streamQuality: 'High',
+            simulcastLayer: layers[0],
+          },
+          {
+            streamQuality: 'Low',
+            simulcastLayer: layers[1],
+          },
+        ]);
+        break;
+      case 3:
+        setStreamQualityOptions([
+          {
+            streamQuality: 'Auto',
+          },
+          {
+            streamQuality: 'High',
+            simulcastLayer: layers[0],
+          },
+          {
+            streamQuality: 'Medium',
+            simulcastLayer: layers[1],
+          },
+          {
+            streamQuality: 'Low',
+            simulcastLayer: layers[2],
+          },
+        ]);
+        break;
+      default:
+        setStreamQuality('Auto');
+        break;
+    }
+  };
+
+  const updateStreamQuality = (selectedQuality: StreamQuality) => {
+    if (!millicastView.current) throw 'please setup Millicast view first';
+
+    if (selectedQuality === 'Auto') {
+      millicastView.current.select({} as Layer);
+    }
+
+    const selectedOption = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
+    if (!selectedOption) return;
+
+    // TODO any better way to fix this?
+    const selectedLayer = selectedOption.simulcastLayer as unknown as Layer;
+    console.log("Hii Hii", selectedLayer, streamQualityOptions);
+
+    millicastView.current.select(selectedLayer);
+  };
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
     millicastView.current?.stop();
@@ -77,9 +150,14 @@ const useViewer = (): Viewer => {
           // TODO: what data can we get from this event? should we call setViewerStreams([]) ?
           console.log('stopped', event.data);
           break;
-        case 'layers':
-          console.log('video layers', event.data);
+        case 'layers': {
+          // TODO check why medias is an array and can we ever have a non 0 value?
+          const layers = (event.data as MediaStreamLayers).medias[0].active;
+          // Now we have active layers
+          if (!layers || layers.length == 0) return;
+          constructLayers(layers);
           break;
+        }
       }
     });
     setViewerState('ready');
@@ -151,6 +229,9 @@ const useViewer = (): Viewer => {
     remoteTrackSources,
     mainSourceId,
     viewerCount,
+    streamQuality,
+    streamQualityOptions,
+    updateStreamQuality,
   };
 };
 

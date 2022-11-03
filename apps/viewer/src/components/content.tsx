@@ -1,12 +1,22 @@
-import { Box, Center, VStack, Text, Button, HStack, Flex, Spacer } from '@chakra-ui/react';
+import { Box, Center, VStack, Text, Button, HStack, Flex, Spacer, Select } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
-import useViewer from '@millicast-react/use-viewer';
+import useViewer, { StreamQuality } from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 
 const Content = () => {
-  const { viewerState, mainStream, setupViewer, stopViewer, startViewer, remoteTrackSources, viewerCount } =
-    useViewer();
+  const {
+    viewerState,
+    mainStream,
+    setupViewer,
+    stopViewer,
+    startViewer,
+    remoteTrackSources,
+    viewerCount,
+    streamQuality,
+    streamQualityOptions,
+    updateStreamQuality,
+  } = useViewer();
   useEffect(() => {
     const href = new URL(window.location.href);
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
@@ -37,7 +47,7 @@ const Content = () => {
           )}
           <HStack>
             {mainStream && viewerState === 'liveOn' ? (
-              <VideoView mediaStream={mainStream} />
+              <VideoView mediaStream={mainStream} muted={false} />
             ) : (
               <Text> No stream is live </Text>
             )}
@@ -51,6 +61,23 @@ const Content = () => {
               })}
             </VStack>
           </HStack>
+          {viewerState === 'liveOn' && streamQualityOptions.length > 1 ? (
+            <Select
+              test-id="simulcastQualitySelect"
+              defaultValue={streamQuality}
+              onChange={(e) => updateStreamQuality(e.target.value as StreamQuality)}
+            >
+              {streamQualityOptions.map((option) => {
+                console.log(option);
+                return (
+                  <option key={option.streamQuality} value={option.streamQuality}>
+                    {option.streamQuality}
+                  </option>
+                );
+              })}
+              ;
+            </Select>
+          ) : undefined}
         </VStack>
       </Center>
     </Box>
