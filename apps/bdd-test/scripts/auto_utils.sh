@@ -4,8 +4,7 @@ installDependencies(){
   echo "#################################"
   echo "Install Dependencies"
   echo "#################################"
-  yarn global add pm2
-  # npx playwright install --force chrome
+  yarn global add pm2 strip-ansi-cli
 }
 
 runApp(){
@@ -66,18 +65,18 @@ getAppURL(){
   echo "####################"
   local NAME=$1
 
-  local URL=$(pm2 logs ${NAME} --nostream --no-color | grep "Local" | awk '{print $NF}')
+  local URL=$(pm2 logs ${NAME} --nostream | strip-ansi | grep "Local" | awk '{print $NF}')
   echo "URL: ${URL}"
 
   if [[ ${NAME} == publisher ]];then
-    echo "PUBLISHER_URL=$URL" >> .test_urls.env
+    echo "PUBLISHER_URL=$URL" >> .test.env
   else
-    echo "VIEWER_URL=$URL" >> .test_urls.env
+    echo "VIEWER_URL=$URL" >> .test.env
   fi
 
   pwd
-  ls -la .test_urls.env
-  cat .test_urls.env
+  ls -la .test.env
+  cat .test.env
 }
 
 
@@ -103,9 +102,4 @@ checkOS(){
   esac
   echo ${machine}
   eval "${1}=${machine}"
-}
-
-formatEnvFile(){
-  cat .test_urls.env |  sed "s,\\\u001b\[[0-9;]*m,,g" > .test.env
-  cat .test.env
 }

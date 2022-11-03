@@ -8,7 +8,7 @@ fi
 
 PUBLISHER_APP_NAME=publisher
 VIEWER_APP_NAME=viewer
-echo "" > .test_urls.env
+> .test.env
 
 # Check if OS is supported
 checkOS osType
@@ -23,7 +23,7 @@ runApp ${PUBLISHER_APP_NAME}
 verifyServerLogs ${PUBLISHER_APP_NAME}
 
 # Set App URL Environment variable
-#getAppURL ${PUBLISHER_APP_NAME}
+getAppURL ${PUBLISHER_APP_NAME}
 
 # Deploy viewer app locally
 runApp ${VIEWER_APP_NAME}
@@ -32,7 +32,4 @@ runApp ${VIEWER_APP_NAME}
 verifyServerLogs ${VIEWER_APP_NAME}
 
 # Set App URL Environment variable
-#getAppURL ${VIEWER_APP_NAME}
-
-# Format Env File
-formatEnvFile
+getAppURL ${VIEWER_APP_NAME}
