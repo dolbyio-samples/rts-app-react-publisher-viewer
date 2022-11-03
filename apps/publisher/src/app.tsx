@@ -43,7 +43,7 @@ function App() {
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
   const [channels, setChannels] = useState<number>(1);
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
-  const [resolution, setResolution] = useState<Resolution>({width: 1280, height: 720})
+  const [resolution, setResolution] = useState<Resolution>({ width: 1280, height: 720 });
 
   const {
     setupPublisher,
@@ -118,10 +118,10 @@ function App() {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
       echoCancellation,
-      resolution
+      resolution,
     };
 
-    setEchoCancellation(echoCancellation)
+    setEchoCancellation(echoCancellation);
     updateMediaConstraints(constraints);
   };
 
@@ -129,7 +129,7 @@ function App() {
     const constraints: MediaConstraints = {
       channelCount: channels === 1 ? 2 : 1,
       echoCancellation,
-      resolution
+      resolution,
     };
 
     setChannels(channels === 1 ? 2 : 1);
@@ -140,12 +140,11 @@ function App() {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
       echoCancellation,
-      resolution
+      resolution,
     };
-    setResolution(resolution)
+    setResolution(resolution);
     updateMediaConstraints(constraints);
   };
-
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -261,27 +260,30 @@ function App() {
                           </Select>
                         }
                       </HStack>
-
-                      {mediaStream && 
-                      <HStack>
-                        <Text> Resolution </Text>
-                        <ResolutionSelect updateResolution={(newResolution: Resolution) => {
-                          onSelectVideoResolution(newResolution);
-                        }} />
-                      </HStack>}
-                      <Switch test-id="channelCountSwitch"
-                        onChange={() => onSelectAudioChannels()}
-                      >
+                      {mediaStream && (
+                        <HStack>
+                          <Text> Resolution </Text>
+                          <ResolutionSelect
+                            updateResolution={(newResolution: Resolution) => {
+                              onSelectVideoResolution(newResolution);
+                            }}
+                          />
+                        </HStack>
+                      )}
+                      <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
                         Mono or Stereo
                       </Switch>
-                      <Switch test-id="echoCancellationSwitch"
+                      <Switch
+                        test-id="echoCancellationSwitch"
                         onChange={() => onSelectEchoCancellation(!echoCancellation)}
                       >
                         Echo Cancellation
                       </Switch>
-                      <Switch test-id="simulcastSwitch"
+                      <Switch
+                        test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                        disabled={publisherState !== "ready"}>
+                        disabled={publisherState !== 'ready'}
+                      >
                         Simulcast
                       </Switch>
                       <Switch

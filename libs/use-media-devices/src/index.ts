@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Resolution } from "../../resolution-select/src";
+import { Resolution } from '../../resolution-select/src';
 
 export type AudioChannels = 1 | 2;
 
 export type MediaConstraints = {
-    resolution: Resolution;
-    echoCancellation: boolean;
-    channelCount: AudioChannels;
+  resolution: Resolution;
+  echoCancellation: boolean;
+  channelCount: AudioChannels;
 };
 
-const DEFAULT_ASPECT_RATIO = (16 / 9);
+const DEFAULT_ASPECT_RATIO = 16 / 9;
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -163,29 +163,27 @@ const useMediaDevices: () => MediaDevices = () => {
   const updateMediaConstraints = ({ resolution, echoCancellation, channelCount }: MediaConstraints) => {
     const videoTracks = mediaStream?.getVideoTracks();
     if (videoTracks && videoTracks.length) {
-        videoTracks[0].applyConstraints({
-            width: { min: 640, max: 1920 },
-            height: { min: 360, max: 1080 },
-            advanced: [
-                {
-                    width: resolution.width,
-                    height: resolution.height
-                },
-                { aspectRatio: DEFAULT_ASPECT_RATIO }
-            ]
-        });
+      videoTracks[0].applyConstraints({
+        width: { min: 640, max: 1920 },
+        height: { min: 360, max: 1080 },
+        advanced: [
+          {
+            width: resolution.width,
+            height: resolution.height,
+          },
+          { aspectRatio: DEFAULT_ASPECT_RATIO },
+        ],
+      });
     }
 
     const audioTracks = mediaStream?.getAudioTracks();
     if (audioTracks && audioTracks.length) {
-        audioTracks[0].applyConstraints(
-            {
-                echoCancellation,
-                channelCount: channelCount
-            }
-        )
+      audioTracks[0].applyConstraints({
+        echoCancellation,
+        channelCount: channelCount,
+      });
     }
-};
+  };
 
   return {
     cameraList,
@@ -202,7 +200,7 @@ const useMediaDevices: () => MediaDevices = () => {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    updateMediaConstraints
+    updateMediaConstraints,
   };
 };
 
