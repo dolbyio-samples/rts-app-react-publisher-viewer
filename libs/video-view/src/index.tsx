@@ -4,7 +4,6 @@ import { Box, HStack, IconButton } from '@chakra-ui/react';
 import { IconFullScreen, IconFullScreenExit, IconInfo } from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import type { streamStats } from '@millicast/sdk';
-import { NONAME } from 'dns';
 
 export type VideoViewProps = {
   mirrored?: boolean;
