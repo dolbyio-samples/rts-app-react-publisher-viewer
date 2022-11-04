@@ -61,7 +61,6 @@ declare namespace millicast {
   interface Media {
     active: MediaLayer[];
     inactive: MediaLayer[];
-<<<<<<< HEAD
     layers: LayerInfo[];
   }
 
@@ -74,20 +73,6 @@ declare namespace millicast {
 
   interface LayerInfo {
     encodingId?: string; // map to 'id' in Medialayer
-=======
-    layers: MediaLayer[];
-  }
-
-  interface MediaLayer {
-    bitrate: number;
-    id: string;
-    simulcastIdx: number;
-    layers: Layer[];
-  }
-
-  interface Layer {
-    encodingId: string;
->>>>>>> ef0f0bb (It works, but it isn't clean)
     bitrate: number;
     simulcastIdx: number;
     spatialLayerId: number;
@@ -190,15 +175,11 @@ declare namespace millicast {
     stop(): void;
     isActive(): boolean;
     connect(options?: ViewOptions): Promise<void>;
-    project(sourceId?: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
+    project(sourceId?: string, mapping?: ViewProjectSourceMapping[]): Promise<void>;
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
-<<<<<<< HEAD
     select(layer: LayerInfo | unknown): Promise<void>;
     webRTCPeer: PeerConnection;
-=======
-    select(layer: Layer): Promise<void>;
->>>>>>> ef0f0bb (It works, but it isn't clean)
   }
 
   type ViewOptions = {

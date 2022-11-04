@@ -146,6 +146,12 @@ const useViewer = (): Viewer => {
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
+      // TODO remove
+      millicastView.current.webRTCPeer.initStats()
+      millicastView.current.webRTCPeer.on('stats', (stats) => {
+        // console.log('Stats from event: ', stats.video.inbounds);
+      });
+      // END TODO
     } catch (error) {
       handleError(error);
     }
