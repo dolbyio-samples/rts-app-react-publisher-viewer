@@ -16,7 +16,11 @@ checkOS osType
 # Install dependencies
 installDependencies
 
-# Deploy publisher app locally
+# Stop publisher and viewer if running
+stopApp ${PUBLISHER_APP_NAME}
+stopApp ${VIEWER_APP_NAME}
+
+# Launch publisher app locally
 runApp ${PUBLISHER_APP_NAME}
 
 # Verify publisher app server logs
@@ -25,7 +29,7 @@ verifyServerLogs ${PUBLISHER_APP_NAME}
 # Set App URL Environment variable
 getAppURL ${PUBLISHER_APP_NAME}
 
-# Deploy viewer app locally
+# Launch viewer app locally
 runApp ${VIEWER_APP_NAME}
 
 # Verify viewer app server logs

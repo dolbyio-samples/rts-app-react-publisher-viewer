@@ -46,11 +46,11 @@ jobs:
       - name: build & test
         run: |
           eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
-          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=3"
+          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
       - name: Generate Test Report
         if: always()
         run: |
-          yarn nx test-report bdd-test --skip-nx-cache
+          eval "yarn nx affected --target=e2e-report --base=${{ env.BASE_BRANCH }} --skip-nx-cache"
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         if: always()

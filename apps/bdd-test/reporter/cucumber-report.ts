@@ -1,12 +1,14 @@
 import { generate, Options } from 'cucumber-html-reporter';
 
-import { options } from '../playwright.config';
+import { BrowserManager } from '../support/BrowserManager';
+
+const browserMgr = new BrowserManager();
 
 const reportOptions: Options = {
   theme: 'bootstrap',
-  jsonFile: `${options.reportPath}/cucumber_report.json`,
-  output: `${options.reportPath}/cucumber_report.html`,
-  screenshotsDirectory: `${options.reportPath}/screenshots`,
+  jsonFile: `${browserMgr.options.reportPath}/cucumber_report.json`,
+  output: `${browserMgr.options.reportPath}/cucumber_report.html`,
+  screenshotsDirectory: `${browserMgr.options.reportPath}/screenshots`,
   storeScreenshots: true,
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
@@ -14,7 +16,9 @@ const reportOptions: Options = {
   metadata: {
     'App Version': '0.0.1',
     'Test Environment': 'DEV',
-    Browser: `${options.browserName}`,
+    Browser: `${browserMgr.options.browserName}`,
+    Headless: `${browserMgr.options.headless}`,
+    Viewport: `${browserMgr.options.viewport.width} x ${browserMgr.options.viewport.height}`,
     Platform: `${process.platform}`,
     Time: `${new Date()}`,
   },

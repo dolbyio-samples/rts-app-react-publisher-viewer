@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { BrowserContextOptions, LaunchOptions } from 'playwright';
 
+import { defaultReportPath } from './config/defaults';
 import { BrowserName, PlaywrightOptions } from './utils/type';
 
 dotenv.config({ path: '.test.env' });
@@ -51,5 +52,5 @@ export const options: PlaywrightOptions = {
     firefox: launchOptionsFirefox,
   },
   contextOptions: browserContextOptions,
-  reportPath: process.env.REPORT_PATH || './apps/bdd-test/reports',
+  reportPath: process.env.REPORT_PATH || defaultReportPath,
 };

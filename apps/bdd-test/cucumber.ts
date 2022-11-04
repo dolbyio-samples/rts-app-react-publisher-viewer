@@ -1,9 +1,11 @@
+const reportPath = process.env.REPORT_PATH || './apps/bdd-test/reports';
+
 const all = [
   './apps/bdd-test/features/**/*.feature',
   '--require-module ts-node/register',
   '--require ./apps/bdd-test/support/**/*.ts',
   '--require ./apps/bdd-test/steps/**/*.ts',
-  '-f json:./apps/bdd-test/reports/cucumber_report.json',
+  `-f json:${reportPath}/cucumber_report.json`,
   '--publish-quiet',
 ].join(' ');
 

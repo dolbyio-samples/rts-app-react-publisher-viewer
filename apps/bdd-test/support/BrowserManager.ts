@@ -8,7 +8,7 @@ import { PlaywrightOptions } from '../utils/type';
 import { ScenarioWorld } from './ScenarioWorld';
 
 export class BrowserManager {
-  private options: PlaywrightOptions;
+  options: PlaywrightOptions;
 
   browser!: Browser;
 
