@@ -12,6 +12,7 @@ import {
   BeforeStep,
 } from '@cucumber/cucumber';
 import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
+import { expect } from '@playwright/test';
 
 import { options } from '../playwright.config';
 
@@ -47,6 +48,8 @@ Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   this.publisherPage = this.page;
   this.viewerPage = await this.context.newPage();
   // TODO: Capture browser console logs
+  this.publisherConsoleLogs = BrowserManager.monitorConsoleLogs(this.publisherPage);
+  this.publisherConsoleErrorLogs = BrowserManager.monitorConsoleErrorLogs(this.publisherPage);
 });
 
 After(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
@@ -55,12 +58,15 @@ After(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   const traceFile = await stopTrace(this);
   await screenshot(this, scenario);
 
-  await this.page.close();
+  await this.viewerPage.close();
+  await this.publisherPage.close();
   await this.context.close();
 
   retainArtifacts(videoFile, traceFile, this, scenario);
 
-  // TODO: Verify the browser console logs
+  console.log(`Console Logs:\n${this.publisherConsoleLogs}`);
+  console.log(`Console Error Logs:\n${this.publisherConsoleErrorLogs}`);
+  expect(this.publisherConsoleErrorLogs).toHaveLength(0);
 });
 
 BeforeStep(async function (step: ITestStepHookParameter) {
@@ -69,7 +75,7 @@ BeforeStep(async function (step: ITestStepHookParameter) {
 
 async function stopTrace(scenarioWorld: ScenarioWorld) {
   console.log('Hooks:: Stop trace');
-  const traceFile = `./reports/traces/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}-trace.zip`;
+  const traceFile = `${scenarioWorld.options.reportPath}/traces/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}-trace.zip`;
   if (scenarioWorld.options.trace !== 'off') {
     await scenarioWorld.context.tracing.stop({
       path: traceFile,
@@ -82,7 +88,7 @@ async function screenshot(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookP
   console.log('Hooks:: Take screenshot');
   const screenshotOption = scenarioWorld.options.screenshot;
   const scenarioStatus = scenario.result?.status;
-  const screenshotFile = `./reports/screenshots/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}.png`;
+  const screenshotFile = `${scenarioWorld.options.reportPath}/screenshots/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}.png`;
 
   if (screenshotOption !== 'off') {
     if (!(scenarioStatus === Status.PASSED && screenshotOption === 'only-on-failure')) {
