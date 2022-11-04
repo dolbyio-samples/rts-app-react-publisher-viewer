@@ -1,7 +1,7 @@
 import React, { memo, useRef, useEffect, useState } from 'react';
-import { Box, HStack, IconButton } from '@chakra-ui/react';
+import { Box, HStack, IconButton, Spacer } from '@chakra-ui/react';
 
-import { IconFullScreen, IconFullScreenExit, IconInfo } from '@millicast-react/dolbyio-icons';
+import { IconFullScreen, IconFullScreenExit, IconInfo, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import type { streamStats } from '@millicast/sdk';
 
@@ -17,6 +17,8 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
 
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showStatisticsInfo, setshowStatisticsInfo] = useState(false);
+  const [isHoveredOnVideo, setIsHoveredOnVideo] = useState(false);
+  const [isMuted, setIsMuted] = useState(muted) 
 
   useEffect(() => {
     if (video.current && mediaStream) {
@@ -64,6 +66,8 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
       <HStack pos="absolute" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
+        <IconButton aria-label='mute/unmute' size='md' icon={ isMuted ? <IconSpeaker fill='white' /> : <IconSpeakerOff fill='white' /> }/>
+        <Spacer/>
         <IconButton
           aria-label="Full screen"
           size="md"

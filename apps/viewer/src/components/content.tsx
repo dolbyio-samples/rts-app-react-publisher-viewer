@@ -28,7 +28,7 @@ const Content = () => {
               <Text> Please connect first </Text>
               <Button
                 onClick={() => {
-                  startViewer({ events: ['active', 'inactive', 'layers', 'stopped', 'viewercount'] });
+                  startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
                 }}
               >
                 connect

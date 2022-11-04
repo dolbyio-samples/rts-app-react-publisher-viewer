@@ -22,6 +22,6 @@ export default defineConfig({
       },
     },
     emptyOutDir: false,
-    outDir: 'dist/apps/publisher',
+    outDir: 'dist/apps/viewer',
   },
 });
