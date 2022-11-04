@@ -2,6 +2,8 @@
 import { expect } from '@playwright/test';
 import { Page } from 'playwright';
 
+import { delay } from '../utils/helper';
+
 import CommonPage from './CommonPage';
 import SetupPageLocators from './SetupPageLocators';
 
@@ -28,6 +30,7 @@ export class SetupPage extends CommonPage {
 
   async goLive() {
     console.log(`SetupPage: Publisher go live`);
+    await delay(500);
     await this.page.bringToFront();
     await this.locators.goLiveBtn.click();
   }

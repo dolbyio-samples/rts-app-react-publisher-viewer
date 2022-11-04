@@ -3,17 +3,61 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/bdd-test/src",
   "projectType": "application",
+  "outputCapture": "pipe",
   "targets": {
+    "cleanup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then rimraf {args.report}/*; else rimraf ./apps/bdd-test/reports/*; fi"
+        ]
+      }
+    },
+    "launch-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./apps/bdd-test/scripts/launch_server.sh"]
+      }
+    },
+    "stop-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./apps/bdd-test/scripts/stop_server.sh"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/bdd-test/cucumber.ts"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
     "test-publisher": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["echo 'run publisher test cases'"]
-      }
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @publisher"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
     },
     "test-viewer": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["echo 'run viewer test cases'"]
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @viewer"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then export REPORT_PATH={args.report}; fi; yarn ts-node ./apps/bdd-test/reporter/cucumber-report.ts"
+        ]
       }
     },
     "lint": {

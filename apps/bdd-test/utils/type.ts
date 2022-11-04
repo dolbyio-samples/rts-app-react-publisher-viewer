@@ -26,6 +26,7 @@ export type PlaywrightOptions = {
   // eslint-disable-next-line no-unused-vars
   launchOptions?: { [K in BrowserName]?: LaunchOptions };
   contextOptions?: BrowserContextOptions;
+  reportPath?: string;
 };
 
 export type SetupConfig = {

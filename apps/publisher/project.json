@@ -67,7 +67,18 @@
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx test-publisher bdd-test"]
+        "parallel": false,
+        "commands": [
+          "yarn nx launch-server bdd-test --skip-nx-cache",
+          "yarn nx test-publisher bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/publisher/"
+        ]
+      }
+    },
+    "e2e-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": ["yarn nx test-report bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/publisher/"]
       }
     },
     "deploy": {
