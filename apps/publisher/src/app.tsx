@@ -125,7 +125,7 @@ function App() {
     updateMediaConstraints(constraints);
   };
 
-  const onSelectAudioChannels = () => {
+  const onToggleStereoMono = () => {
     const constraints: MediaConstraints = {
       channelCount: channels === 1 ? 2 : 1,
       echoCancellation,
