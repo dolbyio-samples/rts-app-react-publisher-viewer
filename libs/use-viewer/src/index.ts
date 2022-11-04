@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, Layer, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
+import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
@@ -10,7 +10,7 @@ export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export type SimulcastQuality = {
   streamQuality: StreamQuality;
-  simulcastLayer?: MediaLayer; // Auto has an idx of null
+  simulcastLayer?: LayerInfo; // Auto has an idx of null
 };
 
 export type RemoteTrackSource = {
@@ -30,7 +30,6 @@ export type Viewer = {
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
   mainSourceId: string;
   viewerCount: number;
-  streamQuality: StreamQuality;
   streamQualityOptions: SimulcastQuality[];
   updateStreamQuality: (selectedQuality: StreamQuality) => void;
 };
@@ -47,76 +46,39 @@ const useViewer = (): Viewer => {
   const handleError = useErrorHandler();
   const mainSourceId = 'Main';
 
-  const [streamQuality, setStreamQuality] = useState<StreamQuality>('Auto');
+  const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
   const constructLayers = (layers: MediaLayer[]) => {
-    switch (layers.length) {
-      case 2:
-        setStreamQualityOptions([
-          {
-            streamQuality: 'Auto',
-          },
-          {
-            streamQuality: 'High',
-            simulcastLayer: layers[0],
-          },
-          {
-            streamQuality: 'Low',
-            simulcastLayer: layers[1],
-          },
-        ]);
-        break;
-      case 3:
-        setStreamQualityOptions([
-          {
-            streamQuality: 'Auto',
-          },
-          {
-            streamQuality: 'High',
-            simulcastLayer: layers[0],
-          },
-          {
-            streamQuality: 'Medium',
-            simulcastLayer: layers[1],
-          },
-          {
-            streamQuality: 'Low',
-            simulcastLayer: layers[2],
-          },
-        ]);
-        break;
-      default:
-        setStreamQuality('Auto');
-        break;
-    }
+    const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
+    const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
+      return {
+        streamQuality: qualities[idx],
+        simulcastLayer: {
+          encodingId: layer.id,
+          bitrate: layer.bitrate,
+          simulcastIdx: layer.simulcastIdx,
+          spatialLayerId: layer.layers[0].spatialLayerId,
+          temporalLayerId: layer.layers[0].temporalLayerId,
+        },
+      };
+    });
+    newStreamQualityOptions.unshift({
+      streamQuality: 'Auto',
+    });
+    setStreamQualityOptions(newStreamQualityOptions);
   };
 
   const updateStreamQuality = (selectedQuality: StreamQuality) => {
-    if (!millicastView.current) throw 'please setup Millicast view first';
-
+    if (!millicastView.current) return;
+    const option = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
+    if (!option) return;
+    streamQuality.current = selectedQuality;
     if (selectedQuality === 'Auto') {
-      millicastView.current.select({} as Layer);
+      millicastView.current.select({});
+    } else {
+      millicastView.current.select(option.simulcastLayer);
     }
-
-    const selectedOption = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
-    if (!selectedOption?.simulcastLayer) return;
-    /**
-     * 
-     * Based on this link - https://docs.dolby.io/streaming-apis/docs/source-and-layer-selection
-     * the only two params needed for simulcast are EncodingId and temporalLayerId. They can be found
-     * inside LayerInfo but not on the MediaLayer object. Hence the need to drill down into mediaLayer.layer 
-     * and then cast into LayerInfo.
-     * 
-     * HOWEVER, https://github.com/millicast/vue-viewer-plugin/blob/1542678b44233d48ad60eb61965220be1dc36e06/src/service/utils/layers.js#L78
-     * uses spatialLayerId and encodingId. What is right, I don't know - neither actually work for me. 
-     * 
-     * The recommended answer is to use `selectedOption.simulcastLayer` however that prop doesn't have `encodingId`. 
-     * Therefore I have now tried to use slectedOptions.simulcastLayers.layers[0]
-     */
-    const layer = selectedOption.simulcastLayer.layers[0] as LayerInfo;
-    console.log("Layer", layer);
-    millicastView.current.select(layer);
   };
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
@@ -160,10 +122,13 @@ const useViewer = (): Viewer => {
           console.log('stopped', event.data);
           break;
         case 'layers': {
-          const layers = (event.data as MediaStreamLayers).medias[0].active;
-          // Now we have active layers
+          const layers = (event.data as MediaStreamLayers).medias['0']?.active;
           if (!layers || layers.length == 0) return;
           constructLayers(layers);
+          if (!streamQuality.current) {
+            streamQuality.current = 'Auto';
+            millicastView.current?.select({});
+          }
           break;
         }
       }
@@ -178,7 +143,7 @@ const useViewer = (): Viewer => {
       setViewerState('connecting');
       await millicastView.current.connect(options);
       // TODO remove
-      millicastView.current.webRTCPeer.initStats()
+      millicastView.current.webRTCPeer.initStats();
       millicastView.current.webRTCPeer.on('stats', (stats) => {
         // console.log('Stats from event: ', stats.video.inbounds);
       });
@@ -243,7 +208,6 @@ const useViewer = (): Viewer => {
     remoteTrackSources,
     mainSourceId,
     viewerCount,
-    streamQuality,
     streamQualityOptions,
     updateStreamQuality,
   };

@@ -13,7 +13,6 @@ const Content = () => {
     startViewer,
     remoteTrackSources,
     viewerCount,
-    streamQuality,
     streamQualityOptions,
     updateStreamQuality,
   } = useViewer();
@@ -64,7 +63,7 @@ const Content = () => {
           {viewerState === 'liveOn' && streamQualityOptions.length > 1 ? (
             <Select
               test-id="simulcastQualitySelect"
-              defaultValue={streamQuality}
+              defaultValue={streamQualityOptions[0].streamQuality}
               onChange={(e) => updateStreamQuality(e.target.value as StreamQuality)}
             >
               {streamQualityOptions.map((option) => {
