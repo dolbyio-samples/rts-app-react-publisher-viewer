@@ -71,14 +71,18 @@ declare namespace millicast {
     layers: Layer[];
   }
 
-  interface Layer {
-    encodingId: string;
+  interface Layer extends LayerInfo {
     bitrate: number;
     simulcastIdx: number;
     spatialLayerId: number;
+    encodingId: string;
     temporalLayerId: number;
   }
 
+  interface LayerInfo {
+    spatialLayerId: number;
+    encodingId: string;
+  }
   interface BroadcastEvent {
     type: string;
     name: Event;
@@ -178,7 +182,8 @@ declare namespace millicast {
     project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
-    select(layer: Layer): Promise<void>;
+    select(layer: LayerInfo): Promise<void>;
+    webRTCPeer: PeerConnection;
   }
 
   type ViewOptions = {

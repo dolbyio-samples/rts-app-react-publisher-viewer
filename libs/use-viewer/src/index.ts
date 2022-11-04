@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, Layer, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
+import { Director, Layer, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
@@ -51,7 +51,6 @@ const useViewer = (): Viewer => {
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
   const constructLayers = (layers: MediaLayer[]) => {
-    layers.sort((a, b) => (a.bitrate < b.bitrate ? 1 : -1));
     switch (layers.length) {
       case 2:
         setStreamQualityOptions([
@@ -101,13 +100,23 @@ const useViewer = (): Viewer => {
     }
 
     const selectedOption = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
-    if (!selectedOption) return;
-
-    // TODO any better way to fix this?
-    const selectedLayer = selectedOption.simulcastLayer as unknown as Layer;
-    console.log("Hii Hii", selectedLayer, streamQualityOptions);
-
-    millicastView.current.select(selectedLayer);
+    if (!selectedOption?.simulcastLayer) return;
+    /**
+     * 
+     * Based on this link - https://docs.dolby.io/streaming-apis/docs/source-and-layer-selection
+     * the only two params needed for simulcast are EncodingId and temporalLayerId. They can be found
+     * inside LayerInfo but not on the MediaLayer object. Hence the need to drill down into mediaLayer.layer 
+     * and then cast into LayerInfo.
+     * 
+     * HOWEVER, https://github.com/millicast/vue-viewer-plugin/blob/1542678b44233d48ad60eb61965220be1dc36e06/src/service/utils/layers.js#L78
+     * uses spatialLayerId and encodingId. What is right, I don't know - neither actually work for me. 
+     * 
+     * The recommended answer is to use `selectedOption.simulcastLayer` however that prop doesn't have `encodingId`. 
+     * Therefore I have now tried to use slectedOptions.simulcastLayers.layers[0]
+     */
+    const layer = selectedOption.simulcastLayer.layers[0] as LayerInfo;
+    console.log("Layer", layer);
+    millicastView.current.select(layer);
   };
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
@@ -151,7 +160,6 @@ const useViewer = (): Viewer => {
           console.log('stopped', event.data);
           break;
         case 'layers': {
-          // TODO check why medias is an array and can we ever have a non 0 value?
           const layers = (event.data as MediaStreamLayers).medias[0].active;
           // Now we have active layers
           if (!layers || layers.length == 0) return;
@@ -169,6 +177,12 @@ const useViewer = (): Viewer => {
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
+      // TODO remove
+      millicastView.current.webRTCPeer.initStats()
+      millicastView.current.webRTCPeer.on('stats', (stats) => {
+        // console.log('Stats from event: ', stats.video.inbounds);
+      });
+      // END TODO
     } catch (error) {
       // TODO: try reconnect
       setViewerState('ready');

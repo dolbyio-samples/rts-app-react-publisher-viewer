@@ -68,7 +68,6 @@ const Content = () => {
               onChange={(e) => updateStreamQuality(e.target.value as StreamQuality)}
             >
               {streamQualityOptions.map((option) => {
-                console.log(option);
                 return (
                   <option key={option.streamQuality} value={option.streamQuality}>
                     {option.streamQuality}
