@@ -73,10 +73,6 @@ getAppURL(){
   else
     echo "VIEWER_URL=$URL" >> .test.env
   fi
-
-  pwd
-  ls -la .test.env
-  cat .test.env
 }
 
 

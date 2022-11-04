@@ -13,7 +13,7 @@
     "launch-server": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./apps/bdd-test/scripts/deploy.sh"]
+        "commands": ["./apps/bdd-test/scripts/launch-server.sh"]
       }
     },
     "test": {
