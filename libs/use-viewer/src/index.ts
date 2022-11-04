@@ -50,6 +50,7 @@ const useViewer = (): Viewer => {
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
   const constructLayers = (layers: MediaLayer[]) => {
+    if (layers.length > 3 || layers.length < 2) return;
     const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
     const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
       return {
