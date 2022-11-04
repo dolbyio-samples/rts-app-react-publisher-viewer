@@ -6,7 +6,7 @@ Internal MVP of Milicast SDK Demo
 
 #### Install
 
-```javascript
+```bash
 yarn
 ```
 
@@ -22,7 +22,7 @@ VITE_MILLICAST_STREAM_ID=<your stream id>
 
 #### Run the publisher app in dev mode
 
-```javascript
+```bash
 yarn nx serve publisher
 ```
 
@@ -30,13 +30,13 @@ yarn nx serve publisher
 
 Run the command below in terminal and open the browser
 
-```javascript
+```bash
 yarn nx preview publisher
 ```
 
 #### Run the end to end test
 
-```javascript
+```bash
 yarn nx e2e publisher
 ```
 
@@ -44,6 +44,6 @@ yarn nx e2e publisher
 
 After the command below, your component should be in `libs/<your component name>`
 
-```javascript
+```bash
 yarn nx g @nxext/vite:library <your component name>
 ```
