@@ -7,7 +7,7 @@ Internal MVP of Milicast SDK Demo
 #### Install
 
 ```javascript
-yarn
+yarn;
 ```
 
 #### Your millicast token and stream name, id
