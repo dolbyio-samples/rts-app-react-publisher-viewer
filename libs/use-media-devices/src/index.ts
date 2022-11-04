@@ -32,8 +32,8 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const mediaConstraints = {
     video: {
-      width: { exact: 1280 },
-      height: { exact: 720 },
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
     },
   };
 
