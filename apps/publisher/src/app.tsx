@@ -114,7 +114,7 @@ function App() {
     [microphoneList]
   );
 
-  const onSelectEchoCancellation = (echoCancellation: boolean) => {
+  const onToggleEchoCancellation = (echoCancellation: boolean) => {
     const constraints: MediaConstraints = {
       channelCount: channels as AudioChannels,
       echoCancellation,
