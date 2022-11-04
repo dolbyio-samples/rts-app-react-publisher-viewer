@@ -68,7 +68,10 @@
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
-        "commands": ["yarn nx launch-server bdd-test --skip-nx-cache", "nx test bdd-test --profile publisher"]
+        "commands": [
+          "yarn nx launch-server bdd-test --skip-nx-cache",
+          "nx test bdd-test --profile publisher --skip-nx-cache"
+        ]
       }
     },
     "deploy": {
