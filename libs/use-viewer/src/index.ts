@@ -82,7 +82,10 @@ const useViewer = (): Viewer => {
   };
 
   const startViewer = async (options?: ViewOptions) => {
-    if (!millicastView.current) throw 'Please set up Viewer first';
+    if (!millicastView.current) {
+      handleError('Please set up Viewer first');
+      return;
+    }
     if (millicastView.current && millicastView.current.isActive()) return;
     try {
       setViewerState('connecting');
@@ -117,7 +120,10 @@ const useViewer = (): Viewer => {
         trackSource.audioMediaId = audioMid;
       }
     }
-    if (mapping.length === 0) throw 'No valid video or audio track';
+    if (mapping.length === 0) {
+      handleError('No valid video or audio track');
+      return;
+    }
     try {
       await millicastView.current.project(sourceId, mapping);
     } catch (err) {
