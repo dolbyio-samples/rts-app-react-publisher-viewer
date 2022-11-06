@@ -28,7 +28,7 @@ const VideoView = ({ mirrored = false, mediaStream, statistics }: VideoViewProps
   const componentElementsStyle = {
     '.video': {
       transform: `${mirrored ? 'scaleX(-1)' : ''}`,
-      width: '720px',
+      width: '640px',
       height: '480px',
     },
     '.video--fullscreen': {

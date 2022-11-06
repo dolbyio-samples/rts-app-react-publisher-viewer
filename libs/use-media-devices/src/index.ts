@@ -4,12 +4,10 @@ import { Resolution } from '../../resolution-select/src';
 export type AudioChannels = 1 | 2;
 
 export type MediaConstraints = {
-  resolution: Resolution;
-  echoCancellation: boolean;
-  channelCount: AudioChannels;
+  resolution?: Resolution;
+  echoCancellation?: boolean;
+  channelCount?: AudioChannels;
 };
-
-const DEFAULT_ASPECT_RATIO = 16 / 9;
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -162,27 +160,42 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const updateMediaConstraints = ({ resolution, echoCancellation, channelCount }: MediaConstraints) => {
     const videoTracks = mediaStream?.getVideoTracks();
-    if (videoTracks && videoTracks.length) {
-      videoTracks[0].applyConstraints({
-        width: { min: 640, max: 1920 },
-        height: { min: 360, max: 1080 },
-        advanced: [
-          {
-            width: resolution.width,
-            height: resolution.height,
-          },
-          { aspectRatio: DEFAULT_ASPECT_RATIO },
-        ],
-      });
-    }
+    if (videoTracks && videoTracks.length && resolution) {
+      try {
+        videoTracks[0].applyConstraints({
+          width: resolution.width,
+          height: resolution.height,
+        })
+        .then(() => {
+          if(videoTracks[0].getConstraints().width !== resolution.width || videoTracks[0].getConstraints().height !== resolution.height) {
+            throw "The selected resolution couldn't be applied."
+          }
+        });
+
+      } catch (err) {
+        console.log('Issue(s) occured when applying new constraints: ', err);
+      };
+    };
 
     const audioTracks = mediaStream?.getAudioTracks();
-    if (audioTracks && audioTracks.length) {
-      audioTracks[0].applyConstraints({
-        echoCancellation,
-        channelCount: channelCount,
-      });
-    }
+    if (audioTracks && audioTracks.length && (echoCancellation || channelCount)) {
+      try {
+        audioTracks[0].applyConstraints({
+          echoCancellation,
+          channelCount,
+        })
+        .then(() => {
+          if(echoCancellation && audioTracks[0].getConstraints().echoCancellation !== echoCancellation) {
+            throw "The selected echoCancellation couldn't be applied."
+          };
+          if(channelCount && audioTracks[0].getConstraints().channelCount !== channelCount) {
+            throw "The selected channelCount couldn't be applied."
+          }
+        });
+      } catch (err) {
+        console.log('Issue(s) occured when applying new constraints: ', err);
+      };
+    };
   };
 
   return {

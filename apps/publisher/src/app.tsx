@@ -43,7 +43,30 @@ function App() {
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
   const [channels, setChannels] = useState<number>(1);
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
-  const [resolution, setResolution] = useState<Resolution>({ width: 1280, height: 720 });
+  const [resolution, setResolution] = useState<Resolution>({ name: '720p', width: 1280, height: 720 });
+
+  const supportedResolutions = [
+    {
+      name: '2160p',
+      width: 3840,
+      height: 2160
+    },
+    {
+      name: '1080p',
+      width: 1920,
+      height: 1080
+    },
+    {
+      name: '720p',
+      width: 1280,
+      height: 720
+    },
+    {
+      name: '480p',
+      width: 720,
+      height: 480
+    }
+  ]
 
   const {
     setupPublisher,
@@ -114,32 +137,30 @@ function App() {
     [microphoneList]
   );
 
-  const onToggleEchoCancellation = (echoCancellation: boolean) => {
+  const onSelectEchoCancellation = (echoCancellation: boolean) => {
     const constraints: MediaConstraints = {
-      channelCount: channels as AudioChannels,
       echoCancellation,
-      resolution,
     };
 
     setEchoCancellation(echoCancellation);
     updateMediaConstraints(constraints);
   };
 
-  const onToggleStereoMono = () => {
+  const onSelectAudioChannels = () => {
+    const stereoChannelCount = 2;
+    const monoChannelCount = 1;
+    const newChannelCount = channels === monoChannelCount ? stereoChannelCount : monoChannelCount
+
     const constraints: MediaConstraints = {
-      channelCount: channels === 1 ? 2 : 1,
-      echoCancellation,
-      resolution,
+      channelCount: newChannelCount,
     };
 
-    setChannels(channels === 1 ? 2 : 1);
+    setChannels(newChannelCount);
     updateMediaConstraints(constraints);
   };
 
   const onSelectVideoResolution = (resolution: Resolution) => {
     const constraints: MediaConstraints = {
-      channelCount: channels as AudioChannels,
-      echoCancellation,
       resolution,
     };
     setResolution(resolution);
@@ -264,9 +285,11 @@ function App() {
                         <HStack>
                           <Text> Resolution </Text>
                           <ResolutionSelect
-                            updateResolution={(newResolution: Resolution) => {
+                            onSelectResolution={(newResolution: Resolution) => {
                               onSelectVideoResolution(newResolution);
                             }}
+                            supportedResolutions={supportedResolutions}
+                            defaultResolution={resolution}
                           />
                         </HStack>
                       )}
