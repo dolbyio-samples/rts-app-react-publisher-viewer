@@ -28,7 +28,6 @@ export type Viewer = {
   stopViewer: () => void;
   startViewer: (options?: ViewOptions) => void;
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
-  mainSourceId: string;
   viewerCount: number;
   streamQualityOptions: SimulcastQuality[];
   updateStreamQuality: (selectedQuality: StreamQuality) => void;
@@ -44,7 +43,6 @@ const useViewer = (): Viewer => {
   const sourceIds = useRef<Set<string>>(new Set());
   const [viewerCount, setViewerCount] = useState<number>(0);
   const handleError = useErrorHandler();
-  const mainSourceId = 'Main';
 
   const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
@@ -96,6 +94,7 @@ const useViewer = (): Viewer => {
           {
             const source = event.data as MediaStreamSource;
             if (!source.sourceId) {
+              // main stream
               setViewerState('liveOn');
               return;
             }
@@ -107,6 +106,7 @@ const useViewer = (): Viewer => {
           {
             const source = event.data as MediaStreamSource;
             if (!source.sourceId) {
+              // main stream
               setViewerState('liveOff');
               return;
             }
@@ -138,14 +138,15 @@ const useViewer = (): Viewer => {
   };
 
   const startViewer = async (options?: ViewOptions) => {
-    if (!millicastView.current) throw 'Please set up Viewer first';
+    if (!millicastView.current) {
+      handleError('Please set up Viewer first');
+      return;
+    }
     if (millicastView.current && millicastView.current.isActive()) return;
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
     } catch (error) {
-      // TODO: try reconnect
-      setViewerState('ready');
       handleError(error);
     }
   };
@@ -155,25 +156,38 @@ const useViewer = (): Viewer => {
     let videoTransceiver: RTCRtpTransceiver | undefined;
     let audioTransceiver: RTCRtpTransceiver | undefined;
     const mediaStream = new MediaStream();
-    if (trackInfos.some((info) => info.media == 'video'))
-      videoTransceiver = await millicastView.current.addRemoteTrack('video', [mediaStream]);
-    if (trackInfos.some((info) => info.media == 'audio'))
-      audioTransceiver = await millicastView.current.addRemoteTrack('audio', [mediaStream]);
-    const videoMid = videoTransceiver?.mid ?? undefined;
-    const audioMid = audioTransceiver?.mid ?? undefined;
-    if (!videoMid && !audioMid) throw 'No valid video or video in remote track';
-    const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
-    newRemoteTrackSources.set(sourceId, { mediaStream, videoMediaId: videoMid, audioMediaId: videoMid });
-    setRemoteTrackSources(newRemoteTrackSources);
     const mapping = [];
-    if (videoMid) mapping.push({ trackId: 'video', mediaId: videoMid, media: 'video' });
-    if (audioMid) mapping.push({ trackId: 'audio', mediaId: audioMid, media: 'audio' });
+    const trackSource: RemoteTrackSource = { mediaStream };
+    let trackInfo = trackInfos.find((info) => info.media == 'video');
+    if (trackInfo) {
+      videoTransceiver = await millicastView.current.addRemoteTrack('video', [mediaStream]);
+      const videoMid = videoTransceiver?.mid ?? undefined;
+      if (videoMid) {
+        mapping.push({ trackId: trackInfo.trackId, mediaId: videoMid, media: trackInfo.media });
+        trackSource.videoMediaId = videoMid;
+      }
+    }
+    trackInfo = trackInfos.find((info) => info.media == 'audio');
+    if (trackInfo) {
+      audioTransceiver = await millicastView.current.addRemoteTrack('audio', [mediaStream]);
+      const audioMid = audioTransceiver?.mid ?? undefined;
+      if (audioMid) {
+        mapping.push({ trackId: 'audio', mediaId: audioMid, media: 'audio' });
+        trackSource.audioMediaId = audioMid;
+      }
+    }
+    if (mapping.length === 0) {
+      handleError('No valid video or audio track');
+      return;
+    }
     try {
       await millicastView.current.project(sourceId, mapping);
-    } catch (error) {
-      setViewerState('ready');
-      handleError(error);
+    } catch (err) {
+      handleError(err);
     }
+    const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
+    newRemoteTrackSources.set(sourceId, trackSource);
+    setRemoteTrackSources(newRemoteTrackSources);
   };
 
   const unprojectAndRemoveRemoteTrack = async (sourceId: string) => {
@@ -184,7 +198,11 @@ const useViewer = (): Viewer => {
     if (remoteTrackSource.videoMediaId) mids.push(remoteTrackSource.videoMediaId);
     if (remoteTrackSource.audioMediaId) mids.push(remoteTrackSource.audioMediaId);
     if (mids.length === 0) return;
-    await millicastView.current.unproject(mids);
+    try {
+      await millicastView.current.unproject(mids);
+    } catch (err) {
+      handleError(err);
+    }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
     setRemoteTrackSources(newRemoteTrackSources);
@@ -201,7 +219,6 @@ const useViewer = (): Viewer => {
     stopViewer,
     startViewer,
     remoteTrackSources,
-    mainSourceId,
     viewerCount,
     streamQualityOptions,
     updateStreamQuality,
