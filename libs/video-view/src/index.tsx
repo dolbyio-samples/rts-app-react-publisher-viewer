@@ -1,22 +1,36 @@
 import React, { memo, useRef, useEffect, useState } from 'react';
-import { Box, HStack, IconButton } from '@chakra-ui/react';
+import { Box, HStack, IconButton, Spacer } from '@chakra-ui/react';
 
-import { IconFullScreen, IconFullScreenExit, IconInfo } from '@millicast-react/dolbyio-icons';
+import {
+  IconFullScreen,
+  IconFullScreenExit,
+  IconInfo,
+  IconSpeaker,
+  IconSpeakerOff,
+} from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import type { streamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
   mirrored?: boolean;
   muted?: boolean;
+  displayMuteButton?: boolean;
   mediaStream?: MediaStream;
   statistics?: streamStats;
 };
 
-const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }: VideoViewProps) => {
+const VideoView = ({
+  mirrored = false,
+  muted = false,
+  displayMuteButton = true,
+  mediaStream,
+  statistics,
+}: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showStatisticsInfo, setshowStatisticsInfo] = useState(false);
+  const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
     if (video.current && mediaStream) {
@@ -60,10 +74,20 @@ const VideoView = ({ mirrored = false, muted = false, mediaStream, statistics }:
         test-id="video-view"
         autoPlay
         ref={video}
-        muted={muted}
+        muted={isMuted}
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
-      <HStack pos="absolute" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
+      <HStack pos="absolute" width="100%" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
+        {displayMuteButton && (
+          <IconButton
+            aria-label="Mute button"
+            className="icon-button"
+            size="md"
+            icon={isMuted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
+            onClick={() => setIsMuted(!isMuted)}
+          />
+        )}
+        <Spacer />
         <IconButton
           aria-label="Full screen"
           size="md"

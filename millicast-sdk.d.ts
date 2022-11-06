@@ -175,7 +175,7 @@ declare namespace millicast {
     stop(): void;
     isActive(): boolean;
     connect(options?: ViewOptions): Promise<void>;
-    project(sourceId: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
+    project(sourceId?: string, mapping: ViewProjectSourceMapping[]): Promise<void>;
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
     select(layer: LayerInfo | unknown): Promise<void>;
