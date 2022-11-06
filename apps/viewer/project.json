@@ -42,6 +42,13 @@
         }
       }
     },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite preview -c apps/viewer/vite.config.ts"
+      },
+      "dependsOn": ["build"]
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

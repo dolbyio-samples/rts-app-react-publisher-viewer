@@ -7,3 +7,5 @@ export { default as IconMicrophoneOff } from './MicrophoneOff';
 export { default as IconSettings } from './Settings';
 export { default as IconParicipant } from './Participants';
 export { default as IconInfo } from './Info';
+export { default as IconSpeaker } from './Speaker';
+export { default as IconSpeakerOff } from './SpeakerOff';
