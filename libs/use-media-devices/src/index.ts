@@ -52,7 +52,7 @@ const useMediaDevices: () => MediaDevices = () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: mediaConstraints.video,
+          video: true,
         });
         if (stream) {
           getMediaDevicesList();
