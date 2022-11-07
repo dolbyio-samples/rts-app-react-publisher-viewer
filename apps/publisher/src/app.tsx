@@ -45,29 +45,6 @@ function App() {
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
   const [resolution, setResolution] = useState<Resolution>({ name: '720p', width: 1280, height: 720 });
 
-  const supportedResolutions = [
-    {
-      name: '2160p',
-      width: 3840,
-      height: 2160
-    },
-    {
-      name: '1080p',
-      width: 1920,
-      height: 1080
-    },
-    {
-      name: '720p',
-      width: 1280,
-      height: 720
-    },
-    {
-      name: '480p',
-      width: 720,
-      height: 480
-    }
-  ]
-
   const {
     setupPublisher,
     startStreaming,
@@ -98,6 +75,9 @@ function App() {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
+    supportedResolutions,
+    isSupportChannelCount,
+    isSupportEchoCancellation,
   } = useMediaDevices();
 
   useEffect(() => {
@@ -281,7 +261,7 @@ function App() {
                           </Select>
                         }
                       </HStack>
-                      {mediaStream && (
+                      {mediaStream && supportedResolutions.length &&(
                         <HStack>
                           <Text> Resolution </Text>
                           <ResolutionSelect
@@ -293,15 +273,19 @@ function App() {
                           />
                         </HStack>
                       )}
-                      <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
-                        Mono or Stereo
-                      </Switch>
-                      <Switch
-                        test-id="echoCancellationSwitch"
-                        onChange={() => onSelectEchoCancellation(!echoCancellation)}
-                      >
-                        Echo Cancellation
-                      </Switch>
+                      {isSupportChannelCount && 
+                        <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
+                          Mono or Stereo
+                        </Switch>
+                      }
+                      {isSupportEchoCancellation &&
+                        <Switch
+                          test-id="echoCancellationSwitch"
+                          onChange={() => onSelectEchoCancellation(!echoCancellation)}
+                        >
+                          Echo Cancellation
+                        </Switch>
+                      }
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
