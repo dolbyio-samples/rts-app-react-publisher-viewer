@@ -13,7 +13,7 @@ export type Resolution = {
   height: number;
 };
 
-type Resolutions = '2160p' | '1080p' | '720p' | '480p';
+type Resolutions = '2160p' | '1440p' | '1080p' | '720p' | '480p';
 
 const ResolutionSelect = ({ onSelectResolution, supportedResolutions, defaultResolution }: ResolutionSelectProps) => {
   const onResolutionChange = (selectedResolution: Resolutions) => {
