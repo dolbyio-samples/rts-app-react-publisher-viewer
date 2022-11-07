@@ -7,6 +7,9 @@ const dolbyioTheme = extendTheme({
       400: '#aa33ff',
       500: '#8829CC',
     },
+    dolbyRed: {
+      500: '#E52222',
+    },
   },
   components: {
     Button,

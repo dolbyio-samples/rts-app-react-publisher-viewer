@@ -1,18 +1,15 @@
 import { Meta, Story } from '@storybook/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import ParticipantCount from '@millicast-react/participant-count';
+import LiveIndicator from '@millicast-react/live-indicator';
 import * as React from 'react';
 
 export default {
-  component: ParticipantCount,
+  component: LiveIndicator,
 } as Meta;
 
-export const Default: Story = (args) => (
+export const Default: Story = () => (
   <ChakraProvider theme={dolbyioTheme}>
-    <ParticipantCount count={0} {...args} />
+    <LiveIndicator />
   </ChakraProvider>
 );
-Default.args = {
-  count: 1,
-};

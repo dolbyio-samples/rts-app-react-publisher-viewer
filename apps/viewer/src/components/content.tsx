@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import useViewer from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
+import LiveIndicator from '@millicast-react/live-indicator';
 
 const Content = () => {
   const { viewerState, mainStream, setupViewer, stopViewer, startViewer, remoteTrackSources, viewerCount } =
@@ -16,8 +17,12 @@ const Content = () => {
   }, []);
 
   return (
-    <Box width="100vw">
-      <Flex pr="4">
+    <VStack width="100vw">
+      <Flex w="100%" pr="4">
+        <Spacer />
+        {viewerState === 'liveOn' && <LiveIndicator />}
+      </Flex>
+      <Flex w="100%" pr="4">
         <Spacer />
         {viewerState === 'liveOn' && <ParticipantCount count={viewerCount} />}
       </Flex>
@@ -53,7 +58,7 @@ const Content = () => {
           </HStack>
         </VStack>
       </Center>
-    </Box>
+    </VStack>
   );
 };
 
