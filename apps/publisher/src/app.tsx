@@ -36,6 +36,7 @@ import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import React from 'react';
+import CloseBrowserWarning from '@millicast-react/close-browser-warning';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -296,6 +297,7 @@ function App() {
       <Box>
         <Text>Version: {__APP_VERSION__} </Text>
       </Box>
+      <CloseBrowserWarning />
     </VStack>
   );
 }
