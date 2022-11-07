@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Nodejs 16.x
@@ -46,6 +46,17 @@ jobs:
       - name: build & test
         run: |
           eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
-          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=3"
+          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx affected --target=e2e-report --base=${{ env.BASE_BRANCH }} --skip-nx-cache"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/bdd-test/reports/
+          retention-days: 2
       - name: deploy
         run: eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"

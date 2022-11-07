@@ -42,6 +42,13 @@
         }
       }
     },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite preview -c apps/viewer/vite.config.ts"
+      },
+      "dependsOn": ["build"]
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -55,6 +62,23 @@
       "options": {
         "jestConfig": "apps/viewer/jest.config.ts",
         "passWithNoTests": true
+      }
+    },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "yarn nx launch-server bdd-test --skip-nx-cache",
+          "yarn nx test-viewer bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/viewer/"
+        ]
+      }
+    },
+    "e2e-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": ["yarn nx test-report bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/viewer/"]
       }
     },
     "deploy": {

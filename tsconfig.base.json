@@ -18,6 +18,7 @@
     "paths": {
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
+      "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
       "@millicast-react/media-device-select": ["libs/media-device-select/src/index.tsx"],
       "@millicast-react/participant-count": ["libs/participant-count/src/index.tsx"],
       "@millicast-react/resolution-select": ["libs/resolution-select/src/index.tsx"],

@@ -1,0 +1,52 @@
+name: BDD-TESTS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+  VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
+  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  BRANCH_REF: ${{ github.ref }}
+  PR_TITLE: ${{ github.event.pull_request.title }}
+  PR_NUM: ${{ github.event.number }}
+
+jobs:
+  BDD-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install Dependencies
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: Lint Check
+        run: |
+          yarn nx lint bdd-test --skip-nx-cache
+      - name: Start Publisher and Viewer App Locally
+        run: |
+          yarn nx launch-server bdd-test --skip-nx-cache
+      - name: Execute BDD Tests
+        run: |
+          yarn nx test bdd-test --skip-nx-cache
+      - name: Generate Test Report
+        if: always()
+        run: |
+          yarn nx test-report bdd-test --skip-nx-cache
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/bdd-test/reports/
+          retention-days: 2

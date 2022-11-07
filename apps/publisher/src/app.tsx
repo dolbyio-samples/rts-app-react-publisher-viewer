@@ -36,6 +36,7 @@ import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
+import LiveIndicator from '@millicast-react/live-indicator';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -154,20 +155,36 @@ function App() {
   return (
     <VStack w="100%">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Box>
-          <Heading size="md" p="4">
-            Dolbyio logo
-          </Heading>
-        </Box>
+        <Heading size="md" p="4">
+          Dolbyio logo
+        </Heading>
         <Spacer />
-        {publisherState == 'streaming' && <ParticipantCount count={viewerCount} />}
+        {publisherState === 'streaming' && (
+          <Box pr="8">
+            <LiveIndicator />
+          </Box>
+        )}
+      </Flex>
+      <Flex w="100%">
+        <Spacer />
+        {publisherState === 'streaming' && (
+          <Box pr="8">
+            <ParticipantCount count={viewerCount} />
+          </Box>
+        )}
       </Flex>
       <Box>
         <Center>
           <VStack>
             <HStack bg="black">
               <Box>
-                <VideoView mirrored={true} mediaStream={mediaStream} statistics={statistics} />
+                <VideoView
+                  mirrored={true}
+                  muted={true}
+                  displayMuteButton={false}
+                  mediaStream={mediaStream}
+                  statistics={statistics}
+                />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
                 <VideoView mediaStream={displayStream} />

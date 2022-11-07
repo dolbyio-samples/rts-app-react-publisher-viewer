@@ -1,20 +1,27 @@
-import reporter, { Options } from 'cucumber-html-reporter';
+import { generate, Options } from 'cucumber-html-reporter';
 
-const options: Options = {
+import { BrowserManager } from '../support/BrowserManager';
+
+const browserMgr = new BrowserManager();
+
+const reportOptions: Options = {
   theme: 'bootstrap',
-  jsonFile: './reports/cucumber_report.json',
-  output: './reports/cucumber_report.html',
-  screenshotsDirectory: './reports/screenshots',
+  jsonFile: `${browserMgr.options.reportPath}/cucumber_report.json`,
+  output: `${browserMgr.options.reportPath}/cucumber_report.html`,
+  screenshotsDirectory: `${browserMgr.options.reportPath}/screenshots`,
   storeScreenshots: true,
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
   launchReport: false,
   metadata: {
-    'App Version': '2.0.0',
+    'App Version': '0.0.1',
     'Test Environment': 'DEV',
-    Browser: 'Chrome',
-    Platform: 'MAC',
+    Browser: `${browserMgr.options.browserName}`,
+    Headless: `${browserMgr.options.headless}`,
+    Viewport: `${browserMgr.options.viewport.width} x ${browserMgr.options.viewport.height}`,
+    Platform: `${process.platform}`,
+    Time: `${new Date()}`,
   },
 };
 
-reporter.generate(options);
+generate(reportOptions);
