@@ -91,7 +91,7 @@ const useMediaDevices: () => MediaDevices = () => {
         track.enabled = isAudioEnabled;
 
         // check if the audio device supports codec, channelCount and echo cancellation
-        const supportedConstraints: MediaTrackSupportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+        const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
         if (supportedConstraints.echoCancellation) {
           setIsSupportEchoCancellation(true);
         }
