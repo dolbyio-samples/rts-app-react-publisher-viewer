@@ -259,9 +259,9 @@ function App() {
                           />
                         )}
                       </HStack>
-                      <HStack width="100%">
-                        <Text> Codec </Text>
-                        {
+                      {codecList.length !== 0 && (
+                        <HStack width="100%">
+                          <Text> Codec </Text>
                           <Select
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
@@ -276,8 +276,8 @@ function App() {
                               );
                             })}
                           </Select>
-                        }
-                      </HStack>
+                        </HStack>
+                      )}
                       {mediaStream && supportedResolutions.length && (
                         <HStack>
                           <Text> Resolution </Text>
