@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Resolution } from '../../resolution-select/src';
 
+declare global {
+  // Added missing type of 'channelCount' to the 'MediaTrackSupportedConstraints'
+  interface MediaTrackSupportedConstraints {
+    channelCount: number;
+  }
+}
+
 export type AudioChannels = 1 | 2;
 
 export type MediaConstraints = {
@@ -84,11 +91,10 @@ const useMediaDevices: () => MediaDevices = () => {
         track.enabled = isAudioEnabled;
 
         // check if the audio device supports codec, channelCount and echo cancellation
-        const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+        const supportedConstraints: MediaTrackSupportedConstraints = navigator.mediaDevices.getSupportedConstraints();
         if (supportedConstraints.echoCancellation) {
           setIsSupportEchoCancellation(true);
         }
-        // TODO: resolve error of 'Property 'channelCount' does not exist on type 'MediaTrackSupportedConstraints'.'
         if (supportedConstraints.channelCount) {
           setIsSupportChannelCount(true);
         }
