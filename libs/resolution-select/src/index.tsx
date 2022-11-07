@@ -16,14 +16,12 @@ export type Resolution = {
 type Resolutions = '2160p' | '1080p' | '720p' | '480p';
 
 const ResolutionSelect = ({ onSelectResolution, supportedResolutions, defaultResolution }: ResolutionSelectProps) => {
-
   const onResolutionChange = (selectedResolution: Resolutions) => {
-
-    supportedResolutions.forEach(resolution => {
+    supportedResolutions.forEach((resolution) => {
       if (resolution.name === selectedResolution) {
         onSelectResolution(resolution);
       }
-    })
+    });
   };
 
   return (
@@ -32,7 +30,11 @@ const ResolutionSelect = ({ onSelectResolution, supportedResolutions, defaultRes
       defaultValue={defaultResolution.name}
       onChange={(event) => onResolutionChange(event.target.value as Resolutions)}
     >
-      {supportedResolutions.map(resolution => <option key={resolution.name} value={resolution.name}>{resolution.name}</option>)}
+      {supportedResolutions.map((resolution) => (
+        <option key={resolution.name} value={resolution.name}>
+          {resolution.name}
+        </option>
+      ))}
     </Select>
   );
 };

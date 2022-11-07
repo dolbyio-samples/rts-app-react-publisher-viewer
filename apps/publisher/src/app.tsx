@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react';
 
 import usePublisher from '@millicast-react/use-publisher';
-import useMediaDevices, { AudioChannels, MediaConstraints } from '@millicast-react/use-media-devices';
+import useMediaDevices, { MediaConstraints } from '@millicast-react/use-media-devices';
 import {
   IconMicrophoneOn,
   IconMicrophoneOff,
@@ -130,7 +130,7 @@ function App() {
   const onSelectAudioChannels = () => {
     const stereoChannelCount = 2;
     const monoChannelCount = 1;
-    const newChannelCount = channels === monoChannelCount ? stereoChannelCount : monoChannelCount
+    const newChannelCount = channels === monoChannelCount ? stereoChannelCount : monoChannelCount;
 
     const constraints: MediaConstraints = {
       channelCount: newChannelCount,
@@ -278,7 +278,7 @@ function App() {
                           </Select>
                         }
                       </HStack>
-                      {mediaStream && supportedResolutions.length &&(
+                      {mediaStream && supportedResolutions.length && (
                         <HStack>
                           <Text> Resolution </Text>
                           <ResolutionSelect
@@ -290,19 +290,19 @@ function App() {
                           />
                         </HStack>
                       )}
-                      {isSupportChannelCount && 
+                      {isSupportChannelCount && (
                         <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
                           Mono or Stereo
                         </Switch>
-                      }
-                      {isSupportEchoCancellation &&
+                      )}
+                      {isSupportEchoCancellation && (
                         <Switch
                           test-id="echoCancellationSwitch"
                           onChange={() => onSelectEchoCancellation(!echoCancellation)}
                         >
                           Echo Cancellation
                         </Switch>
-                      }
+                      )}
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}

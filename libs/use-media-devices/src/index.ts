@@ -81,7 +81,7 @@ const useMediaDevices: () => MediaDevices = () => {
     if (mediaStream) {
       if (mediaStream.getAudioTracks().length) {
         const track = mediaStream.getAudioTracks()[0];
-        track.enabled = isAudioEnabled; 
+        track.enabled = isAudioEnabled;
 
         // check if the audio device supports codec, channelCount and echo cancellation
         const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
@@ -98,47 +98,47 @@ const useMediaDevices: () => MediaDevices = () => {
         track.enabled = isVideoEnabled;
 
         // List supported camera resolutions
-        const capabilities = track.getCapabilities()
-        const tempSupportedResolutionList = []
+        const capabilities = track.getCapabilities();
+        const tempSupportedResolutionList = [];
         if (capabilities.width && capabilities.width.max) {
           if (capabilities.width.max >= 3840) {
             tempSupportedResolutionList.push({
               name: '2160p',
               width: 3840,
-              height: 2160
-            })
+              height: 2160,
+            });
           }
           if (capabilities.width.max >= 2560) {
             tempSupportedResolutionList.push({
               name: '1440p',
               width: 2560,
-              height: 1440
-            })
+              height: 1440,
+            });
           }
           if (capabilities.width.max >= 1920) {
             tempSupportedResolutionList.push({
               name: '1080p',
               width: 1920,
-              height: 1080
-            })
+              height: 1080,
+            });
           }
           if (capabilities.width.max >= 1280) {
             tempSupportedResolutionList.push({
               name: '720p',
               width: 1280,
-              height: 720
-            })
+              height: 720,
+            });
           }
           if (capabilities.width.max >= 720) {
             tempSupportedResolutionList.push({
               name: '480p',
               width: 720,
-              height: 480
-            })
-          } 
+              height: 480,
+            });
+          }
         }
         if (tempSupportedResolutionList.length !== 0) {
-          setSupportedResolutions(tempSupportedResolutionList)
+          setSupportedResolutions(tempSupportedResolutionList);
         }
       }
     }
@@ -223,40 +223,44 @@ const useMediaDevices: () => MediaDevices = () => {
     const videoTracks = mediaStream?.getVideoTracks();
     if (videoTracks && videoTracks.length && resolution) {
       try {
-        videoTracks[0].applyConstraints({
-          width: {ideal: resolution.width},
-          height: {ideal: resolution.height},
-        })
-        .then(() => {
-          if(videoTracks[0].getConstraints().width !== resolution.width || videoTracks[0].getConstraints().height !== resolution.height) {
-            throw "The selected resolution couldn't be applied."
-          }
-        });
-
+        videoTracks[0]
+          .applyConstraints({
+            width: { ideal: resolution.width },
+            height: { ideal: resolution.height },
+          })
+          .then(() => {
+            if (
+              videoTracks[0].getConstraints().width !== resolution.width ||
+              videoTracks[0].getConstraints().height !== resolution.height
+            ) {
+              throw "The selected resolution couldn't be applied.";
+            }
+          });
       } catch (err) {
         console.log('Issue(s) occured when applying new constraints: ', err);
-      };
-    };
+      }
+    }
 
     const audioTracks = mediaStream?.getAudioTracks();
     if (audioTracks && audioTracks.length && (echoCancellation || channelCount)) {
       try {
-        audioTracks[0].applyConstraints({
-          echoCancellation,
-          channelCount,
-        })
-        .then(() => {
-          if(echoCancellation && audioTracks[0].getConstraints().echoCancellation !== echoCancellation) {
-            throw "The selected echoCancellation couldn't be applied."
-          };
-          if(channelCount && audioTracks[0].getConstraints().channelCount !== channelCount) {
-            throw "The selected channelCount couldn't be applied."
-          }
-        });
+        audioTracks[0]
+          .applyConstraints({
+            echoCancellation,
+            channelCount,
+          })
+          .then(() => {
+            if (echoCancellation && audioTracks[0].getConstraints().echoCancellation !== echoCancellation) {
+              throw "The selected echoCancellation couldn't be applied.";
+            }
+            if (channelCount && audioTracks[0].getConstraints().channelCount !== channelCount) {
+              throw "The selected channelCount couldn't be applied.";
+            }
+          });
       } catch (err) {
         console.log('Issue(s) occured when applying new constraints: ', err);
-      };
-    };
+      }
+    }
   };
 
   return {
