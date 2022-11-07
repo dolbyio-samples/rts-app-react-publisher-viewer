@@ -1,17 +1,15 @@
 import { rootMain } from '../../../.storybook/main';
-import type { StorybookConfig, Options } from '@storybook/core-common';
+import type { StorybookViteConfig } from '@storybook/builder-vite';
+import { Options } from '@storybook/core-common';
 
-const config: StorybookConfig = {
+const config: StorybookViteConfig = {
   ...rootMain,
-
-  core: { ...rootMain.core, builder: 'webpack5' },
-
   stories: [...rootMain.stories, '../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [...(rootMain.addons || [])],
-  webpackFinal: async (config, { configType }: Options) => {
+  viteFinal: async (config, { configType }) => {
     // apply any global webpack configs that might have been specified in .storybook/main.ts
-    if (rootMain.webpackFinal) {
-      config = await rootMain.webpackFinal(config, { configType } as Options);
+    if (rootMain.viteFinal) {
+      config = await rootMain.viteFinal(config, { configType } as Options);
     }
 
     // add your own webpack tweaks if needed
