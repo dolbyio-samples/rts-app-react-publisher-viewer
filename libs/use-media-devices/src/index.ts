@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Resolution } from '../../resolution-select/src';
 
-declare global {
-  // Added missing type of 'channelCount' to the 'MediaTrackSupportedConstraints'
-  interface MediaTrackSupportedConstraints {
-    channelCount: number;
-  }
-}
-
-export type AudioChannels = 1 | 2;
+export type Stereo = 2;
+export type Mono = 1;
+export type AudioChannels = Mono | Stereo;
 
 export type MediaConstraints = {
   resolution?: Resolution;
@@ -33,8 +28,8 @@ export type MediaDevices = {
   displayStream?: MediaStream;
   updateMediaConstraints: (constraints: MediaConstraints) => void;
   supportedResolutions: Resolution[];
-  isSupportChannelCount: boolean;
-  isSupportEchoCancellation: boolean;
+  isChannelCountSupported: boolean;
+  isEchoCancellationSupported: boolean;
 };
 
 const useMediaDevices: () => MediaDevices = () => {
@@ -51,8 +46,8 @@ const useMediaDevices: () => MediaDevices = () => {
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
   const [supportedResolutions, setSupportedResolutions] = useState<Resolution[]>([]);
-  const [isSupportChannelCount, setIsSupportChannelCount] = useState<boolean>(false);
-  const [isSupportEchoCancellation, setIsSupportEchoCancellation] = useState<boolean>(false);
+  const [isChannelCountSupported, setIsChannelCountSupported] = useState<boolean>(false);
+  const [isEchoCancellationSupported, setIsEchoCancellationSupported] = useState<boolean>(false);
 
   const mediaConstraints = {
     video: {
@@ -90,13 +85,14 @@ const useMediaDevices: () => MediaDevices = () => {
         const track = mediaStream.getAudioTracks()[0];
         track.enabled = isAudioEnabled;
 
-        // check if the audio device supports codec, channelCount and echo cancellation
+        // check if the audio device supports channelCount and echo cancellation
         const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
         if (supportedConstraints.echoCancellation) {
-          setIsSupportEchoCancellation(true);
+          setIsEchoCancellationSupported(true);
         }
-        if (supportedConstraints.channelCount) {
-          setIsSupportChannelCount(true);
+        const audioCtx = new window.AudioContext(); // use Web Audio Api to check the maximum supported channel count
+        if (audioCtx.destination.maxChannelCount >= 2) {
+          setIsChannelCountSupported(true);
         }
       }
       if (mediaStream.getVideoTracks().length) {
@@ -155,6 +151,7 @@ const useMediaDevices: () => MediaDevices = () => {
       ...mediaConstraints,
       audio: {
         deviceId: microphoneId,
+        channelCount: 20
       },
       video: {
         deviceId: cameraId,
@@ -286,8 +283,8 @@ const useMediaDevices: () => MediaDevices = () => {
     displayStream,
     updateMediaConstraints,
     supportedResolutions,
-    isSupportChannelCount,
-    isSupportEchoCancellation,
+    isChannelCountSupported,
+    isEchoCancellationSupported,
   };
 };
 

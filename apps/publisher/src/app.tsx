@@ -38,6 +38,8 @@ import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
 
+export type Resolutions = '2160p' | '1440p' | '1080p' | '720p' | '480p';
+
 function App() {
   const displayShareSourceId = 'DisplayShare';
 
@@ -77,8 +79,8 @@ function App() {
     stopDisplayCapture,
     displayStream,
     supportedResolutions,
-    isSupportChannelCount,
-    isSupportEchoCancellation,
+    isChannelCountSupported,
+    isEchoCancellationSupported,
   } = useMediaDevices();
 
   useEffect(() => {
@@ -285,17 +287,17 @@ function App() {
                             onSelectResolution={(newResolution: Resolution) => {
                               onSelectVideoResolution(newResolution);
                             }}
-                            supportedResolutions={supportedResolutions}
+                            resolutionList={supportedResolutions}
                             defaultResolution={resolution}
                           />
                         </HStack>
                       )}
-                      {isSupportChannelCount && (
+                      {isChannelCountSupported && (
                         <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
                           Mono or Stereo
                         </Switch>
                       )}
-                      {isSupportEchoCancellation && (
+                      {isEchoCancellationSupported && (
                         <Switch
                           test-id="echoCancellationSwitch"
                           onChange={() => onSelectEchoCancellation(!echoCancellation)}
