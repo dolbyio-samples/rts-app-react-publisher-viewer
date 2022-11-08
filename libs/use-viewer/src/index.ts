@@ -4,6 +4,8 @@ import { useErrorHandler } from 'react-error-boundary';
 import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
+import type { StreamStats } from '@millicast/sdk';
+
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
 
 export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
@@ -31,6 +33,7 @@ export type Viewer = {
   viewerCount: number;
   streamQualityOptions: SimulcastQuality[];
   updateStreamQuality: (selectedQuality: StreamQuality) => void;
+  statistics?: StreamStats;
 };
 
 const useViewer = (): Viewer => {
@@ -39,6 +42,7 @@ const useViewer = (): Viewer => {
     new Map()
   );
   const [mainStream, setMainStream] = useState<MediaStream>();
+  const [statistics, setStatistics] = useState<StreamStats>();
   const millicastView = useRef<View>();
   const sourceIds = useRef<Set<string>>(new Set());
   const [viewerCount, setViewerCount] = useState<number>(0);
@@ -142,6 +146,10 @@ const useViewer = (): Viewer => {
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
+      millicastView.current.webRTCPeer?.initStats();
+      millicastView.current.webRTCPeer?.on('stats', (statistics) => {
+        setStatistics(statistics);
+      });
     } catch (error) {
       handleError(error);
     }
@@ -206,6 +214,8 @@ const useViewer = (): Viewer => {
 
   const stopViewer = () => {
     millicastView.current?.stop();
+    millicastView.current?.webRTCPeer?.stopStats();
+    setStatistics(undefined);
   };
 
   return {
@@ -218,6 +228,7 @@ const useViewer = (): Viewer => {
     viewerCount,
     streamQualityOptions,
     updateStreamQuality,
+    statistics
   };
 };
 
