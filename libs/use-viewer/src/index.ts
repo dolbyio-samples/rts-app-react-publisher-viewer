@@ -118,10 +118,6 @@ const useViewer = (): Viewer => {
         case 'viewercount':
           setViewerCount((event.data as ViewerCount).viewercount);
           break;
-        case 'stopped':
-          // TODO: what data can we get from this event? should we call setViewerStreams([]) ?
-          console.log('stopped', event.data);
-          break;
         case 'layers': {
           const layers = (event.data as MediaStreamLayers).medias['0']?.active;
           if (!layers || layers.length == 0) return;

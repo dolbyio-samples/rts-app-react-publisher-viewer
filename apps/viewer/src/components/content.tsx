@@ -66,7 +66,7 @@ const Content = () => {
               })}
             </VStack>
           </HStack>
-          {viewerState === 'liveOn' && streamQualityOptions.length > 1 ? (
+          {viewerState === 'liveOn' && streamQualityOptions.length > 1 && (
             <Select
               test-id="simulcastQualitySelect"
               defaultValue={streamQualityOptions[0].streamQuality}
@@ -81,7 +81,7 @@ const Content = () => {
               })}
               ;
             </Select>
-          ) : undefined}
+          )}
         </VStack>
       </Center>
     </VStack>
