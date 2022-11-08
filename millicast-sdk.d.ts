@@ -97,7 +97,7 @@ declare namespace millicast {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
 
-  type StreamAudioOutboundsStatus = {
+  type StreamAudioOutboundsStats = {
     bitrate: number;
     id: string;
     mid: string;
@@ -106,7 +106,7 @@ declare namespace millicast {
     totalBytesSent: number;
   };
 
-  type StreamAudioInboundsStatus = {
+  type StreamAudioInboundsStats = {
     bitrate: number;
     id: string;
     jitter: number;
@@ -120,11 +120,11 @@ declare namespace millicast {
   };
 
   type StreamAudioStats = {
-    inbounds: StreamAudioInboundsStatus[];
-    outbounds: StreamAudioOutboundsStatus[];
+    inbounds: StreamAudioInboundsStats[];
+    outbounds: StreamAudioOutboundsStats[];
   };
 
-  type StreamVideoOutboundsStatus = {
+  type StreamVideoOutboundsStats = {
     bitrate: number;
     frameHeight: number;
     frameWidth: number;
@@ -137,7 +137,7 @@ declare namespace millicast {
     totalBytesSent: number;
   };
 
-  type StreamVideoInboundsStatus = {
+  type StreamVideoInboundsStats = {
     bitrate: number;
     frameHeight: number;
     frameWidth: number;
@@ -154,9 +154,9 @@ declare namespace millicast {
     timestamp: number;
   };
 
-  type StreamVideoStatus = {
-    inbounds: StreamVideoInboundsStatus[];
-    outbounds: StreamVideoOutboundsStatus[];
+  type StreamVideoStats = {
+    inbounds: StreamVideoInboundsStats[];
+    outbounds: StreamVideoOutboundsStats[];
   };
 
   type StreamStats = {
@@ -168,7 +168,7 @@ declare namespace millicast {
       size: number;
     };
     totalRoundTripTime?: number;
-    video: StreamVideoStatus;
+    video: StreamVideoStats;
   };
 
   type DirectorResponse = {
