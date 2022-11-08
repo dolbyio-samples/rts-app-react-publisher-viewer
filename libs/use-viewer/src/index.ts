@@ -228,7 +228,7 @@ const useViewer = (): Viewer => {
     viewerCount,
     streamQualityOptions,
     updateStreamQuality,
-    statistics
+    statistics,
   };
 };
 
