@@ -76,8 +76,6 @@ function App() {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    // isChannelCountSupported,
-    // isEchoCancellationSupported,
     supportedVideoTrackCapabilities,
     supportedAudioTrackCapabilities,
   } = useMediaDevices();
@@ -97,7 +95,6 @@ function App() {
       updateStreaming(mediaStream);
 
       // List supported camera resolutions
-      // const capabilities = mediaStream.getVideoTracks()[0].getCapabilities();
       if (supportedVideoTrackCapabilities) {
         const tempSupportedResolutionList = [];
         if (supportedVideoTrackCapabilities.width && supportedVideoTrackCapabilities.width.max && supportedVideoTrackCapabilities.height && supportedVideoTrackCapabilities.height.max) {
