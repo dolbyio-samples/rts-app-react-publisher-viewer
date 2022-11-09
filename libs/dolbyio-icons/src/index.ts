@@ -9,3 +9,4 @@ export { default as IconParicipant } from './Participants';
 export { default as IconInfo } from './Info';
 export { default as IconSpeaker } from './Speaker';
 export { default as IconSpeakerOff } from './SpeakerOff';
+export { default as IconStream } from './Stream';

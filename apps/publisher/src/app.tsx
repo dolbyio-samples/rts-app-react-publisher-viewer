@@ -20,7 +20,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
+import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';
 import useMediaDevices from '@millicast-react/use-media-devices';
 import {
@@ -29,6 +29,7 @@ import {
   IconCameraOn,
   IconCameraOff,
   IconSettings,
+  IconStream,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -37,10 +38,11 @@ import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import React from 'react';
 import LiveIndicator from '@millicast-react/live-indicator';
+import ActionBar from '@millicast-react/action-bar';
+
+const displayShareSourceId = 'DisplayShare';
 
 function App() {
-  const displayShareSourceId = 'DisplayShare';
-
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const {
@@ -116,29 +118,74 @@ function App() {
   const purple400 = 'var(--chakra-colors-dolbyPurple-400)';
 
   return (
-    <VStack w="100%">
-      <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Heading size="md" p="4">
-          Dolbyio logo
-        </Heading>
-        <Spacer />
+    <VStack minH="100vh" w="100vw" bg="background" p="6">
+      <Box w="100%" position="relative">
+        <ActionBar
+          name="Company name"
+          action={
+            publisherState == 'ready' || publisherState == 'connecting' ? (
+              <Button
+                test-id="startStreamingButton"
+                px="2.5"
+                h="28px"
+                fontSize="12px"
+                leftIcon={<IconStream height="16px" />}
+                isLoading={publisherState == 'connecting'}
+                onClick={() => {
+                  if (publisherState == 'ready' && mediaStream) {
+                    startStreaming({
+                      mediaStream,
+                      simulcast: isSimulcastEnabled,
+                      codec,
+                      events: ['viewercount'],
+                    });
+                    if (displayStream)
+                      startDisplayStreaming({
+                        mediaStream: displayStream,
+                        sourceId: displayShareSourceId,
+                      });
+                  }
+                }}
+              >
+                START
+              </Button>
+            ) : (
+              <Button
+                test-id="stopStreamingButton"
+                px="2.5"
+                h="28px"
+                fontSize="12px"
+                leftIcon={<IconStream height="16px" />}
+                onClick={() => {
+                  stopDisplayStreaming();
+                  stopStreaming();
+                }}
+              >
+                STOP
+              </Button>
+            )
+          }
+        />
+        <Box position="absolute" left="0">
+          <Timer start={publisherState === 'streaming'} />
+        </Box>
         {publisherState === 'streaming' && (
-          <Box pr="8">
-            <LiveIndicator />
-          </Box>
-        )}
-      </Flex>
-      <Flex w="100%">
-        <Spacer />
-        {publisherState === 'streaming' && (
-          <Box pr="8">
+          <Box position="absolute" right="0">
             <ParticipantCount count={viewerCount} />
           </Box>
         )}
-      </Flex>
+      </Box>
       <Box>
         <Center>
           <VStack>
+            <Box my="6" w="100%" textAlign="center">
+              <Heading as="h2" fontSize="24px" fontWeight="600">
+                Get started
+              </Heading>
+              <Text fontSize="15px" color="dolbySecondary.200" fontWeight="500">
+                Setup your audio and video before going live.
+              </Text>
+            </Box>
             <HStack bg="black">
               <Box>
                 <VideoView
@@ -254,42 +301,6 @@ function App() {
               </Popover>
             </HStack>
             <HStack>
-              {(publisherState == 'ready' || publisherState == 'connecting') && (
-                <Button
-                  isLoading={publisherState == 'connecting'}
-                  onClick={() => {
-                    if (publisherState == 'ready' && mediaStream) {
-                      startStreaming({
-                        mediaStream,
-                        simulcast: isSimulcastEnabled,
-                        codec,
-                        events: ['viewercount'],
-                      });
-                      if (displayStream)
-                        startDisplayStreaming({
-                          mediaStream: displayStream,
-                          sourceId: displayShareSourceId,
-                        });
-                    }
-                  }}
-                  test-id="startStreamingButton"
-                >
-                  Go Live
-                </Button>
-              )}
-              {publisherState === 'streaming' && (
-                <>
-                  <Button
-                    test-id="stopStreamingButton"
-                    onClick={() => {
-                      stopDisplayStreaming();
-                      stopStreaming();
-                    }}
-                  >
-                    Stop Live
-                  </Button>
-                </>
-              )}
               <Button
                 test-id="toggleDisplayCaptureButton"
                 onClick={() => {
@@ -299,7 +310,6 @@ function App() {
                 {displayStream ? 'Stop Presenting' : 'Present'}
               </Button>
             </HStack>
-            {publisherState === 'streaming' && <Timer />}
             <ShareLinkButton linkText={linkText} />
           </VStack>
         </Center>

@@ -1,8 +1,15 @@
 import { extendTheme } from '@chakra-ui/react';
 import Button from './styles/Button';
+import Heading from './styles/Heading';
+import Text from './styles/Text';
 
 const dolbyioTheme = extendTheme({
+  fonts: {
+    heading: `'Roboto', sans-serif`,
+    body: `'Roboto', sans-serif;`,
+  },
   colors: {
+    background: '#14141A',
     dolbyPurple: {
       400: '#AA33FF',
       500: '#8829CC',
@@ -13,9 +20,18 @@ const dolbyioTheme = extendTheme({
     dolbyGrey: {
       500: '#6A6A6D',
     },
+    dolbyNeutral: {
+      300: '#959599',
+      800: '#292930',
+    },
+    dolbySecondary: {
+      200: '#B9B9BA',
+    },
   },
   components: {
     Button,
+    Heading,
+    Text,
   },
 });
 
