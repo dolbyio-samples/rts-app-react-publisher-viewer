@@ -7,7 +7,32 @@ type StatisticsInfoProps = {
   statistics?: StreamStats;
 };
 
+const KILOBYTE = 1024;
+const MEGABYTE = KILOBYTE * KILOBYTE;
+
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
+  const formatTimestamp = (timestampMs: number | undefined): string => {
+    if (!timestampMs) return '';
+
+    const date = new Date(0);
+    date.setUTCMilliseconds(timestampMs);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  };
+
+  const formatBytes = (bytes: number): string => {
+    return `${formatNumber(bytes)}B`;
+  };
+
+  const formatBitRate = (bitRate: number): string => {
+    return `${formatNumber(bitRate).toLowerCase()}bps`;
+  };
+
+  const formatNumber = (input: number): string => {
+    if (input < KILOBYTE) return `${input}`;
+    if (input >= KILOBYTE && input < MEGABYTE) return `${input / KILOBYTE} K`;
+    else return `${input / MEGABYTE} M`;
+  };
+
   return (
     <VStack
       test-id="statisticsInfo"
@@ -52,7 +77,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Available Outgoing Bitrate:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.availableOutgoingBitrate / 1000} kbps</Text>
+                <Text fontSize="sm">{formatBitRate(statistics.availableOutgoingBitrate)}</Text>
               </Box>
             </Flex>
           )}
@@ -112,10 +137,10 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               {statistics.video?.outbounds.length > 0 && (
-                <Text fontSize="sm">{statistics.video?.outbounds[0].bitrate / 1000} kbps</Text>
+                <Text fontSize="sm">{formatBitRate(statistics.video?.outbounds[0].bitrate)}</Text>
               )}
               {statistics.video?.inbounds.length > 0 && (
-                <Text fontSize="sm">{statistics.video?.inbounds[0].bitrate / 1000} kbps</Text>
+                <Text fontSize="sm">{formatBitRate(statistics.video?.inbounds[0].bitrate)}</Text>
               )}
             </Box>
           </Flex>
@@ -125,10 +150,10 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             </Box>
             <Box flex="1">
               {statistics.audio?.outbounds.length > 0 && (
-                <Text fontSize="sm">{statistics.audio?.outbounds[0].bitrate / 1000} kbps</Text>
+                <Text fontSize="sm">{formatBitRate(statistics.audio?.outbounds[0].bitrate)}</Text>
               )}
               {statistics.audio?.inbounds.length > 0 && (
-                <Text fontSize="sm">{statistics.audio?.inbounds[0].bitrate / 1000} kbps</Text>
+                <Text fontSize="sm">{formatBitRate(statistics.audio?.inbounds[0].bitrate)}</Text>
               )}
             </Box>
           </Flex>
@@ -138,7 +163,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Video Total Sent:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.video?.outbounds[0].totalBytesSent / 1000} KB</Text>
+                <Text fontSize="sm">{formatBytes(statistics.video?.outbounds[0].totalBytesSent)}</Text>
               </Box>
             </Flex>
           )}
@@ -148,7 +173,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Video Total Received:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.video?.inbounds[0].totalBytesReceived / 1000} KB</Text>
+                <Text fontSize="sm">{formatBytes(statistics.video?.inbounds[0].totalBytesReceived)}</Text>
               </Box>
             </Flex>
           )}
@@ -158,7 +183,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Audio Total Sent:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.audio?.outbounds[0].totalBytesSent / 1000} KB</Text>
+                <Text fontSize="sm">{formatBytes(statistics.audio?.outbounds[0].totalBytesSent)}</Text>
               </Box>
             </Flex>
           )}
@@ -168,7 +193,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Audio Total Received:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.audio?.inbounds[0].totalBytesReceived / 1000} KB</Text>
+                <Text fontSize="sm">{formatBytes(statistics.audio?.inbounds[0].totalBytesReceived)}</Text>
               </Box>
             </Flex>
           )}
@@ -196,12 +221,14 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
             <Box flex="1">
               {statistics.video?.outbounds.length > 0 && (
                 <Text fontSize="sm">
-                  {statistics.video?.outbounds[0].timestamp || statistics.audio?.outbounds[0].timestamp}
+                  {formatTimestamp(
+                    statistics.video?.outbounds[0].timestamp || statistics.audio?.outbounds[0].timestamp
+                  )}
                 </Text>
               )}
               {statistics.video?.inbounds.length > 0 && (
                 <Text fontSize="sm">
-                  {statistics.video?.inbounds[0].timestamp || statistics.audio?.inbounds[0].timestamp}
+                  {formatTimestamp(statistics.video?.inbounds[0].timestamp || statistics.audio?.inbounds[0].timestamp)}
                 </Text>
               )}
             </Box>
