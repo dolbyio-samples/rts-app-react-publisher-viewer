@@ -200,17 +200,23 @@ const useMediaDevices: () => MediaDevices = () => {
         const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings();
 
         if (
-          videoConstraints.width !== undefined && 
+          videoConstraints.width !== undefined &&
           videoConstraints.height !== undefined &&
           (newVideoStreamSettings.width !== videoConstraints.width ||
-          newVideoStreamSettings.height !== videoConstraints.height)
+            newVideoStreamSettings.height !== videoConstraints.height)
         ) {
           throw "The selected resolution couldn't be applied.";
         }
-        if (audioConstraints.echoCancellation !== undefined && newAudioStreamSettings.echoCancellation !== audioConstraints.echoCancellation) {
+        if (
+          audioConstraints.echoCancellation !== undefined &&
+          newAudioStreamSettings.echoCancellation !== audioConstraints.echoCancellation
+        ) {
           throw "The selected echoCancellation couldn't be applied.";
         }
-        if (audioConstraints.channelCount !== undefined && newAudioStreamSettings.channelCount !== audioConstraints.channelCount) {
+        if (
+          audioConstraints.channelCount !== undefined &&
+          newAudioStreamSettings.channelCount !== audioConstraints.channelCount
+        ) {
           throw "The selected channelCount couldn't be applied.";
         }
 
@@ -229,7 +235,7 @@ const useMediaDevices: () => MediaDevices = () => {
       const videoConstraints = videoTracks[0].getConstraints();
 
       if (videoTracks.length && resolution) {
-        videoConstraints.width = resolution.width ;
+        videoConstraints.width = resolution.width;
         videoConstraints.height = resolution.height;
       }
 
