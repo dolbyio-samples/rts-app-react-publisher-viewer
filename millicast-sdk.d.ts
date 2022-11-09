@@ -72,11 +72,11 @@ declare namespace millicast {
   }
 
   interface LayerInfo {
-    encodingId?: string; // map to 'id' in Medialayer
-    bitrate: number;
-    simulcastIdx: number;
-    spatialLayerId: number;
-    temporalLayerId: number;
+    encodingId: string; // map to 'id' in Medialayer
+    bitrate?: number;
+    simulcastIdx?: number;
+    spatialLayerId?: number;
+    temporalLayerId?: number;
   }
 
   interface BroadcastEvent {
