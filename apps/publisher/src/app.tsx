@@ -337,7 +337,7 @@ function App() {
                       )}
                       {isChannelCountSupported && (
                         <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
-                          Mono or Stereo
+                          {channels === 1 ? 'Mono' : 'Stereo'}
                         </Switch>
                       )}
                       {isEchoCancellationSupported && (
@@ -345,7 +345,7 @@ function App() {
                           test-id="echoCancellationSwitch"
                           onChange={() => onSelectEchoCancellation(!echoCancellation)}
                         >
-                          Echo Cancellation
+                          Echo Cancellation {echoCancellation ? 'on' : 'off'}
                         </Switch>
                       )}
                       <Switch
@@ -353,7 +353,7 @@ function App() {
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         disabled={publisherState !== 'ready'}
                       >
-                        Simulcast
+                        Simulcast {isSimulcastEnabled ? 'on' : 'off'}
                       </Switch>
                     </VStack>
                   </PopoverBody>
