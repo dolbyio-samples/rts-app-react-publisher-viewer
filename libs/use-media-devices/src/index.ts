@@ -94,8 +94,7 @@ const useMediaDevices: () => MediaDevices = () => {
         if (capabilities.echoCancellation && capabilities.echoCancellation.includes(true)) {
           setIsEchoCancellationSupported(true);
         }
-        const audioCtx = new window.AudioContext(); // use Web Audio Api to check the maximum supported channel count
-        if (audioCtx.destination.maxChannelCount >= 2) {
+        if (capabilities.channelCount?.max && capabilities.channelCount.max >= 2) {
           setIsChannelCountSupported(true);
         }
       }
@@ -186,7 +185,7 @@ const useMediaDevices: () => MediaDevices = () => {
     videoConstraints: MediaTrackConstraints
   ) => {
     if (mediaStream) {
-      const tracks = mediaStream?.getTracks();
+      const tracks = mediaStream.getTracks();
       tracks.forEach((track) => {
         track.stop();
       });
@@ -197,23 +196,27 @@ const useMediaDevices: () => MediaDevices = () => {
           video: videoConstraints,
         });
 
-        const newStreamSettings: MediaTrackSettings = new_stream.getAudioTracks()[0].getSettings();
+        const newAudioStreamSettings = new_stream.getAudioTracks()[0].getSettings();
+        const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings();
+
         if (
-          newStreamSettings.width !== videoConstraints.width ||
-          newStreamSettings.height !== videoConstraints.height
+          videoConstraints.width !== undefined && 
+          videoConstraints.height !== undefined &&
+          (newVideoStreamSettings.width !== videoConstraints.width ||
+          newVideoStreamSettings.height !== videoConstraints.height)
         ) {
           throw "The selected resolution couldn't be applied.";
         }
-        if (newStreamSettings.echoCancellation !== audioConstraints.echoCancellation) {
+        if (audioConstraints.echoCancellation !== undefined && newAudioStreamSettings.echoCancellation !== audioConstraints.echoCancellation) {
           throw "The selected echoCancellation couldn't be applied.";
         }
-        if (newStreamSettings.channelCount !== audioConstraints.channelCount) {
+        if (audioConstraints.channelCount !== undefined && newAudioStreamSettings.channelCount !== audioConstraints.channelCount) {
           throw "The selected channelCount couldn't be applied.";
         }
 
         setMediaStream(new_stream);
       } catch (error) {
-        console.log('Issue(s) occured when applying new constraints: ', error);
+        console.error('Issue(s) occured when applying new constraints: ', error);
       }
     }
   };
@@ -223,14 +226,14 @@ const useMediaDevices: () => MediaDevices = () => {
       const videoTracks = mediaStream.getVideoTracks();
       const audioTracks = mediaStream.getAudioTracks();
       const audioConstraints = audioTracks[0].getConstraints();
-      const videoConstraints = audioTracks[0].getConstraints();
+      const videoConstraints = videoTracks[0].getConstraints();
 
-      if (videoTracks && videoTracks.length && resolution) {
-        videoConstraints.width = { ideal: resolution.width };
-        videoConstraints.height = { ideal: resolution.height };
+      if (videoTracks.length && resolution) {
+        videoConstraints.width = resolution.width ;
+        videoConstraints.height = resolution.height;
       }
 
-      if (mediaStream && audioTracks && audioTracks.length) {
+      if (audioTracks.length) {
         if (echoCancellation !== undefined) {
           audioConstraints.echoCancellation = echoCancellation;
         }
