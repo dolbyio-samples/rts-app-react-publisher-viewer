@@ -7,7 +7,7 @@ type StatisticsInfoProps = {
   statistics?: StreamStats;
 };
 
-const KILOBYTE = 1000;
+const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
 
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
