@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
 
-import type { streamStats } from '@millicast/sdk';
+import type { StreamStats } from '@millicast/sdk';
 
 export type PublisherState = 'initial' | 'ready' | 'connecting' | 'streaming';
 
@@ -22,13 +22,13 @@ export interface Publisher {
   publisherState: PublisherState;
   viewerCount: number;
   linkText: string;
-  statistics?: streamStats;
+  statistics?: StreamStats;
 }
 
 const usePublisher = (): Publisher => {
   const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
-  const [statistics, setStatistics] = useState<streamStats>();
+  const [statistics, setStatistics] = useState<StreamStats>();
 
   const [codec, setCodec] = useState<string>('');
   const [codecList, setCodecList] = useState<string[]>([]);
@@ -68,8 +68,8 @@ const usePublisher = (): Publisher => {
       setPublisherState('connecting');
       await publisher.current.connect(options);
       setPublisherState('streaming');
-      publisher.current.webRTCPeer.initStats();
-      publisher.current.webRTCPeer.on('stats', (statistics) => {
+      publisher.current.webRTCPeer?.initStats();
+      publisher.current.webRTCPeer?.on('stats', (statistics) => {
         setStatistics(statistics);
       });
     } catch (e) {
@@ -80,6 +80,7 @@ const usePublisher = (): Publisher => {
 
   const stopStreaming = async () => {
     publisher.current?.stop();
+    publisher.current?.webRTCPeer?.stopStats();
     setPublisherState('ready');
     setStatistics(undefined);
   };
@@ -88,11 +89,11 @@ const usePublisher = (): Publisher => {
     if (publisher.current && publisher.current.isActive()) {
       const audioTracks = stream.getAudioTracks();
       if (audioTracks.length) {
-        publisher.current.webRTCPeer.replaceTrack(audioTracks[0]);
+        publisher.current.webRTCPeer?.replaceTrack(audioTracks[0]);
       }
       const videoTracks = stream.getVideoTracks();
       if (videoTracks.length) {
-        publisher.current.webRTCPeer.replaceTrack(videoTracks[0]);
+        publisher.current.webRTCPeer?.replaceTrack(videoTracks[0]);
       }
     }
   };

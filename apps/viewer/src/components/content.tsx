@@ -16,6 +16,7 @@ const Content = () => {
     viewerCount,
     streamQualityOptions,
     updateStreamQuality,
+    statistics,
   } = useViewer();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const Content = () => {
           )}
           <HStack>
             {mainStream && viewerState === 'liveOn' ? (
-              <VideoView mediaStream={mainStream} />
+              <VideoView mediaStream={mainStream} statistics={statistics} />
             ) : (
               <Text> No stream is live </Text>
             )}

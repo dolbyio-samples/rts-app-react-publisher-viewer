@@ -92,12 +92,12 @@ declare namespace millicast {
     connect(options: BroadcastOptions): Promise<void>;
     stop(): void;
     isActive(): boolean;
-    webRTCPeer: PeerConnection;
+    webRTCPeer: PeerConnection | undefined;
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
 
-  type streamAudioOutboundsStatus = {
+  type StreamAudioOutboundsStats = {
     bitrate: number;
     id: string;
     mid: string;
@@ -106,12 +106,25 @@ declare namespace millicast {
     totalBytesSent: number;
   };
 
-  type streamAudioStats = {
-    inbounds: [];
-    outbounds: streamAudioOutboundsStatus[];
+  type StreamAudioInboundsStats = {
+    bitrate: number;
+    id: string;
+    jitter: number;
+    mid: string;
+    mimeType: string;
+    timestamp: number;
+    packetsLostDeltaPerSecond: number;
+    packetsLostRatioPerSecond: number;
+    totalBytesReceived: number;
+    totalPacketsReceived: number;
   };
 
-  type streamVideoOutboundsStatus = {
+  type StreamAudioStats = {
+    inbounds: StreamAudioInboundsStats[];
+    outbounds: StreamAudioOutboundsStats[];
+  };
+
+  type StreamVideoOutboundsStats = {
     bitrate: number;
     frameHeight: number;
     frameWidth: number;
@@ -124,21 +137,38 @@ declare namespace millicast {
     totalBytesSent: number;
   };
 
-  type streamVideoStatus = {
-    inbounds: [];
-    outbounds: streamVideoOutboundsStatus[];
+  type StreamVideoInboundsStats = {
+    bitrate: number;
+    frameHeight: number;
+    frameWidth: number;
+    framesPerSecond?: number;
+    jitter: number;
+    id: string;
+    mid: string;
+    mimeType: string;
+    packetsLostDeltaPerSecond: number;
+    packetsLostRatioPerSecond: number;
+    totalBytesReceived: number;
+    totalPacketsLost: number;
+    totalPacketsReceived: number;
+    timestamp: number;
   };
 
-  type streamStats = {
-    audio: streamAudioStats;
-    availableOutgoingBitrate: number;
-    candidateType: string;
-    currentRoundTripTime: number;
+  type StreamVideoStats = {
+    inbounds: StreamVideoInboundsStats[];
+    outbounds: StreamVideoOutboundsStats[];
+  };
+
+  type StreamStats = {
+    audio: StreamAudioStats;
+    availableOutgoingBitrate?: number;
+    candidateType?: string;
+    currentRoundTripTime?: number;
     raw: {
       size: number;
     };
-    totalRoundTripTime: number;
-    video: streamVideoStatus;
+    totalRoundTripTime?: number;
+    video: StreamVideoStats;
   };
 
   type DirectorResponse = {
@@ -179,7 +209,7 @@ declare namespace millicast {
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
     select(layer: LayerInfo | unknown): Promise<void>;
-    webRTCPeer: PeerConnection;
+    webRTCPeer: PeerConnection | undefined;
   }
 
   type ViewOptions = {
@@ -200,8 +230,9 @@ declare namespace millicast {
      * @param {MediaStreamTrack} mediaStreamTrack - New audio or video track to replace the current one.
      */
     replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
-    initStats: () => void;
-    on: (event: string, listener: (stats: streamStats) => void) => void;
+    initStats(): void;
+    stopStats(): void;
+    on: (event: string, listener: (stats: StreamStats) => void) => void;
 
     /**
      * Get sender tracks
