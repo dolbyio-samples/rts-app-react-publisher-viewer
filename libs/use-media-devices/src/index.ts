@@ -33,8 +33,8 @@ export type MediaDevices = {
   stopDisplayCapture: () => void;
   displayStream?: MediaStream;
   updateMediaConstraints: (constraints: MediaConstraints) => void;
-  isChannelCountSupported: boolean;
-  isEchoCancellationSupported: boolean;
+  supportedVideoTrackCapabilities?: MediaTrackCapabilities;
+  supportedAudioTrackCapabilities?: MediaTrackCapabilities;
 };
 
 const useMediaDevices: () => MediaDevices = () => {
@@ -50,8 +50,8 @@ const useMediaDevices: () => MediaDevices = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
-  const [isChannelCountSupported, setIsChannelCountSupported] = useState<boolean>(false);
-  const [isEchoCancellationSupported, setIsEchoCancellationSupported] = useState<boolean>(false);
+  const [supportedVideoTrackCapabilities, setSupportedVideoTrackCapabilities] = useState<MediaTrackCapabilities>()
+  const [supportedAudioTrackCapabilities, setSupportedAudioTrackCapabilities] = useState<MediaTrackCapabilities>()
 
   const mediaConstraints = {
     video: {
@@ -88,19 +88,12 @@ const useMediaDevices: () => MediaDevices = () => {
       if (mediaStream.getAudioTracks().length) {
         const track = mediaStream.getAudioTracks()[0];
         track.enabled = isAudioEnabled;
-
-        // check if the audio device supports channelCount and echo cancellation
-        const capabilities = track.getCapabilities();
-        if (capabilities.echoCancellation && capabilities.echoCancellation.includes(true)) {
-          setIsEchoCancellationSupported(true);
-        }
-        if (capabilities.channelCount?.max && capabilities.channelCount.max >= 2) {
-          setIsChannelCountSupported(true);
-        }
+        setSupportedAudioTrackCapabilities(mediaStream.getAudioTracks()[0].getCapabilities())
       }
       if (mediaStream.getVideoTracks().length) {
         const track = mediaStream.getVideoTracks()[0];
         track.enabled = isVideoEnabled;
+        setSupportedVideoTrackCapabilities(mediaStream.getVideoTracks()[0].getCapabilities())
       }
     }
   }, [mediaStream]);
@@ -268,8 +261,8 @@ const useMediaDevices: () => MediaDevices = () => {
     stopDisplayCapture,
     displayStream,
     updateMediaConstraints,
-    isChannelCountSupported,
-    isEchoCancellationSupported,
+    supportedVideoTrackCapabilities,
+    supportedAudioTrackCapabilities,
   };
 };
 
