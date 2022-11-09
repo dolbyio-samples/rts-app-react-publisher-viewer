@@ -41,7 +41,6 @@ const VideoView = ({
   const componentElementsStyle = {
     '.video': {
       transform: `${mirrored ? 'scaleX(-1)' : ''}`,
-      width: '640px',
       height: '480px',
     },
     '.video--fullscreen': {

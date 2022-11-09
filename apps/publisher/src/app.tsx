@@ -38,15 +38,13 @@ import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
 
-export type Resolutions = '2160p' | '1440p' | '1080p' | '720p' | '480p';
-
 function App() {
   const displayShareSourceId = 'DisplayShare';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
   const [channels, setChannels] = useState<number>(1);
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
-  const [resolution, setResolution] = useState<Resolution>({ name: '720p', width: 1280, height: 720 });
+  const [supportedResolutions, setSupportedResolutions] = useState<Resolution[]>([]);
 
   const {
     setupPublisher,
@@ -78,10 +76,11 @@ function App() {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    supportedResolutions,
     isChannelCountSupported,
     isEchoCancellationSupported,
   } = useMediaDevices();
+
+  const [resolution, setResolution] = useState<Resolution>(supportedResolutions[0]);
 
   useEffect(() => {
     setupPublisher(
@@ -94,6 +93,50 @@ function App() {
   useEffect(() => {
     if (mediaStream) {
       updateStreaming(mediaStream);
+
+      // List supported camera resolutions
+      const capabilities = mediaStream.getVideoTracks()[0].getCapabilities();
+      const tempSupportedResolutionList = [];
+      if (capabilities.width && capabilities.width.max && capabilities.height && capabilities.height.max) {
+        if (capabilities.width.max >= 3840 && capabilities.height.max >= 2160) {
+          tempSupportedResolutionList.push({
+            name: '2160p',
+            width: 3840,
+            height: 2160,
+          });
+        }
+        if (capabilities.width.max >= 2560 && capabilities.height.max >= 1440) {
+          tempSupportedResolutionList.push({
+            name: '1440p',
+            width: 2560,
+            height: 1440,
+          });
+        }
+        if (capabilities.width.max >= 1920 && capabilities.height.max >= 1080) {
+          tempSupportedResolutionList.push({
+            name: '1080p',
+            width: 1920,
+            height: 1080,
+          });
+        }
+        if (capabilities.width.max >= 1280 && capabilities.height.max >= 720) {
+          tempSupportedResolutionList.push({
+            name: '720p',
+            width: 1280,
+            height: 720,
+          });
+        }
+        if (capabilities.width.max >= 720 && capabilities.height.max >= 480) {
+          tempSupportedResolutionList.push({
+            name: '480p',
+            width: 720,
+            height: 480,
+          });
+        }
+      }
+      if (tempSupportedResolutionList.length !== 0) {
+        setSupportedResolutions(tempSupportedResolutionList);
+      }
     }
   }, [mediaStream]);
 
