@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -35,6 +35,8 @@ import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
+import React from 'react';
+import LiveIndicator from '@millicast-react/live-indicator';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -131,13 +133,23 @@ function App() {
   return (
     <VStack w="100%">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Box>
-          <Heading size="md" p="4">
-            Dolbyio logo
-          </Heading>
-        </Box>
+        <Heading size="md" p="4">
+          Dolbyio logo
+        </Heading>
         <Spacer />
-        {publisherState == 'streaming' && <ParticipantCount count={viewerCount} />}
+        {publisherState === 'streaming' && (
+          <Box pr="8">
+            <LiveIndicator />
+          </Box>
+        )}
+      </Flex>
+      <Flex w="100%">
+        <Spacer />
+        {publisherState === 'streaming' && (
+          <Box pr="8">
+            <ParticipantCount count={viewerCount} />
+          </Box>
+        )}
       </Flex>
       <Box>
         <Center>
