@@ -61,7 +61,7 @@ const useViewer = (): Viewer => {
           encodingId: layer.id,
           bitrate: layer.bitrate,
           simulcastIdx: layer.simulcastIdx,
-          spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers. 
+          spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
           temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
         },
       };
