@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Resolution } from '../../resolution-select/src';
 
-declare global {
-  // Added missing type of 'channelCount' to the 'MediaTrackSupportedConstraints'
-  interface MediaTrackSettings {
-    channelCount: number;
-  }
-}
 export type Stereo = 2;
 export type Mono = 1;
 export type AudioChannels = Mono | Stereo;
@@ -50,8 +44,8 @@ const useMediaDevices: () => MediaDevices = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
-  const [supportedVideoTrackCapabilities, setSupportedVideoTrackCapabilities] = useState<MediaTrackCapabilities>()
-  const [supportedAudioTrackCapabilities, setSupportedAudioTrackCapabilities] = useState<MediaTrackCapabilities>()
+  const [supportedVideoTrackCapabilities, setSupportedVideoTrackCapabilities] = useState<MediaTrackCapabilities>();
+  const [supportedAudioTrackCapabilities, setSupportedAudioTrackCapabilities] = useState<MediaTrackCapabilities>();
 
   const mediaConstraints = {
     video: {
@@ -88,12 +82,12 @@ const useMediaDevices: () => MediaDevices = () => {
       if (mediaStream.getAudioTracks().length) {
         const track = mediaStream.getAudioTracks()[0];
         track.enabled = isAudioEnabled;
-        setSupportedAudioTrackCapabilities(mediaStream.getAudioTracks()[0].getCapabilities())
+        setSupportedAudioTrackCapabilities(mediaStream.getAudioTracks()[0].getCapabilities());
       }
       if (mediaStream.getVideoTracks().length) {
         const track = mediaStream.getVideoTracks()[0];
         track.enabled = isVideoEnabled;
-        setSupportedVideoTrackCapabilities(mediaStream.getVideoTracks()[0].getCapabilities())
+        setSupportedVideoTrackCapabilities(mediaStream.getVideoTracks()[0].getCapabilities());
       }
     }
   }, [mediaStream]);
@@ -189,8 +183,8 @@ const useMediaDevices: () => MediaDevices = () => {
           video: videoConstraints,
         });
 
-        const newAudioStreamSettings = new_stream.getAudioTracks()[0].getSettings();
-        const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings();
+        const newAudioStreamSettings = new_stream.getAudioTracks()[0].getSettings() as MediaTrackConstraints;
+        const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings() as MediaTrackConstraints;
 
         if (
           videoConstraints.width !== undefined &&

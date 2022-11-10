@@ -97,7 +97,12 @@ function App() {
       // List supported camera resolutions
       if (supportedVideoTrackCapabilities) {
         const tempSupportedResolutionList = [];
-        if (supportedVideoTrackCapabilities.width && supportedVideoTrackCapabilities.width.max && supportedVideoTrackCapabilities.height && supportedVideoTrackCapabilities.height.max) {
+        if (
+          supportedVideoTrackCapabilities.width &&
+          supportedVideoTrackCapabilities.width.max &&
+          supportedVideoTrackCapabilities.height &&
+          supportedVideoTrackCapabilities.height.max
+        ) {
           if (supportedVideoTrackCapabilities.width.max >= 3840 && supportedVideoTrackCapabilities.height.max >= 2160) {
             tempSupportedResolutionList.push({
               name: '2160p',
@@ -337,11 +342,12 @@ function App() {
                           />
                         </HStack>
                       )}
-                      {supportedAudioTrackCapabilities?.channelCount?.max && supportedAudioTrackCapabilities?.channelCount?.max >=2 && (
-                        <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
-                          {channels === 1 ? 'Mono' : 'Stereo'}
-                        </Switch>
-                      )}
+                      {supportedAudioTrackCapabilities?.channelCount?.max &&
+                        supportedAudioTrackCapabilities?.channelCount?.max >= 2 && (
+                          <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
+                            {channels === 1 ? 'Mono' : 'Stereo'}
+                          </Switch>
+                        )}
                       {supportedAudioTrackCapabilities?.echoCancellation && (
                         <Switch
                           test-id="echoCancellationSwitch"
