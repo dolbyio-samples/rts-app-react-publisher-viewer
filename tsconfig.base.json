@@ -16,7 +16,6 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@millicast-react/close-browser-warning": ["libs/close-browser-warning/src/index.tsx"],
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
       "@millicast-react/media-device-select": ["libs/media-device-select/src/index.tsx"],

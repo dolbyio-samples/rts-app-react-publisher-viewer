@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -35,8 +35,6 @@ import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
-import React from 'react';
-import CloseBrowserWarning from '@millicast-react/close-browser-warning';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -81,6 +79,21 @@ function App() {
       import.meta.env.VITE_MILLICAST_STREAM_ID
     );
   }, []);
+
+  useEffect(() => {
+    // prevent closing the page
+    const pageCloseHandler = (event: BeforeUnloadEvent) => {
+      event.returnValue = ""
+    }
+
+    if (publisherState === 'streaming') {
+      window.addEventListener('beforeunload', pageCloseHandler);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', pageCloseHandler);
+    };
+  }, [publisherState])
 
   useEffect(() => {
     if (mediaStream) {
@@ -297,7 +310,6 @@ function App() {
       <Box>
         <Text>Version: {__APP_VERSION__} </Text>
       </Box>
-      <CloseBrowserWarning />
     </VStack>
   );
 }
