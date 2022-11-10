@@ -14,7 +14,7 @@ const ActionBar = ({ name, backgroundColor = 'dolbyNeutral.800', action, ...flex
       justifyContent="space-between"
       borderRadius="8px"
       w="100%"
-      py="2.5"
+      py="1"
       px="4"
       {...flexProps}
     >

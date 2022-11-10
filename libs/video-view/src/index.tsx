@@ -9,14 +9,14 @@ import {
   IconSpeakerOff,
 } from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
-import type { streamStats } from '@millicast/sdk';
+import type { StreamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
   mirrored?: boolean;
   muted?: boolean;
   displayMuteButton?: boolean;
   mediaStream?: MediaStream;
-  statistics?: streamStats;
+  statistics?: StreamStats;
 };
 
 const VideoView = ({

@@ -1,20 +1,29 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@chakra-ui/react';
+import { IconStream } from '@millicast-react/dolbyio-icons';
 import React from 'react';
 
-const LiveIndicator = () => {
+type LiveIndicatorProps = Omit<ButtonProps, 'onClick'> & {
+  isActive: boolean;
+  text?: string;
+};
+
+const LiveIndicator = ({ isActive, text = 'live', ...rest }: LiveIndicatorProps) => {
   return (
-    <Flex
-      bgColor="dolbyRed.500"
-      alignItems="center"
-      justifyContent="center"
-      gap="8px"
-      borderRadius="6px"
-      w="78px"
-      h="32px"
+    <Button
+      test-id="live-indicator"
+      as="div"
+      leftIcon={<IconStream height="16px" />}
+      px="2"
+      fontSize="12px"
+      letterSpacing="1px"
+      pointerEvents="none"
+      size="sm"
+      backgroundColor={isActive ? 'dolbyRed.500' : 'dolbyNeutral.500'}
+      textTransform="uppercase"
+      {...rest}
     >
-      <Box w="8px" h="8px" borderRadius="4px" bgColor="white"></Box>
-      <Text color="white">LIVE</Text>
-    </Flex>
+      {text}
+    </Button>
   );
 };
 
