@@ -29,8 +29,8 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
 
   const formatNumber = (input: number): string => {
     if (input < KILOBYTE) return `${input}`;
-    if (input >= KILOBYTE && input < MEGABYTE) return `${input / KILOBYTE} K`;
-    else return `${input / MEGABYTE} M`;
+    if (input >= KILOBYTE && input < MEGABYTE) return `${(input / KILOBYTE).toFixed(2)} K`;
+    else return `${(input / MEGABYTE).toFixed(2)} M`;
   };
 
   return (
