@@ -85,8 +85,8 @@ function App() {
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
-      event.returnValue = ""
-    }
+      event.returnValue = '';
+    };
 
     if (publisherState === 'streaming') {
       window.addEventListener('beforeunload', pageCloseHandler);
@@ -95,7 +95,7 @@ function App() {
     return () => {
       window.removeEventListener('beforeunload', pageCloseHandler);
     };
-  }, [publisherState])
+  }, [publisherState]);
 
   useEffect(() => {
     if (mediaStream) {
