@@ -88,9 +88,7 @@ function App() {
       event.returnValue = '';
     };
 
-    if (publisherState === 'streaming') {
-      window.addEventListener('beforeunload', pageCloseHandler);
-    }
+    window.addEventListener('beforeunload', pageCloseHandler);
 
     return () => {
       window.removeEventListener('beforeunload', pageCloseHandler);
