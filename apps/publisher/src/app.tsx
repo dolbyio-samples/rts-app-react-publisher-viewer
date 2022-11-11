@@ -93,7 +93,7 @@ function App() {
     return () => {
       window.removeEventListener('beforeunload', pageCloseHandler);
     };
-  }, [publisherState]);
+  }, []);
 
   useEffect(() => {
     if (mediaStream) {
