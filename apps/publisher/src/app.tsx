@@ -180,11 +180,18 @@ function App() {
         <Flex direction="column" justifyContent="center" alignItems="center" w="100%">
           <Box position="relative">
             {publisherState !== 'streaming' && (
-              <Box w="100%" textAlign="center" position="absolute" top="0" transform="translateY(-120%)">
-                <Heading as="h2" fontSize="24px" fontWeight="600">
+              <Box
+                test-id="getStartedInfo"
+                w="100%"
+                textAlign="center"
+                position="absolute"
+                top="0"
+                transform="translateY(-120%)"
+              >
+                <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
                   Get started
                 </Heading>
-                <Text fontSize="15px" color="dolbySecondary.200" fontWeight="500">
+                <Text test-id="getStartedInfoDesc" fontSize="15px" color="dolbySecondary.200" fontWeight="500">
                   Setup your audio and video before going live.
                 </Text>
               </Box>
@@ -313,7 +320,7 @@ function App() {
           </HStack>
           <ShareLinkButton linkText={linkText} /> */}
       </Box>
-      <Box position="fixed" bottom="5px" left="5px">
+      <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
     </Flex>

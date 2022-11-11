@@ -9,6 +9,7 @@ type ActionBarProps = FlexProps & {
 const ActionBar = ({ name, backgroundColor = 'dolbyNeutral.800', action, ...flexProps }: ActionBarProps) => {
   return (
     <Flex
+      test-id="actionBar"
       bgColor={backgroundColor}
       alignItems="center"
       justifyContent="space-between"
@@ -18,7 +19,7 @@ const ActionBar = ({ name, backgroundColor = 'dolbyNeutral.800', action, ...flex
       px="4"
       {...flexProps}
     >
-      <Heading as="h3" fontSize="16px" fontWeight={600}>
+      <Heading test-id="headingName" as="h3" fontSize="16px" fontWeight={600}>
         {name}
       </Heading>
       <Box>{action}</Box>

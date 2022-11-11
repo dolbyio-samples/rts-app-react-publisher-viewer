@@ -80,6 +80,7 @@ const VideoView = ({
       <HStack pos="absolute" width="100%" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
         {displayMuteButton && (
           <IconButton
+            test-id="muteSpeakerButton"
             aria-label="Mute button"
             className="icon-button"
             size="md"
@@ -89,6 +90,7 @@ const VideoView = ({
         )}
         <Spacer />
         <IconButton
+          test-id="fullScreenButton"
           aria-label="Full screen"
           size="md"
           className="icon-button"
@@ -96,6 +98,7 @@ const VideoView = ({
           icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
         />
         <IconButton
+          test-id="streamInfoButton"
           aria-label="Stream Information"
           size="md"
           className="icon-button"
