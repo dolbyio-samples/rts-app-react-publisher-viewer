@@ -1,5 +1,5 @@
-import { Box, Center, VStack, Text, Button, HStack, Flex, Spacer, Select } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import { Center, VStack, Text, Button, HStack, Flex, Spacer, Select } from '@chakra-ui/react';
+import React, { useEffect, useRef } from 'react';
 import useViewer, { StreamQuality } from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -12,6 +12,7 @@ const Content = () => {
     setupViewer,
     stopViewer,
     startViewer,
+    projectRemoteTrackToMain,
     remoteTrackSources,
     viewerCount,
     streamQualityOptions,
@@ -19,13 +20,26 @@ const Content = () => {
     statistics,
   } = useViewer();
 
+  const projectingSourceId = useRef<string>('main');
+
   useEffect(() => {
     const href = new URL(window.location.href);
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
     const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
-    setupViewer(streamName, streamAccountId);
+    setupViewer(streamName, streamAccountId, projectingSourceId.current);
     return stopViewer;
   }, []);
+
+  useEffect(() => {
+    if (
+      projectingSourceId.current &&
+      remoteTrackSources.size > 0 &&
+      !remoteTrackSources.get(projectingSourceId.current)
+    ) {
+      const newSourceId = remoteTrackSources.keys().next().value as string;
+      projectRemoteTrackToMain(newSourceId);
+    }
+  }, [remoteTrackSources]);
 
   return (
     <VStack width="100vw">
@@ -51,22 +65,31 @@ const Content = () => {
               </Button>
             </>
           )}
-          <HStack>
+          <VStack>
             {mainStream && viewerState === 'liveOn' ? (
-              <VideoView mediaStream={mainStream} statistics={statistics} />
+              <VideoView width="692px" height="384px" mediaStream={mainStream} statistics={statistics} />
             ) : (
               <Text> No stream is live </Text>
             )}
-            <VStack>
+            <HStack>
               {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
                 return (
-                  <Box maxW="640" maxH="480px" key={trackSource.id}>
-                    <VideoView mediaStream={trackSource.source.mediaStream} />
-                  </Box>
+                  <VideoView
+                    key={trackSource.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (projectingSourceId.current === trackSource.id) return;
+                      projectingSourceId.current = trackSource.id;
+                      projectRemoteTrackToMain(trackSource.id);
+                    }}
+                    width={'236px'}
+                    height={'133px'}
+                    mediaStream={trackSource.source.mediaStream}
+                  />
                 );
               })}
-            </VStack>
-          </HStack>
+            </HStack>
+          </VStack>
           {viewerState === 'liveOn' && streamQualityOptions.length > 1 && (
             <Select
               test-id="simulcastQualitySelect"

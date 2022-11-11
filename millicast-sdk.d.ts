@@ -49,9 +49,9 @@ declare namespace millicast {
     media: 'audio' | 'video';
   }
   interface MediaStreamSource {
-    streamId: string;
+    readonly streamId: string;
     sourceId: string;
-    tracks: MediaTrackInfo[];
+    readonly tracks: MediaTrackInfo[];
   }
 
   interface MediaStreamLayers {
