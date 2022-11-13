@@ -236,6 +236,7 @@ function App() {
                   displayMuteButton={false}
                   mediaStream={mediaStream}
                   statistics={statistics}
+                  height={480}
                 />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
