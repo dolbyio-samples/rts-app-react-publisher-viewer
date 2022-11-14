@@ -8,6 +8,7 @@ const SvgArrowLeft = (props: SVGProps<SVGSVGElement>) => (
     height="100%"
     viewBox="0 0 256 256"
     fill={props.fill || 'currentColor'}
+    {...props}
   >
     <path
       fill="none"

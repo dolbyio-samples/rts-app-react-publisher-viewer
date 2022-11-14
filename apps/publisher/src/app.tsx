@@ -2,23 +2,21 @@ import { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
-  Center,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   Heading,
   HStack,
-  IconButton as ChakraIconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Select,
   Spacer,
   Stack,
   Switch,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import './styles/font.css';
@@ -31,6 +29,7 @@ import {
   IconCameraOff,
   IconSettings,
   IconPresent,
+  IconProfile,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -44,6 +43,7 @@ import ActionBar from '@millicast-react/action-bar';
 const displayShareSourceId = 'DisplayShare';
 
 function App() {
+  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
 
   const {
@@ -122,12 +122,13 @@ function App() {
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
       <Box w="100%" h="96px">
         <ActionBar
-          name="Company name"
-          action={
+          title="Company name"
+          actionNode={
             publisherState == 'ready' || publisherState == 'connecting' ? (
               <Button
                 test-id="startStreamingButton"
                 px="2.5"
+                size="sm"
                 fontSize="12px"
                 letterSpacing="1px"
                 isLoading={publisherState == 'connecting'}
@@ -153,6 +154,7 @@ function App() {
               <Button
                 test-id="stopStreamingButton"
                 px="2.5"
+                size="sm"
                 fontSize="12px"
                 letterSpacing="1px"
                 onClick={() => {
@@ -176,8 +178,8 @@ function App() {
           )}
         </Flex>
       </Box>
-      <Flex flex="1">
-        <Flex direction="column" justifyContent="center" alignItems="center" w="100%">
+      <Flex flex="1" width="100%">
+        <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="5">
           <Box position="relative">
             {publisherState !== 'streaming' && (
               <Box
@@ -202,58 +204,67 @@ function App() {
               displayMuteButton={false}
               mediaStream={mediaStream}
               statistics={statistics}
+              video={isVideoEnabled}
+              label="Presenter"
+              placeholderNode={
+                <Box color="dolbyNeutral.700" position="absolute">
+                  <IconProfile />
+                </Box>
+              }
             />
           </Box>
-          <Box display={displayStream ? 'block' : 'none'}>
-            <VideoView mediaStream={displayStream} />
-          </Box>
-        </Flex>
+          {displayStream && <VideoView mediaStream={displayStream} />}
+        </Stack>
       </Flex>
       <Box h="48px">
-        <Stack direction="row" justifyContent="center">
-          <IconButton
-            test-id="toggleMicrophoneButton"
-            tooltip={{ text: 'Toggle microphone' }}
-            onClick={toggleAudio}
-            isActive={!isAudioEnabled}
-            isDisabled={!(mediaStream && mediaStream.getAudioTracks().length)}
-            icon={isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
-          />
-          <IconButton
-            test-id="toggleCameraButton"
-            tooltip={{ text: 'Toggle camera' }}
-            onClick={toggleVideo}
-            isActive={!isVideoEnabled}
-            isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-            icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
-          />
-          <IconButton
-            test-id="toggleShareButton"
-            tooltip={{ text: 'Share' }}
-            onClick={toggleShare}
-            isActive={displayStream !== undefined}
-            icon={<IconPresent />}
-          />
-          {/* Popover */}
-          <Popover placement="top">
-            <PopoverTrigger>
-              <IconButton
-                test-id="settingsButton"
-                tooltip={{ text: 'Settings' }}
-                onClick={toggleVideo}
-                isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-                icon={<IconSettings />}
-              />
-            </PopoverTrigger>
-            <PopoverContent minWidth="360">
-              <PopoverHeader pt={4} fontWeight="bold" border="0">
-                Manage Your Devices
-              </PopoverHeader>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverBody>
-                <VStack>
-                  <HStack width="100%">
+        <Flex direction="row" alignItems="center">
+          <Box flex="1">
+            <ShareLinkButton linkText={linkText} />
+          </Box>
+          <Stack direction="row" flex="1" justifyContent="center">
+            <IconButton
+              test-id="toggleMicrophoneButton"
+              tooltip={{ label: 'Toggle microphone' }}
+              onClick={toggleAudio}
+              isActive={!isAudioEnabled}
+              isDisabled={!(mediaStream && mediaStream.getAudioTracks().length)}
+              icon={isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+            />
+            <IconButton
+              test-id="toggleCameraButton"
+              tooltip={{ label: 'Toggle camera' }}
+              onClick={toggleVideo}
+              isActive={!isVideoEnabled}
+              isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
+              icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
+            />
+            <IconButton
+              test-id="toggleShareButton"
+              tooltip={{ label: 'Share' }}
+              onClick={toggleShare}
+              isActive={displayStream !== undefined}
+              icon={<IconPresent />}
+            />
+          </Stack>
+          <Flex flex="1" justifyContent="flex-end">
+            <IconButton
+              test-id="settingsButton"
+              tooltip={{ label: 'Settings' }}
+              onClick={onDrawerOpen}
+              isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
+              icon={<IconSettings />}
+              variant="transparent"
+            />
+          </Flex>
+          {/* Drawer */}
+          <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
+            <DrawerOverlay />
+            <DrawerContent bg="dolbyNeutral.800" color="white">
+              <DrawerHeader textAlign="center">Settings</DrawerHeader>
+              <DrawerCloseButton />
+              <DrawerBody>
+                <Stack direction="column">
+                  <Box>
                     <Text> Camera: </Text>
                     <Spacer />
                     {cameraList.length && (
@@ -264,8 +275,8 @@ function App() {
                         onSelectDeviceId={onSelectCameraId}
                       />
                     )}
-                  </HStack>
-                  <HStack width="100%">
+                  </Box>
+                  <Box>
                     <Text> Microphone: </Text>
                     <Spacer />
                     {microphoneList.length && (
@@ -276,8 +287,8 @@ function App() {
                         onSelectDeviceId={onSelectMicrophoneId}
                       />
                     )}
-                  </HStack>
-                  <HStack width="100%">
+                  </Box>
+                  <Box>
                     <Text> Codec </Text>
                     {
                       <Select
@@ -295,7 +306,7 @@ function App() {
                         })}
                       </Select>
                     }
-                  </HStack>
+                  </Box>
                   <Switch
                     test-id="simulcastSwitch"
                     onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
@@ -303,22 +314,11 @@ function App() {
                   >
                     Simulcast
                   </Switch>
-                </VStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </Stack>
-        {/* <HStack>
-            <Button
-              test-id="toggleDisplayCaptureButton"
-              onClick={() => {
-                displayStream ? stopDisplayCapture() : startDisplayCapture();
-              }}
-            >
-              {displayStream ? 'Stop Presenting' : 'Present'}
-            </Button>
-          </HStack>
-          <ShareLinkButton linkText={linkText} /> */}
+                </Stack>
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
+        </Flex>
       </Box>
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>

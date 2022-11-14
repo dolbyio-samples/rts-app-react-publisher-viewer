@@ -5,7 +5,7 @@ import LiveIndicator from '@millicast-react/live-indicator';
 const initialSessionTime = '00:00';
 let startTime = 0;
 let currentTime = 0;
-let interval: ReturnType<typeof setTimeout> | null = null;
+let interval: ReturnType<typeof setTimeout>;
 
 export type TimerProps = {
   isActive: boolean;
@@ -39,9 +39,7 @@ const Timer = ({ isActive = false }: TimerProps) => {
     }
 
     return () => {
-      if (interval !== null) {
-        clearInterval(interval);
-      }
+      clearInterval(interval);
     };
   }, [isActive]);
 

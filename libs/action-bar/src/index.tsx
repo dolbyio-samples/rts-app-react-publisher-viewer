@@ -2,11 +2,11 @@ import { Box, Flex, FlexProps, Heading } from '@chakra-ui/react';
 import React from 'react';
 
 type ActionBarProps = FlexProps & {
-  name: string;
-  action: React.ReactNode;
+  title: string;
+  actionNode: React.ReactNode;
 };
 
-const ActionBar = ({ name, backgroundColor = 'dolbyNeutral.800', action, ...flexProps }: ActionBarProps) => {
+const ActionBar = ({ title, backgroundColor = 'dolbyNeutral.800', actionNode, ...flexProps }: ActionBarProps) => {
   return (
     <Flex
       test-id="actionBar"
@@ -15,14 +15,14 @@ const ActionBar = ({ name, backgroundColor = 'dolbyNeutral.800', action, ...flex
       justifyContent="space-between"
       borderRadius="8px"
       w="100%"
-      py="1"
+      py="2"
       px="4"
       {...flexProps}
     >
       <Heading test-id="headingName" as="h3" fontSize="16px" fontWeight={600}>
-        {name}
+        {title}
       </Heading>
-      <Box>{action}</Box>
+      <Box>{actionNode}</Box>
     </Flex>
   );
 };

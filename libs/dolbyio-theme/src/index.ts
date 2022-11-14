@@ -2,6 +2,7 @@ import { extendTheme } from '@chakra-ui/react';
 import Button from './styles/Button';
 import Heading from './styles/Heading';
 import Text from './styles/Text';
+import Tooltip from './styles/Tooltip';
 
 const dolbyioTheme = extendTheme({
   fonts: {
@@ -23,6 +24,7 @@ const dolbyioTheme = extendTheme({
     dolbyNeutral: {
       300: '#959599',
       500: '#6A6A6D',
+      700: '#36363B',
       800: '#292930',
     },
     dolbySecondary: {
@@ -33,6 +35,7 @@ const dolbyioTheme = extendTheme({
     Button,
     Heading,
     Text,
+    Tooltip,
   },
 });
 

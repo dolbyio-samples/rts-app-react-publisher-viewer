@@ -1,5 +1,5 @@
-import React, { memo, useRef, useEffect, useState } from 'react';
-import { Box, HStack, IconButton, Spacer } from '@chakra-ui/react';
+import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
+import { Flex, IconButton, Spacer, Stack } from '@chakra-ui/react';
 
 import {
   IconFullScreen,
@@ -9,38 +9,47 @@ import {
   IconSpeakerOff,
 } from '@millicast-react/dolbyio-icons';
 import StatisticsInfo from '@millicast-react/statistics-info';
+import InfoLabel from '@millicast-react/info-label';
 import type { StreamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
   mirrored?: boolean;
   muted?: boolean;
+  video?: boolean;
   displayMuteButton?: boolean;
   mediaStream?: MediaStream;
   statistics?: StreamStats;
+  label?: string;
+  placeholderNode?: ReactNode;
 };
 
 const VideoView = ({
   mirrored = false,
   muted = false,
+  video = true,
   displayMuteButton = true,
   mediaStream,
   statistics,
+  label,
+  placeholderNode,
 }: VideoViewProps) => {
-  const video = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [showStatisticsInfo, setshowStatisticsInfo] = useState(false);
+  const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
   const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
-    if (video.current && mediaStream) {
-      video.current.srcObject = mediaStream;
+    console.log(mediaStream, videoRef.current);
+    if (videoRef.current && mediaStream) {
+      videoRef.current.srcObject = mediaStream;
     }
   }, [mediaStream]);
 
   const componentElementsStyle = {
     '.video': {
       transform: `${mirrored ? 'scaleX(-1)' : ''}`,
+      display: video ? 'block' : 'none',
     },
     '.video--fullscreen': {
       width: '100vw',
@@ -58,26 +67,53 @@ const VideoView = ({
   };
 
   return (
-    <Box
+    <Flex
       test-id="video-view-wrapper"
       sx={componentElementsStyle}
       pos={isFullScreen ? 'fixed' : 'relative'}
-      bg="black"
+      bg="dolbyNeutral.800"
+      overflow="hidden"
+      borderRadius="8px"
       top="0"
       right="0"
       zIndex="1"
+      w="640px"
+      h="480px"
+      color="white"
+      justifyContent="center"
+      alignItems="center"
+      position="relative"
     >
+      {placeholderNode}
       <video
-        className={`video ${isFullScreen && 'video--fullscreen'}`}
-        playsInline
         // eslint-disable-next-line react/no-unknown-property
         test-id="video-view"
+        className={`video ${isFullScreen && 'video--fullscreen'}`}
+        playsInline
         autoPlay
-        ref={video}
+        ref={videoRef}
         muted={isMuted}
       />
+      {label !== undefined && (
+        <InfoLabel
+          text="Presenter"
+          color="dolbySecondary.200"
+          bg="dolbyNeutral.700"
+          position="absolute"
+          top="4"
+          left="4"
+          fontWeight="600"
+        />
+      )}
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
-      <HStack pos="absolute" width="100%" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
+      <Stack
+        position="absolute"
+        direction="row"
+        width="100%"
+        bottom={isFullScreen ? ['120px', '120px', 0] : 0}
+        right="0"
+        spacing="0"
+      >
         {displayMuteButton && (
           <IconButton
             test-id="muteSpeakerButton"
@@ -102,11 +138,11 @@ const VideoView = ({
           aria-label="Stream Information"
           size="md"
           className="icon-button"
-          onClick={() => setshowStatisticsInfo(!showStatisticsInfo)}
+          onClick={() => setShowStatisticsInfo(!showStatisticsInfo)}
           icon={<IconInfo fill="white" />}
         />
-      </HStack>
-    </Box>
+      </Stack>
+    </Flex>
   );
 };
 
