@@ -4,7 +4,6 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import Content from './components/content';
 
 function App() {
-
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
