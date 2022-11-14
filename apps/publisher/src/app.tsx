@@ -131,8 +131,8 @@ function App() {
 
   const onSelectEchoCancellation = (echoCancellation: boolean) => {
     if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
-      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
+      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings();
+      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
 
       audioConstraints.echoCancellation = echoCancellation;
 
@@ -143,8 +143,8 @@ function App() {
 
   const onSelectAudioChannels = (value: string) => {
     if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
-      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
+      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings() as MediaTrackConstraintSet;
+      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
 
       const stereoChannelCount: Stereo = 2;
       const monoChannelCount: Mono = 1;
@@ -158,8 +158,8 @@ function App() {
 
   const onSelectVideoResolution = (resolution: Resolution) => {
     if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
-      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
+      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings();
+      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
 
       videoConstraints.width = resolution.width;
       videoConstraints.height = resolution.height;
