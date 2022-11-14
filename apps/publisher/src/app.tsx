@@ -10,14 +10,12 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
-  HStack,
   Select,
   Spacer,
   Stack,
   Switch,
   Text,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react';
 import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';

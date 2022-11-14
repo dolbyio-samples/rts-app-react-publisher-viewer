@@ -79,7 +79,7 @@ Feature: Publisher Preview - Not Live
         And on the publisher Preview page setting button should be visible
         # And on the publisher Preview page invite button should be visible
         And on the publisher Preview page start button should be visible
-        And on the publisher Preview page gallery view should be hidden
+        #And on the publisher Preview page gallery view should be hidden
         And on the publisher Preview page streaming state value should be "live"
         And on the publisher Preview page company name value should be "Company name"
         And on the publisher Preview page stream time value should be "00:00"
