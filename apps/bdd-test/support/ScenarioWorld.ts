@@ -10,8 +10,6 @@ export class ScenarioWorld extends World {
 
   context!: BrowserContext;
 
-  page!: Page;
-
   publisherPage!: Page;
 
   viewerPage!: Page;
@@ -38,14 +36,10 @@ export class ScenarioWorld extends World {
 
   viewerConsoleErrorLogs: string[] = [];
 
-  globalVariables?: GlobalVariables;
+  globalVariables: GlobalVariables = {};
 
   constructor(options: IWorldOptions) {
     super(options);
-
-    this.globalVariables = {
-      currentPage: '',
-    };
   }
 }
 

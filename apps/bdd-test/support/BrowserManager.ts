@@ -20,7 +20,7 @@ export class BrowserManager {
   async launch(): Promise<Browser> {
     const { browserName } = this.options;
     const browserEngine = this.getBrowserEngine();
-    console.log(`BrowserManager:: Launch browser ${browserName}`);
+    console.log(`\tBrowserManager:: Launch browser ${browserName}`);
 
     const launchOptions = this.getLaunchOptions();
     this.browser = await playwright[browserEngine].launch(launchOptions);
@@ -28,12 +28,12 @@ export class BrowserManager {
   }
 
   async newContext(scenarioWorld: ScenarioWorld) {
-    console.log(`BrowserManager:: Create browser context`);
+    console.log(`\tBrowserManager:: Create browser context`);
     const contextOptions = this.getContextOptions(scenarioWorld);
     const context = await this.browser.newContext(contextOptions);
 
     if (this.options.trace !== 'off') {
-      console.log(`BrowserManager:: Starting the trace`);
+      console.log(`\tBrowserManager:: Starting the trace`);
       await context.tracing.start({
         screenshots: true,
         snapshots: true,
@@ -45,7 +45,7 @@ export class BrowserManager {
   }
 
   async newPage() {
-    console.log(`BrowserManager:: Create page ${this.options.browserName}`);
+    console.log(`\tBrowserManager:: Create page ${this.options.browserName}`);
   }
 
   private getBrowserEngine() {
@@ -105,7 +105,7 @@ export class BrowserManager {
     const consoleLogs: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error' && !msg.text().toLowerCase().includes('roboto')) {
-        console.log(`Console Error Log: "${msg.text()}"`);
+        console.log(`\tConsole Error Log: "${msg.text()}"`);
         consoleLogs.push(msg.text());
       }
     });

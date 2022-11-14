@@ -34,6 +34,15 @@
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
     },
+    "only": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/bdd-test/cucumber.ts --tags @only"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
     "test-publisher": {
       "executor": "nx:run-commands",
       "options": {
