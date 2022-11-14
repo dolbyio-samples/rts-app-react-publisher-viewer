@@ -18,7 +18,7 @@ Feature: Publisher Preview - Not Live
         And on the publisher Preview page start button should be enabled
         And on the publisher Preview page start button text should be "START"
         And on the publisher Preview page main view should be visible
-        And on the publisher Preview page gallery view should be hidden
+        #And on the publisher Preview page gallery view should be hidden
 
     Scenario: Publisher should be presented with streaming information
         Given a publisher is on the Preview page
