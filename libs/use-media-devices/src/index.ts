@@ -40,7 +40,7 @@ const useMediaDevices: () => MediaDevices = () => {
   const [supportedVideoTrackCapabilities, setSupportedVideoTrackCapabilities] = useState<MediaTrackCapabilities>();
   const [supportedAudioTrackCapabilities, setSupportedAudioTrackCapabilities] = useState<MediaTrackCapabilities>();
 
-  const IdealMediaConstraints = {
+  const idealMediaConstraints = {
     video: {
       width: { ideal: 1280 },
       height: { ideal: 720 },
@@ -87,7 +87,7 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({
-      ...IdealMediaConstraints,
+      ...idealMediaConstraints,
       audio: {
         deviceId: microphoneId,
       },
@@ -171,11 +171,11 @@ const useMediaDevices: () => MediaDevices = () => {
       });
 
       try {
-        const new_stream = await navigator.mediaDevices.getUserMedia({
+        const newStream = await navigator.mediaDevices.getUserMedia({
           audio: audioConstraints,
           video: videoConstraints,
         });
-        setMediaStream(new_stream);
+        setMediaStream(newStream);
       } catch (error) {
         console.error('Issue(s) occured when applying new constraints: ', error);
       }
