@@ -160,7 +160,10 @@ const useMediaDevices: () => MediaDevices = () => {
     setDisplayStream(undefined);
   };
 
-  const addMediaConstraints = async (audioConstraints: MediaTrackConstraints, videoConstraints: MediaTrackConstraints) => {
+  const addMediaConstraints = async (
+    audioConstraints: MediaTrackConstraints,
+    videoConstraints: MediaTrackConstraints
+  ) => {
     if (mediaStream) {
       const tracks = mediaStream.getTracks();
       tracks.forEach((track) => {
@@ -168,7 +171,10 @@ const useMediaDevices: () => MediaDevices = () => {
       });
 
       try {
-        const new_stream = await navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: videoConstraints});
+        const new_stream = await navigator.mediaDevices.getUserMedia({
+          audio: audioConstraints,
+          video: videoConstraints,
+        });
         setMediaStream(new_stream);
       } catch (error) {
         console.error('Issue(s) occured when applying new constraints: ', error);

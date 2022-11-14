@@ -41,18 +41,18 @@ import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select
 import LiveIndicator from '@millicast-react/live-indicator';
 import useCameraResolutions from '../hooks/use-camera-resolutions';
 
-import type { Stereo, Mono, AudioChannels } from '@millicast-react/use-media-devices';
+import type { Stereo, Mono } from '@millicast-react/use-media-devices';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
-  const [channels, setChannels] = useState<string>("1");
+  const [channels, setChannels] = useState<string>('1');
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
   const [supportedResolutions, setSupportedResolutions] = useState<Resolution[]>([]);
 
   const [resolution, setResolution] = useState<Resolution>(supportedResolutions[0]);
-  const {supportedResolutionList} = useCameraResolutions();
+  const { supportedResolutionList } = useCameraResolutions();
 
   const {
     setupPublisher,
@@ -88,8 +88,6 @@ function App() {
     supportedAudioTrackCapabilities,
   } = useMediaDevices();
 
-  
-
   useEffect(() => {
     setupPublisher(
       import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
@@ -105,8 +103,8 @@ function App() {
   }, [mediaStream]);
 
   useMemo(() => {
-    setSupportedResolutions(supportedResolutionList)
-  }, [supportedVideoTrackCapabilities])
+    setSupportedResolutions(supportedResolutionList);
+  }, [supportedVideoTrackCapabilities]);
 
   useEffect(() => {
     if (!displayStream) stopDisplayStreaming();
@@ -144,11 +142,10 @@ function App() {
   };
 
   const onSelectAudioChannels = (value: string) => {
-    
     if (mediaStream) {
       const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
       const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
-      
+
       const stereoChannelCount: Stereo = 2;
       const monoChannelCount: Mono = 1;
 
@@ -317,7 +314,9 @@ function App() {
                       )}
                       {supportedAudioTrackCapabilities?.channelCount?.max && (
                         <RadioGroup test-id="channelCountRadio" value={channels} onChange={onSelectAudioChannels}>
-                          <Radio value="1" mr="8">Mono</Radio>
+                          <Radio value="1" mr="8">
+                            Mono
+                          </Radio>
                           <Radio value="2">Stereo</Radio>
                         </RadioGroup>
                       )}

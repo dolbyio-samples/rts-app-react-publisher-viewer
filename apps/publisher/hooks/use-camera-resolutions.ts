@@ -6,10 +6,6 @@ type cameraResolutions = {
   supportedResolutionList: Resolution[];
 };
 
-type useCameraResolutionsProp = {
-	supportedVideoTrackCapabilities: MediaTrackCapabilities
-}
-
 const useCameraResolutions: () => cameraResolutions = () => {
   const { supportedVideoTrackCapabilities } = useMediaDevices();
   const [supportedResolutionList, setSupportedResolutionList] = useState<Resolution[]>([]);
@@ -66,7 +62,7 @@ const useCameraResolutions: () => cameraResolutions = () => {
     }
   }, [supportedVideoTrackCapabilities]);
 
-  return {supportedResolutionList};
+  return { supportedResolutionList };
 };
 
 export default useCameraResolutions;
