@@ -38,6 +38,8 @@ import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
 
+import type { Stereo, Mono, AudioChannels } from '@millicast-react/use-media-devices';
+
 function App() {
   const displayShareSourceId = 'DisplayShare';
 
@@ -171,33 +173,43 @@ function App() {
   );
 
   const onSelectEchoCancellation = (echoCancellation: boolean) => {
-    const constraints: MediaConstraints = {
-      echoCancellation,
-    };
+    if (mediaStream) {
+      const constraints = mediaStream.getTracks()[0].getConstraints();
 
-    setEchoCancellation(echoCancellation);
-    updateMediaConstraints(constraints);
+      constraints.echoCancellation = echoCancellation;
+  
+      setEchoCancellation(echoCancellation);
+      updateMediaConstraints(constraints as MediaStreamConstraints);
+    }
+    
   };
 
   const onSelectAudioChannels = () => {
-    const stereoChannelCount = 2;
-    const monoChannelCount = 1;
-    const newChannelCount = channels === monoChannelCount ? stereoChannelCount : monoChannelCount;
+    if (mediaStream) {
+      const constraints = mediaStream.getTracks()[0].getConstraints();
 
-    const constraints: MediaConstraints = {
-      channelCount: newChannelCount,
-    };
+      const stereoChannelCount: Stereo = 2;
+      const monoChannelCount: Mono = 1;
 
-    setChannels(newChannelCount);
-    updateMediaConstraints(constraints);
+      constraints.channels = channels === monoChannelCount ? stereoChannelCount : monoChannelCount;
+
+      setChannels(channels);
+      updateMediaConstraints(constraints as MediaStreamConstraints);
+    }
+    
   };
 
   const onSelectVideoResolution = (resolution: Resolution) => {
-    const constraints: MediaConstraints = {
-      resolution,
-    };
-    setResolution(resolution);
-    updateMediaConstraints(constraints);
+    if (mediaStream) {
+      const constraints = mediaStream.getTracks()[0].getConstraints();
+      
+      constraints.width = resolution.width;
+      constraints.height = resolution.height;
+
+      setResolution(resolution);
+      updateMediaConstraints(constraints as MediaStreamConstraints);
+    }
+
   };
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
