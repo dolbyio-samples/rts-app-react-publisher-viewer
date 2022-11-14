@@ -83,6 +83,19 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // prevent closing the page
+    const pageCloseHandler = (event: BeforeUnloadEvent) => {
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', pageCloseHandler);
+
+    return () => {
+      window.removeEventListener('beforeunload', pageCloseHandler);
+    };
+  }, []);
+
+  useEffect(() => {
     if (mediaStream) {
       updateStreaming(mediaStream);
     }
