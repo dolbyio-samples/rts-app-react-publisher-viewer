@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Resolution } from '../../resolution-select/src';
 
 export type Stereo = 2;
 export type Mono = 1;
 export type AudioChannels = Mono | Stereo;
-
-export type MediaConstraints = {
-  resolution?: Resolution;
-  echoCancellation?: boolean;
-  channelCount?: AudioChannels;
-};
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -26,7 +19,7 @@ export type MediaDevices = {
   startDisplayCapture: () => void;
   stopDisplayCapture: () => void;
   displayStream?: MediaStream;
-  updateMediaConstraints: (constraints: MediaStreamConstraints) => void;
+  addMediaConstraints: (audioConstraints: MediaTrackConstraints, videoConstraints: MediaTrackConstraints) => void;
   supportedVideoTrackCapabilities?: MediaTrackCapabilities;
   supportedAudioTrackCapabilities?: MediaTrackCapabilities;
 };
@@ -47,7 +40,7 @@ const useMediaDevices: () => MediaDevices = () => {
   const [supportedVideoTrackCapabilities, setSupportedVideoTrackCapabilities] = useState<MediaTrackCapabilities>();
   const [supportedAudioTrackCapabilities, setSupportedAudioTrackCapabilities] = useState<MediaTrackCapabilities>();
 
-  const mediaConstraints = {
+  const IdealMediaConstraints = {
     video: {
       width: { ideal: 1280 },
       height: { ideal: 720 },
@@ -94,7 +87,7 @@ const useMediaDevices: () => MediaDevices = () => {
 
   const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
     const stream = await navigator.mediaDevices.getUserMedia({
-      ...mediaConstraints,
+      ...IdealMediaConstraints,
       audio: {
         deviceId: microphoneId,
       },
@@ -167,10 +160,7 @@ const useMediaDevices: () => MediaDevices = () => {
     setDisplayStream(undefined);
   };
 
-  const applyNewConstraints = async (
-    audioConstraints: MediaTrackConstraints,
-    videoConstraints: MediaTrackConstraints
-  ) => {
+  const addMediaConstraints = async (audioConstraints: MediaTrackConstraints, videoConstraints: MediaTrackConstraints) => {
     if (mediaStream) {
       const tracks = mediaStream.getTracks();
       tracks.forEach((track) => {
@@ -178,97 +168,7 @@ const useMediaDevices: () => MediaDevices = () => {
       });
 
       try {
-        const new_stream = await navigator.mediaDevices.getUserMedia({
-          audio: audioConstraints,
-          video: videoConstraints,
-        });
-
-        const newAudioStreamSettings = new_stream.getAudioTracks()[0].getSettings() as MediaTrackConstraints;
-        const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings() as MediaTrackConstraints;
-
-        if (
-          videoConstraints.width !== undefined &&
-          videoConstraints.height !== undefined &&
-          (newVideoStreamSettings.width !== videoConstraints.width ||
-            newVideoStreamSettings.height !== videoConstraints.height)
-        ) {
-          throw "The selected resolution couldn't be applied.";
-        }
-        if (
-          audioConstraints.echoCancellation !== undefined &&
-          newAudioStreamSettings.echoCancellation !== audioConstraints.echoCancellation
-        ) {
-          throw "The selected echoCancellation couldn't be applied.";
-        }
-        if (
-          audioConstraints.channelCount !== undefined &&
-          newAudioStreamSettings.channelCount !== audioConstraints.channelCount
-        ) {
-          throw "The selected channelCount couldn't be applied.";
-        }
-
-        setMediaStream(new_stream);
-      } catch (error) {
-        console.error('Issue(s) occured when applying new constraints: ', error);
-      }
-    }
-  };
-
-  const updateMediaConstraints = async (constraints: MediaStreamConstraints) => {
-    if (mediaStream && constraints) {
-      // const videoTracks = mediaStream.getVideoTracks();
-      // const audioTracks = mediaStream.getAudioTracks();
-      // const audioConstraints = audioTracks[0].getConstraints();
-      // const videoConstraints = videoTracks[0].getConstraints();
-
-      // if (videoTracks.length && resolution) {
-      //   videoConstraints.width = resolution.width;
-      //   videoConstraints.height = resolution.height;
-      // }
-
-      // if (audioTracks.length) {
-      //   if (echoCancellation !== undefined) {
-      //     audioConstraints.echoCancellation = echoCancellation;
-      //   }
-      //   if (channelCount !== undefined) {
-      //     audioConstraints.channelCount = channelCount;
-      //   }
-      // }
-
-      // applyNewConstraints(audioConstraints, videoConstraints);
-
-      const tracks = mediaStream.getTracks();
-      tracks.forEach((track) => {
-        track.stop();
-      });
-
-      try {
-        const new_stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-        // const newAudioStreamSettings = new_stream.getAudioTracks()[0].getSettings() as MediaTrackConstraints;
-        // const newVideoStreamSettings = new_stream.getVideoTracks()[0].getSettings() as MediaTrackConstraints;
-
-        // if (
-        //   videoConstraints.width !== undefined &&
-        //   videoConstraints.height !== undefined &&
-        //   (newVideoStreamSettings.width !== videoConstraints.width ||
-        //     newVideoStreamSettings.height !== videoConstraints.height)
-        // ) {
-        //   throw "The selected resolution couldn't be applied.";
-        // }
-        // if (
-        //   audioConstraints.echoCancellation !== undefined &&
-        //   newAudioStreamSettings.echoCancellation !== audioConstraints.echoCancellation
-        // ) {
-        //   throw "The selected echoCancellation couldn't be applied.";
-        // }
-        // if (
-        //   audioConstraints.channelCount !== undefined &&
-        //   newAudioStreamSettings.channelCount !== audioConstraints.channelCount
-        // ) {
-        //   throw "The selected channelCount couldn't be applied.";
-        // }
-
+        const new_stream = await navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: videoConstraints});
         setMediaStream(new_stream);
       } catch (error) {
         console.error('Issue(s) occured when applying new constraints: ', error);
@@ -291,7 +191,7 @@ const useMediaDevices: () => MediaDevices = () => {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    updateMediaConstraints,
+    addMediaConstraints,
     supportedVideoTrackCapabilities,
     supportedAudioTrackCapabilities,
   };

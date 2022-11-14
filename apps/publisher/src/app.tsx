@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -19,10 +19,12 @@ import {
   Switch,
   Text,
   VStack,
+  RadioGroup,
+  Radio,
 } from '@chakra-ui/react';
 
 import usePublisher from '@millicast-react/use-publisher';
-import useMediaDevices, { MediaConstraints } from '@millicast-react/use-media-devices';
+import useMediaDevices from '@millicast-react/use-media-devices';
 import {
   IconMicrophoneOn,
   IconMicrophoneOff,
@@ -37,6 +39,7 @@ import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
+import useCameraResolutions from '../hooks/use-camera-resolutions';
 
 import type { Stereo, Mono, AudioChannels } from '@millicast-react/use-media-devices';
 
@@ -44,9 +47,12 @@ function App() {
   const displayShareSourceId = 'DisplayShare';
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
-  const [channels, setChannels] = useState<number>(1);
+  const [channels, setChannels] = useState<string>("1");
   const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
   const [supportedResolutions, setSupportedResolutions] = useState<Resolution[]>([]);
+
+  const [resolution, setResolution] = useState<Resolution>(supportedResolutions[0]);
+  const {supportedResolutionList} = useCameraResolutions();
 
   const {
     setupPublisher,
@@ -74,7 +80,7 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
-    updateMediaConstraints,
+    addMediaConstraints,
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
@@ -82,7 +88,7 @@ function App() {
     supportedAudioTrackCapabilities,
   } = useMediaDevices();
 
-  const [resolution, setResolution] = useState<Resolution>(supportedResolutions[0]);
+  
 
   useEffect(() => {
     setupPublisher(
@@ -95,59 +101,12 @@ function App() {
   useEffect(() => {
     if (mediaStream) {
       updateStreaming(mediaStream);
-
-      // List supported camera resolutions
-      if (supportedVideoTrackCapabilities) {
-        const tempSupportedResolutionList = [];
-        if (
-          supportedVideoTrackCapabilities.width &&
-          supportedVideoTrackCapabilities.width.max &&
-          supportedVideoTrackCapabilities.height &&
-          supportedVideoTrackCapabilities.height.max
-        ) {
-          if (supportedVideoTrackCapabilities.width.max >= 3840 && supportedVideoTrackCapabilities.height.max >= 2160) {
-            tempSupportedResolutionList.push({
-              name: '2160p',
-              width: 3840,
-              height: 2160,
-            });
-          }
-          if (supportedVideoTrackCapabilities.width.max >= 2560 && supportedVideoTrackCapabilities.height.max >= 1440) {
-            tempSupportedResolutionList.push({
-              name: '1440p',
-              width: 2560,
-              height: 1440,
-            });
-          }
-          if (supportedVideoTrackCapabilities.width.max >= 1920 && supportedVideoTrackCapabilities.height.max >= 1080) {
-            tempSupportedResolutionList.push({
-              name: '1080p',
-              width: 1920,
-              height: 1080,
-            });
-          }
-          if (supportedVideoTrackCapabilities.width.max >= 1280 && supportedVideoTrackCapabilities.height.max >= 720) {
-            tempSupportedResolutionList.push({
-              name: '720p',
-              width: 1280,
-              height: 720,
-            });
-          }
-          if (supportedVideoTrackCapabilities.width.max >= 720 && supportedVideoTrackCapabilities.height.max >= 480) {
-            tempSupportedResolutionList.push({
-              name: '480p',
-              width: 720,
-              height: 480,
-            });
-          }
-        }
-
-        if (tempSupportedResolutionList.length !== 0) {
-          setSupportedResolutions(tempSupportedResolutionList);
-        }
-      }
     }
   }, [mediaStream]);
+
+  useMemo(() => {
+    setSupportedResolutions(supportedResolutionList)
+  }, [supportedVideoTrackCapabilities])
 
   useEffect(() => {
     if (!displayStream) stopDisplayStreaming();
@@ -174,42 +133,43 @@ function App() {
 
   const onSelectEchoCancellation = (echoCancellation: boolean) => {
     if (mediaStream) {
-      const constraints = mediaStream.getTracks()[0].getConstraints();
+      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
+      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
 
-      constraints.echoCancellation = echoCancellation;
-  
+      audioConstraints.echoCancellation = echoCancellation;
+
       setEchoCancellation(echoCancellation);
-      updateMediaConstraints(constraints as MediaStreamConstraints);
+      addMediaConstraints(audioConstraints, videoConstraints);
     }
-    
   };
 
-  const onSelectAudioChannels = () => {
+  const onSelectAudioChannels = (value: string) => {
+    
     if (mediaStream) {
-      const constraints = mediaStream.getTracks()[0].getConstraints();
-
+      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
+      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
+      
       const stereoChannelCount: Stereo = 2;
       const monoChannelCount: Mono = 1;
 
-      constraints.channels = channels === monoChannelCount ? stereoChannelCount : monoChannelCount;
+      audioConstraints.channelCount = parseInt(value) === monoChannelCount ? stereoChannelCount : monoChannelCount;
 
-      setChannels(channels);
-      updateMediaConstraints(constraints as MediaStreamConstraints);
+      setChannels(value);
+      addMediaConstraints(audioConstraints, videoConstraints);
     }
-    
   };
 
   const onSelectVideoResolution = (resolution: Resolution) => {
     if (mediaStream) {
-      const constraints = mediaStream.getTracks()[0].getConstraints();
-      
-      constraints.width = resolution.width;
-      constraints.height = resolution.height;
+      const audioConstraints = mediaStream.getAudioTracks()[0].getConstraints();
+      const videoConstraints = mediaStream.getVideoTracks()[0].getConstraints();
+
+      videoConstraints.width = resolution.width;
+      videoConstraints.height = resolution.height;
 
       setResolution(resolution);
-      updateMediaConstraints(constraints as MediaStreamConstraints);
+      addMediaConstraints(audioConstraints, videoConstraints);
     }
-
   };
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
@@ -355,12 +315,12 @@ function App() {
                           />
                         </HStack>
                       )}
-                      {supportedAudioTrackCapabilities?.channelCount?.max &&
-                        supportedAudioTrackCapabilities?.channelCount?.max >= 2 && (
-                          <Switch test-id="channelCountSwitch" onChange={() => onSelectAudioChannels()}>
-                            {channels === 1 ? 'Mono' : 'Stereo'}
-                          </Switch>
-                        )}
+                      {supportedAudioTrackCapabilities?.channelCount?.max && (
+                        <RadioGroup test-id="channelCountRadio" value={channels} onChange={onSelectAudioChannels}>
+                          <Radio value="1">Mono</Radio>
+                          <Radio value="2">Stereo</Radio>
+                        </RadioGroup>
+                      )}
                       {supportedAudioTrackCapabilities?.echoCancellation && (
                         <Switch
                           test-id="echoCancellationSwitch"
