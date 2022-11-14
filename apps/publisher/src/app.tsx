@@ -317,7 +317,7 @@ function App() {
                       )}
                       {supportedAudioTrackCapabilities?.channelCount?.max && (
                         <RadioGroup test-id="channelCountRadio" value={channels} onChange={onSelectAudioChannels}>
-                          <Radio value="1">Mono</Radio>
+                          <Radio value="1" mr="8">Mono</Radio>
                           <Radio value="2">Stereo</Radio>
                         </RadioGroup>
                       )}
