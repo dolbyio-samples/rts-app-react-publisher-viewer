@@ -14,10 +14,8 @@ const useCameraResolutions: () => cameraResolutions = () => {
     if (supportedVideoTrackCapabilities) {
       const tempSupportedResolutionList = [];
       if (
-        supportedVideoTrackCapabilities.width &&
-        supportedVideoTrackCapabilities.width.max &&
-        supportedVideoTrackCapabilities.height &&
-        supportedVideoTrackCapabilities.height.max
+        supportedVideoTrackCapabilities.width?.max &&
+        supportedVideoTrackCapabilities.height?.max
       ) {
         if (supportedVideoTrackCapabilities.width.max >= 3840 && supportedVideoTrackCapabilities.height.max >= 2160) {
           tempSupportedResolutionList.push({
