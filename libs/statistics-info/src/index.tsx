@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import type { StreamStats } from '@millicast/sdk';
 
 import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
@@ -11,11 +11,6 @@ const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
 
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
-  useEffect(() => {
-    if (statistics) {
-      console.log(statistics);
-    }
-  }, [statistics]);
   const formatTimestamp = (timestampMs: number | undefined): string => {
     if (!timestampMs) return '';
 
