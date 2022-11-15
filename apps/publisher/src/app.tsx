@@ -37,7 +37,7 @@ import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
-import useCameraResolutions from '../hooks/use-camera-capabilities';
+import useCameraCapabilities from '../hooks/use-camera-capabilities';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -78,7 +78,7 @@ function App() {
   } = useMediaDevices();
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
-  const resolutionList = useCameraResolutions(cameraCapabilities);
+  const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
     setupPublisher(
