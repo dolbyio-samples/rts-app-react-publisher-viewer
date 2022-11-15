@@ -99,11 +99,9 @@ const VideoView = ({
 
       {placeholderNode}
       <video
-        className="video"
-        playsInline
         // eslint-disable-next-line react/no-unknown-property
         test-id="video-view"
-        className={`video ${isFullScreen && 'video--fullscreen'}`}
+        className="video"
         playsInline
         autoPlay
         ref={videoRef}
@@ -164,7 +162,7 @@ const VideoView = ({
           className="icon-button"
           onClick={(e) => {
             e.stopPropagation();
-            setshowStatisticsInfo(!showStatisticsInfo);
+            setShowStatisticsInfo(!showStatisticsInfo);
           }}
           icon={<IconInfo fill="white" />}
         />
