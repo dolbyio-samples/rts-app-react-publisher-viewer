@@ -41,7 +41,6 @@ import useCameraCapabilities from '../hooks/use-camera-capabilities';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-
   const {
     setupPublisher,
     startStreaming,
@@ -86,6 +85,19 @@ function App() {
       import.meta.env.VITE_MILLICAST_STREAM_NAME,
       import.meta.env.VITE_MILLICAST_STREAM_ID
     );
+  }, []);
+
+  useEffect(() => {
+    // prevent closing the page
+    const pageCloseHandler = (event: BeforeUnloadEvent) => {
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', pageCloseHandler);
+
+    return () => {
+      window.removeEventListener('beforeunload', pageCloseHandler);
+    };
   }, []);
 
   useEffect(() => {
@@ -280,6 +292,7 @@ function App() {
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        isChecked={isSimulcastEnabled}
                         disabled={publisherState !== 'ready'}
                       >
                         Simulcast {isSimulcastEnabled ? 'on' : 'off'}

@@ -1,10 +1,19 @@
 import { useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
-import { Director, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
+import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent } from '@millicast/sdk';
 
+import type { StreamStats } from '@millicast/sdk';
+
 export type ViewerState = 'initial' | 'ready' | 'connecting' | 'liveOn' | 'liveOff';
+
+export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
+
+export type SimulcastQuality = {
+  streamQuality: StreamQuality;
+  simulcastLayer?: LayerInfo; // Auto has an idx of null
+};
 
 export type RemoteTrackSource = {
   mediaStream: MediaStream;
@@ -22,6 +31,9 @@ export type Viewer = {
   startViewer: (options?: ViewOptions) => void;
   remoteTrackSources: Map<SourceId, RemoteTrackSource>;
   viewerCount: number;
+  streamQualityOptions: SimulcastQuality[];
+  updateStreamQuality: (selectedQuality: StreamQuality) => void;
+  statistics?: StreamStats;
 };
 
 const useViewer = (): Viewer => {
@@ -30,10 +42,47 @@ const useViewer = (): Viewer => {
     new Map()
   );
   const [mainStream, setMainStream] = useState<MediaStream>();
+  const [statistics, setStatistics] = useState<StreamStats>();
   const millicastView = useRef<View>();
   const sourceIds = useRef<Set<string>>(new Set());
   const [viewerCount, setViewerCount] = useState<number>(0);
   const handleError = useErrorHandler();
+
+  const streamQuality = useRef<StreamQuality>();
+  const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
+
+  const constructLayers = (layers: MediaLayer[]) => {
+    if (layers.length > 3 || layers.length < 2) return;
+    const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
+    const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
+      return {
+        streamQuality: qualities[idx],
+        simulcastLayer: {
+          encodingId: layer.id,
+          bitrate: layer.bitrate,
+          simulcastIdx: layer.simulcastIdx,
+          spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
+          temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
+        },
+      };
+    });
+    newStreamQualityOptions.unshift({
+      streamQuality: 'Auto',
+    });
+    setStreamQualityOptions(newStreamQualityOptions);
+  };
+
+  const updateStreamQuality = (selectedQuality: StreamQuality) => {
+    if (!millicastView.current) return;
+    const option = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
+    if (!option) return;
+    streamQuality.current = selectedQuality;
+    if (selectedQuality === 'Auto') {
+      millicastView.current.select({});
+    } else {
+      millicastView.current.select(option.simulcastLayer);
+    }
+  };
 
   const setupViewer = (streamName: string, streamAccountId: string, subscriberToken?: string) => {
     millicastView.current?.stop();
@@ -73,9 +122,16 @@ const useViewer = (): Viewer => {
         case 'viewercount':
           setViewerCount((event.data as ViewerCount).viewercount);
           break;
-        case 'layers':
-          console.log('video layers', event.data);
+        case 'layers': {
+          const layers = (event.data as MediaStreamLayers).medias['0']?.active;
+          if (!layers || layers.length == 0) return;
+          constructLayers(layers);
+          if (!streamQuality.current) {
+            streamQuality.current = 'Auto';
+            millicastView.current?.select({});
+          }
           break;
+        }
       }
     });
     setViewerState('ready');
@@ -90,6 +146,10 @@ const useViewer = (): Viewer => {
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
+      millicastView.current.webRTCPeer?.initStats();
+      millicastView.current.webRTCPeer?.on('stats', (statistics) => {
+        setStatistics(statistics);
+      });
     } catch (error) {
       handleError(error);
     }
@@ -154,6 +214,8 @@ const useViewer = (): Viewer => {
 
   const stopViewer = () => {
     millicastView.current?.stop();
+    millicastView.current?.webRTCPeer?.stopStats();
+    setStatistics(undefined);
   };
 
   return {
@@ -164,6 +226,9 @@ const useViewer = (): Viewer => {
     startViewer,
     remoteTrackSources,
     viewerCount,
+    streamQualityOptions,
+    updateStreamQuality,
+    statistics,
   };
 };
 
