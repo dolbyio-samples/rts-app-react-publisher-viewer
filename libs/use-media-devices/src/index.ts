@@ -15,7 +15,7 @@ export type MediaDevices = {
   startDisplayCapture: () => void;
   stopDisplayCapture: () => void;
   displayStream?: MediaStream;
-  ApplyMediaTrackConstraints: (
+  applyMediaTrackConstraints: (
     audioConstraints: MediaTrackConstraints,
     videoConstraints: MediaTrackConstraints
   ) => void;
@@ -141,7 +141,7 @@ const useMediaDevices: () => MediaDevices = () => {
     setDisplayStream(undefined);
   };
 
-  const ApplyMediaTrackConstraints = async (
+  const applyMediaTrackConstraints = async (
     audioConstraints: MediaTrackConstraints,
     videoConstraints: MediaTrackConstraints
   ) => {
@@ -172,7 +172,7 @@ const useMediaDevices: () => MediaDevices = () => {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    ApplyMediaTrackConstraints,
+    applyMediaTrackConstraints,
     cameraCapabilities,
     microphoneCapabilities,
     cameraSettings,

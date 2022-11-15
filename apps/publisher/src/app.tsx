@@ -67,7 +67,7 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
-    ApplyMediaTrackConstraints,
+    applyMediaTrackConstraints,
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
@@ -139,7 +139,7 @@ function App() {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      ApplyMediaTrackConstraints(audioConstraints, videoConstraints);
+      applyMediaTrackConstraints(audioConstraints, videoConstraints);
     },
     [resolutionList]
   );
