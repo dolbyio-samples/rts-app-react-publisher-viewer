@@ -46,8 +46,9 @@ const usePublisher = (): Publisher => {
         return item.codec.toLowerCase() === 'h264' ? -1 : 1;
       })
       .map((item) => item.codec);
+
     if (supportedCodecs.length === 0) return;
-    console.log(supportedCodecs);
+    setCodec(supportedCodecs[0]);
     setCodecList(supportedCodecs);
   }, []);
 
