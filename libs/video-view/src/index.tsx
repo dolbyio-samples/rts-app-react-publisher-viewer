@@ -17,6 +17,7 @@ export type VideoViewProps = {
   displayMuteButton?: boolean;
   mediaStream?: MediaStream;
   statistics?: streamStats;
+  height?: number;
 };
 
 const VideoView = ({
@@ -25,6 +26,7 @@ const VideoView = ({
   displayMuteButton = true,
   mediaStream,
   statistics,
+  height,
 }: VideoViewProps) => {
   const video = useRef<HTMLVideoElement>(null);
 
@@ -75,6 +77,7 @@ const VideoView = ({
         autoPlay
         ref={video}
         muted={isMuted}
+        height={height}
       />
       {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
       <HStack pos="absolute" width="100%" bottom={isFullScreen ? ['120px', '120px', 0] : 0} right="0" spacing="0">
