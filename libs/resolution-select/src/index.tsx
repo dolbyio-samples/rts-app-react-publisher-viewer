@@ -7,10 +7,11 @@ type ResolutionSelectProps = {
   currentHeight?: number;
 };
 
-export type Resolution = {
+export interface Resolution {
+  name?: string;
   width: number;
   height: number;
-};
+}
 
 const ResolutionSelect = ({ onSelectResolution, resolutionList, currentHeight }: ResolutionSelectProps) => {
   const currentValue = currentHeight

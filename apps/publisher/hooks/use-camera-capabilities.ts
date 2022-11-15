@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { Resolution } from '@millicast-react/resolution-select';
 
-const allResolutions = [
+const allResolutions: Resolution[] = [
   {
     name: '4K',
     width: 3840,
