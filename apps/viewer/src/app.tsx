@@ -36,7 +36,7 @@ function App() {
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
           <Heading size="md" p="4">
-            Dolbyio logo
+            Company name
           </Heading>
         </Box>
         <Spacer />
