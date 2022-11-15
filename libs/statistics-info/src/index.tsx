@@ -215,7 +215,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Video Packet Jitter:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.video.inbounds[0].jitter}</Text>
+                <Text fontSize="sm">{statistics.video.inbounds[0].jitter} ms</Text>
               </Box>
             </Flex>
           )}
@@ -225,7 +225,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 <Text fontSize="sm">Audio Packet Jitter:</Text>
               </Box>
               <Box flex="1">
-                <Text fontSize="sm">{statistics.audio.inbounds[0].jitter}</Text>
+                <Text fontSize="sm">{statistics.audio.inbounds[0].jitter} ms</Text>
               </Box>
             </Flex>
           )}
