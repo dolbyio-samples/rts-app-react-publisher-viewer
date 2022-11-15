@@ -10,8 +10,6 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
-  Select,
-  Spacer,
   Stack,
   Switch,
   Text,
@@ -28,15 +26,17 @@ import {
   IconSettings,
   IconPresent,
   IconProfile,
+  IconChevronDown,
+  IconCodec,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
-import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import ActionBar from '@millicast-react/action-bar';
+import Dropdown from '@millicast-react/dropdown';
 
 const displayShareSourceId = 'DisplayShare';
 import useCameraCapabilities from '../hooks/use-camera-capabilities';
@@ -300,48 +300,42 @@ function App() {
               <DrawerBody>
                 <Stack direction="column">
                   <Box>
-                    <Text> Camera: </Text>
-                    <Spacer />
                     {cameraList.length && cameraSettings && (
-                      <MediaDeviceSelect
+                      <Dropdown
+                        leftIcon={<IconCameraOn />}
                         disabled={publisherState === 'connecting'}
                         testId="camera-select"
-                        deviceList={cameraList}
-                        onSelectDeviceId={onSelectCameraId}
-                        defaultDeviceId={cameraSettings.deviceId}
+                        devicesList={cameraList}
+                        onSelect={onSelectCameraId}
+                        selected={cameraSettings.deviceId}
+                        placeholder="Camera"
                       />
                     )}
                   </Box>
                   <Box>
-                    <Text> Microphone: </Text>
-                    <Spacer />
                     {microphoneList.length && microphoneSettings && (
-                      <MediaDeviceSelect
+                      <Dropdown
+                        leftIcon={<IconMicrophoneOn />}
                         disabled={publisherState === 'connecting'}
                         testId="microphone-select"
-                        deviceList={microphoneList}
-                        onSelectDeviceId={onSelectMicrophoneId}
-                        defaultDeviceId={microphoneSettings.deviceId}
+                        devicesList={microphoneList}
+                        onSelect={onSelectMicrophoneId}
+                        selected={microphoneSettings.deviceId}
+                        placeholder="Microphone"
                       />
                     )}
                   </Box>
                   {codecList.length !== 0 && (
-                    <Box width="100%">
-                      <Text> Codec </Text>
-                      <Select
+                    <Box>
+                      <Dropdown
+                        leftIcon={<IconCodec />}
                         disabled={publisherState !== 'ready' || codecList.length === 0}
-                        test-id="codecSelect"
-                        defaultValue={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
-                        onChange={(e) => updateCodec(e.target.value)}
-                      >
-                        {codecList.map((codec: string) => {
-                          return (
-                            <option value={codec} key={codec}>
-                              {codec}
-                            </option>
-                          );
-                        })}
-                      </Select>
+                        testId="codecSelect"
+                        elementsList={codecList}
+                        onSelect={updateCodec}
+                        selected={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
+                        placeholder="Codec"
+                      />
                     </Box>
                   )}
                   {mediaStream && resolutionList.length && cameraSettings && (

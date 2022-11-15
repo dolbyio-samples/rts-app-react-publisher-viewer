@@ -24,11 +24,15 @@ const dolbyioTheme = extendTheme({
     dolbyNeutral: {
       300: '#959599',
       500: '#6A6A6D',
+      600: '#535359',
       700: '#36363B',
       800: '#292930',
     },
     dolbySecondary: {
       200: '#B9B9BA',
+    },
+    dolbyEmerald: {
+      300: '#5CF2AF',
     },
   },
   components: {

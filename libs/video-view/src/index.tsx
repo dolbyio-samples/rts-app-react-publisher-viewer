@@ -46,7 +46,6 @@ const VideoView = ({
   const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
-    console.log(mediaStream, videoRef.current);
     if (videoRef.current && mediaStream) {
       videoRef.current.srcObject = mediaStream;
     }
@@ -91,13 +90,13 @@ const VideoView = ({
       alignItems="center"
       position="relative"
     >
-      {loadingVideo && (
-        <Center w="100%" h="100%">
+      {loadingVideo && video && (
+        <Center w="100%" h="100%" position="absolute">
           <Spinner size="lg" zIndex="2" />
         </Center>
       )}
 
-      {placeholderNode}
+      {!video && placeholderNode}
       <video
         // eslint-disable-next-line react/no-unknown-property
         test-id="video-view"

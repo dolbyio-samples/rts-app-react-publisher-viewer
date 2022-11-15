@@ -2,7 +2,7 @@ import type { SVGProps } from 'react';
 import React from 'react';
 
 const SvgProfile = ({ fill, ...rest }: SVGProps<SVGSVGElement>) => (
-  <svg width="174" height="174" viewBox="0 0 174 174" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
+  <svg width="100%" height="100%" viewBox="0 0 174 174" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
     <g>
       <path
         fillRule="evenodd"

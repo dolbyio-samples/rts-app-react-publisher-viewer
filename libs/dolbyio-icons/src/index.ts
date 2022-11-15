@@ -13,3 +13,8 @@ export { default as IconStream } from './Stream';
 export { default as IconPresent } from './Present';
 export { default as IconCopy } from './Copy';
 export { default as IconProfile } from './Profile';
+export { default as IconChevronDown } from './ChevronDown';
+export { default as IconCodec } from './Codec';
+export { default as IconResolution } from './Resolution';
+export { default as IconSimulcast } from './Simulcast';
+export { default as IconSuccessFilled } from './SuccessFilled';
