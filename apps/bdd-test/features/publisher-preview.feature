@@ -52,7 +52,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be able to do full screen of the main view 
         Given a publisher is on the Preview page
         When the publisher clicks on full screen button of the main view on the Preview page
-        Then on the publisher Preview page main view size should be full size
+        #Then on the publisher Preview page main view size should be full size
         And on the publisher Preview page main view should be visible
         And on the publisher Preview page full screen button should be visible        
         # And on the publisher Preview page microphone button should be hidden
