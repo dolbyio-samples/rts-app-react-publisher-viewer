@@ -39,7 +39,7 @@ import ActionBar from '@millicast-react/action-bar';
 import Dropdown from '@millicast-react/dropdown';
 
 const displayShareSourceId = 'DisplayShare';
-import useCameraCapabilities from '../hooks/use-camera-capabilities';
+import useCameraCapabilities from './hooks/use-camera-capabilities';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
