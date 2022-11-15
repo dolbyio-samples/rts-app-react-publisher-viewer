@@ -26,7 +26,7 @@ type SourceId = string;
 export type Viewer = {
   viewerState: ViewerState;
   mainStream?: MediaStream;
-  setupViewer: (streamName: string, streamAccountId: string, mainSourceId: SourceId, subscriberToken?: string) => void;
+  setupViewer: (streamName: string, streamAccountId: string, mainSourceId?: SourceId, subscriberToken?: string) => void;
   stopViewer: () => void;
   startViewer: (options?: ViewOptions) => void;
   projectRemoteTrackToMain: (sourceId: SourceId) => void;
@@ -45,7 +45,7 @@ const useViewer = (): Viewer => {
   const [mainStream, setMainStream] = useState<MediaStream>();
   const [statistics, setStatistics] = useState<StreamStats>();
   const millicastView = useRef<View>();
-  const mainSourceIdRef = useRef<SourceId>('main');
+  const mainSourceIdRef = useRef<SourceId>('mainSource');
   const mainVideoMidRef = useRef<string>();
   const mainAudioMidRef = useRef<string>();
   const [viewerCount, setViewerCount] = useState<number>(0);
@@ -90,13 +90,13 @@ const useViewer = (): Viewer => {
   const setupViewer = (
     streamName: string,
     streamAccountId: string,
-    mainSourceId: SourceId,
+    mainSourceId?: SourceId,
     subscriberToken?: string
   ) => {
     millicastView.current?.stop();
     const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
     millicastView.current = new View(streamName, tokenGenerator);
-    mainSourceIdRef.current = mainSourceId;
+    if (mainSourceId) mainSourceIdRef.current = mainSourceId;
     millicastView.current.on('track', (event: RTCTrackEvent) => {
       if (event.streams.length === 0) return; // other sources
       if (event.track.kind === 'video') mainVideoMidRef.current = event.transceiver.mid ?? undefined;
@@ -108,7 +108,7 @@ const useViewer = (): Viewer => {
         case 'active':
           {
             const source = event.data as MediaStreamSource;
-            source.sourceId = source.sourceId ? source.sourceId : mainSourceIdRef.current;
+            if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
             if (source.sourceId === mainSourceIdRef.current) {
               setViewerState('liveOn');
             }
@@ -118,7 +118,7 @@ const useViewer = (): Viewer => {
         case 'inactive':
           {
             const source = event.data as MediaStreamSource;
-            source.sourceId = source.sourceId ? source.sourceId : mainSourceIdRef.current;
+            if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
             if (source.sourceId === mainSourceIdRef.current) {
               setViewerState('liveOff');
             }
