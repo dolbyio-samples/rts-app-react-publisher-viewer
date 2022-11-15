@@ -30,12 +30,6 @@ const Content = () => {
     return stopViewer;
   }, []);
 
-  const start = () => {
-    if (viewerState === 'initial' || viewerState === 'ready') {
-      startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-    }
-  };
-
   useEffect(() => {
     const timer = setInterval(start, 3000);
 
@@ -55,6 +49,21 @@ const Content = () => {
       projectRemoteTrackToMain(newSourceId);
     }
   }, [remoteTrackSources]);
+
+  const start = () => {
+    if (viewerState === 'initial' || viewerState === 'ready') {
+      startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setInterval(start, 3000);
+
+    if (viewerState === 'liveOn' || viewerState === 'liveOff') {
+      clearInterval(timer);
+    }
+    return () => clearTimeout(timer);
+  }, [viewerState]);
 
   return (
     <VStack width="100vw" height="100vh">
@@ -81,22 +90,24 @@ const Content = () => {
               <VideoView width="692px" height="384px" mediaStream={mainStream} statistics={statistics} />
             )}
             <HStack>
-              {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
-                return (
-                  <VideoView
-                    key={trackSource.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (projectingSourceId.current === trackSource.id) return;
-                      projectingSourceId.current = trackSource.id;
-                      projectRemoteTrackToMain(trackSource.id);
-                    }}
-                    width={'236px'}
-                    height={'133px'}
-                    mediaStream={trackSource.source.mediaStream}
-                  />
-                );
-              })}
+              <VStack>
+                {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
+                  return (
+                    <VideoView
+                      key={trackSource.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (projectingSourceId.current === trackSource.id) return;
+                        projectingSourceId.current = trackSource.id;
+                        projectRemoteTrackToMain(trackSource.id);
+                      }}
+                      width={'236px'}
+                      height={'133px'}
+                      mediaStream={trackSource.source.mediaStream}
+                    />
+                  );
+                })}
+              </VStack>
             </HStack>
           </HStack>
         </VStack>
