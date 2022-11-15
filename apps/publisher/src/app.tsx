@@ -41,7 +41,7 @@ import LiveIndicator from '@millicast-react/live-indicator';
 function App() {
   const displayShareSourceId = 'DisplayShare';
 
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
 
   const {
     setupPublisher,
@@ -257,6 +257,7 @@ function App() {
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                        isChecked={isSimulcastEnabled}
                         disabled={publisherState !== 'ready'}
                       >
                         Simulcast
