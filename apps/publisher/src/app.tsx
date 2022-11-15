@@ -43,7 +43,7 @@ import useCameraCapabilities from './hooks/use-camera-capabilities';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
 
   const {
     setupPublisher,
