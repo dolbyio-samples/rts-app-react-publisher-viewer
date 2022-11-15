@@ -29,19 +29,18 @@ const allResolutions = [
   },
 ];
 
-const useCameraResolutions: (videoTrackCapabilities?: MediaTrackCapabilities) => Resolution[] = (
-  videoTrackCapabilities
-) => {
-  const supportedCameraResolutions = useMemo<Resolution[]>(() => {
+// TODO: add more helper functions to this hook
+const useCameraCapabilities: (cameraCapabilities?: MediaTrackCapabilities) => Resolution[] = (cameraCapabilities) => {
+  const supportedResolutions = useMemo<Resolution[]>(() => {
     return allResolutions.filter((resolution) => {
       return (
-        resolution.width <= (videoTrackCapabilities?.width?.max ?? 0) &&
-        resolution.height <= (videoTrackCapabilities?.height?.max ?? 0)
+        resolution.width <= (cameraCapabilities?.width?.max ?? 0) &&
+        resolution.height <= (cameraCapabilities?.height?.max ?? 0)
       );
     });
-  }, [videoTrackCapabilities]);
+  }, [cameraCapabilities]);
 
-  return supportedCameraResolutions;
+  return supportedResolutions;
 };
 
-export default useCameraResolutions;
+export default useCameraCapabilities;
