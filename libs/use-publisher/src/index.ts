@@ -42,10 +42,14 @@ const usePublisher = (): Publisher => {
     const capabilities = PeerConnection.getCapabilities('video');
     const supportedCodecs = capabilities.codecs
       .filter((item) => item.codec.toLowerCase() !== 'av1')
+      .sort((item) => {
+        return item.codec.toLowerCase() === 'h264' ? -1 : 1;
+      })
       .map((item) => item.codec);
+
     if (supportedCodecs.length === 0) return;
-    setCodecList(supportedCodecs);
     setCodec(supportedCodecs[0]);
+    setCodecList(supportedCodecs);
   }, []);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {

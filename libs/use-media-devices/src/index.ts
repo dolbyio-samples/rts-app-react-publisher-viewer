@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -15,7 +15,19 @@ export type MediaDevices = {
   startDisplayCapture: () => void;
   stopDisplayCapture: () => void;
   displayStream?: MediaStream;
+  applyMediaTrackConstraints: (
+    audioConstraints: MediaTrackConstraints,
+    videoConstraints: MediaTrackConstraints
+  ) => void;
+  // Supported capabilites of selected camera and microphone
+  cameraCapabilities?: MediaTrackCapabilities;
+  microphoneCapabilities?: MediaTrackCapabilities;
+  // Current settings of selected camera and microphone
+  cameraSettings?: MediaTrackSettings;
+  microphoneSettings?: MediaTrackSettings;
 };
+
+type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
 const useMediaDevices: () => MediaDevices = () => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
@@ -30,78 +42,63 @@ const useMediaDevices: () => MediaDevices = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [displayStream, setDisplayStream] = useState<MediaStream>();
 
-  const mediaConstraints = {
-    video: {
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
-    },
-  };
-
   useEffect(() => {
     const initializeDeviceList = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-        if (stream) {
-          getMediaDevicesList();
-        } else {
-          throw `Cannot get user's media stream`;
-        }
-      } catch (err) {
-        console.error(err);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      if (stream) {
+        const { cameraList, microphoneList } = await getMediaDevicesLists();
+        setCameraId(cameraList[0].deviceId);
+        setMicrophoneId(microphoneList[0].deviceId);
+      } else {
+        throw `Cannot get user's media stream`;
       }
     };
     initializeDeviceList();
   }, []);
 
   useEffect(() => {
-    (microphoneId || cameraId) && loadMediaStream(microphoneId, cameraId);
+    if (microphoneId && cameraId) loadMediaStream(microphoneId, cameraId);
   }, [cameraId, microphoneId]);
 
-  useEffect(() => {
-    if (mediaStream) {
-      if (mediaStream.getAudioTracks().length) {
-        const track = mediaStream.getAudioTracks()[0];
-        track.enabled = isAudioEnabled;
-      }
-      if (mediaStream.getVideoTracks().length) {
-        const track = mediaStream.getVideoTracks()[0];
-        track.enabled = isVideoEnabled;
-      }
-    }
+  const { microphoneCapabilities, cameraCapabilities } = useMemo(() => {
+    const microphoneCapabilities = mediaStream?.getAudioTracks()[0].getCapabilities();
+    const cameraCapabilities = mediaStream?.getVideoTracks()[0].getCapabilities();
+    return { microphoneCapabilities, cameraCapabilities };
   }, [mediaStream]);
 
-  const loadMediaStream = async (microphoneId?: string, cameraId?: string) => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      ...mediaConstraints,
+  const { microphoneSettings, cameraSettings } = useMemo(() => {
+    const microphoneSettings = mediaStream?.getAudioTracks()[0].getSettings();
+    const cameraSettings = mediaStream?.getVideoTracks()[0].getSettings();
+    return { microphoneSettings, cameraSettings };
+  }, [mediaStream]);
+
+  const loadMediaStream = async (microphoneId: string, cameraId: string) => {
+    const constraints = {
       audio: {
         deviceId: microphoneId,
       },
       video: {
         deviceId: cameraId,
       },
-    });
-
+    };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
     setMediaStream(stream);
   };
 
-  const getMediaDevicesList = async () => {
+  const getMediaDevicesLists = async (): Promise<MediaDevicesLists> => {
     const devices = await navigator.mediaDevices.enumerateDevices();
-
-    const tempMicrophoneList: InputDeviceInfo[] = [];
-    const tempCameraList: InputDeviceInfo[] = [];
-    await devices.forEach((device) => {
-      device.kind === 'audioinput' && isUniqueDevice(tempMicrophoneList, device) && tempMicrophoneList.push(device);
-      device.kind === 'videoinput' && isUniqueDevice(tempCameraList, device) && tempCameraList.push(device);
+    const microphoneList: InputDeviceInfo[] = [];
+    const cameraList: InputDeviceInfo[] = [];
+    devices.forEach((device) => {
+      device.kind === 'audioinput' && isUniqueDevice(microphoneList, device) && microphoneList.push(device);
+      device.kind === 'videoinput' && isUniqueDevice(cameraList, device) && cameraList.push(device);
     });
-
-    setCameraList(tempCameraList);
-    setMicrophoneList(tempMicrophoneList);
-
-    !cameraId && setCameraId(tempCameraList[0].deviceId);
-    !microphoneId && setMicrophoneId(tempMicrophoneList[0].deviceId);
+    setCameraList(cameraList);
+    setMicrophoneList(microphoneList);
+    return Promise.resolve({ cameraList, microphoneList });
   };
 
   const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
@@ -125,20 +122,16 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const startDisplayCapture = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: 'always' },
-        audio: true,
-      } as DisplayMediaStreamConstraints);
-      if (stream) {
-        if (!stream.getVideoTracks().length) throw 'No video steram for sharing';
-        setDisplayStream(stream);
-        stream.getVideoTracks()[0].addEventListener('ended', () => {
-          setDisplayStream(undefined);
-        });
-      }
-    } catch (error) {
-      console.log('failed to get display stream', error);
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: 'always' },
+      audio: true,
+    } as DisplayMediaStreamConstraints);
+    if (stream) {
+      if (!stream.getVideoTracks().length) throw 'No video steram for sharing';
+      setDisplayStream(stream);
+      stream.getVideoTracks()[0].addEventListener('ended', () => {
+        setDisplayStream(undefined);
+      });
     }
   };
 
@@ -146,6 +139,22 @@ const useMediaDevices: () => MediaDevices = () => {
     if (!displayStream) return;
     displayStream.getTracks().forEach((track) => track.stop());
     setDisplayStream(undefined);
+  };
+
+  const applyMediaTrackConstraints = async (
+    audioConstraints: MediaTrackConstraints,
+    videoConstraints: MediaTrackConstraints
+  ) => {
+    // Chrome requires to create a new media stream if audio constraints are changed
+    // [See this](https://bugs.chromium.org/p/chromium/issues/detail?id=796964)
+    mediaStream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+    const newStream = await navigator.mediaDevices.getUserMedia({
+      audio: audioConstraints,
+      video: videoConstraints,
+    });
+    setMediaStream(newStream);
   };
 
   return {
@@ -163,6 +172,11 @@ const useMediaDevices: () => MediaDevices = () => {
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
+    applyMediaTrackConstraints,
+    cameraCapabilities,
+    microphoneCapabilities,
+    cameraSettings,
+    microphoneSettings,
   };
 };
 

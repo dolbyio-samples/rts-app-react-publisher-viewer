@@ -1,5 +1,5 @@
 import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
-import { Flex, IconButton, Spacer, Stack } from '@chakra-ui/react';
+import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack } from '@chakra-ui/react';
 
 import {
   IconFullScreen,
@@ -13,6 +13,8 @@ import InfoLabel from '@millicast-react/info-label';
 import type { StreamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
+  width?: string;
+  height?: string;
   mirrored?: boolean;
   muted?: boolean;
   video?: boolean;
@@ -21,9 +23,12 @@ export type VideoViewProps = {
   statistics?: StreamStats;
   label?: string;
   placeholderNode?: ReactNode;
+  onClick?: BoxProps['onClick'];
 };
 
 const VideoView = ({
+  width,
+  height,
   mirrored = false,
   muted = false,
   video = true,
@@ -32,6 +37,7 @@ const VideoView = ({
   statistics,
   label,
   placeholderNode,
+  onClick,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -50,11 +56,9 @@ const VideoView = ({
     '.video': {
       transform: `${mirrored ? 'scaleX(-1)' : ''}`,
       display: video ? 'block' : 'none',
-    },
-    '.video--fullscreen': {
-      width: '100vw',
-      height: '100vh',
-      overflowY: 'hidden',
+      overflow: 'hidden',
+      width: '100%',
+      height: '100%',
     },
     '.icon-button, .icon-button: hover': {
       padding: '10px',
@@ -66,6 +70,8 @@ const VideoView = ({
     },
   };
 
+  const [loadingVideo, setLoadingVideo] = useState(false);
+
   return (
     <Flex
       test-id="video-view-wrapper"
@@ -74,18 +80,27 @@ const VideoView = ({
       bg="dolbyNeutral.800"
       overflow="hidden"
       borderRadius="8px"
-      top="0"
+      bottom="0"
       right="0"
-      zIndex="1"
-      w="640px"
-      h="480px"
+      width={isFullScreen ? '100vw' : width}
+      height={isFullScreen ? '100vh' : height}
+      zIndex={isFullScreen ? '1' : '0'}
+      onClick={onClick}
       color="white"
       justifyContent="center"
       alignItems="center"
       position="relative"
     >
+      {loadingVideo && (
+        <Center w="100%" h="100%">
+          <Spinner size="lg" zIndex="2" />
+        </Center>
+      )}
+
       {placeholderNode}
       <video
+        className="video"
+        playsInline
         // eslint-disable-next-line react/no-unknown-property
         test-id="video-view"
         className={`video ${isFullScreen && 'video--fullscreen'}`}
@@ -93,6 +108,9 @@ const VideoView = ({
         autoPlay
         ref={videoRef}
         muted={isMuted}
+        onWaiting={() => setLoadingVideo(true)}
+        onLoadStart={() => setLoadingVideo(true)}
+        onPlay={() => setLoadingVideo(false)}
       />
       {label !== undefined && (
         <InfoLabel
@@ -121,7 +139,10 @@ const VideoView = ({
             className="icon-button"
             size="md"
             icon={isMuted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
-            onClick={() => setIsMuted(!isMuted)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
           />
         )}
         <Spacer />
@@ -130,7 +151,10 @@ const VideoView = ({
           aria-label="Full screen"
           size="md"
           className="icon-button"
-          onClick={() => setIsFullScreen(!isFullScreen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsFullScreen(!isFullScreen);
+          }}
           icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
         />
         <IconButton
@@ -138,7 +162,10 @@ const VideoView = ({
           aria-label="Stream Information"
           size="md"
           className="icon-button"
-          onClick={() => setShowStatisticsInfo(!showStatisticsInfo)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setshowStatisticsInfo(!showStatisticsInfo);
+          }}
           icon={<IconInfo fill="white" />}
         />
       </Stack>

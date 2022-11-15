@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -35,10 +35,11 @@ import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
-import React from 'react';
+import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import ActionBar from '@millicast-react/action-bar';
 
 const displayShareSourceId = 'DisplayShare';
+import useCameraCapabilities from '../hooks/use-camera-capabilities';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
@@ -70,10 +71,17 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
+    applyMediaTrackConstraints,
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
+    cameraCapabilities,
+    cameraSettings,
+    microphoneSettings,
   } = useMediaDevices();
+
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
     setupPublisher(
@@ -81,6 +89,19 @@ function App() {
       import.meta.env.VITE_MILLICAST_STREAM_NAME,
       import.meta.env.VITE_MILLICAST_STREAM_ID
     );
+  }, []);
+
+  useEffect(() => {
+    // prevent closing the page
+    const pageCloseHandler = (event: BeforeUnloadEvent) => {
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', pageCloseHandler);
+
+    return () => {
+      window.removeEventListener('beforeunload', pageCloseHandler);
+    };
   }, []);
 
   useEffect(() => {
@@ -110,6 +131,21 @@ function App() {
       setMicrophoneId(deviceId);
     },
     [microphoneList]
+  );
+
+  const onSelectVideoResolution = useCallback(
+    (resolution: Resolution) => {
+      const videoConstraints = JSON.parse(JSON.stringify(cameraSettings));
+      if (videoConstraints) {
+        videoConstraints.width = resolution.width;
+        videoConstraints.height = resolution.height;
+      } else {
+        return;
+      }
+      const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
+      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+    },
+    [resolutionList]
   );
 
   const toggleShare = () => {
@@ -197,6 +233,8 @@ function App() {
               </Box>
             )}
             <VideoView
+              width="692px"
+              height="384px"
               mirrored={true}
               muted={true}
               displayMuteButton={false}
@@ -265,30 +303,32 @@ function App() {
                   <Box>
                     <Text> Camera: </Text>
                     <Spacer />
-                    {cameraList.length && (
+                    {cameraList.length && cameraSettings && (
                       <MediaDeviceSelect
                         disabled={publisherState === 'connecting'}
                         testId="camera-select"
                         deviceList={cameraList}
                         onSelectDeviceId={onSelectCameraId}
+                        defaultDeviceId={cameraSettings.deviceId}
                       />
                     )}
                   </Box>
                   <Box>
                     <Text> Microphone: </Text>
                     <Spacer />
-                    {microphoneList.length && (
+                    {microphoneList.length && microphoneSettings && (
                       <MediaDeviceSelect
                         disabled={publisherState === 'connecting'}
                         testId="microphone-select"
                         deviceList={microphoneList}
                         onSelectDeviceId={onSelectMicrophoneId}
+                        defaultDeviceId={microphoneSettings.deviceId}
                       />
                     )}
                   </Box>
-                  <Box>
-                    <Text> Codec </Text>
-                    {
+                  {codecList.length !== 0 && (
+                    <Box width="100%">
+                      <Text> Codec </Text>
                       <Select
                         disabled={publisherState !== 'ready' || codecList.length === 0}
                         test-id="codecSelect"
@@ -303,14 +343,27 @@ function App() {
                           );
                         })}
                       </Select>
-                    }
-                  </Box>
+                    </Box>
+                  )}
+                  {mediaStream && resolutionList.length && cameraSettings && (
+                    <Box>
+                      <Text> Resolution </Text>
+                      <ResolutionSelect
+                        onSelectResolution={(newResolution: Resolution) => {
+                          onSelectVideoResolution(newResolution);
+                        }}
+                        resolutionList={resolutionList}
+                        currentHeight={cameraSettings.height}
+                      />
+                    </Box>
+                  )}
                   <Switch
                     test-id="simulcastSwitch"
                     onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                    isChecked={isSimulcastEnabled}
                     disabled={publisherState !== 'ready'}
                   >
-                    Simulcast
+                    Simulcast {isSimulcastEnabled ? 'on' : 'off'}
                   </Switch>
                 </Stack>
               </DrawerBody>
