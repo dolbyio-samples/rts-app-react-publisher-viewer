@@ -23,9 +23,14 @@ const allResolutions = [
     height: 720,
   },
   {
-    name: '480p',
-    width: 852,
-    height: 480,
+    name: '540p',
+    width: 960,
+    height: 540,
+  },
+  {
+    name: '360p',
+    width: 640,
+    height: 360,
   },
 ];
 
