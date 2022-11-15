@@ -1,4 +1,4 @@
-import { Box, Center, VStack, Text, Button, HStack, Flex, Spacer, Select } from '@chakra-ui/react';
+import { Box, Center, VStack, Text, HStack, Flex, Spacer, Select } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import useViewer, { StreamQuality } from '@millicast-react/use-viewer';
 import VideoView from '@millicast-react/video-view';
@@ -27,8 +27,23 @@ const Content = () => {
     return stopViewer;
   }, []);
 
+  const start = () => {
+    if (viewerState === 'initial' || viewerState === 'ready') {
+      startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setInterval(start, 3000);
+
+    if (viewerState === 'liveOn' || viewerState === 'liveOff') {
+      clearInterval(timer);
+    }
+    return () => clearTimeout(timer);
+  }, [viewerState]);
+
   return (
-    <VStack width="100vw">
+    <VStack width="100vw" height="100vh">
       <Flex w="100%" pr="4">
         <Spacer />
         {viewerState === 'liveOn' && <LiveIndicator />}
@@ -37,26 +52,18 @@ const Content = () => {
         <Spacer />
         {viewerState === 'liveOn' && <ParticipantCount count={viewerCount} />}
       </Flex>
+      {(viewerState === 'ready' || viewerState === 'connecting') && (
+        <Flex direction="column" width={'100vw'} height={'75vh'} alignContent={'center'} justifyContent={'center'}>
+          <VStack>
+            <Text fontSize={'2xl'}> Waiting room </Text>
+            <Text fontSize={'md'}> Neque libero consequat malesuada ipsum id. (Temporary copy)</Text>
+          </VStack>
+        </Flex>
+      )}
       <Center>
         <VStack>
-          {viewerState === 'ready' && (
-            <>
-              <Text> Please connect first </Text>
-              <Button
-                onClick={() => {
-                  startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-                }}
-              >
-                connect
-              </Button>
-            </>
-          )}
           <HStack>
-            {mainStream && viewerState === 'liveOn' ? (
-              <VideoView mediaStream={mainStream} statistics={statistics} />
-            ) : (
-              <Text> No stream is live </Text>
-            )}
+            {mainStream && viewerState === 'liveOn' && <VideoView mediaStream={mainStream} statistics={statistics} />}
             <VStack>
               {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
                 return (
@@ -82,6 +89,11 @@ const Content = () => {
               })}
               ;
             </Select>
+          )}
+          {viewerState === 'liveOff' && (
+            <Flex direction="column" width={'100vw'} height={'75vh'} alignContent={'center'} justifyContent={'center'}>
+              <Text> The show is over, folks!</Text>
+            </Flex>
           )}
         </VStack>
       </Center>

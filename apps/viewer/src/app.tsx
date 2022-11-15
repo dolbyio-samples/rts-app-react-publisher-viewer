@@ -32,7 +32,7 @@ function App() {
   };
 
   return (
-    <VStack w="100%">
+    <VStack w="100%" backgroundColor="dolbyNeutral.800">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
           <Heading size="md" p="4">

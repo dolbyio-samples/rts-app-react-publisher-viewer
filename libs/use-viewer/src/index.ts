@@ -151,7 +151,10 @@ const useViewer = (): Viewer => {
         setStatistics(statistics);
       });
     } catch (error) {
-      handleError(error);
+      setViewerState('ready');
+      if ((error as Error).message !== 'stream not being published') {
+        handleError(error);
+      }
     }
   };
 
