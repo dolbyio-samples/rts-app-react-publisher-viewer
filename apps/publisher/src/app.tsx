@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -19,8 +19,6 @@ import {
   Switch,
   Text,
   VStack,
-  RadioGroup,
-  Radio,
 } from '@chakra-ui/react';
 
 import usePublisher from '@millicast-react/use-publisher';
@@ -41,18 +39,8 @@ import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select
 import LiveIndicator from '@millicast-react/live-indicator';
 import useCameraResolutions from '../hooks/use-camera-resolutions';
 
-import type { Stereo, Mono } from '@millicast-react/use-media-devices';
-
 function App() {
   const displayShareSourceId = 'DisplayShare';
-
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
-  const [channels, setChannels] = useState<string>('1');
-  const [echoCancellation, setEchoCancellation] = useState<boolean>(false);
-  const [supportedResolutions, setSupportedResolutions] = useState<Resolution[]>([]);
-
-  const [resolution, setResolution] = useState<Resolution>(supportedResolutions[0]);
-  const { supportedResolutionList } = useCameraResolutions();
 
   const {
     setupPublisher,
@@ -80,13 +68,17 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
-    addMediaConstraints,
+    ApplyMediaTrackConstraints,
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
-    supportedVideoTrackCapabilities,
-    supportedAudioTrackCapabilities,
+    cameraCapabilities,
+    cameraSettings,
+    microphoneSettings,
   } = useMediaDevices();
+
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const resolutionList = useCameraResolutions(cameraCapabilities);
 
   useEffect(() => {
     setupPublisher(
@@ -101,10 +93,6 @@ function App() {
       updateStreaming(mediaStream);
     }
   }, [mediaStream]);
-
-  useMemo(() => {
-    setSupportedResolutions(supportedResolutionList);
-  }, [supportedVideoTrackCapabilities]);
 
   useEffect(() => {
     if (!displayStream) stopDisplayStreaming();
@@ -129,45 +117,20 @@ function App() {
     [microphoneList]
   );
 
-  const onSelectEchoCancellation = (echoCancellation: boolean) => {
-    if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings();
-      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
-
-      audioConstraints.echoCancellation = echoCancellation;
-
-      setEchoCancellation(echoCancellation);
-      addMediaConstraints(audioConstraints, videoConstraints);
-    }
-  };
-
-  const onSelectAudioChannels = (value: string) => {
-    if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings() as MediaTrackConstraintSet;
-      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
-
-      const stereoChannelCount: Stereo = 2;
-      const monoChannelCount: Mono = 1;
-
-      audioConstraints.channelCount = parseInt(value) === monoChannelCount ? stereoChannelCount : monoChannelCount;
-
-      setChannels(value);
-      addMediaConstraints(audioConstraints, videoConstraints);
-    }
-  };
-
-  const onSelectVideoResolution = (resolution: Resolution) => {
-    if (mediaStream) {
-      const audioConstraints = mediaStream.getAudioTracks()[0].getSettings();
-      const videoConstraints = mediaStream.getVideoTracks()[0].getSettings();
-
-      videoConstraints.width = resolution.width;
-      videoConstraints.height = resolution.height;
-
-      setResolution(resolution);
-      addMediaConstraints(audioConstraints, videoConstraints);
-    }
-  };
+  const onSelectVideoResolution = useCallback(
+    (resolution: Resolution) => {
+      const videoConstraints = JSON.parse(JSON.stringify(cameraSettings));
+      if (videoConstraints) {
+        videoConstraints.width = resolution.width;
+        videoConstraints.height = resolution.height;
+      } else {
+        return;
+      }
+      const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
+      ApplyMediaTrackConstraints(audioConstraints, videoConstraints);
+    },
+    [resolutionList]
+  );
 
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
@@ -260,24 +223,26 @@ function App() {
                       <HStack width="100%">
                         <Text> Camera: </Text>
                         <Spacer />
-                        {cameraList.length && (
+                        {cameraList.length && cameraSettings && (
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="camera-select"
                             deviceList={cameraList}
                             onSelectDeviceId={onSelectCameraId}
+                            defaultDeviceId={cameraSettings.deviceId}
                           />
                         )}
                       </HStack>
                       <HStack width="100%">
                         <Text> Microphone: </Text>
                         <Spacer />
-                        {microphoneList.length && (
+                        {microphoneList.length && microphoneSettings && (
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="microphone-select"
                             deviceList={microphoneList}
                             onSelectDeviceId={onSelectMicrophoneId}
+                            defaultDeviceId={microphoneSettings.deviceId}
                           />
                         )}
                       </HStack>
@@ -300,33 +265,17 @@ function App() {
                           </Select>
                         </HStack>
                       )}
-                      {mediaStream && supportedResolutions.length && (
+                      {mediaStream && resolutionList.length && cameraSettings && (
                         <HStack>
                           <Text> Resolution </Text>
                           <ResolutionSelect
                             onSelectResolution={(newResolution: Resolution) => {
                               onSelectVideoResolution(newResolution);
                             }}
-                            resolutionList={supportedResolutions}
-                            defaultResolution={resolution}
+                            resolutionList={resolutionList}
+                            currentHeight={cameraSettings.height}
                           />
                         </HStack>
-                      )}
-                      {supportedAudioTrackCapabilities?.channelCount?.max && (
-                        <RadioGroup test-id="channelCountRadio" value={channels} onChange={onSelectAudioChannels}>
-                          <Radio value="1" mr="8">
-                            Mono
-                          </Radio>
-                          <Radio value="2">Stereo</Radio>
-                        </RadioGroup>
-                      )}
-                      {supportedAudioTrackCapabilities?.echoCancellation && (
-                        <Switch
-                          test-id="echoCancellationSwitch"
-                          onChange={() => onSelectEchoCancellation(!echoCancellation)}
-                        >
-                          Echo Cancellation {echoCancellation ? 'on' : 'off'}
-                        </Switch>
                       )}
                       <Switch
                         test-id="simulcastSwitch"

@@ -4,29 +4,29 @@ import { Select } from '@chakra-ui/react';
 type ResolutionSelectProps = {
   onSelectResolution: (resolution: Resolution) => void;
   resolutionList: Resolution[];
-  defaultResolution: Resolution;
+  currentHeight?: number;
 };
 
 export type Resolution = {
-  name: string;
   width: number;
   height: number;
 };
 
-const ResolutionSelect = ({
-  onSelectResolution,
-  resolutionList: supportedResolutions,
-  defaultResolution,
-}: ResolutionSelectProps) => {
+const ResolutionSelect = ({ onSelectResolution, resolutionList, currentHeight }: ResolutionSelectProps) => {
+  const currentValue = currentHeight
+    ? resolutionList.findIndex((resolution) => {
+        return resolution.height === currentHeight;
+      })
+    : 0;
   return (
     <Select
       test-id="resolutionSelect"
-      defaultValue={0}
-      onChange={(event) => onSelectResolution(supportedResolutions[Number(event.target.value)])}
+      value={currentValue < 0 ? 0 : currentValue}
+      onChange={(event) => onSelectResolution(resolutionList[Number(event.target.value)])}
     >
-      {supportedResolutions.map((resolution, idx) => (
+      {resolutionList.map((resolution, idx) => (
         <option key={idx} value={idx}>
-          {resolution.name}
+          {`${resolution.width}x${resolution.height}`}
         </option>
       ))}
     </Select>
