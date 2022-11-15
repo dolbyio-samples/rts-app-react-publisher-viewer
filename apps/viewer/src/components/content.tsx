@@ -49,7 +49,7 @@ const Content = () => {
       </Flex>
       <Flex w="100%" pr="4">
         <Spacer />
-        {viewerState === 'liveOn' && <ParticipantCount count={viewerCount} />}
+        {viewerState === 'liveOn' && viewerCount > 0 && <ParticipantCount count={viewerCount} />}
       </Flex>
       <Center>
         <VStack>
