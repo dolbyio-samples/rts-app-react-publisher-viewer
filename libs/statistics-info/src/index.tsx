@@ -13,9 +13,9 @@ const MEGABYTE = KILOBYTE * KILOBYTE;
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
   useEffect(() => {
     if (statistics) {
-      console.log(statistics)
+      console.log(statistics);
     }
-  }, [statistics])
+  }, [statistics]);
   const formatTimestamp = (timestampMs: number | undefined): string => {
     if (!timestampMs) return '';
 
@@ -76,16 +76,18 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               </Box>
             </Flex>
           )}
-          {statistics.availableOutgoingBitrate && statistics.audio?.outbounds.length > 0 && statistics.video?.outbounds.length > 0 && (
-            <Flex w="100%">
-              <Box flex="1">
-                <Text fontSize="sm">Available Outgoing Bitrate:</Text>
-              </Box>
-              <Box flex="1">
-                <Text fontSize="sm">{formatBitRate(statistics.availableOutgoingBitrate)}</Text>
-              </Box>
-            </Flex>
-          )}
+          {statistics.availableOutgoingBitrate &&
+            statistics.audio?.outbounds.length > 0 &&
+            statistics.video?.outbounds.length > 0 && (
+              <Flex w="100%">
+                <Box flex="1">
+                  <Text fontSize="sm">Available Outgoing Bitrate:</Text>
+                </Box>
+                <Box flex="1">
+                  <Text fontSize="sm">{formatBitRate(statistics.availableOutgoingBitrate)}</Text>
+                </Box>
+              </Flex>
+            )}
           {statistics.candidateType && (
             <Flex w="100%">
               <Box flex="1">
