@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -35,14 +35,12 @@ import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import MediaDeviceSelect from '@millicast-react/media-device-select';
 import Timer from '@millicast-react/timer';
-import React from 'react';
+import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
+import useCameraCapabilities from '../hooks/use-camera-capabilities';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
-
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
-
   const {
     setupPublisher,
     startStreaming,
@@ -69,10 +67,17 @@ function App() {
     toggleAudio,
     toggleVideo,
     mediaStream,
+    applyMediaTrackConstraints,
     startDisplayCapture,
     stopDisplayCapture,
     displayStream,
+    cameraCapabilities,
+    cameraSettings,
+    microphoneSettings,
   } = useMediaDevices();
+
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
     setupPublisher(
@@ -124,6 +129,21 @@ function App() {
     [microphoneList]
   );
 
+  const onSelectVideoResolution = useCallback(
+    (resolution: Resolution) => {
+      const videoConstraints = JSON.parse(JSON.stringify(cameraSettings));
+      if (videoConstraints) {
+        videoConstraints.width = resolution.width;
+        videoConstraints.height = resolution.height;
+      } else {
+        return;
+      }
+      const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
+      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+    },
+    [resolutionList]
+  );
+
   // Colors, our icon is not managed by ChakraUI, so has to use the CSS variable
   // TODO: move this to IconComponents
   const purple400 = 'var(--chakra-colors-dolbyPurple-400)';
@@ -160,6 +180,7 @@ function App() {
                   displayMuteButton={false}
                   mediaStream={mediaStream}
                   statistics={statistics}
+                  height={480}
                 />
               </Box>
               <Box display={displayStream ? 'block' : 'none'}>
@@ -214,30 +235,32 @@ function App() {
                       <HStack width="100%">
                         <Text> Camera: </Text>
                         <Spacer />
-                        {cameraList.length && (
+                        {cameraList.length && cameraSettings && (
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="camera-select"
                             deviceList={cameraList}
                             onSelectDeviceId={onSelectCameraId}
+                            defaultDeviceId={cameraSettings.deviceId}
                           />
                         )}
                       </HStack>
                       <HStack width="100%">
                         <Text> Microphone: </Text>
                         <Spacer />
-                        {microphoneList.length && (
+                        {microphoneList.length && microphoneSettings && (
                           <MediaDeviceSelect
                             disabled={publisherState === 'connecting'}
                             testId="microphone-select"
                             deviceList={microphoneList}
                             onSelectDeviceId={onSelectMicrophoneId}
+                            defaultDeviceId={microphoneSettings.deviceId}
                           />
                         )}
                       </HStack>
-                      <HStack width="100%">
-                        <Text> Codec </Text>
-                        {
+                      {codecList.length !== 0 && (
+                        <HStack width="100%">
+                          <Text> Codec </Text>
                           <Select
                             disabled={publisherState !== 'ready' || codecList.length === 0}
                             test-id="codecSelect"
@@ -252,15 +275,27 @@ function App() {
                               );
                             })}
                           </Select>
-                        }
-                      </HStack>
+                        </HStack>
+                      )}
+                      {mediaStream && resolutionList.length && cameraSettings && (
+                        <HStack>
+                          <Text> Resolution </Text>
+                          <ResolutionSelect
+                            onSelectResolution={(newResolution: Resolution) => {
+                              onSelectVideoResolution(newResolution);
+                            }}
+                            resolutionList={resolutionList}
+                            currentHeight={cameraSettings.height}
+                          />
+                        </HStack>
+                      )}
                       <Switch
                         test-id="simulcastSwitch"
                         onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
                         isChecked={isSimulcastEnabled}
                         disabled={publisherState !== 'ready'}
                       >
-                        Simulcast
+                        Simulcast {isSimulcastEnabled ? 'on' : 'off'}
                       </Switch>
                     </VStack>
                   </PopoverBody>

@@ -5,16 +5,21 @@ interface MediaDeviceSelectProps extends React.SelectHTMLAttributes<HTMLSelectEl
   deviceList: InputDeviceInfo[];
   onSelectDeviceId: (deviceId: string) => void;
   testId?: string;
-  placeHolder?: string;
+  defaultDeviceId?: string;
 }
 
-const MediaDeviceSelect = ({ deviceList, onSelectDeviceId, testId, placeHolder, ...props }: MediaDeviceSelectProps) => {
+const MediaDeviceSelect = ({
+  deviceList,
+  onSelectDeviceId,
+  testId,
+  defaultDeviceId,
+  ...props
+}: MediaDeviceSelectProps) => {
   return (
     <Select
       disabled={props.disabled}
       test-id={testId}
-      placeholder={placeHolder}
-      defaultValue={deviceList[0].deviceId}
+      defaultValue={defaultDeviceId}
       onChange={(e) => onSelectDeviceId(e.target.value)}
     >
       {deviceList.map((device) => {
