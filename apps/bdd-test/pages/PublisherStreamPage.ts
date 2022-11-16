@@ -30,7 +30,7 @@ export class PublisherStreamPage extends CommonPage {
 
   async verifyParticipantCount(count: string) {
     console.log(`\tPublisherStreamPage:: Verify participant count is ${count}`);
-    const string = (count === '1') ? '1 viewer' : `${count} viewers`
+    const string = count === '1' ? '1 viewer' : `${count} viewers`;
     await expect(this.locators.participantCount).toHaveText(string);
   }
 
