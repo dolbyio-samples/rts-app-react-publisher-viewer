@@ -38,7 +38,6 @@ import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
 import useCameraCapabilities from '../hooks/use-camera-capabilities';
-import InfoLabel from '@millicast-react/info-label';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
