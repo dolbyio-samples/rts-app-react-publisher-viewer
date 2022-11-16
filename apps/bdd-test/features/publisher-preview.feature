@@ -8,7 +8,7 @@ Feature: Publisher Preview - Not Live
     # Precondition: Publisher should provide required microphone and camera permissions 
     # Test Execution: All the automated tests would be running on fake input devices (camera and microphone)
 
-    Scenario: Publisher should be presented with different streaming controls for configuration
+    #Scenario: Publisher should be presented with different streaming controls for configuration
         Given a publisher is on the Preview page
         Then on the publisher Preview page microphone button should be enabled
         And on the publisher Preview page camera button should be visible
@@ -20,7 +20,7 @@ Feature: Publisher Preview - Not Live
         And on the publisher Preview page main view should be visible
         #And on the publisher Preview page gallery view should be hidden
 
-    Scenario: Publisher should be presented with streaming information
+    #Scenario: Publisher should be presented with streaming information
         Given a publisher is on the Preview page
         Then on the publisher Preview page streaming state value should be "live"
         And on the publisher Preview page company name value should be "Company name"
@@ -28,12 +28,12 @@ Feature: Publisher Preview - Not Live
         And on the publisher Preview page heading value should be "Get started"
         And on the publisher Preview page description value should be "Setup your audio and video before going live."
 
-    Scenario: Publisher should be presented with main video view
+    #Scenario: Publisher should be presented with main video view
         Given a publisher is on the Preview page
         Then on the publisher Preview page main view should be visible
         #And on the publisher Preview page "Presenter" label should be inside main view
 
-    Scenario: Publisher should be able to turn off and on the camera
+    #Scenario: Publisher should be able to turn off and on the camera
         Given a publisher is on the Preview page
         Then on the publisher Preview page camera should be turned On
         When the publisher turns Off the camera on the Preview page
@@ -41,7 +41,7 @@ Feature: Publisher Preview - Not Live
         When the publisher turns On the camera on the Preview page
         Then on the publisher Preview page camera should be turned On
 
-    Scenario: Publisher should be able to turn off and on the microphone
+    #Scenario: Publisher should be able to turn off and on the microphone
         Given a publisher is on the Preview page
         Then on the publisher Preview page microphone should be turned On
         When the publisher turns Off the microphone on the Preview page
@@ -49,10 +49,10 @@ Feature: Publisher Preview - Not Live
         When the publisher turns On the microphone on the Preview page
         Then on the publisher Preview page microphone should be turned On
 
-    Scenario: Publisher should be able to do full screen of the main view 
+    #Scenario: Publisher should be able to do full screen of the main view 
         Given a publisher is on the Preview page
         When the publisher clicks on full screen button of the main view on the Preview page
-        #Then on the publisher Preview page main view size should be full size
+        Then on the publisher Preview page main view size should be full size
         And on the publisher Preview page main view should be visible
         And on the publisher Preview page full screen button should be visible        
         # And on the publisher Preview page microphone button should be hidden
@@ -68,7 +68,7 @@ Feature: Publisher Preview - Not Live
         # And on the publisher Preview page heading should be hidden
         # And on the publisher Preview page description should be hidden
 
-    Scenario: Publisher should be able to go back to normal screen from full screen of the main stream view 
+    #Scenario: Publisher should be able to go back to normal screen from full screen of the main stream view 
         Given a publisher is on the Preview page
         When the publisher clicks on full screen button of the main view on the Preview page
         And the publisher clicks on normal screen button of the main view on the Preview page
