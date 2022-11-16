@@ -18,9 +18,9 @@ const dolbyioTheme = extendTheme({
     Button,
   },
   fonts: {
-    body: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
-    heading: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
-    mono: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
+    body: 'Roboto, Helvetica, Arial, sans-serif',
+    heading: 'Roboto, Helvetica, Arial, sans-serif',
+    mono: 'Roboto, Helvetica, Arial, sans-serif',
   },
 });
 
