@@ -21,7 +21,7 @@
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
       "@millicast-react/dropdown": ["libs/dropdown/src/index.tsx"],
-      "@millicast-react/go-live": ["libs/go-live/src/index.tsx"],
+      "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
       "@millicast-react/icon-button": ["libs/icon-button/src/index.tsx"],
       "@millicast-react/info-label": ["libs/info-label/src/index.tsx"],
       "@millicast-react/media-device-select": ["libs/media-device-select/src/index.tsx"],

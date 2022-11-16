@@ -46,15 +46,6 @@ const dolbyioTheme = extendTheme({
     Heading,
     Text,
     Tooltip,
-    Popover: {
-      baseStyle: {
-        popper: {
-          minWidth: '200px',
-          width: '200px',
-          maxWidth: '200px',
-        },
-      },
-    },
   },
 });
 

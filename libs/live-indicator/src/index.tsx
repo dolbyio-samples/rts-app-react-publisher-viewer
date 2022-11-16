@@ -3,15 +3,15 @@ import React from 'react';
 
 type GoLiveProps = ButtonProps & {
   isActive: boolean;
-  isLoading: boolean;
-  start: () => void;
-  stop: () => void;
+  isLoading?: boolean;
+  start?: () => void;
+  stop?: () => void;
 };
 
-const GoLive = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
+const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
   return (
     <Button
-      test-id="go-live"
+      test-id="live-indicator"
       px="4"
       fontSize="12px"
       size="sm"
@@ -29,4 +29,4 @@ const GoLive = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
   );
 };
 
-export default GoLive;
+export default LiveIndicator;

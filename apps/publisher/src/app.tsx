@@ -35,7 +35,7 @@ import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import ToggleButton from '@millicast-react/toggle-button';
 import AddSource from '@millicast-react/add-source';
-import GoLive from '@millicast-react/go-live';
+import LiveIndicator from '@millicast-react/live-indicator';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
@@ -151,7 +151,7 @@ function App() {
         <Flex w="100%" justifyContent="space-between">
           <Box>
             <Timer isActive={isActive} />
-            <GoLive
+            <LiveIndicator
               isActive={isActive}
               isLoading={publisherState === 'connecting'}
               start={() => {
