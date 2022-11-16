@@ -17,6 +17,11 @@ const dolbyioTheme = extendTheme({
   components: {
     Button,
   },
+  fonts: {
+    body: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
+    heading: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
+    mono: 'Roboto, Avenir, Helvetica, Arial, sans-serif',
+  },
 });
 
 export default dolbyioTheme;

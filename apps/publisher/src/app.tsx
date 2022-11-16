@@ -150,9 +150,9 @@ function App() {
   const purple400 = 'var(--chakra-colors-dolbyPurple-400)';
 
   return (
-    <VStack w="100%" id="app">
+    <VStack w="100%">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Heading size="md" p="4" fontFamily="inherit">
+        <Heading size="md" p="4">
           Dolbyio logo
         </Heading>
         <Spacer />
@@ -174,7 +174,6 @@ function App() {
         <Center>
           <VStack>
             <HStack bg="black">
-              <InfoLabel text="test, test test" />
               <VideoView
                 width="692px"
                 height="384px"
