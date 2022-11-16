@@ -30,7 +30,8 @@ export class PublisherStreamPage extends CommonPage {
 
   async verifyParticipantCount(count: string) {
     console.log(`\tPublisherStreamPage:: Verify participant count is ${count}`);
-    await expect(this.locators.participantCount).toHaveText(`${count} participants`);
+    const string = (count === '1') ? '1 viewer' : `${count} viewers`
+    await expect(this.locators.participantCount).toHaveText(string);
   }
 
   async verifyStopBtnState(state: State) {
