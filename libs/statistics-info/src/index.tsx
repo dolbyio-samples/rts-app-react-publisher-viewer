@@ -71,16 +71,18 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               </Box>
             </Flex>
           )}
-          {statistics.availableOutgoingBitrate && (
-            <Flex w="100%">
-              <Box flex="1">
-                <Text fontSize="sm">Available Outgoing Bitrate:</Text>
-              </Box>
-              <Box flex="1">
-                <Text fontSize="sm">{formatBitRate(statistics.availableOutgoingBitrate)}</Text>
-              </Box>
-            </Flex>
-          )}
+          {statistics.availableOutgoingBitrate &&
+            statistics.audio?.outbounds.length > 0 &&
+            statistics.video?.outbounds.length > 0 && (
+              <Flex w="100%">
+                <Box flex="1">
+                  <Text fontSize="sm">Available Outgoing Bitrate:</Text>
+                </Box>
+                <Box flex="1">
+                  <Text fontSize="sm">{formatBitRate(statistics.availableOutgoingBitrate)}</Text>
+                </Box>
+              </Flex>
+            )}
           {statistics.candidateType && (
             <Flex w="100%">
               <Box flex="1">
@@ -184,6 +186,46 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               </Box>
               <Box flex="1">
                 <Text fontSize="sm">{formatBytes(statistics.audio?.outbounds[0].totalBytesSent)}</Text>
+              </Box>
+            </Flex>
+          )}
+          {statistics.video?.inbounds.length > 0 && (
+            <Flex w="100%">
+              <Box flex="1">
+                <Text fontSize="sm">Video Packet Loss:</Text>
+              </Box>
+              <Box flex="1">
+                <Text fontSize="sm">{statistics.video.inbounds[0].totalPacketsLost}</Text>
+              </Box>
+            </Flex>
+          )}
+          {statistics.audio?.inbounds.length > 0 && (
+            <Flex w="100%">
+              <Box flex="1">
+                <Text fontSize="sm">Audio Packet Loss:</Text>
+              </Box>
+              <Box flex="1">
+                <Text fontSize="sm">{statistics.audio.inbounds[0].totalPacketsLost}</Text>
+              </Box>
+            </Flex>
+          )}
+          {statistics.video?.inbounds.length > 0 && (
+            <Flex w="100%">
+              <Box flex="1">
+                <Text fontSize="sm">Video Packet Jitter:</Text>
+              </Box>
+              <Box flex="1">
+                <Text fontSize="sm">{statistics.video.inbounds[0].jitter} ms</Text>
+              </Box>
+            </Flex>
+          )}
+          {statistics.audio?.inbounds.length > 0 && (
+            <Flex w="100%">
+              <Box flex="1">
+                <Text fontSize="sm">Audio Packet Jitter:</Text>
+              </Box>
+              <Box flex="1">
+                <Text fontSize="sm">{statistics.audio.inbounds[0].jitter} ms</Text>
               </Box>
             </Flex>
           )}

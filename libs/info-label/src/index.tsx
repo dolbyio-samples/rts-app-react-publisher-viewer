@@ -18,8 +18,9 @@ const InfoLabel = ({ text, color = 'dolbyPurple.400', bgColor = 'white', ...rest
       pr="8px"
       h="20px"
       borderRadius="4px"
-      fontSize="smaller"
+      fontSize="12px"
       textColor={color}
+      lineHeight="16px"
       {...rest}
     >
       {text}
