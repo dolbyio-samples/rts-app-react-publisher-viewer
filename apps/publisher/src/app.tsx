@@ -38,6 +38,7 @@ import Timer from '@millicast-react/timer';
 import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import LiveIndicator from '@millicast-react/live-indicator';
 import useCameraCapabilities from '../hooks/use-camera-capabilities';
+import InfoLabel from '@millicast-react/info-label';
 
 function App() {
   const displayShareSourceId = 'DisplayShare';
@@ -149,9 +150,9 @@ function App() {
   const purple400 = 'var(--chakra-colors-dolbyPurple-400)';
 
   return (
-    <VStack w="100%">
+    <VStack w="100%" id="app">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Heading size="md" p="4">
+        <Heading size="md" p="4" fontFamily="inherit">
           Dolbyio logo
         </Heading>
         <Spacer />
@@ -173,6 +174,7 @@ function App() {
         <Center>
           <VStack>
             <HStack bg="black">
+              <InfoLabel text="test, test test" />
               <VideoView
                 width="692px"
                 height="384px"

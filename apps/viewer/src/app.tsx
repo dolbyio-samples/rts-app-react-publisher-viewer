@@ -32,10 +32,10 @@ function App() {
   };
 
   return (
-    <VStack w="100%">
+    <VStack w="100%" id="app">
       <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
         <Box>
-          <Heading size="md" p="4">
+          <Heading size="md" p="4" fontFamily="inherit">
             Dolbyio logo
           </Heading>
         </Box>
