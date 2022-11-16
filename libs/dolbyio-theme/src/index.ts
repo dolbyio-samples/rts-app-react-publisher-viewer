@@ -42,6 +42,11 @@ const dolbyioTheme = extendTheme({
       },
     }),
   },
+  fonts: {
+    body: 'Roboto, Helvetica, Arial, sans-serif',
+    heading: 'Roboto, Helvetica, Arial, sans-serif',
+    mono: 'Roboto, Helvetica, Arial, sans-serif',
+  },
 });
 
 export default dolbyioTheme;
