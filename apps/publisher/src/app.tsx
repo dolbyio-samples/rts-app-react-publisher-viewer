@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -11,7 +10,6 @@ import {
   Flex,
   Heading,
   Stack,
-  Switch,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -26,20 +24,25 @@ import {
   IconSettings,
   IconPresent,
   IconProfile,
-  IconChevronDown,
   IconCodec,
+  IconResolution,
+  IconSimulcast,
+  IconStream,
+  IconAddCamera,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
+import ToggleButton from '@millicast-react/toggle-button';
+import AddSource from '@millicast-react/add-source';
+import GoLive from '@millicast-react/go-live';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
-import ResolutionSelect, { Resolution } from '@millicast-react/resolution-select';
 import ActionBar from '@millicast-react/action-bar';
 import Dropdown from '@millicast-react/dropdown';
+import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 
 const displayShareSourceId = 'DisplayShare';
-import useCameraCapabilities from './hooks/use-camera-capabilities';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
@@ -64,8 +67,10 @@ function App() {
   const {
     cameraList,
     microphoneList,
-    setCameraId,
-    setMicrophoneId,
+    camera,
+    setCamera,
+    microphone,
+    setMicrophone,
     isAudioEnabled,
     isVideoEnabled,
     toggleAudio,
@@ -118,20 +123,6 @@ function App() {
       });
   }, [displayStream, publisherState]);
 
-  const onSelectCameraId = useCallback(
-    (deviceId: string) => {
-      setCameraId(deviceId);
-    },
-    [cameraList]
-  );
-
-  const onSelectMicrophoneId = useCallback(
-    (deviceId: string) => {
-      setMicrophoneId(deviceId);
-    },
-    [microphoneList]
-  );
-
   const onSelectVideoResolution = useCallback(
     (resolution: Resolution) => {
       const videoConstraints = JSON.parse(JSON.stringify(cameraSettings));
@@ -151,60 +142,41 @@ function App() {
     displayStream ? stopDisplayCapture() : startDisplayCapture();
   };
 
+  const isActive = publisherState === 'streaming';
+
   return (
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
-      <Box w="100%" h="96px">
-        <ActionBar
-          title="Company name"
-          actionNode={
-            publisherState == 'ready' || publisherState == 'connecting' ? (
-              <Button
-                test-id="startStreamingButton"
-                px="2.5"
-                size="sm"
-                fontSize="12px"
-                letterSpacing="1px"
-                isLoading={publisherState == 'connecting'}
-                onClick={() => {
-                  if (publisherState == 'ready' && mediaStream) {
-                    startStreaming({
-                      mediaStream,
-                      simulcast: isSimulcastEnabled,
-                      codec,
-                      events: ['viewercount'],
-                    });
-                    if (displayStream)
-                      startDisplayStreaming({
-                        mediaStream: displayStream,
-                        sourceId: displayShareSourceId,
-                      });
-                  }
-                }}
-              >
-                START
-              </Button>
-            ) : (
-              <Button
-                test-id="stopStreamingButton"
-                px="2.5"
-                size="sm"
-                fontSize="12px"
-                letterSpacing="1px"
-                onClick={() => {
-                  stopDisplayStreaming();
-                  stopStreaming();
-                }}
-              >
-                STOP STREAMING
-              </Button>
-            )
-          }
-        />
+      <Box w="100%" h="130px">
+        <ActionBar title="Company name" />
         <Flex w="100%" justifyContent="space-between">
           <Box>
-            <Timer isActive={publisherState === 'streaming'} />
+            <Timer isActive={isActive} />
+            <GoLive
+              isActive={isActive}
+              isLoading={publisherState === 'connecting'}
+              start={() => {
+                if (publisherState == 'ready' && mediaStream) {
+                  startStreaming({
+                    mediaStream,
+                    simulcast: isSimulcastEnabled,
+                    codec,
+                    events: ['viewercount'],
+                  });
+                  if (displayStream) {
+                    startDisplayStreaming({
+                      mediaStream: displayStream,
+                      sourceId: displayShareSourceId,
+                    });
+                  }
+                }
+              }}
+              stop={() => {
+                stopDisplayStreaming();
+                stopStreaming();
+              }}
+            />
           </Box>
-          {publisherState === 'streaming' && (
+          {isActive && (
             <Box mt="3">
               <ParticipantCount count={viewerCount} />
             </Box>
@@ -273,15 +245,25 @@ function App() {
               isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
               icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
             />
-            <IconButton
-              test-id="toggleShareButton"
-              tooltip={{ label: 'Share' }}
-              onClick={toggleShare}
-              isActive={displayStream !== undefined}
-              icon={<IconPresent />}
-            />
           </Stack>
-          <Flex flex="1" justifyContent="flex-end">
+          <Flex direction="row" flex="1" justifyContent="flex-end" alignItems="center">
+            <AddSource
+              actions={[
+                { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
+                {
+                  icon: <IconAddCamera />,
+                  text: 'Add cameras',
+                  onClick: () => console.log('cameras'),
+                  isDisabled: true,
+                },
+                {
+                  icon: <IconStream />,
+                  text: 'Stream local file',
+                  onClick: () => console.log('stream'),
+                  isDisabled: true,
+                },
+              ]}
+            />
             <IconButton
               test-id="settingsButton"
               tooltip={{ label: 'Settings' }}
@@ -289,6 +271,7 @@ function App() {
               isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
               icon={<IconSettings />}
               variant="transparent"
+              ml={1}
             />
           </Flex>
           {/* Drawer */}
@@ -298,40 +281,55 @@ function App() {
               <DrawerHeader textAlign="center">Settings</DrawerHeader>
               <DrawerCloseButton />
               <DrawerBody>
-                <Stack direction="column">
+                <Stack direction="column" spacing={4}>
                   <Box>
-                    {cameraList.length && cameraSettings && (
+                    {cameraList.length && cameraSettings && camera && (
                       <Dropdown
                         leftIcon={<IconCameraOn />}
                         disabled={publisherState === 'connecting'}
                         testId="camera-select"
-                        devicesList={cameraList}
-                        onSelect={onSelectCameraId}
-                        selected={cameraSettings.deviceId}
+                        elementsList={cameraList}
+                        elementResolver={(element: InputDeviceInfo) => ({
+                          id: element.deviceId,
+                          label: element.label,
+                          data: element,
+                        })}
+                        onSelect={setCamera}
+                        selected={camera.label}
                         placeholder="Camera"
                       />
                     )}
                   </Box>
                   <Box>
-                    {microphoneList.length && microphoneSettings && (
+                    {microphoneList.length && microphoneSettings && microphone && (
                       <Dropdown
                         leftIcon={<IconMicrophoneOn />}
                         disabled={publisherState === 'connecting'}
                         testId="microphone-select"
-                        devicesList={microphoneList}
-                        onSelect={onSelectMicrophoneId}
-                        selected={microphoneSettings.deviceId}
+                        elementsList={microphoneList}
+                        elementResolver={(element: InputDeviceInfo) => ({
+                          id: element.deviceId,
+                          label: element.label,
+                          data: element.deviceId,
+                        })}
+                        onSelect={setMicrophone}
+                        selected={microphone.label}
                         placeholder="Microphone"
                       />
                     )}
                   </Box>
-                  {codecList.length !== 0 && (
+                  {!isActive && codecList.length !== 0 && (
                     <Box>
                       <Dropdown
                         leftIcon={<IconCodec />}
                         disabled={publisherState !== 'ready' || codecList.length === 0}
                         testId="codecSelect"
                         elementsList={codecList}
+                        elementResolver={(element: string) => ({
+                          id: element,
+                          label: element,
+                          data: element,
+                        })}
                         onSelect={updateCodec}
                         selected={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                         placeholder="Codec"
@@ -340,24 +338,30 @@ function App() {
                   )}
                   {mediaStream && resolutionList.length && cameraSettings && (
                     <Box>
-                      <Text> Resolution </Text>
-                      <ResolutionSelect
-                        onSelectResolution={(newResolution: Resolution) => {
-                          onSelectVideoResolution(newResolution);
-                        }}
-                        resolutionList={resolutionList}
-                        currentHeight={cameraSettings.height}
+                      <Dropdown
+                        leftIcon={<IconResolution />}
+                        testId="resolutionSelect"
+                        elementsList={resolutionList}
+                        elementResolver={(element: Resolution) => ({
+                          id: `${element.width}x${element.height}`,
+                          label: `${element.width}x${element.height}`,
+                          data: element,
+                        })}
+                        onSelect={onSelectVideoResolution}
+                        selected={`${cameraSettings.width}x${cameraSettings.height}`}
+                        placeholder="Resolution"
                       />
                     </Box>
                   )}
-                  <Switch
-                    test-id="simulcastSwitch"
-                    onChange={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                    isChecked={isSimulcastEnabled}
-                    disabled={publisherState !== 'ready'}
-                  >
-                    Simulcast {isSimulcastEnabled ? 'on' : 'off'}
-                  </Switch>
+                  {!isActive && (
+                    <ToggleButton
+                      test-id="simulcastSwitch"
+                      onClick={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
+                      isActive={isSimulcastEnabled}
+                      label="Simulcast"
+                      leftIcon={<IconSimulcast />}
+                    />
+                  )}
                 </Stack>
               </DrawerBody>
             </DrawerContent>

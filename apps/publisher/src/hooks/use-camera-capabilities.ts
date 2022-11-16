@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import type { Resolution } from '@millicast-react/resolution-select';
+
+export interface Resolution {
+  name?: string;
+  width: number;
+  height: number;
+}
 
 const allResolutions: Resolution[] = [
   {

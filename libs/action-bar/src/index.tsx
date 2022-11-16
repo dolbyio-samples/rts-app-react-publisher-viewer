@@ -3,7 +3,7 @@ import React from 'react';
 
 type ActionBarProps = FlexProps & {
   title: string;
-  actionNode: React.ReactNode;
+  actionNode?: React.ReactNode;
 };
 
 const ActionBar = ({ title, backgroundColor = 'dolbyNeutral.800', actionNode, ...flexProps }: ActionBarProps) => {
@@ -17,6 +17,7 @@ const ActionBar = ({ title, backgroundColor = 'dolbyNeutral.800', actionNode, ..
       w="100%"
       py="2"
       px="4"
+      h="48px"
       {...flexProps}
     >
       <Heading test-id="headingName" as="h3" fontSize="16px" fontWeight={600}>

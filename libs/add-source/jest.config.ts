@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'resolution-select',
+  displayName: 'add-source',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ export default {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/resolution-select',
+  coverageDirectory: '../../coverage/libs/add-source',
 };

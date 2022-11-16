@@ -2,6 +2,7 @@ import { defineStyleConfig } from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
+    letterSpacing: '1px',
     _loading: {
       _hover: {
         bg: 'dolbyPurple.500',

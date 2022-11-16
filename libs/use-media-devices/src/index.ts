@@ -3,10 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
   microphoneList: InputDeviceInfo[];
-  setCameraId: (deviceId: string) => void;
-  setMicrophoneId: (deviceId: string) => void;
-  cameraId?: string;
-  microphoneId?: string;
+  setCamera: (device: InputDeviceInfo) => void;
+  setMicrophone: (device: InputDeviceInfo) => void;
+  camera?: InputDeviceInfo;
+  microphone?: InputDeviceInfo;
   isAudioEnabled: boolean;
   isVideoEnabled: boolean;
   toggleAudio: () => void;
@@ -33,8 +33,8 @@ const useMediaDevices: () => MediaDevices = () => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
-  const [cameraId, setCameraId] = useState<string>();
-  const [microphoneId, setMicrophoneId] = useState<string>();
+  const [camera, setCamera] = useState<InputDeviceInfo>();
+  const [microphone, setMicrophone] = useState<InputDeviceInfo>();
 
   const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState<boolean>(true);
@@ -50,8 +50,8 @@ const useMediaDevices: () => MediaDevices = () => {
       });
       if (stream) {
         const { cameraList, microphoneList } = await getMediaDevicesLists();
-        setCameraId(cameraList[0].deviceId);
-        setMicrophoneId(microphoneList[0].deviceId);
+        setCamera(cameraList[0]);
+        setMicrophone(microphoneList[0]);
       } else {
         throw `Cannot get user's media stream`;
       }
@@ -60,8 +60,10 @@ const useMediaDevices: () => MediaDevices = () => {
   }, []);
 
   useEffect(() => {
-    if (microphoneId && cameraId) loadMediaStream(microphoneId, cameraId);
-  }, [cameraId, microphoneId]);
+    if (microphone && camera) {
+      loadMediaStream(microphone.deviceId, camera.deviceId);
+    }
+  }, [camera, microphone]);
 
   const { microphoneCapabilities, cameraCapabilities } = useMemo(() => {
     const microphoneCapabilities = mediaStream?.getAudioTracks()[0].getCapabilities();
@@ -127,7 +129,7 @@ const useMediaDevices: () => MediaDevices = () => {
       audio: true,
     } as DisplayMediaStreamConstraints);
     if (stream) {
-      if (!stream.getVideoTracks().length) throw 'No video steram for sharing';
+      if (!stream.getVideoTracks().length) throw 'No video stream for sharing';
       setDisplayStream(stream);
       stream.getVideoTracks()[0].addEventListener('ended', () => {
         setDisplayStream(undefined);
@@ -160,10 +162,10 @@ const useMediaDevices: () => MediaDevices = () => {
   return {
     cameraList,
     microphoneList,
-    setCameraId,
-    setMicrophoneId,
-    cameraId,
-    microphoneId,
+    camera,
+    setCamera,
+    microphone,
+    setMicrophone,
     isAudioEnabled,
     isVideoEnabled,
     toggleAudio,

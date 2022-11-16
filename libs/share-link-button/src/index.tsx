@@ -1,4 +1,4 @@
-import { Button, Tooltip, TooltipProps, useClipboard } from '@chakra-ui/react';
+import { Box, Button, Text, Tooltip, TooltipProps, useClipboard } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { IconCopy } from '@millicast-react/dolbyio-icons';
 
@@ -13,18 +13,23 @@ const ShareLinkButton = ({ tooltip, linkText }: ShareLinkButtonProps) => {
     setValue(linkText);
   }, [linkText]);
   return (
-    <Tooltip label={hasCopied ? 'Link copied!' : 'Copy link'} {...tooltip}>
-      <Button
-        onClick={onCopy}
-        leftIcon={<IconCopy height="21px" />}
-        size="sm"
-        aria-label="Copy link"
-        test-id="shareLinkButton"
-        variant="transparent"
-      >
-        {linkText}
-      </Button>
-    </Tooltip>
+    <Box>
+      <Text fontSize="18px" fontWeight="600">
+        Invite viewers
+      </Text>
+      <Tooltip label={hasCopied ? 'Link copied!' : 'Copy link'} {...tooltip}>
+        <Button
+          onClick={onCopy}
+          leftIcon={<IconCopy height="21px" />}
+          size="sm"
+          aria-label="Copy link"
+          test-id="shareLinkButton"
+          variant="transparent"
+        >
+          {linkText}
+        </Button>
+      </Tooltip>
+    </Box>
   );
 };
 

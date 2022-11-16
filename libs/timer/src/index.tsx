@@ -1,8 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Flex, Text } from '@chakra-ui/react';
-import LiveIndicator from '@millicast-react/live-indicator';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
-const initialSessionTime = '00:00';
+const initialSessionTime = '00:00:00';
 let startTime = 0;
 let currentTime = 0;
 let interval: ReturnType<typeof setTimeout>;
@@ -27,7 +26,7 @@ const Timer = ({ isActive = false }: TimerProps) => {
         const minute = Math.floor((currentTime / 60) % 60);
         const second = Math.floor((currentTime % 60) % 60);
 
-        setSessionTime(`${hour > 0 ? `${formatTime(hour)}:` : ``}${formatTime(minute)}:${formatTime(second)}`);
+        setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
       };
 
       startTime = Date.now();
@@ -44,9 +43,9 @@ const Timer = ({ isActive = false }: TimerProps) => {
   }, [isActive]);
 
   return (
-    <Flex test-id="timer" alignItems="center" gap="3">
+    <Flex test-id="timer" alignItems="center">
       <Text fontSize="32px">{sessionTime}</Text>
-      <LiveIndicator isActive={isActive} />
+      {isActive && <Box w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
     </Flex>
   );
 };
