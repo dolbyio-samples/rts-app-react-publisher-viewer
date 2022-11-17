@@ -76,7 +76,7 @@ function App() {
     microphoneSettings,
   } = useMediaDevices();
 
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(false);
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
