@@ -1,4 +1,3 @@
-/* using any is the best way to give user full control off element */
 import React from 'react';
 import { Menu, MenuButton, MenuList, MenuItem, Button, Box, Text } from '@chakra-ui/react';
 import { IconChevronDown, IconSuccessFilled } from '@millicast-react/dolbyio-icons';

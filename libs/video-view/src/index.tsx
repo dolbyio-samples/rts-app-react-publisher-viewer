@@ -1,5 +1,5 @@
 import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
-import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack } from '@chakra-ui/react';
+import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
 
 import { IconFullScreen, IconFullScreenExit, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
 // import StatisticsInfo from '@millicast-react/statistics-info';
@@ -13,11 +13,13 @@ export type VideoViewProps = {
   muted?: boolean;
   video?: boolean;
   displayMuteButton?: boolean;
+  displayFullscreenButton?: boolean;
   mediaStream?: MediaStream;
   statistics?: StreamStats;
   label?: string;
   placeholderNode?: ReactNode;
   onClick?: BoxProps['onClick'];
+  dotIndicator?: boolean;
 };
 
 const VideoView = ({
@@ -26,14 +28,17 @@ const VideoView = ({
   mirrored = false,
   muted = false,
   video = true,
-  displayMuteButton = true,
+  displayMuteButton = false,
+  displayFullscreenButton = true,
   mediaStream,
   // statistics,
   label,
   placeholderNode,
   onClick,
+  dotIndicator,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [displaySurface, setDisplaySurface] = useState<string | null>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
@@ -42,6 +47,10 @@ const VideoView = ({
   useEffect(() => {
     if (videoRef.current && mediaStream) {
       videoRef.current.srcObject = mediaStream;
+      const videoTrack = mediaStream.getVideoTracks()[0];
+      const settings = videoTrack.getSettings();
+      //@ts-expect-error incomplete type
+      setDisplaySurface(settings.displaySurface);
     }
   }, [mediaStream]);
 
@@ -52,6 +61,7 @@ const VideoView = ({
       overflow: 'hidden',
       width: '100%',
       height: '100%',
+      objectFit: 'contain',
     },
     '.icon-button, .icon-button: hover': {
       padding: '10px',
@@ -64,6 +74,7 @@ const VideoView = ({
   };
 
   const [loadingVideo, setLoadingVideo] = useState(false);
+  const actualLabel = displaySurface || label || null;
 
   return (
     <Flex
@@ -73,8 +84,10 @@ const VideoView = ({
       bg="dolbyNeutral.800"
       overflow="hidden"
       borderRadius="8px"
-      bottom="0"
+      top="0"
       right="0"
+      bottom="0"
+      left="0"
       width={isFullScreen ? '100vw' : width}
       height={isFullScreen ? '100vh' : height}
       zIndex={isFullScreen ? '1' : '0'}
@@ -82,12 +95,14 @@ const VideoView = ({
       color="white"
       justifyContent="center"
       alignItems="center"
-      position="relative"
     >
       {loadingVideo && video && (
         <Center w="100%" h="100%" position="absolute">
-          <Spinner size="lg" zIndex="2" />
+          <Spinner size="lg" />
         </Center>
+      )}
+      {dotIndicator && (
+        <Box position="absolute" top={5} right={4} w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" />
       )}
 
       {!video && placeholderNode}
@@ -103,15 +118,16 @@ const VideoView = ({
         onLoadStart={() => setLoadingVideo(true)}
         onPlay={() => setLoadingVideo(false)}
       />
-      {label !== undefined && (
+      {actualLabel && (
         <InfoLabel
-          text="Presenter"
+          text={actualLabel}
           color="dolbySecondary.200"
           bg="dolbyNeutral.700"
           position="absolute"
           top="4"
           left="4"
           fontWeight="600"
+          textTransform="capitalize"
         />
       )}
       {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
@@ -137,17 +153,19 @@ const VideoView = ({
           />
         )}
         <Spacer />
-        <IconButton
-          test-id="fullScreenButton"
-          aria-label="Full screen"
-          size="md"
-          className="icon-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsFullScreen(!isFullScreen);
-          }}
-          icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
-        />
+        {displayFullscreenButton && (
+          <IconButton
+            test-id="fullScreenButton"
+            aria-label="Full screen"
+            size="md"
+            className="icon-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFullScreen(!isFullScreen);
+            }}
+            icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
+          />
+        )}
         {/* Disable it temporarily, will bring it back in next release
          <IconButton
           test-id="streamInfoButton"

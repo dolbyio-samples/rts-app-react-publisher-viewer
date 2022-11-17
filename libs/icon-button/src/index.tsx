@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
+export type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
   tooltip: Omit<TooltipProps, 'children'> & {
     label: string;
   };

@@ -20,3 +20,5 @@ export { default as IconSimulcast } from './Simulcast';
 export { default as IconSuccessFilled } from './SuccessFilled';
 export { default as IconAdd } from './Add';
 export { default as IconAddCamera } from './AddCamera';
+export { default as IconEye } from './Eye';
+export { default as IconClose } from './Close';

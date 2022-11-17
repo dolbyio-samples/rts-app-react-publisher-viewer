@@ -42,6 +42,9 @@ const Button = defineStyleConfig({
         bg: 'dolbyNeutral.500',
       },
     },
+    link: {
+      color: 'white',
+    },
   },
 });
 
