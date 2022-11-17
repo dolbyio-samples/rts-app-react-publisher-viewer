@@ -1,14 +1,8 @@
 import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
 import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack } from '@chakra-ui/react';
 
-import {
-  IconFullScreen,
-  IconFullScreenExit,
-  IconInfo,
-  IconSpeaker,
-  IconSpeakerOff,
-} from '@millicast-react/dolbyio-icons';
-import StatisticsInfo from '@millicast-react/statistics-info';
+import { IconFullScreen, IconFullScreenExit, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
+// import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import type { StreamStats } from '@millicast/sdk';
 
@@ -34,7 +28,7 @@ const VideoView = ({
   video = true,
   displayMuteButton = true,
   mediaStream,
-  statistics,
+  // statistics,
   label,
   placeholderNode,
   onClick,
@@ -42,7 +36,7 @@ const VideoView = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
+  // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
   const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
@@ -120,7 +114,7 @@ const VideoView = ({
           fontWeight="600"
         />
       )}
-      {showStatisticsInfo && <StatisticsInfo statistics={statistics} />}
+      {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
       <Stack
         position="absolute"
         direction="row"
@@ -154,7 +148,8 @@ const VideoView = ({
           }}
           icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
         />
-        <IconButton
+        {/* Disable it temporarily, will bring it back in next release
+         <IconButton
           test-id="streamInfoButton"
           aria-label="Stream Information"
           size="md"
@@ -164,7 +159,7 @@ const VideoView = ({
             setShowStatisticsInfo(!showStatisticsInfo);
           }}
           icon={<IconInfo fill="white" />}
-        />
+        /> */}
       </Stack>
     </Flex>
   );

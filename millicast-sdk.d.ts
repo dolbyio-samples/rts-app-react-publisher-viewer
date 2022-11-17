@@ -117,6 +117,7 @@ declare namespace millicast {
     packetsLostRatioPerSecond: number;
     totalBytesReceived: number;
     totalPacketsReceived: number;
+    totalPacketsLost: number;
   };
 
   type StreamAudioStats = {

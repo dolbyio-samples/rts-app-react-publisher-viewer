@@ -1,5 +1,4 @@
 /* using any is the best way to give user full control off element */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Menu, MenuButton, MenuList, MenuItem, Button, Box, Text } from '@chakra-ui/react';
 import { IconChevronDown, IconSuccessFilled } from '@millicast-react/dolbyio-icons';
@@ -7,14 +6,14 @@ import { IconChevronDown, IconSuccessFilled } from '@millicast-react/dolbyio-ico
 type Element = {
   id: string;
   label: string;
-  data: any;
+  data: unknown;
 };
 
 type DropdownProps = {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   elementsList: unknown[];
-  elementResolver: (element: any) => Element;
+  elementResolver: (element: unknown) => Element;
   onSelect: (data: Element['data']) => void;
   testId?: string;
   selected?: string;

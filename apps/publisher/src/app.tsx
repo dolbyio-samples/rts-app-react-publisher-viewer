@@ -9,9 +9,18 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
+  Popover,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverArrow,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Stack,
   Text,
   useDisclosure,
+  VStack,
+  Spacer,
 } from '@chakra-ui/react';
 import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';
@@ -29,6 +38,7 @@ import {
   IconSimulcast,
   IconStream,
   IconAddCamera,
+  IconInfo,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -41,6 +51,7 @@ import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
 import Dropdown from '@millicast-react/dropdown';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
+import StatisticsInfo from '@millicast-react/statistics-info';
 
 const displayShareSourceId = 'DisplayShare';
 
@@ -176,11 +187,16 @@ function App() {
               }}
             />
           </Box>
-          {isActive && (
-            <Box mt="3">
-              <ParticipantCount count={viewerCount} />
+          <VStack>
+            <Box>
+              <ShareLinkButton linkText={linkText} />
             </Box>
-          )}
+            {isActive && (
+              <Box mt="3">
+                <ParticipantCount count={viewerCount} />
+              </Box>
+            )}
+          </VStack>
         </Flex>
       </Box>
       <Flex flex="1" width="100%">
@@ -224,10 +240,34 @@ function App() {
         </Stack>
       </Flex>
       <Box h="48px">
-        <Flex direction="row" alignItems="center">
-          <Box flex="1">
-            <ShareLinkButton linkText={linkText} />
-          </Box>
+        <Flex direction="row" alignItems="center" justifyContent="space-between">
+          {publisherState === 'streaming' && statistics && (
+            <Popover placement="top">
+              <PopoverTrigger>
+                <Box>
+                  <IconButton
+                    test-id="streamInfoButton"
+                    aria-label="Stream Information"
+                    tooltip={{ label: 'Stream Information' }}
+                    size="md"
+                    className="icon-button"
+                    icon={<IconInfo fill="white" />}
+                  />
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent bg="dolbyNeutral.800">
+                <PopoverArrow />
+                <PopoverHeader color="white" alignContent="flex-start">
+                  Streaming Information
+                </PopoverHeader>
+                <PopoverCloseButton color="white" />
+                <PopoverBody>
+                  <StatisticsInfo statistics={statistics} />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          )}
+          <Spacer />
           <Stack direction="row" flex="1" justifyContent="center">
             <IconButton
               test-id="toggleMicrophoneButton"
@@ -289,12 +329,17 @@ function App() {
                         disabled={publisherState === 'connecting'}
                         testId="camera-select"
                         elementsList={cameraList}
-                        elementResolver={(element: InputDeviceInfo) => ({
-                          id: element.deviceId,
-                          label: element.label,
-                          data: element,
-                        })}
-                        onSelect={setCamera}
+                        elementResolver={(element) => {
+                          const device = element as InputDeviceInfo;
+                          return {
+                            id: device.deviceId,
+                            label: device.label,
+                            data: device,
+                          };
+                        }}
+                        onSelect={(data) => {
+                          setCamera(data as InputDeviceInfo);
+                        }}
                         selected={camera.label}
                         placeholder="Camera"
                       />
@@ -307,12 +352,17 @@ function App() {
                         disabled={publisherState === 'connecting'}
                         testId="microphone-select"
                         elementsList={microphoneList}
-                        elementResolver={(element: InputDeviceInfo) => ({
-                          id: element.deviceId,
-                          label: element.label,
-                          data: element.deviceId,
-                        })}
-                        onSelect={setMicrophone}
+                        elementResolver={(element) => {
+                          const device = element as InputDeviceInfo;
+                          return {
+                            id: device.deviceId,
+                            label: device.label,
+                            data: device.deviceId,
+                          };
+                        }}
+                        onSelect={(data) => {
+                          setMicrophone(data as InputDeviceInfo);
+                        }}
                         selected={microphone.label}
                         placeholder="Microphone"
                       />
@@ -325,12 +375,12 @@ function App() {
                         disabled={publisherState !== 'ready' || codecList.length === 0}
                         testId="codecSelect"
                         elementsList={codecList}
-                        elementResolver={(element: string) => ({
-                          id: element,
-                          label: element,
-                          data: element,
+                        elementResolver={(element) => ({
+                          id: element as string,
+                          label: element as string,
+                          data: element as string,
                         })}
-                        onSelect={updateCodec}
+                        onSelect={(data) => updateCodec(data as string)}
                         selected={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
                         placeholder="Codec"
                       />
@@ -342,12 +392,15 @@ function App() {
                         leftIcon={<IconResolution />}
                         testId="resolutionSelect"
                         elementsList={resolutionList}
-                        elementResolver={(element: Resolution) => ({
-                          id: `${element.width}x${element.height}`,
-                          label: `${element.width}x${element.height}`,
-                          data: element,
-                        })}
-                        onSelect={onSelectVideoResolution}
+                        elementResolver={(element) => {
+                          const resolution = element as Resolution;
+                          return {
+                            id: `${resolution.width}x${resolution.height}`,
+                            label: `${resolution.width}x${resolution.height}`,
+                            data: resolution,
+                          };
+                        }}
+                        onSelect={(data) => onSelectVideoResolution(data as Resolution)}
                         selected={`${cameraSettings.width}x${cameraSettings.height}`}
                         placeholder="Resolution"
                       />

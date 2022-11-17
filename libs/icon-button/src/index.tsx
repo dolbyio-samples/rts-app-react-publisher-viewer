@@ -11,7 +11,7 @@ type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
   tooltip: Omit<TooltipProps, 'children'> & {
     label: string;
   };
-  onClick: ChakraIconButtonProps['onClick'];
+  onClick?: ChakraIconButtonProps['onClick'];
   icon: ChakraIconButtonProps['icon'];
 };
 
