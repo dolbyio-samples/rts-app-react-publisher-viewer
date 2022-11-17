@@ -13,7 +13,7 @@ const allResolutions: Resolution[] = [
     height: 2160,
   },
   {
-    name: '2K',
+    name: 'QHD',
     width: 2560,
     height: 1440,
   },
@@ -28,9 +28,14 @@ const allResolutions: Resolution[] = [
     height: 720,
   },
   {
-    name: '540p',
-    width: 960,
-    height: 540,
+    name: '480p',
+    width: 854,
+    height: 480,
+  },
+  {
+    name: 'SD',
+    width: 640,
+    height: 480,
   },
   {
     name: '360p',
