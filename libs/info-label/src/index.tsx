@@ -1,13 +1,11 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, FlexProps } from '@chakra-ui/react';
 import * as React from 'react';
 
-export type InfoLabelProps = {
+export type InfoLabelProps = FlexProps & {
   text: string;
-  color?: string;
-  bgColor?: string;
 };
 
-const InfoLabel = ({ text, color = 'dolbyPurple.400', bgColor = 'white' }: InfoLabelProps) => {
+const InfoLabel = ({ text, color = 'dolbyPurple.400', bgColor = 'white', ...rest }: InfoLabelProps) => {
   return (
     <Flex
       bgColor={bgColor}
@@ -23,6 +21,7 @@ const InfoLabel = ({ text, color = 'dolbyPurple.400', bgColor = 'white' }: InfoL
       fontSize="12px"
       textColor={color}
       lineHeight="16px"
+      {...rest}
     >
       {text}
     </Flex>

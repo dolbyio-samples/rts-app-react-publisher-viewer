@@ -1,20 +1,31 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@chakra-ui/react';
 import React from 'react';
 
-const LiveIndicator = () => {
+type GoLiveProps = ButtonProps & {
+  isActive: boolean;
+  isLoading?: boolean;
+  start?: () => void;
+  stop?: () => void;
+};
+
+const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
   return (
-    <Flex
-      bgColor="dolbyRed.500"
-      alignItems="center"
-      justifyContent="center"
-      gap="8px"
-      borderRadius="6px"
-      w="78px"
-      h="32px"
+    <Button
+      test-id="live-indicator"
+      px="4"
+      fontSize="12px"
+      size="sm"
+      textTransform="uppercase"
+      isLoading={isLoading}
+      bg={isActive ? 'dolbyRed.500' : 'dolbyEmerald.600'}
+      _hover={{
+        bg: isActive ? 'dolbyRed.500' : 'dolbyEmerald.600',
+      }}
+      onClick={isActive ? stop : start}
+      {...rest}
     >
-      <Box w="8px" h="8px" borderRadius="4px" bgColor="white"></Box>
-      <Text color="white">LIVE</Text>
-    </Flex>
+      {isActive ? 'STOP' : 'GO LIVE'}
+    </Button>
   );
 };
 

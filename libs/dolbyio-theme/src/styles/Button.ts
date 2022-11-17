@@ -2,6 +2,7 @@ import { defineStyleConfig } from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
+    letterSpacing: '1px',
     _loading: {
       _hover: {
         bg: 'dolbyPurple.500',
@@ -22,6 +23,24 @@ const Button = defineStyleConfig({
     },
     outline: {
       borderColor: 'dolbyPurple.400',
+    },
+    icon: {
+      color: 'white',
+      bg: 'dolbyNeutral.500',
+      _hover: {
+        bg: 'dolbyNeutral.500',
+      },
+      _active: { bg: 'white', color: 'dolbyPurple.400' },
+    },
+    transparent: {
+      color: 'white',
+      bg: 'transparent',
+      fontSize: '14px',
+      px: '2',
+      size: 'sm',
+      _hover: {
+        bg: 'dolbyNeutral.500',
+      },
     },
   },
 });

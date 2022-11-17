@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import type { StreamStats } from '@millicast/sdk';
 
-import { VStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
+import { VStack, Flex, Box, Text } from '@chakra-ui/react';
 
 type StatisticsInfoProps = {
   statistics?: StreamStats;
 };
 
-const KILOBYTE = 1024;
-const MEGABYTE = KILOBYTE * KILOBYTE;
+const KILOBYTES = 1024;
+const MEGABYTES = KILOBYTES * KILOBYTES;
 
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
   const formatTimestamp = (timestampMs: number | undefined): string => {
@@ -28,27 +28,15 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
   };
 
   const formatNumber = (input: number): string => {
-    if (input < KILOBYTE) return `${input}`;
-    if (input >= KILOBYTE && input < MEGABYTE) return `${(input / KILOBYTE).toFixed(2)} K`;
-    else return `${(input / MEGABYTE).toFixed(2)} M`;
+    if (input < KILOBYTES) return `${input}`;
+    if (input >= KILOBYTES && input < MEGABYTES) return `${(input / KILOBYTES).toFixed(2)} K`;
+    else return `${(input / MEGABYTES).toFixed(2)} M`;
   };
 
   return (
-    <VStack
-      test-id="statisticsInfo"
-      minW="350px"
-      pos="absolute"
-      top="0"
-      left="0"
-      p="10px"
-      bg="rgba(0,0,0,0.6)"
-      color="white"
-    >
+    <VStack test-id="statisticsInfo" p="10px" color="white">
       {statistics ? (
         <>
-          <Heading as="h4" size="sm">
-            Stream Information:
-          </Heading>
           <Flex w="100%">
             <Box flex="1">
               <Text fontSize="sm" fontWeight="bold">

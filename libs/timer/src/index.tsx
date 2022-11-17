@@ -1,39 +1,52 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Box, Text, Heading } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
-const Timer = () => {
-  let startTime = 0;
-  let currentTime = 0;
-  const [sessionTime, setSessionTime] = useState<string>('00:00:00');
+const initialSessionTime = '00:00:00';
+let startTime = 0;
+let currentTime = 0;
+let interval: ReturnType<typeof setTimeout>;
+
+export type TimerProps = {
+  isActive: boolean;
+};
+
+const formatTime = (time: number) => {
+  return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
+};
+
+const Timer = ({ isActive = false }: TimerProps) => {
+  const [sessionTime, setSessionTime] = useState(initialSessionTime);
 
   useEffect(() => {
-    const startTimer = () => {
-      currentTime = Math.floor((Date.now() - startTime) / 1000);
+    if (isActive) {
+      const startTimer = () => {
+        currentTime = Math.floor((Date.now() - startTime) / 1000);
 
-      const hour = Math.floor(currentTime / 60 / 60);
-      const minute = Math.floor((currentTime / 60) % 60);
-      const second = Math.floor((currentTime % 60) % 60);
+        const hour = Math.floor(currentTime / 60 / 60);
+        const minute = Math.floor((currentTime / 60) % 60);
+        const second = Math.floor((currentTime % 60) % 60);
 
-      setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
+        setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
+      };
+
+      startTime = Date.now();
+      interval = setInterval(startTimer, 1000);
+    } else {
+      startTime = 0;
+      currentTime = 0;
+      setSessionTime(initialSessionTime);
+    }
+
+    return () => {
+      clearInterval(interval);
     };
-
-    startTime = Date.now();
-    const interval = setInterval(startTimer, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatTime = (time: number) => {
-    return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
-  };
+  }, [isActive]);
 
   return (
-    <Box test-id="timer" textAlign="center">
-      <Heading as="h5" size="sm">
-        Your session has been started for:
-      </Heading>
-      <Text>{sessionTime}</Text>
-    </Box>
+    <Flex test-id="timer" alignItems="center">
+      <Text fontSize="32px">{sessionTime}</Text>
+      {isActive && <Box w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
+    </Flex>
   );
 };
 

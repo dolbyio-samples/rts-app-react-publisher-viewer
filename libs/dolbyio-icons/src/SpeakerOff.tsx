@@ -8,6 +8,7 @@ const SvgSpeakerOff = (props: SVGProps<SVGSVGElement>) => (
     viewBox="0 0 17 14"
     xmlns="http://www.w3.org/2000/svg"
     fill={props.fill || 'currentColor'}
+    {...props}
   >
     <path
       fillRule="evenodd"

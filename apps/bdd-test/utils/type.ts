@@ -1,13 +1,8 @@
-import { Browser, BrowserContext, Page, BrowserContextOptions, LaunchOptions } from 'playwright';
-
-export type Screen = {
-  browser: Browser;
-  context: BrowserContext;
-  page: Page;
-};
+import { BrowserContextOptions, LaunchOptions } from 'playwright';
 
 export type GlobalVariables = {
-  [key: string]: string | number | boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 };
 
 export type BrowserName = 'chrome' | 'chromium' | 'firefox';
@@ -36,3 +31,7 @@ export type SetupConfig = {
   microphoneName?: string;
   cameraName?: string;
 };
+
+export type State = 'visible' | 'hidden' | 'enabled' | 'disabled';
+export type Status = 'On' | 'Off';
+export type Screen = 'full' | 'normal';
