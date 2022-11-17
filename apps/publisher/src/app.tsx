@@ -46,7 +46,6 @@ const displayShareSourceId = 'DisplayShare';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
-  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
 
   const {
     setupPublisher,
@@ -85,6 +84,7 @@ function App() {
     microphoneSettings,
   } = useMediaDevices();
 
+  const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
