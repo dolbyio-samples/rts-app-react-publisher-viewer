@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'add-source',
+  displayName: 'popup-menu',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ export default {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/add-source',
+  coverageDirectory: '../../coverage/libs/popup-menu',
 };

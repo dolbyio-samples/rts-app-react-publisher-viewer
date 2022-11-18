@@ -17,7 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@millicast-react/action-bar": ["libs/action-bar/src/index.tsx"],
-      "@millicast-react/add-source": ["libs/add-source/src/index.tsx"],
+      "@millicast-react/popup-menu": ["libs/popup-menu/src/index.tsx"],
       "@millicast-react/control-bar": ["libs/control-bar/src/index.tsx"],
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],

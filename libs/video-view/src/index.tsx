@@ -19,7 +19,7 @@ export type VideoViewProps = {
   label?: string;
   placeholderNode?: ReactNode;
   onClick?: BoxProps['onClick'];
-  dotIndicator?: boolean;
+  showDotIndicator?: boolean;
 };
 
 const VideoView = ({
@@ -35,11 +35,9 @@ const VideoView = ({
   label,
   placeholderNode,
   onClick,
-  dotIndicator,
+  showDotIndicator: dotIndicator,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [displaySurface, setDisplaySurface] = useState<string | null>(null);
-
   const [isFullScreen, setIsFullScreen] = useState(false);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
   const [isMuted, setIsMuted] = useState(muted);
@@ -47,10 +45,6 @@ const VideoView = ({
   useEffect(() => {
     if (videoRef.current && mediaStream) {
       videoRef.current.srcObject = mediaStream;
-      const videoTrack = mediaStream.getVideoTracks()[0];
-      const settings = videoTrack.getSettings();
-      //@ts-expect-error incomplete type
-      setDisplaySurface(settings.displaySurface);
     }
   }, [mediaStream]);
 
@@ -74,7 +68,6 @@ const VideoView = ({
   };
 
   const [loadingVideo, setLoadingVideo] = useState(false);
-  const actualLabel = displaySurface || label || null;
 
   return (
     <Flex
@@ -118,9 +111,9 @@ const VideoView = ({
         onLoadStart={() => setLoadingVideo(true)}
         onPlay={() => setLoadingVideo(false)}
       />
-      {actualLabel && (
+      {label && (
         <InfoLabel
-          text={actualLabel}
+          text={label}
           color="dolbySecondary.200"
           bg="dolbyNeutral.700"
           position="absolute"

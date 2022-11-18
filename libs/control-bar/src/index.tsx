@@ -1,4 +1,4 @@
-import { Stack, StackProps } from '@chakra-ui/react';
+import { HStack, StackProps } from '@chakra-ui/react';
 import IconButton, { IconButtonProps } from '@millicast-react/icon-button';
 import React from 'react';
 
@@ -13,7 +13,7 @@ type ControlBarProps = StackProps & {
 
 const ControlBar = ({ controls, ...rest }: ControlBarProps) => {
   return (
-    <Stack direction="row" flex="1" justifyContent="center" {...rest}>
+    <HStack justifyContent="center" {...rest}>
       {controls.map((control) => (
         <IconButton
           key={control.key}
@@ -25,7 +25,7 @@ const ControlBar = ({ controls, ...rest }: ControlBarProps) => {
           icon={control.icon}
         />
       ))}
-    </Stack>
+    </HStack>
   );
 };
 
