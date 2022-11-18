@@ -30,6 +30,8 @@ export type MediaDevices = {
 
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
+const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
+
 const useMediaDevices: () => MediaDevices = () => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
@@ -47,11 +49,7 @@ const useMediaDevices: () => MediaDevices = () => {
     const initializeDeviceList = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: {
-          width: { ideal: 7680 },
-          height: { ideal: 4320 },
-          aspectRatio: 7680 / 4320,
-        },
+        video: ideaCameraConfig,
       });
       if (stream) {
         const { cameraList, microphoneList } = await getMediaDevicesLists();
@@ -90,6 +88,7 @@ const useMediaDevices: () => MediaDevices = () => {
       },
       video: {
         deviceId: { exact: cameraId },
+        ...ideaCameraConfig,
       },
     };
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
