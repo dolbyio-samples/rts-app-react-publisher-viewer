@@ -237,9 +237,9 @@ function App() {
           </Stack>
         </Flex>
       </Box>
-      <VStack width="100%" spacing={8} alignItems="center" position="relative">
+      <Flex width="100%" alignItems="center" position="relative" pt="20px">
         {!isStreaming && (
-          <VStack position="absolute">
+          <VStack position="absolute" top="0" left="50%" transform="translate(-50%, -110%)">
             <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
               Get started
             </Heading>
@@ -293,7 +293,7 @@ function App() {
             </Stack>
           )}
         </Stack>
-      </VStack>
+      </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
         <Box ml="32px">
           {isStreaming && statistics && (
