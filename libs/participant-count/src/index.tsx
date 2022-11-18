@@ -9,9 +9,9 @@ export type ParticipantCountProps = {
 const ParticipantCount = ({ count }: ParticipantCountProps) => {
   const formatText = (count: string | number): string => {
     if (count == '1') {
-      return `${count} viewer`;
+      return `${count} Viewer`;
     } else {
-      return `${count} viewers`;
+      return `${count} Viewers`;
     }
   };
 

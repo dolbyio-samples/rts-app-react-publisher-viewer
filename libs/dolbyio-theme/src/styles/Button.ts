@@ -24,13 +24,19 @@ const Button = defineStyleConfig({
     outline: {
       borderColor: 'dolbyPurple.400',
     },
-    icon: {
+    iconReversed: {
       color: 'white',
       bg: 'dolbyNeutral.500',
       _hover: {
         bg: 'dolbyNeutral.500',
       },
       _active: { bg: 'white', color: 'dolbyPurple.400' },
+    },
+    icon: {
+      bg: 'white',
+      color: 'dolbyPurple.400',
+
+      _active: { color: 'white', bg: 'dolbyNeutral.500' },
     },
     transparent: {
       color: 'white',

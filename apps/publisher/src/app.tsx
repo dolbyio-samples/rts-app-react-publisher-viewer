@@ -36,8 +36,6 @@ import {
   IconCodec,
   IconResolution,
   IconSimulcast,
-  IconStream,
-  IconAddCamera,
   IconInfo,
   IconClose,
 } from '@millicast-react/dolbyio-icons';
@@ -208,6 +206,7 @@ function App() {
                   bgColor="dolbyNeutral.300"
                   py="5px"
                   h="auto"
+                  fontWeight="600"
                 />
               )}
             </Flex>
@@ -242,9 +241,9 @@ function App() {
           </Stack>
         </Flex>
       </Box>
-      <VStack width="100%" spacing={8} alignItems="center">
+      <VStack width="100%" spacing={8} alignItems="center" position="relative">
         {!isStreaming && (
-          <VStack>
+          <VStack position="absolute">
             <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
               Get started
             </Heading>
@@ -290,7 +289,8 @@ function App() {
                     'test-id': 'stopScreenShare',
                     tooltip: { label: 'Stop screen share', placement: 'top' },
                     onClick: stopDisplayCapture,
-                    icon: <IconClose />,
+                    icon: <IconClose width="16px" />,
+                    reversed: true,
                   },
                 ]}
               />
@@ -312,6 +312,7 @@ function App() {
                     className="icon-button"
                     icon={<IconInfo fill="white" />}
                     borderRadius="50%"
+                    reversed
                   />
                 </Box>
               </PopoverTrigger>
@@ -337,30 +338,33 @@ function App() {
         </Box>
         <Spacer />
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
-          <PopupMenu
-            items={[
-              { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
-              {
-                icon: <IconAddCamera />,
-                text: 'Add cameras',
-                onClick: () => console.log('cameras'),
-                isDisabled: true,
-              },
-              {
-                icon: <IconStream />,
-                text: 'Stream local file',
-                onClick: () => console.log('stream'),
-                isDisabled: true,
-              },
-            ]}
-          />
+          {!displayStream && (
+            <PopupMenu
+              items={[
+                { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
+                // {
+                //   icon: <IconAddCamera />,
+                //   text: 'Add cameras',
+                //   onClick: () => console.log('cameras'),
+                //   isDisabled: true,
+                // },
+                // {
+                //   icon: <IconStream />,
+                //   text: 'Stream local file',
+                //   onClick: () => console.log('stream'),
+                //   isDisabled: true,
+                // },
+              ]}
+            />
+          )}
           <IconButton
             test-id="settingsButton"
             tooltip={{ label: 'Settings' }}
             onClick={onDrawerOpen}
             isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
             icon={<IconSettings />}
-            variant="transparent"
+            borderRadius="50%"
+            reversed
           />
         </Flex>
         {/* Drawer */}

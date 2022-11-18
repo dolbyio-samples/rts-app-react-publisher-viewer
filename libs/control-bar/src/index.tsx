@@ -14,16 +14,8 @@ type ControlBarProps = StackProps & {
 const ControlBar = ({ controls, ...rest }: ControlBarProps) => {
   return (
     <HStack justifyContent="center" {...rest}>
-      {controls.map((control) => (
-        <IconButton
-          key={control.key}
-          test-id={control['test-id']}
-          tooltip={control.tooltip}
-          onClick={control.onClick}
-          isActive={control.isActive}
-          isDisabled={control.isDisabled}
-          icon={control.icon}
-        />
+      {controls.map(({ key, ...rest }) => (
+        <IconButton key={key} {...rest} />
       ))}
     </HStack>
   );

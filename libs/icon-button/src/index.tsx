@@ -13,15 +13,16 @@ export type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-labe
   };
   onClick?: ChakraIconButtonProps['onClick'];
   icon: ChakraIconButtonProps['icon'];
+  reversed?: boolean;
 };
 
-const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, ...rest }: IconButtonProps) => {
+const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, reversed, ...rest }: IconButtonProps) => {
   return (
     <Tooltip label={label} {...restTooltip}>
       <ChakraIconButton
         aria-label={label}
         onClick={onClick}
-        variant="icon"
+        variant={reversed ? 'iconReversed' : 'icon'}
         icon={<Box height="24px">{icon}</Box>}
         size="lg"
         {...rest}
