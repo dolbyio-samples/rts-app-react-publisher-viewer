@@ -64,7 +64,6 @@ const usePublisher = (): Publisher => {
     if (!publisher.current || publisher.current.isActive()) return;
 
     if (publisherState === 'streaming') {
-      console.log('Updating bitrate to', bitrate);
       publisher.current.webRTCPeer?.updateBitrate(bitrate.value);
     }
   }, [bitrate, publisherState]);
