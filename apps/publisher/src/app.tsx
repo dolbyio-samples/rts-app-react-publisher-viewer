@@ -302,7 +302,7 @@ function App() {
         </Stack>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box ml="32px">
+        <Box>
           {isStreaming && statistics && (
             <Popover placement="top-end">
               <PopoverTrigger>
