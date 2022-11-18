@@ -150,11 +150,7 @@ function App() {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      applyMediaTrackConstraints(audioConstraints, {
-        deviceId: { exact: cameraSettings.deviceId },
-        width: { exact: resolution.width },
-        height: { exact: resolution.height },
-      });
+      applyMediaTrackConstraints(audioConstraints, videoConstraints);
     },
     [resolutionList]
   );
