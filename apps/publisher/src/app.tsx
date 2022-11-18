@@ -397,7 +397,7 @@ function App() {
                         return {
                           id: device.deviceId,
                           label: device.label,
-                          data: device.deviceId,
+                          data: device,
                         };
                       }}
                       onSelect={(data) => {
