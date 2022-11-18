@@ -138,16 +138,25 @@ function App() {
   }, [displayStream, publisherState]);
 
   const onSelectVideoResolution = useCallback(
-    (resolution: Resolution) => {
-      const videoConstraints = JSON.parse(JSON.stringify(cameraSettings));
-      if (videoConstraints) {
-        videoConstraints.width = resolution.width;
-        videoConstraints.height = resolution.height;
+    async (resolution: Resolution) => {
+      const videoConstraints = cameraSettings as MediaTrackConstraintSet;
+      if (videoConstraints && cameraSettings) {
+        // videoConstraints.deviceId =  { exact: cameraSettings?.deviceId };
+        videoConstraints.groupId = { exact: cameraSettings?.groupId };
+        videoConstraints.width = { exact: resolution.width };
+        videoConstraints.height = { exact: resolution.height };
+        // videoConstraints.aspectRatio = resolution.width / resolution.height;
+        delete videoConstraints.frameRate;
+        delete videoConstraints.aspectRatio;
       } else {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      applyMediaTrackConstraints(audioConstraints, {
+        deviceId: { exact: cameraSettings.deviceId },
+        width: { exact: resolution.width },
+        height: { exact: resolution.height },
+      });
     },
     [resolutionList]
   );
