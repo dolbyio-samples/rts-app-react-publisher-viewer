@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Box,
   Drawer,
@@ -134,6 +134,13 @@ function App() {
         sourceId: displayShareSourceId,
       });
   }, [displayStream, publisherState]);
+
+  const codecListSimulcast = useMemo(() => {
+    if (isSimulcastEnabled) {
+      return codecList.filter((item) => item !== 'vp9');
+    }
+    return codecList;
+  }, [codecList, isSimulcastEnabled]);
 
   const onSelectVideoResolution = useCallback(
     async (resolution: Resolution) => {
@@ -423,7 +430,7 @@ function App() {
                       leftIcon={<IconCodec />}
                       disabled={publisherState !== 'ready' || codecList.length === 0}
                       testId="codecSelect"
-                      elementsList={codecList}
+                      elementsList={codecListSimulcast}
                       elementResolver={(element) => ({
                         id: element as string,
                         label: element as string,
@@ -462,6 +469,7 @@ function App() {
                     isActive={isSimulcastEnabled}
                     label="Simulcast"
                     leftIcon={<IconSimulcast />}
+                    isDisabled={codec === 'vp9'}
                   />
                 )}
               </Stack>
