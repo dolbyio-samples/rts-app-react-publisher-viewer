@@ -139,8 +139,8 @@ function App() {
     async (resolution: Resolution) => {
       const videoConstraints = cameraSettings as MediaTrackConstraintSet;
       if (videoConstraints && cameraSettings) {
-        // videoConstraints.deviceId =  { exact: cameraSettings?.deviceId };
-        videoConstraints.groupId = { exact: cameraSettings?.groupId };
+        videoConstraints.deviceId = { exact: cameraSettings?.deviceId };
+        // videoConstraints.groupId = { exact: cameraSettings?.groupId };
         videoConstraints.width = { exact: resolution.width };
         videoConstraints.height = { exact: resolution.height };
         // videoConstraints.aspectRatio = resolution.width / resolution.height;
