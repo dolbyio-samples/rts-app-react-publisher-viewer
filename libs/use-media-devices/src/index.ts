@@ -47,7 +47,11 @@ const useMediaDevices: () => MediaDevices = () => {
     const initializeDeviceList = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: { width: 7680, height: 4320 },
+        video: {
+          width: { ideal: 7680 },
+          height: { ideal: 4320 },
+          aspectRatio: 7680 / 4320,
+        },
       });
       if (stream) {
         const { cameraList, microphoneList } = await getMediaDevicesLists();
