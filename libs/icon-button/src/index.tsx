@@ -7,21 +7,22 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
+export type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
   tooltip: Omit<TooltipProps, 'children'> & {
     label: string;
   };
   onClick?: ChakraIconButtonProps['onClick'];
   icon: ChakraIconButtonProps['icon'];
+  reversed?: boolean;
 };
 
-const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, ...rest }: IconButtonProps) => {
+const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, reversed, ...rest }: IconButtonProps) => {
   return (
     <Tooltip label={label} {...restTooltip}>
       <ChakraIconButton
         aria-label={label}
         onClick={onClick}
-        variant="icon"
+        variant={reversed ? 'iconReversed' : 'icon'}
         icon={<Box height="24px">{icon}</Box>}
         size="lg"
         {...rest}

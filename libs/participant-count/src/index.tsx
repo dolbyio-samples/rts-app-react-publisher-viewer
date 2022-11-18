@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { IconParticipant } from '@millicast-react/dolbyio-icons';
+import { IconEye } from '@millicast-react/dolbyio-icons';
 import React from 'react';
 
 export type ParticipantCountProps = {
@@ -9,16 +9,16 @@ export type ParticipantCountProps = {
 const ParticipantCount = ({ count }: ParticipantCountProps) => {
   const formatText = (count: string | number): string => {
     if (count == '1') {
-      return `${count} viewer`;
+      return `${count} Viewer`;
     } else {
-      return `${count} viewers`;
+      return `${count} Viewers`;
     }
   };
 
   return (
     <Flex test-id="participantCountView" color="dolbySecondary.200" alignItems="center">
       <Box boxSize={6}>
-        <IconParticipant />
+        <IconEye />
       </Box>
       <Text color="dolbySecondary.200" fontSize="14px" ml="2">
         {formatText(count)}

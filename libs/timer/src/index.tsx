@@ -44,7 +44,9 @@ const Timer = ({ isActive = false }: TimerProps) => {
 
   return (
     <Flex test-id="timer" alignItems="center">
-      <Text fontSize="32px">{sessionTime}</Text>
+      <Text fontSize="32px" lineHeight="1">
+        {sessionTime}
+      </Text>
       {isActive && <Box w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
     </Flex>
   );

@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuList, MenuItem, Button, Box, Text } from '@chakra
 import { IconAdd } from '@millicast-react/dolbyio-icons';
 
 type AddSourceProps = {
-  actions: {
+  items: {
     icon: React.ReactNode;
     text: string;
     onClick: () => void;
@@ -11,7 +11,7 @@ type AddSourceProps = {
   }[];
 };
 
-const AddSource = ({ actions }: AddSourceProps) => {
+const PopupMenu = ({ items }: AddSourceProps) => {
   return (
     <Menu placement="top" gutter={14} autoSelect={false}>
       <MenuButton
@@ -36,7 +36,7 @@ const AddSource = ({ actions }: AddSourceProps) => {
         Add source
       </MenuButton>
       <MenuList bg="dolbyNeutral.800" w="200px" color="white" border="none" p="0" overflow="hidden">
-        {actions.map(({ icon, text, onClick, isDisabled }) => (
+        {items.map(({ icon, text, onClick, isDisabled }) => (
           <MenuItem
             key={text}
             onClick={onClick}
@@ -60,4 +60,4 @@ const AddSource = ({ actions }: AddSourceProps) => {
   );
 };
 
-export default AddSource;
+export default PopupMenu;

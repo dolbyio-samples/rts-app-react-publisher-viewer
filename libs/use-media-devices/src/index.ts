@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import useState from 'react-usestateref';
 
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -29,6 +30,8 @@ export type MediaDevices = {
 
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
+const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
+
 const useMediaDevices: () => MediaDevices = () => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
@@ -39,14 +42,14 @@ const useMediaDevices: () => MediaDevices = () => {
   const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState<boolean>(true);
 
-  const [mediaStream, setMediaStream] = useState<MediaStream>();
-  const [displayStream, setDisplayStream] = useState<MediaStream>();
+  const [mediaStream, setMediaStream, mediaStreamRef] = useState<MediaStream>();
+  const [displayStream, setDisplayStream, displayStreamRef] = useState<MediaStream>();
 
   useEffect(() => {
     const initializeDeviceList = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: true,
+        video: ideaCameraConfig,
       });
       if (stream) {
         const { cameraList, microphoneList } = await getMediaDevicesLists();
@@ -61,6 +64,7 @@ const useMediaDevices: () => MediaDevices = () => {
 
   useEffect(() => {
     if (microphone && camera) {
+      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
       loadMediaStream(microphone.deviceId, camera.deviceId);
     }
   }, [camera, microphone]);
@@ -80,10 +84,11 @@ const useMediaDevices: () => MediaDevices = () => {
   const loadMediaStream = async (microphoneId: string, cameraId: string) => {
     const constraints = {
       audio: {
-        deviceId: microphoneId,
+        deviceId: { exact: microphoneId },
       },
       video: {
-        deviceId: cameraId,
+        deviceId: { exact: cameraId },
+        ...ideaCameraConfig,
       },
     };
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -95,8 +100,8 @@ const useMediaDevices: () => MediaDevices = () => {
     const microphoneList: InputDeviceInfo[] = [];
     const cameraList: InputDeviceInfo[] = [];
     devices.forEach((device) => {
-      device.kind === 'audioinput' && isUniqueDevice(microphoneList, device) && microphoneList.push(device);
-      device.kind === 'videoinput' && isUniqueDevice(cameraList, device) && cameraList.push(device);
+      if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
+      else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
     });
     setCameraList(cameraList);
     setMicrophoneList(microphoneList);
@@ -104,11 +109,11 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
-    return !(device.deviceId.includes('default') || deviceList.some((item) => item.deviceId === device.deviceId));
+    return !(device.deviceId === 'default' || deviceList.some((item) => item.deviceId === device.deviceId));
   };
 
   const toggleAudio = () => {
-    const audioTracks = mediaStream?.getAudioTracks();
+    const audioTracks = mediaStreamRef.current?.getAudioTracks();
     if (audioTracks && audioTracks.length) {
       audioTracks[0].enabled = !isAudioEnabled;
       setIsAudioEnabled(!isAudioEnabled);
@@ -116,7 +121,7 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const toggleVideo = () => {
-    const videoTracks = mediaStream?.getVideoTracks();
+    const videoTracks = mediaStreamRef.current?.getVideoTracks();
     if (videoTracks && videoTracks.length) {
       videoTracks[0].enabled = !isVideoEnabled;
       setIsVideoEnabled(!isVideoEnabled);
@@ -138,8 +143,8 @@ const useMediaDevices: () => MediaDevices = () => {
   };
 
   const stopDisplayCapture = () => {
-    if (!displayStream) return;
-    displayStream.getTracks().forEach((track) => track.stop());
+    if (!displayStreamRef.current) return;
+    displayStreamRef.current.getTracks().forEach((track) => track.stop());
     setDisplayStream(undefined);
   };
 
@@ -149,14 +154,27 @@ const useMediaDevices: () => MediaDevices = () => {
   ) => {
     // Chrome requires to create a new media stream if audio constraints are changed
     // [See this](https://bugs.chromium.org/p/chromium/issues/detail?id=796964)
-    mediaStream?.getTracks().forEach((track) => {
+    mediaStreamRef.current?.getTracks().forEach((track) => {
       track.stop();
     });
-    const newStream = await navigator.mediaDevices.getUserMedia({
-      audio: audioConstraints,
-      video: videoConstraints,
-    });
-    setMediaStream(newStream);
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        audio: audioConstraints,
+        video: videoConstraints,
+      });
+      setMediaStream(newStream);
+    } catch (err) {
+      console.error('Cannot apply constraints:', videoConstraints, 'error is:', err);
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        audio: audioConstraints,
+        video: {
+          ...videoConstraints,
+          width: { ideal: videoConstraints.width as number },
+          height: { ideal: videoConstraints.height as number },
+        },
+      });
+      setMediaStream(newStream);
+    }
   };
 
   return {
