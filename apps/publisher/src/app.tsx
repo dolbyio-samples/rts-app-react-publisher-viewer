@@ -265,7 +265,6 @@ function App() {
                 width={displayStream ? '688px' : '836px'}
                 height={displayStream ? '382px' : '464px'}
                 mirrored={true}
-                muted={true}
                 mediaStream={mediaStream}
                 displayFullscreenButton={false}
                 video={isVideoEnabled}

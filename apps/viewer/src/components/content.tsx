@@ -49,6 +49,7 @@ const Content = () => {
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
     const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
     setupViewer(streamName, streamAccountId, projectingSourceId.current);
+    return stopViewer;
   }, []);
 
   useEffect(() => {

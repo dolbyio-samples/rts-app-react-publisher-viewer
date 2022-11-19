@@ -26,7 +26,7 @@ const VideoView = ({
   width,
   height,
   mirrored = false,
-  muted = false,
+  muted = true, // Has to be true for AutoPlay in chromium
   video = true,
   displayMuteButton = false,
   displayFullscreenButton = true,
@@ -43,8 +43,8 @@ const VideoView = ({
   const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
-    if (videoRef.current && mediaStream) {
-      videoRef.current.srcObject = mediaStream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = mediaStream ?? null;
     }
   }, [mediaStream]);
 
@@ -100,11 +100,9 @@ const VideoView = ({
 
       {!video && placeholderNode}
       <video
-        // eslint-disable-next-line react/no-unknown-property
-        test-id="video-view"
         className="video"
-        playsInline
         autoPlay
+        playsInline
         crossOrigin="anonymous"
         ref={videoRef}
         muted={isMuted}
@@ -117,6 +115,8 @@ const VideoView = ({
         onError={() => {
           console.error(`video player error: ${videoRef.current?.error}`);
         }}
+        // eslint-disable-next-line react/no-unknown-property
+        test-id="video-view"
       />
       {label && (
         <InfoLabel
