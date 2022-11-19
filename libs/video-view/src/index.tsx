@@ -105,11 +105,18 @@ const VideoView = ({
         className="video"
         playsInline
         autoPlay
+        crossOrigin="anonymous"
         ref={videoRef}
         muted={isMuted}
         onWaiting={() => setLoadingVideo(true)}
         onLoadStart={() => setLoadingVideo(true)}
         onPlay={() => setLoadingVideo(false)}
+        onStalled={() => {
+          console.error('video is on stalled');
+        }}
+        onError={() => {
+          console.error(`video player error: ${videoRef.current?.error}`);
+        }}
       />
       {label && (
         <InfoLabel

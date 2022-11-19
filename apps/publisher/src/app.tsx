@@ -147,23 +147,27 @@ function App() {
       const videoConstraints = cameraSettings as MediaTrackConstraintSet;
       if (videoConstraints && cameraSettings) {
         videoConstraints.deviceId = { exact: cameraSettings?.deviceId };
-        // videoConstraints.groupId = { exact: cameraSettings?.groupId };
         videoConstraints.width = { exact: resolution.width };
         videoConstraints.height = { exact: resolution.height };
-        // videoConstraints.aspectRatio = resolution.width / resolution.height;
         delete videoConstraints.frameRate;
         delete videoConstraints.aspectRatio;
       } else {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      try {
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      } catch (error) {
+        videoConstraints.width = { ideal: resolution.width };
+        videoConstraints.height = { ideal: resolution.height };
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      }
     },
     [resolutionList]
   );
 
-  const toggleShare = () => {
-    displayStream ? stopDisplayCapture() : startDisplayCapture();
+  const toggleShare = async () => {
+    displayStream ? stopDisplayCapture() : await startDisplayCapture();
   };
 
   const isStreaming = publisherState === 'streaming';

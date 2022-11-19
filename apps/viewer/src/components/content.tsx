@@ -22,7 +22,6 @@ import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
-// import ControlBar from '@millicast-react/control-bar';
 import Dropdown from '@millicast-react/dropdown';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
@@ -34,7 +33,6 @@ const Content = () => {
     setupViewer,
     stopViewer,
     startViewer,
-    projectRemoteTrackToMain,
     remoteTrackSources,
     viewerCount,
     streamQualityOptions,
@@ -51,26 +49,28 @@ const Content = () => {
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
     const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
     setupViewer(streamName, streamAccountId, projectingSourceId.current);
-    return stopViewer;
   }, []);
 
   useEffect(() => {
-    startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-  }, []);
-
-  useEffect(() => {
-    if (
-      projectingSourceId.current &&
-      remoteTrackSources.size > 0 &&
-      !remoteTrackSources.get(projectingSourceId.current)
-    ) {
-      const newSourceId = remoteTrackSources.keys().next().value as string;
-      projectRemoteTrackToMain(newSourceId);
+    if (viewerState === 'ready') {
+      startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
     }
-  }, [remoteTrackSources]);
+  }, [viewerState]);
+
+  // TODO: Enable project other source to main stream
+  // useEffect(() => {
+  //   if (
+  //     projectingSourceId.current &&
+  //     remoteTrackSources.size > 0 &&
+  //     !remoteTrackSources.get(projectingSourceId.current)
+  //   ) {
+  //     const newSourceId = remoteTrackSources.keys().next().value as string;
+  //     projectRemoteTrackToMain(newSourceId);
+  //   }
+  // }, [remoteTrackSources]);
 
   const isStreaming = viewerState === 'liveOn';
-  const hasMultiStream = remoteTrackSources.size > 1;
+  const hasMultiStream = remoteTrackSources.size > 0;
 
   return (
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
@@ -113,16 +113,13 @@ const Content = () => {
                 <VideoView
                   width={hasMultiStream ? '688px' : '836px'}
                   height={hasMultiStream ? '382px' : '464px'}
-                  muted={true}
                   mediaStream={mainStream}
-                  displayFullscreenButton={false}
                   placeholderNode={
                     <Box color="dolbyNeutral.700" position="absolute" width="174px">
                       <IconProfile />
                     </Box>
                   }
                 />
-                {/* <VideoControlBar /> */}
               </Stack>
             )}
             {hasMultiStream && (
@@ -140,18 +137,6 @@ const Content = () => {
                   }
                   return null;
                 })}
-                {/* <ControlBar
-                controls={[
-                  {
-                    key: 'stopScreenShare',
-                    'test-id': 'stopScreenShare',
-                    tooltip: { label: 'Stop screen share', placement: 'top' },
-                    onClick: stopDisplayCapture,
-                    icon: <IconClose width="16px" />,
-                    reversed: true,
-                  },
-                ]}
-              /> */}
               </Stack>
             )}
           </Stack>
