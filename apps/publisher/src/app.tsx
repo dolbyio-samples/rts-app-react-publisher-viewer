@@ -172,14 +172,16 @@ function App() {
 
   const isStreaming = publisherState === 'streaming';
 
-  const VideoControlBar = () => (
+  const MediaControlBar = () => (
     <ControlBar
       controls={[
         {
           key: 'toggleMicrophoneButton',
           'test-id': 'toggleMicrophoneButton',
           tooltip: { label: 'Toggle microphone', placement: 'top' },
-          onClick: toggleAudio,
+          onClick: () => {
+            toggleAudio();
+          },
           isActive: !isAudioEnabled,
           isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
           icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
@@ -188,7 +190,9 @@ function App() {
           key: 'toggleCameraButton',
           'test-id': 'toggleCameraButton',
           tooltip: { label: 'Toggle camera', placement: 'top' },
-          onClick: toggleVideo,
+          onClick: () => {
+            toggleVideo();
+          },
           isActive: !isVideoEnabled,
           isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
           icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
@@ -267,7 +271,7 @@ function App() {
                 mirrored={true}
                 mediaStream={mediaStream}
                 displayFullscreenButton={false}
-                video={isVideoEnabled}
+                displayVideo={isVideoEnabled}
                 label={camera?.label}
                 placeholderNode={
                   <Box color="dolbyNeutral.700" position="absolute" width="174px">
@@ -276,7 +280,7 @@ function App() {
                 }
                 showDotIndicator={isStreaming}
               />
-              <VideoControlBar />)
+              <MediaControlBar />)
             </Stack>
           )}
           {displayStream && (

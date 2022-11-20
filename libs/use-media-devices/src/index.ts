@@ -115,16 +115,16 @@ const useMediaDevices: () => MediaDevices = () => {
   const toggleAudio = () => {
     const audioTracks = mediaStreamRef.current?.getAudioTracks();
     if (audioTracks && audioTracks.length) {
-      audioTracks[0].enabled = !isAudioEnabled;
-      setIsAudioEnabled(!isAudioEnabled);
+      audioTracks[0].enabled = !audioTracks[0].enabled;
+      setIsAudioEnabled(audioTracks[0].enabled);
     }
   };
 
   const toggleVideo = () => {
     const videoTracks = mediaStreamRef.current?.getVideoTracks();
     if (videoTracks && videoTracks.length) {
-      videoTracks[0].enabled = !isVideoEnabled;
-      setIsVideoEnabled(!isVideoEnabled);
+      videoTracks[0].enabled = !videoTracks[0].enabled;
+      setIsVideoEnabled(videoTracks[0].enabled);
     }
   };
 

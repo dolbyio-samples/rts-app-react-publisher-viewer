@@ -16,7 +16,15 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
-import { IconProfile, IconInfo, IconSettings, IconCameraOn } from '@millicast-react/dolbyio-icons';
+import {
+  IconProfile,
+  IconInfo,
+  IconSettings,
+  IconCameraOn,
+  IconCameraOff,
+  IconSpeaker,
+  IconSpeakerOff,
+} from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
@@ -25,6 +33,7 @@ import ActionBar from '@millicast-react/action-bar';
 import Dropdown from '@millicast-react/dropdown';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
+import ControlBar from '@millicast-react/control-bar';
 
 const Content = () => {
   const {
@@ -41,7 +50,11 @@ const Content = () => {
   } = useViewer();
 
   const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
-
+  const [mainStreamMuted, setMainStreamMuted] = useState(true);
+  const [mainStreamDisplayVideo, setMainStreamDisplayVideo] = useState(true);
+  // TODO: map to remote track sources
+  const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
+  const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
   const projectingSourceId = useRef<string>('main');
 
   useEffect(() => {
@@ -115,30 +128,80 @@ const Content = () => {
                   width={hasMultiStream ? '688px' : '836px'}
                   height={hasMultiStream ? '382px' : '464px'}
                   mediaStream={mainStream}
+                  displayVideo={mainStreamDisplayVideo}
+                  muted={mainStreamMuted}
+                  displayMuteButton={true}
                   placeholderNode={
                     <Box color="dolbyNeutral.700" position="absolute" width="174px">
                       <IconProfile />
                     </Box>
                   }
                 />
+                <ControlBar
+                  controls={[
+                    {
+                      key: 'toggleMainStreamAudioButton',
+                      'test-id': 'toggleMainStreamAudioButton',
+                      tooltip: { label: 'Toggle Audio', placement: 'top' },
+                      onClick: () => {
+                        setMainStreamMuted(!mainStreamMuted);
+                      },
+                      icon: mainStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
+                    },
+                    {
+                      key: 'toggleMainStreamVideoButton',
+                      'test-id': 'toggleMainStreamVideoButton',
+                      tooltip: { label: 'Toggle Video', placement: 'top' },
+                      onClick: () => {
+                        setMainStreamDisplayVideo(!mainStreamDisplayVideo);
+                      },
+                      icon: mainStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                    },
+                  ]}
+                />
               </Stack>
             )}
             {hasMultiStream && (
-              <Stack direction="column" spacing={4}>
+              <HStack spacing={4}>
                 {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
                   if (trackSource.id !== 'main') {
                     return (
-                      <VideoView
-                        key={trackSource.id}
-                        width="688px"
-                        height="382px"
-                        mediaStream={trackSource.source.mediaStream}
-                      />
+                      <VStack key={trackSource.id}>
+                        <VideoView
+                          width="688px"
+                          height="382px"
+                          mediaStream={trackSource.source.mediaStream}
+                          muted={displayStreamMuted}
+                          displayVideo={displayStreamDisplayVideo}
+                        />
+                        <ControlBar
+                          controls={[
+                            {
+                              key: `toggle${trackSource.id}AudioButton`,
+                              'test-id': `toggle${trackSource.id}AudioButton`,
+                              tooltip: { label: 'Toggle Audio', placement: 'top' },
+                              onClick: () => {
+                                setDisplayStreamMuted(!displayStreamMuted);
+                              },
+                              icon: displayStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
+                            },
+                            {
+                              key: `toggle${trackSource.id}VideoButton`,
+                              'test-id': `toggle${trackSource.id}VideoButton`,
+                              tooltip: { label: 'Toggle Video', placement: 'top' },
+                              onClick: () => {
+                                setDisplayStreamDisplayVideo(!displayStreamDisplayVideo);
+                              },
+                              icon: displayStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                            },
+                          ]}
+                        />
+                      </VStack>
                     );
                   }
                   return null;
                 })}
-              </Stack>
+              </HStack>
             )}
           </Stack>
         )}
