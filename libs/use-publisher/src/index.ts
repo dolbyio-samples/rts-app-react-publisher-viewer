@@ -147,7 +147,7 @@ const usePublisher = (): Publisher => {
   // Bitrate can only be updated when a stream is active and we have a peer connection
   // So we save the value and update it when the stream is connected.
   const updateBitrate = (updatedBitrate: string) => {
-    if (!publisher.current || !publisher.current.isActive() || bitrate.name === updatedBitrate) return;
+    if (!publisher.current || bitrate.name === updatedBitrate) return;
 
     const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
 
