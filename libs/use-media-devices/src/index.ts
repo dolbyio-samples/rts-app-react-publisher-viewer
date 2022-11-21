@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import useState from 'react-usestateref';
-
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
   microphoneList: InputDeviceInfo[];
@@ -30,9 +29,12 @@ export type MediaDevices = {
 
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
+type UseMediaDevicesArguments = {
+  setError?: (error: unknown) => void;
+};
 const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
 
-const useMediaDevices: () => MediaDevices = () => {
+const useMediaDevices = ({ setError }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
@@ -47,16 +49,22 @@ const useMediaDevices: () => MediaDevices = () => {
 
   useEffect(() => {
     const initializeDeviceList = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: ideaCameraConfig,
-      });
-      if (stream) {
-        const { cameraList, microphoneList } = await getMediaDevicesLists();
-        setCamera(cameraList[0]);
-        setMicrophone(microphoneList[0]);
-      } else {
-        throw `Cannot get user's media stream`;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: ideaCameraConfig,
+        });
+        if (stream) {
+          const { cameraList, microphoneList } = await getMediaDevicesLists();
+          setCamera(cameraList[0]);
+          setMicrophone(microphoneList[0]);
+        } else {
+          throw `Cannot get user's media stream`;
+        }
+      } catch (error) {
+        if (setError) {
+          setError(error);
+        }
       }
     };
     initializeDeviceList();

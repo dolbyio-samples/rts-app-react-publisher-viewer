@@ -40,6 +40,9 @@ const dolbyioTheme = extendTheme({
       500: '#0BCB74',
       600: '#06B365',
     },
+    dolbyFeedbackInvalid: {
+      500: '#FCB91A',
+    },
   },
   components: {
     Button,
