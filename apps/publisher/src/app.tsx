@@ -449,7 +449,7 @@ function App() {
                 {bitRateList.length && (
                   <Box>
                     <Dropdown
-                      leftIcon={<IconBitrate />} 
+                      leftIcon={<IconBitrate />}
                       disabled={bitRateList.length === 0}
                       testId="bitrateSelect"
                       elementsList={bitRateList.map((bitrate) => bitrate.name)}
