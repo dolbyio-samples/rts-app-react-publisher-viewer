@@ -445,6 +445,24 @@ function App() {
                     />
                   </Box>
                 )}
+                {bitRateList.length && (
+                  <Box>
+                    <Dropdown
+                      leftIcon={<IconCodec />} // TODO import new icon, pending design
+                      disabled={bitRateList.length === 0}
+                      testId="bitrateSelect"
+                      elementsList={bitRateList.map((bitrate) => bitrate.name)}
+                      elementResolver={(element) => ({
+                        id: element as string,
+                        label: element as string,
+                        data: element as string,
+                      })}
+                      onSelect={(data) => updateBitrate(data as string)}
+                      selected={bitrate.name || (bitRateList.length !== 0 ? bitRateList[0].name : undefined)}
+                      placeholder="Bitrate"
+                    />
+                  </Box>
+                )}
                 {mediaStream && resolutionList.length && cameraSettings && (
                   <Box>
                     <Dropdown
@@ -465,6 +483,7 @@ function App() {
                     />
                   </Box>
                 )}
+
                 {!isStreaming && (
                   <ToggleButton
                     test-id="simulcastSwitch"
