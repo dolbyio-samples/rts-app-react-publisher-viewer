@@ -13,13 +13,13 @@ export type MediaDevices = {
   toggleAudio: () => void;
   toggleVideo: () => void;
   mediaStream?: MediaStream;
-  startDisplayCapture: () => void;
+  startDisplayCapture: () => Promise<void>;
   stopDisplayCapture: () => void;
   displayStream?: MediaStream;
   applyMediaTrackConstraints: (
     audioConstraints: MediaTrackConstraints,
     videoConstraints: MediaTrackConstraints
-  ) => void;
+  ) => Promise<void>;
   // Supported capabilites of selected camera and microphone
   cameraCapabilities?: MediaTrackCapabilities;
   microphoneCapabilities?: MediaTrackCapabilities;
@@ -115,30 +115,32 @@ const useMediaDevices: () => MediaDevices = () => {
   const toggleAudio = () => {
     const audioTracks = mediaStreamRef.current?.getAudioTracks();
     if (audioTracks && audioTracks.length) {
-      audioTracks[0].enabled = !isAudioEnabled;
-      setIsAudioEnabled(!isAudioEnabled);
+      audioTracks[0].enabled = !audioTracks[0].enabled;
+      setIsAudioEnabled(audioTracks[0].enabled);
     }
   };
 
   const toggleVideo = () => {
     const videoTracks = mediaStreamRef.current?.getVideoTracks();
     if (videoTracks && videoTracks.length) {
-      videoTracks[0].enabled = !isVideoEnabled;
-      setIsVideoEnabled(!isVideoEnabled);
+      videoTracks[0].enabled = !videoTracks[0].enabled;
+      setIsVideoEnabled(videoTracks[0].enabled);
     }
   };
 
-  const startDisplayCapture = async () => {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: { cursor: 'always' },
-      audio: true,
-    } as DisplayMediaStreamConstraints);
-    if (stream) {
-      if (!stream.getVideoTracks().length) throw 'No video stream for sharing';
+  const startDisplayCapture = async (): Promise<void> => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { cursor: 'always' },
+        audio: true,
+      } as DisplayMediaStreamConstraints);
       setDisplayStream(stream);
-      stream.getVideoTracks()[0].addEventListener('ended', () => {
+      stream?.getVideoTracks()[0].addEventListener('ended', () => {
         setDisplayStream(undefined);
       });
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(err);
     }
   };
 
@@ -151,7 +153,7 @@ const useMediaDevices: () => MediaDevices = () => {
   const applyMediaTrackConstraints = async (
     audioConstraints: MediaTrackConstraints,
     videoConstraints: MediaTrackConstraints
-  ) => {
+  ): Promise<void> => {
     // Chrome requires to create a new media stream if audio constraints are changed
     // [See this](https://bugs.chromium.org/p/chromium/issues/detail?id=796964)
     mediaStreamRef.current?.getTracks().forEach((track) => {
@@ -163,17 +165,9 @@ const useMediaDevices: () => MediaDevices = () => {
         video: videoConstraints,
       });
       setMediaStream(newStream);
+      return Promise.resolve();
     } catch (err) {
-      console.error('Cannot apply constraints:', videoConstraints, 'error is:', err);
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        audio: audioConstraints,
-        video: {
-          ...videoConstraints,
-          width: { ideal: videoConstraints.width as number },
-          height: { ideal: videoConstraints.height as number },
-        },
-      });
-      setMediaStream(newStream);
+      return Promise.reject(err);
     }
   };
 

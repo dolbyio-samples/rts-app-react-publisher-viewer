@@ -147,35 +147,41 @@ function App() {
       const videoConstraints = cameraSettings as MediaTrackConstraintSet;
       if (videoConstraints && cameraSettings) {
         videoConstraints.deviceId = { exact: cameraSettings?.deviceId };
-        // videoConstraints.groupId = { exact: cameraSettings?.groupId };
         videoConstraints.width = { exact: resolution.width };
         videoConstraints.height = { exact: resolution.height };
-        // videoConstraints.aspectRatio = resolution.width / resolution.height;
         delete videoConstraints.frameRate;
         delete videoConstraints.aspectRatio;
       } else {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      try {
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      } catch (error) {
+        videoConstraints.width = { ideal: resolution.width };
+        videoConstraints.height = { ideal: resolution.height };
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      }
     },
     [resolutionList]
   );
 
-  const toggleShare = () => {
-    displayStream ? stopDisplayCapture() : startDisplayCapture();
+  const toggleShare = async () => {
+    displayStream ? stopDisplayCapture() : await startDisplayCapture();
   };
 
   const isStreaming = publisherState === 'streaming';
 
-  const VideoControlBar = () => (
+  const MediaControlBar = () => (
     <ControlBar
       controls={[
         {
           key: 'toggleMicrophoneButton',
           'test-id': 'toggleMicrophoneButton',
           tooltip: { label: 'Toggle microphone', placement: 'top' },
-          onClick: toggleAudio,
+          onClick: () => {
+            toggleAudio();
+          },
           isActive: !isAudioEnabled,
           isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
           icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
@@ -184,7 +190,9 @@ function App() {
           key: 'toggleCameraButton',
           'test-id': 'toggleCameraButton',
           tooltip: { label: 'Toggle camera', placement: 'top' },
-          onClick: toggleVideo,
+          onClick: () => {
+            toggleVideo();
+          },
           isActive: !isVideoEnabled,
           isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
           icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
@@ -218,18 +226,18 @@ function App() {
               isLoading={publisherState === 'connecting'}
               start={() => {
                 if (publisherState == 'ready' && mediaStream) {
-                  startStreaming({
-                    mediaStream,
-                    simulcast: isSimulcastEnabled,
-                    codec,
-                    events: ['viewercount'],
-                  });
                   if (displayStream) {
                     startDisplayStreaming({
                       mediaStream: displayStream,
                       sourceId: displayShareSourceId,
                     });
                   }
+                  startStreaming({
+                    mediaStream,
+                    simulcast: isSimulcastEnabled,
+                    codec,
+                    events: ['viewercount'],
+                  });
                 }
               }}
               stop={() => {
@@ -261,10 +269,9 @@ function App() {
                 width={displayStream ? '688px' : '836px'}
                 height={displayStream ? '382px' : '464px'}
                 mirrored={true}
-                muted={true}
                 mediaStream={mediaStream}
                 displayFullscreenButton={false}
-                video={isVideoEnabled}
+                displayVideo={isVideoEnabled}
                 label={camera?.label}
                 placeholderNode={
                   <Box color="dolbyNeutral.700" position="absolute" width="174px">
@@ -273,7 +280,7 @@ function App() {
                 }
                 showDotIndicator={isStreaming}
               />
-              <VideoControlBar />)
+              <MediaControlBar />)
             </Stack>
           )}
           {displayStream && (
@@ -282,6 +289,7 @@ function App() {
                 width="688px"
                 height="382px"
                 mediaStream={displayStream}
+                displayFullscreenButton={false}
                 label={displayStream.getVideoTracks()[0].label}
                 showDotIndicator={isStreaming}
               />
@@ -302,9 +310,9 @@ function App() {
         </Stack>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box ml="32px">
+        <Box>
           {isStreaming && statistics && (
-            <Popover placement="top-end">
+            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
               <PopoverTrigger>
                 <Box>
                   <IconButton

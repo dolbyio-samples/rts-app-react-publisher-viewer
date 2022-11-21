@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
 import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
@@ -42,7 +42,7 @@ const useViewer = (): Viewer => {
   const [remoteTrackSources, setRemoteTrackSources, remoteTrackSourcesRef] = useState<Map<SourceId, RemoteTrackSource>>(
     new Map()
   );
-  const [mainStream, setMainStream] = useState<MediaStream>();
+  const [mainStream, setMainStream, mainStreamRef] = useState<MediaStream>();
   const [statistics, setStatistics] = useState<StreamStats>();
   const millicastView = useRef<View>();
   const mainSourceIdRef = useRef<SourceId>('mainSource');
@@ -50,9 +50,31 @@ const useViewer = (): Viewer => {
   const mainAudioMidRef = useRef<string>();
   const [viewerCount, setViewerCount] = useState<number>(0);
   const handleError = useErrorHandler();
-
   const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
+
+  useEffect(() => {
+    switch (viewerState) {
+      case 'liveOff':
+        millicastView.current?.webRTCPeer?.stopStats();
+        break;
+      case 'liveOn':
+        {
+          millicastView.current?.webRTCPeer?.initStats();
+          millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
+            // we will only feed main stream statistics in this stage
+            const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
+            if (videoInbounds) statistics.video.inbounds = videoInbounds;
+            const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
+            if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+            setStatistics(statistics);
+          });
+        }
+        break;
+      default:
+        break;
+    }
+  }, [viewerState]);
 
   const constructLayers = (layers: MediaLayer[]) => {
     if (layers.length > 3 || layers.length < 2) return;
@@ -93,7 +115,7 @@ const useViewer = (): Viewer => {
     mainSourceId?: SourceId,
     subscriberToken?: string
   ) => {
-    millicastView.current?.stop();
+    if (millicastView.current?.isActive()) stopViewer();
     const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
     millicastView.current = new View(streamName, tokenGenerator);
     if (mainSourceId) mainSourceIdRef.current = mainSourceId;
@@ -101,7 +123,9 @@ const useViewer = (): Viewer => {
       if (event.streams.length === 0) return; // other sources
       if (event.track.kind === 'video') mainVideoMidRef.current = event.transceiver.mid ?? undefined;
       else if (event.track.kind === 'audio') mainAudioMidRef.current = event.transceiver.mid ?? undefined;
-      setMainStream(event.streams[0]);
+      if (!mainStreamRef.current || mainStreamRef.current.id !== event.streams[0].id) {
+        setMainStream(event.streams[0]);
+      }
     });
     millicastView.current.on('broadcastEvent', (event: BroadcastEvent) => {
       switch (event.name) {
@@ -111,6 +135,7 @@ const useViewer = (): Viewer => {
             if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
             if (source.sourceId === mainSourceIdRef.current) {
               setViewerState('liveOn');
+              return; // we don't add and project main source in this stage
             }
             addRemoteVideoTrackAndProject(source.sourceId, source.tracks);
           }
@@ -121,6 +146,7 @@ const useViewer = (): Viewer => {
             if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
             if (source.sourceId === mainSourceIdRef.current) {
               setViewerState('liveOff');
+              return;
             }
             unprojectAndRemoveRemoteTrack(source.sourceId);
           }
@@ -152,17 +178,18 @@ const useViewer = (): Viewer => {
       handleError('Please set up Viewer first');
       return;
     }
-    if (millicastView.current && millicastView.current.isActive()) return;
+    if (millicastView.current.isActive()) return;
     try {
       setViewerState('connecting');
       await millicastView.current.connect(options);
-      millicastView.current.webRTCPeer?.initStats();
-      millicastView.current.webRTCPeer?.on('stats', (statistics) => {
-        setStatistics(statistics);
-      });
     } catch (error) {
-      handleError(error);
+      console.error(error);
+      millicastView.current.reconnect();
     }
+  };
+
+  const stopViewer = () => {
+    millicastView.current?.stop();
   };
 
   const addRemoteVideoTrackAndProject = async (sourceId: SourceId, trackInfos: MediaTrackInfo[]) => {
@@ -191,7 +218,7 @@ const useViewer = (): Viewer => {
       }
     }
     if (mapping.length === 0) {
-      handleError('No valid video or audio track');
+      console.error('No valid video or audio track');
       return;
     }
     try {
@@ -200,7 +227,7 @@ const useViewer = (): Viewer => {
       newRemoteTrackSources.set(sourceId, trackSource);
       setRemoteTrackSources(newRemoteTrackSources);
     } catch (err) {
-      handleError(err);
+      console.error('failed to project', sourceId, err);
     }
   };
 
@@ -215,17 +242,11 @@ const useViewer = (): Viewer => {
     try {
       await millicastView.current.unproject(mids);
     } catch (err) {
-      handleError(err);
+      console.error('failed to unproject', sourceId, err);
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
     setRemoteTrackSources(newRemoteTrackSources);
-  };
-
-  const stopViewer = () => {
-    millicastView.current?.stop();
-    millicastView.current?.webRTCPeer?.stopStats();
-    setStatistics(undefined);
   };
 
   const projectRemoteTrackToMain = async (sourceId: SourceId) => {
