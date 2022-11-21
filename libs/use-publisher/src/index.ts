@@ -6,6 +6,10 @@ import type { StreamStats } from '@millicast/sdk';
 export type PublisherState = 'initial' | 'ready' | 'connecting' | 'streaming';
 
 export type DisplayStreamingOptions = Pick<BroadcastOptions, 'mediaStream' | 'sourceId'>;
+export interface Bitrate {
+  name: string;
+  value: number;
+}
 
 // TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
 // presenter stream should be the main stream, other source streams will depend on it.
@@ -17,6 +21,9 @@ export interface Publisher {
   codec: string;
   codecList: string[];
   updateCodec: (codec: string) => void;
+  bitrate: Bitrate;
+  bitRateList: Bitrate[];
+  updateBitrate: (updatedBitrate: string) => void;
   startDisplayStreaming: (options: DisplayStreamingOptions) => void;
   stopDisplayStreaming: () => void;
   publisherState: PublisherState;
@@ -35,6 +42,7 @@ const usePublisher = (): Publisher => {
 
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
+  const [bitrate, setBitrate] = useState<Bitrate>({ name: 'Auto', value: 0 });
 
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
@@ -51,6 +59,15 @@ const usePublisher = (): Publisher => {
     setCodec(supportedCodecs[0]);
     setCodecList(supportedCodecs);
   }, []);
+
+  useEffect(() => {
+    if (!publisher.current || publisher.current.isActive()) return;
+
+    if (publisherState === 'streaming') {
+      console.log('Updating bitrate to', bitrate);
+      publisher.current.webRTCPeer?.updateBitrate(bitrate.value);
+    }
+  }, [bitrate, publisherState]);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
@@ -120,6 +137,26 @@ const usePublisher = (): Publisher => {
     displayPublisher.current?.stop();
   };
 
+  // Bitrate can only be updated when a stream is active and we have a peer connection
+  // So we save the value and update it when the stream is connected.
+  const updateBitrate = (updatedBitrate: string) => {
+    if (!publisher.current || publisher.current.isActive() || bitrate.name === updatedBitrate) return;
+
+    const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
+
+    if (!updatedValue) return;
+    setBitrate(updatedValue);
+  };
+
+  const bitRateList: Bitrate[] = [
+    { name: 'Auto', value: 0 },
+    { name: '2 Mbps', value: 2_000 },
+    { name: '1 Mbps', value: 1_000 },
+    { name: '500 Kbps', value: 500 },
+    { name: '250 Kbps', value: 250 },
+    { name: '125 Kbps', value: 125 },
+  ];
+
   return {
     setupPublisher,
     startStreaming,
@@ -128,6 +165,9 @@ const usePublisher = (): Publisher => {
     codec,
     codecList,
     updateCodec,
+    bitrate,
+    bitRateList,
+    updateBitrate,
     startDisplayStreaming,
     stopDisplayStreaming,
     publisherState,
