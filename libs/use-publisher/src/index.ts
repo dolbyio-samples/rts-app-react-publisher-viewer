@@ -37,18 +37,16 @@ const usePublisher = (): Publisher => {
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
 
-  const codecRef = useRef<string>('');
+  const [codec, setCodec] = useState<string>('');
   const [codecList, setCodecList] = useState<string[]>([]);
 
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const bitrateRef = useRef<Bitrate>({ name: 'Auto', value: 0 });
+  const [bitrate, setBitrate] = useState<Bitrate>({ name: 'Auto', value: 0 });
 
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
   useEffect(() => {
-    if (!codecRef.current) return;
-
     const capabilities = PeerConnection.getCapabilities('video');
     const supportedCodecs = capabilities.codecs
       .filter((item) => item.codec.toLowerCase() !== 'av1')
@@ -58,17 +56,17 @@ const usePublisher = (): Publisher => {
       .map((item) => item.codec);
 
     if (supportedCodecs.length === 0) return;
-    codecRef.current = supportedCodecs[0];
+    setCodec(supportedCodecs[0]);
     setCodecList(supportedCodecs);
   }, []);
 
   useEffect(() => {
     const updateBitrate = async () => {
-      if (!publisher.current || !bitrateRef.current) return;
+      if (!publisher.current) return;
 
       if (publisherState === 'streaming') {
         try {
-          await publisher.current.webRTCPeer?.updateBitrate(bitrateRef.current.value);
+          await publisher.current.webRTCPeer?.updateBitrate(bitrate.value);
         } catch (error) {
           console.error('Could not set max bitrate', error);
         }
@@ -76,7 +74,7 @@ const usePublisher = (): Publisher => {
     };
 
     updateBitrate();
-  }, [bitrateRef, publisherState]);
+  }, [bitrate, publisherState]);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
@@ -129,9 +127,8 @@ const usePublisher = (): Publisher => {
   };
 
   const updateCodec = (codecValue: string) => {
-    if (!codecRef.current || (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)))
-      return;
-    codecRef.current = codecValue;
+    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
+    setCodec(codecValue);
   };
 
   const startDisplayStreaming = async (options: DisplayStreamingOptions) => {
@@ -150,12 +147,12 @@ const usePublisher = (): Publisher => {
   // Bitrate can only be updated when a stream is active and we have a peer connection
   // So we save the value and update it when the stream is connected.
   const updateBitrate = (updatedBitrate: string) => {
-    if (!publisher.current || !bitrateRef.current || bitrateRef.current.name === updatedBitrate) return;
+    if (!publisher.current || bitrate.name === updatedBitrate) return;
 
     const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
 
     if (!updatedValue) return;
-    bitrateRef.current = updatedValue;
+    setBitrate(updatedValue);
   };
 
   const bitRateList: Bitrate[] = [
@@ -172,10 +169,10 @@ const usePublisher = (): Publisher => {
     startStreaming,
     stopStreaming,
     updateStreaming,
-    codec: codecRef.current,
+    codec,
     codecList,
     updateCodec,
-    bitrate: bitrateRef.current,
+    bitrate,
     bitRateList,
     updateBitrate,
     startDisplayStreaming,
