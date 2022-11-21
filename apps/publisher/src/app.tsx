@@ -274,7 +274,7 @@ function App() {
                 displayVideo={isVideoEnabled}
                 label={camera?.label}
                 placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px">
+                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
                     <IconProfile />
                   </Box>
                 }
@@ -300,7 +300,7 @@ function App() {
                     'test-id': 'stopScreenShare',
                     tooltip: { label: 'Stop screen share', placement: 'top' },
                     onClick: stopDisplayCapture,
-                    icon: <IconClose width="16px" />,
+                    icon: <IconClose width="16px" height="16px" />,
                     reversed: true,
                   },
                 ]}

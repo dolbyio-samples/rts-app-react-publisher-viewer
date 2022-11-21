@@ -23,7 +23,7 @@ const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, reverse
         aria-label={label}
         onClick={onClick}
         variant={reversed ? 'iconReversed' : 'icon'}
-        icon={<Box height="24px">{icon}</Box>}
+        icon={<Box boxSize="24px">{icon}</Box>}
         size="lg"
         {...rest}
       />
