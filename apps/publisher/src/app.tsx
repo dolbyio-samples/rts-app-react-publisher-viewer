@@ -441,7 +441,7 @@ function App() {
                         data: element as string,
                       })}
                       onSelect={(data) => updateCodec(data as string)}
-                      selected={codec || (codecList.length !== 0 ? codecList[0] : undefined)}
+                      selected={codec || (codecList.length !== 0 ? codecList[0] : '')}
                       placeholder="Codec"
                     />
                   </Box>
@@ -459,7 +459,7 @@ function App() {
                         data: element as string,
                       })}
                       onSelect={(data) => updateBitrate(data as string)}
-                      selected={bitrate.name || (bitRateList.length !== 0 ? bitRateList[0].name : undefined)}
+                      selected={bitrate.name || (bitRateList.length !== 0 ? bitRateList[0].name : '')}
                       placeholder="Bitrate"
                     />
                   </Box>
