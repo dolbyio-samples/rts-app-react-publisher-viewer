@@ -289,6 +289,7 @@ function App() {
                 width="688px"
                 height="382px"
                 mediaStream={displayStream}
+                displayFullscreenButton={false}
                 label={displayStream.getVideoTracks()[0].label}
                 showDotIndicator={isStreaming}
               />
