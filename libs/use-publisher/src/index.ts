@@ -83,8 +83,8 @@ const usePublisher = (): Publisher => {
   };
 
   const stopStreaming = async () => {
-    publisher.current?.stop();
     publisher.current?.webRTCPeer?.stopStats();
+    publisher.current?.stop();
     setPublisherState('ready');
     setStatistics(undefined);
   };
