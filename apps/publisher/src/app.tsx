@@ -226,18 +226,18 @@ function App() {
               isLoading={publisherState === 'connecting'}
               start={() => {
                 if (publisherState == 'ready' && mediaStream) {
-                  startStreaming({
-                    mediaStream,
-                    simulcast: isSimulcastEnabled,
-                    codec,
-                    events: ['viewercount'],
-                  });
                   if (displayStream) {
                     startDisplayStreaming({
                       mediaStream: displayStream,
                       sourceId: displayShareSourceId,
                     });
                   }
+                  startStreaming({
+                    mediaStream,
+                    simulcast: isSimulcastEnabled,
+                    codec,
+                    events: ['viewercount'],
+                  });
                 }
               }}
               stop={() => {

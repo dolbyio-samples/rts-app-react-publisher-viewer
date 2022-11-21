@@ -227,7 +227,7 @@ const useViewer = (): Viewer => {
       newRemoteTrackSources.set(sourceId, trackSource);
       setRemoteTrackSources(newRemoteTrackSources);
     } catch (err) {
-      console.error(err);
+      console.error('failed to project', sourceId, err);
     }
   };
 
@@ -242,7 +242,7 @@ const useViewer = (): Viewer => {
     try {
       await millicastView.current.unproject(mids);
     } catch (err) {
-      console.error(err);
+      console.error('failed to unproject', sourceId, err);
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
