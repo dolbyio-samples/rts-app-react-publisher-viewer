@@ -290,7 +290,7 @@ function App() {
                 height="382px"
                 mediaStream={displayStream}
                 displayFullscreenButton={false}
-                label={displayStream.getVideoTracks()[0].label}
+                label={displayStream.getVideoTracks()[0].label.split(':')[0]}
                 showDotIndicator={isStreaming}
               />
               <ControlBar
