@@ -146,6 +146,7 @@ const Content = () => {
                       onClick: () => {
                         setMainStreamMuted(!mainStreamMuted);
                       },
+                      isActive: mainStreamMuted,
                       icon: mainStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
                     },
                     {
@@ -155,6 +156,7 @@ const Content = () => {
                       onClick: () => {
                         setMainStreamDisplayVideo(!mainStreamDisplayVideo);
                       },
+                      isActive: !mainStreamDisplayVideo,
                       icon: mainStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
                     },
                   ]}

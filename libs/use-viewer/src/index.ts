@@ -218,7 +218,7 @@ const useViewer = (): Viewer => {
       }
     }
     if (mapping.length === 0) {
-      handleError('No valid video or audio track');
+      console.error('No valid video or audio track');
       return;
     }
     try {
@@ -227,7 +227,7 @@ const useViewer = (): Viewer => {
       newRemoteTrackSources.set(sourceId, trackSource);
       setRemoteTrackSources(newRemoteTrackSources);
     } catch (err) {
-      handleError(err);
+      console.error(err);
     }
   };
 
@@ -242,7 +242,7 @@ const useViewer = (): Viewer => {
     try {
       await millicastView.current.unproject(mids);
     } catch (err) {
-      handleError(err);
+      console.error(err);
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);

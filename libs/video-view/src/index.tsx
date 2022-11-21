@@ -38,7 +38,7 @@ const VideoView = ({
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(false);
+  const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
 
   useEffect(() => {
