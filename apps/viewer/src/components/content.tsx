@@ -209,7 +209,7 @@ const Content = () => {
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
         <Box>
           {isStreaming && statistics && (
-            <Popover placement="top-end">
+            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
               <PopoverTrigger>
                 <Box>
                   <IconButton
@@ -246,7 +246,7 @@ const Content = () => {
         </Box>
         <Spacer />
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
-          {isStreaming && streamQualityOptions.length > 1 && (
+          {isStreaming && (
             <Popover placement="top-end">
               <PopoverTrigger>
                 <Box>
@@ -291,6 +291,7 @@ const Content = () => {
                     }}
                     selected={selectedQuality}
                     placeholder="Video quality"
+                    disabled={streamQualityOptions.length < 2}
                   />
                 </PopoverBody>
               </PopoverContent>
