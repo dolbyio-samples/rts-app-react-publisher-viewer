@@ -15,7 +15,7 @@ type DropdownProps = {
   elementResolver: (element: unknown) => Element;
   onSelect: (data: Element['data']) => void;
   testId?: string;
-  selected?: string;
+  selected: string;
   disabled?: boolean;
   placeholder: string;
 };
