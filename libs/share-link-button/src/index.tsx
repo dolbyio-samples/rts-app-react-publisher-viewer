@@ -13,7 +13,7 @@ const ShareLinkButton = ({ tooltip, linkText }: ShareLinkButtonProps) => {
     setValue(linkText);
   }, [linkText]);
   return (
-    <Tooltip label={hasCopied ? 'Link copied!' : 'Copy link'} {...tooltip}>
+    <Tooltip closeDelay={3000} label={hasCopied ? 'Link copied!' : 'Copy link'} {...tooltip}>
       <Button
         onClick={onCopy}
         leftIcon={<IconCopy height="24px" />}
