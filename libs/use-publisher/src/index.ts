@@ -68,10 +68,10 @@ const usePublisher = (): Publisher => {
         try {
           await publisher.current.webRTCPeer?.updateBitrate(bitrate.value);
         } catch (error) {
-          console.log("Could not set max bitrate", error);
+          console.log('Could not set max bitrate', error);
         }
       }
-    }
+    };
 
     updateBitrate();
   }, [bitrate, publisherState]);

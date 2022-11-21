@@ -38,6 +38,7 @@ import {
   IconSimulcast,
   IconInfo,
   IconClose,
+  IconBitrate,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -448,7 +449,7 @@ function App() {
                 {bitRateList.length && (
                   <Box>
                     <Dropdown
-                      leftIcon={<IconCodec />} // TODO import new icon, pending design
+                      leftIcon={<IconBitrate />} // TODO import new icon, pending design
                       disabled={bitRateList.length === 0}
                       testId="bitrateSelect"
                       elementsList={bitRateList.map((bitrate) => bitrate.name)}

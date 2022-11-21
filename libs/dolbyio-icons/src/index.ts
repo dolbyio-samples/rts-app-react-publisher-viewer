@@ -22,3 +22,4 @@ export { default as IconAdd } from './Add';
 export { default as IconAddCamera } from './AddCamera';
 export { default as IconEye } from './Eye';
 export { default as IconClose } from './Close';
+export { default as IconBitrate } from './Bitrate';
