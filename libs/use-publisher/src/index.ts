@@ -1,4 +1,4 @@
-import { Ref, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
 
 import type { StreamStats } from '@millicast/sdk';
@@ -70,7 +70,7 @@ const usePublisher = (): Publisher => {
         try {
           await publisher.current.webRTCPeer?.updateBitrate(bitrateRef.current.value);
         } catch (error) {
-          console.log('Could not set max bitrate', error);
+          console.error('Could not set max bitrate', error);
         }
       }
     };
