@@ -311,7 +311,7 @@ function App() {
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
         <Box>
           {isStreaming && statistics && (
-            <Popover placement="top-end">
+            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
               <PopoverTrigger>
                 <Box>
                   <IconButton
