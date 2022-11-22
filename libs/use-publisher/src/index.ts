@@ -34,7 +34,7 @@ export interface Publisher {
 }
 
 const usePublisher = (): Publisher => {
-  const [publisherState, setPublisherState, publisherStateRef] = useState<PublisherState>('initial');
+  const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
 
@@ -131,22 +131,20 @@ const usePublisher = (): Publisher => {
     displayPublisher.current?.stop();
   };
 
-  // Bitrate can only be updated when a stream is active and we have a peer connection
-  // So we save the value and update it when the stream is connected.
   const updateBitrate = async (updatedBitrate: string) => {
-    if (!publisher.current || !publisherStateRef.current) return;
+    if (!publisher.current) return;
 
     const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
     if (!updatedValue) return;
 
-    setBitrate(updatedValue);
-
-    if (publisherStateRef.current !== 'streaming') return;
-
     try {
+      // Bitrate can only be updated when a stream is active and we have a peer connection
+      // So we save the value (even if the SDK call fails) and update it again when the stream is connected.
       await publisher.current.webRTCPeer?.updateBitrate(updatedValue.value);
     } catch (error) {
       console.error('Could not set max bitrate', error);
+    } finally {
+      setBitrate(updatedValue);
     }
   };
 
