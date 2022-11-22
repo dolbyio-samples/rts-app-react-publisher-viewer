@@ -79,11 +79,15 @@ yarn nx storybook stories
 
 ## Project roadmap
 
-We will be working towards delivering these milestone items over the coming months. Please be mindful that we are not committing to any timelines right now.
+In next iteration following features will be added
 
 - [ ] Ability to stream from 2+ sources.
 - [ ] Ability to have multiple publishers.
-- [ ] Recording your streams.
+- [ ] Grid layout for Video sources
+- [ ] Recording your streams
+- [ ] Chromecast support
+- [ ] Picture in Picture Support
+
 
 ## Browser compatibility
 
