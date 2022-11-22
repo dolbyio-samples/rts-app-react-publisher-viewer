@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
+import useState from 'react-usestateref';
 
 import type { StreamStats } from '@millicast/sdk';
 
@@ -33,7 +34,7 @@ export interface Publisher {
 }
 
 const usePublisher = (): Publisher => {
-  const [publisherState, setPublisherState] = useState<PublisherState>('initial');
+  const [publisherState, setPublisherState, publisherStateRef] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
 
@@ -60,22 +61,6 @@ const usePublisher = (): Publisher => {
     setCodecList(supportedCodecs);
   }, []);
 
-  useEffect(() => {
-    const updateBitrate = async () => {
-      if (!publisher.current) return;
-
-      if (publisherState === 'streaming') {
-        try {
-          await publisher.current.webRTCPeer?.updateBitrate(bitrate.value);
-        } catch (error) {
-          console.error('Could not set max bitrate', error);
-        }
-      }
-    };
-
-    updateBitrate();
-  }, [bitrate, publisherState]);
-
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
     if (publisher.current && publisher.current.isActive()) stopStreaming();
@@ -100,6 +85,8 @@ const usePublisher = (): Publisher => {
       publisher.current.webRTCPeer?.on('stats', (statistics) => {
         setStatistics(statistics);
       });
+
+      await updateBitrate(bitrate.name);
     } catch (e) {
       setPublisherState('ready');
       console.error(e);
@@ -146,13 +133,21 @@ const usePublisher = (): Publisher => {
 
   // Bitrate can only be updated when a stream is active and we have a peer connection
   // So we save the value and update it when the stream is connected.
-  const updateBitrate = (updatedBitrate: string) => {
-    if (!publisher.current || bitrate.name === updatedBitrate) return;
+  const updateBitrate = async (updatedBitrate: string) => {
+    if (!publisher.current || !publisherStateRef.current) return;
 
     const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
-
     if (!updatedValue) return;
+
     setBitrate(updatedValue);
+
+    if (publisherStateRef.current !== 'streaming') return;
+
+    try {
+      await publisher.current.webRTCPeer?.updateBitrate(updatedValue.value);
+    } catch (error) {
+      console.error('Could not set max bitrate', error);
+    }
   };
 
   const bitRateList: Bitrate[] = [
