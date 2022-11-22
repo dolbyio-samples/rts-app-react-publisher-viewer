@@ -88,7 +88,6 @@ In next iteration following features will be added
 - [ ] Chromecast support
 - [ ] Picture in Picture Support
 
-
 ## Browser compatibility
 
 While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend chromium based browsers or safari as the best means to test out these applications. Some known issues are.
