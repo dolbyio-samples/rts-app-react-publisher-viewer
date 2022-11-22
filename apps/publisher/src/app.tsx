@@ -76,7 +76,7 @@ function App() {
     viewerCount,
     linkText,
     statistics,
-  } = usePublisher();
+  } = usePublisher({ handleError: setError });
 
   const {
     cameraList,

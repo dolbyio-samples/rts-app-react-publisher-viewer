@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
-import { useErrorHandler } from 'react-error-boundary';
 import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent, ViewProjectSourceMapping } from '@millicast/sdk';
 
@@ -37,7 +36,11 @@ export type Viewer = {
   statistics?: StreamStats;
 };
 
-const useViewer = (): Viewer => {
+type UseViewerArguments = {
+  handleError?: (error: string) => void;
+};
+
+const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
   const [viewerState, setViewerState] = useState<ViewerState>('initial');
   const [remoteTrackSources, setRemoteTrackSources, remoteTrackSourcesRef] = useState<Map<SourceId, RemoteTrackSource>>(
     new Map()
@@ -49,52 +52,63 @@ const useViewer = (): Viewer => {
   const mainVideoMidRef = useRef<string>();
   const mainAudioMidRef = useRef<string>();
   const [viewerCount, setViewerCount] = useState<number>(0);
-  const handleError = useErrorHandler();
   const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
   useEffect(() => {
-    switch (viewerState) {
-      case 'liveOff':
-        millicastView.current?.webRTCPeer?.stopStats();
-        break;
-      case 'liveOn':
-        {
-          millicastView.current?.webRTCPeer?.initStats();
-          millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
-            // we will only feed main stream statistics in this stage
-            const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
-            if (videoInbounds) statistics.video.inbounds = videoInbounds;
-            const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
-            if (audioInbounds) statistics.audio.inbounds = audioInbounds;
-            setStatistics(statistics);
-          });
-        }
-        break;
-      default:
-        break;
+    try {
+      switch (viewerState) {
+        case 'liveOff':
+          millicastView.current?.webRTCPeer?.stopStats();
+          break;
+        case 'liveOn':
+          {
+            millicastView.current?.webRTCPeer?.initStats();
+            millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
+              // we will only feed main stream statistics in this stage
+              const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
+              if (videoInbounds) statistics.video.inbounds = videoInbounds;
+              const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
+              if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+              setStatistics(statistics);
+            });
+          }
+          break;
+        default:
+          break;
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
     }
   }, [viewerState]);
 
   const constructLayers = (layers: MediaLayer[]) => {
-    if (layers.length > 3 || layers.length < 2) return;
-    const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
-    const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
-      return {
-        streamQuality: qualities[idx],
-        simulcastLayer: {
-          encodingId: layer.id,
-          bitrate: layer.bitrate,
-          simulcastIdx: layer.simulcastIdx,
-          spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
-          temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
-        },
-      };
-    });
-    newStreamQualityOptions.unshift({
-      streamQuality: 'Auto',
-    });
-    setStreamQualityOptions(newStreamQualityOptions);
+    try {
+      if (layers.length > 3 || layers.length < 2) return;
+      const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
+      const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
+        return {
+          streamQuality: qualities[idx],
+          simulcastLayer: {
+            encodingId: layer.id,
+            bitrate: layer.bitrate,
+            simulcastIdx: layer.simulcastIdx,
+            spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
+            temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
+          },
+        };
+      });
+      newStreamQualityOptions.unshift({
+        streamQuality: 'Auto',
+      });
+      setStreamQualityOptions(newStreamQualityOptions);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
   };
 
   const updateStreamQuality = (selectedQuality: StreamQuality) => {
@@ -175,7 +189,7 @@ const useViewer = (): Viewer => {
 
   const startViewer = async (options?: ViewOptions) => {
     if (!millicastView.current) {
-      handleError('Please set up Viewer first');
+      handleError?.('Please set up Viewer first');
       return;
     }
     if (millicastView.current.isActive()) return;
@@ -241,8 +255,11 @@ const useViewer = (): Viewer => {
     if (mids.length === 0) return;
     try {
       await millicastView.current.unproject(mids);
-    } catch (err) {
-      console.error('failed to unproject', sourceId, err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Failed to unproject', sourceId, error);
+        handleError?.('Failed to unproject');
+      }
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
@@ -258,8 +275,10 @@ const useViewer = (): Viewer => {
     if (remoteTrackSource.audioMediaId) mapping.push({ mediaId: mainAudioMidRef.current, media: 'audio' });
     try {
       await millicastView.current.project(sourceId === mainSourceIdRef.current ? undefined : sourceId, mapping);
-    } catch (err) {
-      handleError(err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
     }
   };
 

@@ -59,13 +59,11 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
           setCamera(cameraList[0]);
           setMicrophone(microphoneList[0]);
         } else {
-          throw `Cannot get user's media stream`;
+          handleError?.(`Cannot get user's media stream`);
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
-          if (handleError) {
-            handleError(error.message);
-          }
+          handleError?.(error.message);
         }
       }
     };
@@ -92,29 +90,41 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
   }, [mediaStream]);
 
   const loadMediaStream = async (microphoneId: string, cameraId: string) => {
-    const constraints = {
-      audio: {
-        deviceId: { exact: microphoneId },
-      },
-      video: {
-        deviceId: { exact: cameraId },
-        ...ideaCameraConfig,
-      },
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    setMediaStream(stream);
+    try {
+      const constraints = {
+        audio: {
+          deviceId: { exact: microphoneId },
+        },
+        video: {
+          deviceId: { exact: cameraId },
+          ...ideaCameraConfig,
+        },
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setMediaStream(stream);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
   };
 
   const getMediaDevicesLists = async (): Promise<MediaDevicesLists> => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
     const microphoneList: InputDeviceInfo[] = [];
     const cameraList: InputDeviceInfo[] = [];
-    devices.forEach((device) => {
-      if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
-      else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
-    });
-    setCameraList(cameraList);
-    setMicrophoneList(microphoneList);
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      devices.forEach((device) => {
+        if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
+        else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
+      });
+      setCameraList(cameraList);
+      setMicrophoneList(microphoneList);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
     return Promise.resolve({ cameraList, microphoneList });
   };
 
@@ -149,8 +159,11 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
         setDisplayStream(undefined);
       });
       return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+      return Promise.reject(error);
     }
   };
 
@@ -176,8 +189,11 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
       });
       setMediaStream(newStream);
       return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+      return Promise.reject(error);
     }
   };
 
