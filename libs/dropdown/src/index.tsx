@@ -39,12 +39,12 @@ const Dropdown = ({
             as={Button}
             leftIcon={
               leftIcon ? (
-                <Box width="24px" color="dolbyNeutral.300">
+                <Box boxSize="24px" color="dolbyNeutral.300">
                   {leftIcon}
                 </Box>
               ) : undefined
             }
-            rightIcon={<Box width="12px">{rightIcon}</Box>}
+            rightIcon={<Box boxSize="12px">{rightIcon}</Box>}
             w="100%"
             textAlign="left"
             disabled={disabled}
@@ -79,7 +79,7 @@ const Dropdown = ({
                     {label}
                   </Text>
                   {selected === label ? (
-                    <Box width="22px" color="dolbyEmerald.300" position="absolute" right={3}>
+                    <Box boxSize="22px" color="dolbyEmerald.300" position="absolute" right={3}>
                       <IconSuccessFilled />
                     </Box>
                   ) : null}

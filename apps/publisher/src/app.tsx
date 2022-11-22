@@ -201,6 +201,17 @@ function App() {
     />
   );
 
+  const displayStreamLabel = useMemo(() => {
+    if (displayStream) {
+      if (displayStream.getVideoTracks()[0].label.length > 0) {
+        return displayStream.getVideoTracks()[0].label.split(':')[0];
+      } else {
+        return 'Screen Share';
+      }
+    }
+    return '';
+  }, [displayStream]);
+
   return (
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
       <Box w="100%" h="146px">
@@ -274,7 +285,7 @@ function App() {
                 displayVideo={isVideoEnabled}
                 label={camera?.label}
                 placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px">
+                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
                     <IconProfile />
                   </Box>
                 }
@@ -290,7 +301,7 @@ function App() {
                 height="382px"
                 mediaStream={displayStream}
                 displayFullscreenButton={false}
-                label={displayStream.getVideoTracks()[0].label}
+                label={displayStreamLabel}
                 showDotIndicator={isStreaming}
               />
               <ControlBar
@@ -300,7 +311,7 @@ function App() {
                     'test-id': 'stopScreenShare',
                     tooltip: { label: 'Stop screen share', placement: 'top' },
                     onClick: stopDisplayCapture,
-                    icon: <IconClose width="16px" />,
+                    icon: <IconClose width="16px" height="16px" />,
                     reversed: true,
                   },
                 ]}
