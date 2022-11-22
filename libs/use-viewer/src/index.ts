@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
 import { useErrorHandler } from 'react-error-boundary';
 import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
@@ -54,21 +54,30 @@ const useViewer = (): Viewer => {
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
   useEffect(() => {
+    return () => {
+      millicastView.current?.removeAllListeners();
+    };
+  }, []);
+
+  const statisticsEventHandler = useCallback((statistics: StreamStats) => {
+    // we will only feed main stream statistics in this stage
+    const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
+    if (videoInbounds) statistics.video.inbounds = videoInbounds;
+    const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
+    if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+    setStatistics(statistics);
+  }, []);
+
+  useEffect(() => {
     switch (viewerState) {
       case 'liveOff':
         millicastView.current?.webRTCPeer?.stopStats();
+        millicastView.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
         break;
       case 'liveOn':
         {
           millicastView.current?.webRTCPeer?.initStats();
-          millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
-            // we will only feed main stream statistics in this stage
-            const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
-            if (videoInbounds) statistics.video.inbounds = videoInbounds;
-            const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
-            if (audioInbounds) statistics.audio.inbounds = audioInbounds;
-            setStatistics(statistics);
-          });
+          millicastView.current?.webRTCPeer?.addListener('stats', statisticsEventHandler);
         }
         break;
       default:
@@ -109,6 +118,59 @@ const useViewer = (): Viewer => {
     }
   };
 
+  const trackEventHandler = useCallback((event: RTCTrackEvent) => {
+    if (event.streams.length === 0) return; // other sources
+    if (event.track.kind === 'video') mainVideoMidRef.current = event.transceiver.mid ?? undefined;
+    else if (event.track.kind === 'audio') mainAudioMidRef.current = event.transceiver.mid ?? undefined;
+    if (!mainStreamRef.current || mainStreamRef.current.id !== event.streams[0].id) {
+      setMainStream(event.streams[0]);
+    }
+  }, []);
+
+  const broadcastEventHandler = useCallback((event: BroadcastEvent) => {
+    switch (event.name) {
+      case 'active':
+        {
+          const source = event.data as MediaStreamSource;
+          if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
+          if (source.sourceId === mainSourceIdRef.current) {
+            setViewerState('liveOn');
+            return; // we don't add and project main source in this stage
+          }
+          addRemoteVideoTrackAndProject(source.sourceId, source.tracks);
+        }
+        break;
+      case 'inactive':
+        {
+          const source = event.data as MediaStreamSource;
+          if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
+          if (source.sourceId === mainSourceIdRef.current) {
+            setViewerState('liveOff');
+            return;
+          }
+          unprojectAndRemoveRemoteTrack(source.sourceId);
+        }
+        break;
+      case 'viewercount':
+        setViewerCount((event.data as ViewerCount).viewercount);
+        break;
+      case 'layers': {
+        // We only check active layers for main stream which always has media id 0
+        const layers = (event.data as MediaStreamLayers).medias['0']?.active;
+        if (!layers || layers.length == 0) {
+          setStreamQualityOptions([]);
+          return;
+        }
+        constructLayers(layers);
+        if (!streamQuality.current) {
+          streamQuality.current = 'Auto';
+          millicastView.current?.select({});
+        }
+        break;
+      }
+    }
+  }, []);
+
   const setupViewer = (
     streamName: string,
     streamAccountId: string,
@@ -119,57 +181,8 @@ const useViewer = (): Viewer => {
     const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
     millicastView.current = new View(streamName, tokenGenerator);
     if (mainSourceId) mainSourceIdRef.current = mainSourceId;
-    millicastView.current.on('track', (event: RTCTrackEvent) => {
-      if (event.streams.length === 0) return; // other sources
-      if (event.track.kind === 'video') mainVideoMidRef.current = event.transceiver.mid ?? undefined;
-      else if (event.track.kind === 'audio') mainAudioMidRef.current = event.transceiver.mid ?? undefined;
-      if (!mainStreamRef.current || mainStreamRef.current.id !== event.streams[0].id) {
-        setMainStream(event.streams[0]);
-      }
-    });
-    millicastView.current.on('broadcastEvent', (event: BroadcastEvent) => {
-      switch (event.name) {
-        case 'active':
-          {
-            const source = event.data as MediaStreamSource;
-            if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
-            if (source.sourceId === mainSourceIdRef.current) {
-              setViewerState('liveOn');
-              return; // we don't add and project main source in this stage
-            }
-            addRemoteVideoTrackAndProject(source.sourceId, source.tracks);
-          }
-          break;
-        case 'inactive':
-          {
-            const source = event.data as MediaStreamSource;
-            if (!source.sourceId) source.sourceId = mainSourceIdRef.current;
-            if (source.sourceId === mainSourceIdRef.current) {
-              setViewerState('liveOff');
-              return;
-            }
-            unprojectAndRemoveRemoteTrack(source.sourceId);
-          }
-          break;
-        case 'viewercount':
-          setViewerCount((event.data as ViewerCount).viewercount);
-          break;
-        case 'layers': {
-          // We only check active layers for main stream which always has media id 0
-          const layers = (event.data as MediaStreamLayers).medias['0']?.active;
-          if (!layers || layers.length == 0) {
-            setStreamQualityOptions([]);
-            return;
-          }
-          constructLayers(layers);
-          if (!streamQuality.current) {
-            streamQuality.current = 'Auto';
-            millicastView.current?.select({});
-          }
-          break;
-        }
-      }
-    });
+    millicastView.current.on('track', trackEventHandler);
+    millicastView.current.on('broadcastEvent', broadcastEventHandler);
     setViewerState('ready');
   };
 
