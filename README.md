@@ -83,10 +83,10 @@ In next iteration following features will be added
 
 - [ ] Ability to stream from 2+ sources.
 - [ ] Ability to have multiple publishers.
-- [ ] Grid layout for Video sources
-- [ ] Recording your streams
-- [ ] Chromecast support
-- [ ] Picture in Picture Support
+- [ ] Grid layout for Video sources.
+- [ ] Recording your streams.
+- [ ] Chromecast support.
+- [ ] Picture in Picture Support.
 
 ## Browser compatibility
 
