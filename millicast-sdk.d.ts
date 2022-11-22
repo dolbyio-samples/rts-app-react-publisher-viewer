@@ -219,6 +219,7 @@ declare namespace millicast {
     events?: Event[];
   };
 
+  interface PeerConnection extends EventEmitter {}
   /**
    * @class PeerConnection
    * @extends EventEmitter
