@@ -30,11 +30,11 @@ export type MediaDevices = {
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
 type UseMediaDevicesArguments = {
-  setError?: (error: unknown) => void;
+  handleError?: (error: string) => void;
 };
 const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
 
-const useMediaDevices = ({ setError }: UseMediaDevicesArguments = {}): MediaDevices => {
+const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
@@ -61,9 +61,11 @@ const useMediaDevices = ({ setError }: UseMediaDevicesArguments = {}): MediaDevi
         } else {
           throw `Cannot get user's media stream`;
         }
-      } catch (error) {
-        if (setError) {
-          setError(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          if (handleError) {
+            handleError(error.message);
+          }
         }
       }
     };

@@ -39,7 +39,6 @@ import {
   IconSimulcast,
   IconInfo,
   IconClose,
-  IconWarning,
 } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -55,37 +54,13 @@ import Dropdown from '@millicast-react/dropdown';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
+import useNotification from '@millicast-react/use-notification';
 
 const displayShareSourceId = 'DisplayShare';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
-  const toast = useToast();
-
-  const setError = (err: unknown) => {
-    const error = err as Error;
-    toast({
-      duration: 5000,
-      isClosable: true,
-      position: 'top',
-      containerStyle: {
-        width: 400,
-      },
-      render: ({ onClose }) => (
-        <Flex bg="dolbyFeedbackInvalid.500" p={4} alignItems="center" borderRadius="6px" justifyContent="space-between">
-          <Flex alignItems="center">
-            <IconWarning width="24px" height="24px" />
-            <Text ml="2" color="black" fontWeight="600" lineHeight="15px" fontSize="13px">
-              {error.message}
-            </Text>
-          </Flex>
-          <Box boxSize="10px" onClick={onClose}>
-            <IconClose />
-          </Box>
-        </Flex>
-      ),
-    });
-  };
+  const { setError } = useNotification();
 
   const {
     setupPublisher,
@@ -122,7 +97,7 @@ function App() {
     cameraCapabilities,
     cameraSettings,
     microphoneSettings,
-  } = useMediaDevices({ setError });
+  } = useMediaDevices({ handleError: setError });
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const resolutionList = useCameraCapabilities(cameraCapabilities);

@@ -108,7 +108,7 @@ const Content = () => {
             </Flex>
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            {isStreaming && <ParticipantCount count={viewerCount} />}
+            {isStreaming && viewerCount > 0 && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
       </Box>
