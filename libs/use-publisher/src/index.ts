@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Director,
   Publish,
@@ -76,6 +76,13 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     if (!supportedCodecs || supportedCodecs.length === 0) return;
     setCodec(supportedCodecs[0]);
     setCodecList(supportedCodecs);
+    return () => {
+      publisher.current?.removeAllListeners();
+    };
+  }, []);
+
+  const broadcastEventHandler = useCallback((event: BroadcastEvent) => {
+    if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
   }, []);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
@@ -90,11 +97,13 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
       return;
     }
     setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
-    publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
-      if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
-    });
+    publisher.current.on('broadcastEvent', broadcastEventHandler);
     setPublisherState('ready');
   };
+
+  const statisticsEventHandler = useCallback((statistics: StreamStats) => {
+    setStatistics(statistics);
+  }, []);
 
   const startStreaming = async (options: BroadcastOptions) => {
     if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
@@ -104,9 +113,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
       await publisher.current.connect(options);
       setPublisherState('streaming');
       publisher.current.webRTCPeer?.initStats();
-      publisher.current.webRTCPeer?.on('stats', (statistics) => {
-        setStatistics(statistics);
-      });
+      publisher.current.webRTCPeer?.addListener('stats', statisticsEventHandler);
     } catch (error: unknown) {
       setPublisherState('ready');
       _handleError(error);
@@ -114,6 +121,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
   };
 
   const stopStreaming = async () => {
+    publisher.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
     publisher.current?.webRTCPeer?.stopStats();
     publisher.current?.stop();
     setPublisherState('ready');
