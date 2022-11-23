@@ -21,7 +21,6 @@ import {
   Text,
   useDisclosure,
   VStack,
-  useToast,
 } from '@chakra-ui/react';
 import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';
@@ -60,7 +59,7 @@ const displayShareSourceId = 'DisplayShare';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
-  const { setError } = useNotification();
+  const { showError } = useNotification();
 
   const {
     setupPublisher,
@@ -76,7 +75,7 @@ function App() {
     viewerCount,
     linkText,
     statistics,
-  } = usePublisher({ handleError: setError });
+  } = usePublisher({ handleError: showError });
 
   const {
     cameraList,
@@ -97,7 +96,7 @@ function App() {
     cameraCapabilities,
     cameraSettings,
     microphoneSettings,
-  } = useMediaDevices({ handleError: setError });
+  } = useMediaDevices({ handleError: showError });
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const resolutionList = useCameraCapabilities(cameraCapabilities);

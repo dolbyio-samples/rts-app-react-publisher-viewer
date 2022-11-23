@@ -5,7 +5,7 @@ import Alert from '@millicast-react/alert';
 const useNotification = () => {
   const toast = useToast();
 
-  const setError = (error: string) => {
+  const showError = (error: string) => {
     if (!toast.isActive(error)) {
       toast({
         id: error,
@@ -18,7 +18,7 @@ const useNotification = () => {
   };
 
   return {
-    setError,
+    showError,
   };
 };
 

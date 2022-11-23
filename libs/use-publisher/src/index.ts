@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
+import {
+  Director,
+  Publish,
+  PeerConnection,
+  BroadcastOptions,
+  BroadcastEvent,
+  ViewerCount,
+  Capabilities,
+} from '@millicast/sdk';
 
 import type { StreamStats } from '@millicast/sdk';
 
@@ -42,43 +50,50 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
 
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
-  useEffect(() => {
-    try {
-      const capabilities = PeerConnection.getCapabilities('video');
-      const supportedCodecs = capabilities.codecs
-        .filter((item) => item.codec.toLowerCase() !== 'av1')
-        .sort((item) => {
-          return item.codec.toLowerCase() === 'h264' ? -1 : 1;
-        })
-        .map((item) => item.codec);
-
-      if (supportedCodecs.length === 0) return;
-      setCodec(supportedCodecs[0]);
-      setCodecList(supportedCodecs);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
     }
+  };
+
+  useEffect(() => {
+    let capabilities: Capabilities;
+    try {
+      capabilities = PeerConnection.getCapabilities('video');
+    } catch (error: unknown) {
+      _handleError(error);
+      return;
+    }
+    const supportedCodecs = capabilities?.codecs
+      .filter((item) => item.codec.toLowerCase() !== 'av1')
+      .sort((item) => {
+        return item.codec.toLowerCase() === 'h264' ? -1 : 1;
+      })
+      .map((item) => item.codec);
+
+    if (!supportedCodecs || supportedCodecs.length === 0) return;
+    setCodec(supportedCodecs[0]);
+    setCodecList(supportedCodecs);
   }, []);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
+    if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
+    if (publisher.current && publisher.current.isActive()) stopStreaming();
     try {
-      if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
-      if (publisher.current && publisher.current.isActive()) stopStreaming();
       const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
       publisher.current = new Publish(streamName, tokenGenerator, true);
       displayPublisher.current = new Publish(streamName, tokenGenerator, true);
-      setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
-      publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
-        if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
-      });
-      setPublisherState('ready');
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
+      return;
     }
+    setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
+    publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
+      if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
+    });
+    setPublisherState('ready');
   };
 
   const startStreaming = async (options: BroadcastOptions) => {
@@ -94,53 +109,36 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
       });
     } catch (error: unknown) {
       setPublisherState('ready');
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
   };
 
   const stopStreaming = async () => {
-    try {
-      publisher.current?.webRTCPeer?.stopStats();
-      publisher.current?.stop();
-      setPublisherState('ready');
-      setStatistics(undefined);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
-    }
+    publisher.current?.webRTCPeer?.stopStats();
+    publisher.current?.stop();
+    setPublisherState('ready');
+    setStatistics(undefined);
   };
 
   const updateStreaming = (stream: MediaStream) => {
+    if (!publisher.current || !publisher.current.isActive()) return;
     try {
-      if (publisher.current && publisher.current.isActive()) {
-        const audioTracks = stream.getAudioTracks();
-        if (audioTracks.length) {
-          publisher.current.webRTCPeer?.replaceTrack(audioTracks[0]);
-        }
-        const videoTracks = stream.getVideoTracks();
-        if (videoTracks.length) {
-          publisher.current.webRTCPeer?.replaceTrack(videoTracks[0]);
-        }
+      const audioTracks = stream.getAudioTracks();
+      if (audioTracks.length) {
+        publisher.current.webRTCPeer?.replaceTrack(audioTracks[0]);
+      }
+      const videoTracks = stream.getVideoTracks();
+      if (videoTracks.length) {
+        publisher.current.webRTCPeer?.replaceTrack(videoTracks[0]);
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
   };
 
   const updateCodec = (codecValue: string) => {
-    try {
-      if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
-      setCodec(codecValue);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
-    }
+    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
+    setCodec(codecValue);
   };
 
   const startDisplayStreaming = async (options: DisplayStreamingOptions) => {
@@ -148,20 +146,12 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     try {
       await displayPublisher.current.connect(options);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
   };
 
   const stopDisplayStreaming = () => {
-    try {
-      displayPublisher.current?.stop();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
-    }
+    displayPublisher.current?.stop();
   };
 
   return {

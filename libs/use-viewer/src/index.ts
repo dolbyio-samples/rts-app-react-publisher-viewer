@@ -55,60 +55,56 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
   const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
 
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
+    }
+  };
+
   useEffect(() => {
-    try {
-      switch (viewerState) {
-        case 'liveOff':
-          millicastView.current?.webRTCPeer?.stopStats();
-          break;
-        case 'liveOn':
-          {
-            millicastView.current?.webRTCPeer?.initStats();
-            millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
-              // we will only feed main stream statistics in this stage
-              const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
-              if (videoInbounds) statistics.video.inbounds = videoInbounds;
-              const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
-              if (audioInbounds) statistics.audio.inbounds = audioInbounds;
-              setStatistics(statistics);
-            });
-          }
-          break;
-        default:
-          break;
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+    switch (viewerState) {
+      case 'liveOff':
+        millicastView.current?.webRTCPeer?.stopStats();
+        break;
+      case 'liveOn':
+        {
+          millicastView.current?.webRTCPeer?.initStats();
+          millicastView.current?.webRTCPeer?.on('stats', (statistics) => {
+            // we will only feed main stream statistics in this stage
+            const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
+            if (videoInbounds) statistics.video.inbounds = videoInbounds;
+            const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
+            if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+            setStatistics(statistics);
+          });
+        }
+        break;
+      default:
+        break;
     }
   }, [viewerState]);
 
   const constructLayers = (layers: MediaLayer[]) => {
-    try {
-      if (layers.length > 3 || layers.length < 2) return;
-      const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
-      const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
-        return {
-          streamQuality: qualities[idx],
-          simulcastLayer: {
-            encodingId: layer.id,
-            bitrate: layer.bitrate,
-            simulcastIdx: layer.simulcastIdx,
-            spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
-            temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
-          },
-        };
-      });
-      newStreamQualityOptions.unshift({
-        streamQuality: 'Auto',
-      });
-      setStreamQualityOptions(newStreamQualityOptions);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
-    }
+    if (layers.length > 3 || layers.length < 2) return;
+    const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
+    const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
+      return {
+        streamQuality: qualities[idx],
+        simulcastLayer: {
+          encodingId: layer.id,
+          bitrate: layer.bitrate,
+          simulcastIdx: layer.simulcastIdx,
+          spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
+          temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
+        },
+      };
+    });
+    newStreamQualityOptions.unshift({
+      streamQuality: 'Auto',
+    });
+    setStreamQualityOptions(newStreamQualityOptions);
   };
 
   const updateStreamQuality = (selectedQuality: StreamQuality) => {
@@ -237,12 +233,13 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
     }
     try {
       await millicastView.current?.project(sourceId === mainSourceIdRef.current ? undefined : sourceId, mapping);
-      const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
-      newRemoteTrackSources.set(sourceId, trackSource);
-      setRemoteTrackSources(newRemoteTrackSources);
-    } catch (err) {
-      console.error('failed to project', sourceId, err);
+    } catch (err: unknown) {
+      _handleError(err);
+      return;
     }
+    const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
+    newRemoteTrackSources.set(sourceId, trackSource);
+    setRemoteTrackSources(newRemoteTrackSources);
   };
 
   const unprojectAndRemoveRemoteTrack = async (sourceId: SourceId) => {
@@ -255,11 +252,8 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
     if (mids.length === 0) return;
     try {
       await millicastView.current.unproject(mids);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Failed to unproject', sourceId, error);
-        handleError?.('Failed to unproject');
-      }
+    } catch (error) {
+      console.error(error);
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
@@ -276,9 +270,7 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
     try {
       await millicastView.current.project(sourceId === mainSourceIdRef.current ? undefined : sourceId, mapping);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
   };
 
