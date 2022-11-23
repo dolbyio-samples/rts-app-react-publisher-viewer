@@ -362,6 +362,7 @@ function App() {
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
           {!displayStream && (
             <PopupMenu
+              buttonTitle="Add Source"
               items={[
                 { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
                 // {
@@ -386,6 +387,7 @@ function App() {
             isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
             icon={<IconSettings />}
             borderRadius="50%"
+            ml="16px"
             reversed
           />
         </Flex>
