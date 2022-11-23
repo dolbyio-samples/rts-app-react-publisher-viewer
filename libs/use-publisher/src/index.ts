@@ -174,14 +174,13 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
   };
 
   const updateBitrate = async (bitrate: number): Promise<void> => {
-    if (
-      !publisher.current ||
-      !publisher.current.isActive() ||
-      !publisher.current.webRTCPeer ||
-      !bitrateList.some((bitrateItem) => bitrateItem.value === bitrate)
-    )
-      return Promise.reject();
+    if (!publisher.current || !publisher.current.isActive() || !publisher.current.webRTCPeer) {
+      return Promise.reject('Publisher is not connected');
+    }
 
+    if (!bitrateList.some((bitrateItem) => bitrateItem.value === bitrate)) {
+      return Promise.reject(`Invalid bitrate: ${bitrate}`);
+    }
     return publisher.current.webRTCPeer.updateBitrate(bitrate);
   };
 
