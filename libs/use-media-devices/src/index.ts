@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import useState from 'react-usestateref';
-
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
   microphoneList: InputDeviceInfo[];
@@ -30,9 +29,12 @@ export type MediaDevices = {
 
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
+type UseMediaDevicesArguments = {
+  handleError?: (error: string) => void;
+};
 const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
 
-const useMediaDevices: () => MediaDevices = () => {
+const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
@@ -47,16 +49,22 @@ const useMediaDevices: () => MediaDevices = () => {
 
   useEffect(() => {
     const initializeDeviceList = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: ideaCameraConfig,
-      });
-      if (stream) {
-        const { cameraList, microphoneList } = await getMediaDevicesLists();
-        setCamera(cameraList[0]);
-        setMicrophone(microphoneList[0]);
-      } else {
-        throw `Cannot get user's media stream`;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: ideaCameraConfig,
+        });
+        if (stream) {
+          const { cameraList, microphoneList } = await getMediaDevicesLists();
+          setCamera(cameraList[0]);
+          setMicrophone(microphoneList[0]);
+        } else {
+          handleError?.(`Cannot get user's media stream`);
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          handleError?.(error.message);
+        }
       }
     };
     initializeDeviceList();
@@ -82,29 +90,41 @@ const useMediaDevices: () => MediaDevices = () => {
   }, [mediaStream]);
 
   const loadMediaStream = async (microphoneId: string, cameraId: string) => {
-    const constraints = {
-      audio: {
-        deviceId: { exact: microphoneId },
-      },
-      video: {
-        deviceId: { exact: cameraId },
-        ...ideaCameraConfig,
-      },
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    setMediaStream(stream);
+    try {
+      const constraints = {
+        audio: {
+          deviceId: { exact: microphoneId },
+        },
+        video: {
+          deviceId: { exact: cameraId },
+          ...ideaCameraConfig,
+        },
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setMediaStream(stream);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
   };
 
   const getMediaDevicesLists = async (): Promise<MediaDevicesLists> => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
     const microphoneList: InputDeviceInfo[] = [];
     const cameraList: InputDeviceInfo[] = [];
-    devices.forEach((device) => {
-      if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
-      else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
-    });
-    setCameraList(cameraList);
-    setMicrophoneList(microphoneList);
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      devices.forEach((device) => {
+        if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
+        else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
+      });
+      setCameraList(cameraList);
+      setMicrophoneList(microphoneList);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
     return Promise.resolve({ cameraList, microphoneList });
   };
 
@@ -139,8 +159,11 @@ const useMediaDevices: () => MediaDevices = () => {
         setDisplayStream(undefined);
       });
       return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+      return Promise.reject(error);
     }
   };
 
@@ -166,8 +189,11 @@ const useMediaDevices: () => MediaDevices = () => {
       });
       setMediaStream(newStream);
       return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+      return Promise.reject(error);
     }
   };
 

@@ -17,7 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@millicast-react/action-bar": ["libs/action-bar/src/index.tsx"],
-      "@millicast-react/popup-menu": ["libs/popup-menu/src/index.tsx"],
+      "@millicast-react/alert": ["libs/alert/src/index.tsx"],
       "@millicast-react/control-bar": ["libs/control-bar/src/index.tsx"],
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
@@ -26,11 +26,13 @@
       "@millicast-react/info-label": ["libs/info-label/src/index.tsx"],
       "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
       "@millicast-react/participant-count": ["libs/participant-count/src/index.tsx"],
+      "@millicast-react/popup-menu": ["libs/popup-menu/src/index.tsx"],
       "@millicast-react/share-link-button": ["libs/share-link-button/src/index.tsx"],
       "@millicast-react/statistics-info": ["libs/statistics-info/src/index.tsx"],
       "@millicast-react/timer": ["libs/timer/src/index.tsx"],
       "@millicast-react/toggle-button": ["libs/toggle-button/src/index.tsx"],
       "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
+      "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
       "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]

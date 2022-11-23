@@ -53,11 +53,13 @@ import Dropdown from '@millicast-react/dropdown';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
+import useNotification from '@millicast-react/use-notification';
 
 const displayShareSourceId = 'DisplayShare';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+  const { showError } = useNotification();
 
   const {
     setupPublisher,
@@ -73,7 +75,7 @@ function App() {
     viewerCount,
     linkText,
     statistics,
-  } = usePublisher();
+  } = usePublisher({ handleError: showError });
 
   const {
     cameraList,
@@ -94,7 +96,7 @@ function App() {
     cameraCapabilities,
     cameraSettings,
     microphoneSettings,
-  } = useMediaDevices();
+  } = useMediaDevices({ handleError: showError });
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const resolutionList = useCameraCapabilities(cameraCapabilities);

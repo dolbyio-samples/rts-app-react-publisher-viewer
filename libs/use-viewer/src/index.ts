@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
-import { useErrorHandler } from 'react-error-boundary';
 import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent, ViewProjectSourceMapping } from '@millicast/sdk';
 
@@ -37,7 +36,11 @@ export type Viewer = {
   statistics?: StreamStats;
 };
 
-const useViewer = (): Viewer => {
+type UseViewerArguments = {
+  handleError?: (error: string) => void;
+};
+
+const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
   const [viewerState, setViewerState] = useState<ViewerState>('initial');
   const [remoteTrackSources, setRemoteTrackSources, remoteTrackSourcesRef] = useState<Map<SourceId, RemoteTrackSource>>(
     new Map()
@@ -49,9 +52,16 @@ const useViewer = (): Viewer => {
   const mainVideoMidRef = useRef<string>();
   const mainAudioMidRef = useRef<string>();
   const [viewerCount, setViewerCount] = useState<number>(0);
-  const handleError = useErrorHandler();
   const streamQuality = useRef<StreamQuality>();
   const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
+
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -188,7 +198,7 @@ const useViewer = (): Viewer => {
 
   const startViewer = async (options?: ViewOptions) => {
     if (!millicastView.current) {
-      handleError('Please set up Viewer first');
+      handleError?.('Please set up Viewer first');
       return;
     }
     if (millicastView.current.isActive()) return;
@@ -236,12 +246,13 @@ const useViewer = (): Viewer => {
     }
     try {
       await millicastView.current?.project(sourceId === mainSourceIdRef.current ? undefined : sourceId, mapping);
-      const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
-      newRemoteTrackSources.set(sourceId, trackSource);
-      setRemoteTrackSources(newRemoteTrackSources);
-    } catch (err) {
-      console.error('failed to project', sourceId, err);
+    } catch (err: unknown) {
+      _handleError(err);
+      return;
     }
+    const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
+    newRemoteTrackSources.set(sourceId, trackSource);
+    setRemoteTrackSources(newRemoteTrackSources);
   };
 
   const unprojectAndRemoveRemoteTrack = async (sourceId: SourceId) => {
@@ -254,8 +265,8 @@ const useViewer = (): Viewer => {
     if (mids.length === 0) return;
     try {
       await millicastView.current.unproject(mids);
-    } catch (err) {
-      console.error('failed to unproject', sourceId, err);
+    } catch (error) {
+      console.error(error);
     }
     const newRemoteTrackSources = new Map(remoteTrackSourcesRef.current);
     newRemoteTrackSources.delete(sourceId);
@@ -271,8 +282,8 @@ const useViewer = (): Viewer => {
     if (remoteTrackSource.audioMediaId) mapping.push({ mediaId: mainAudioMidRef.current, media: 'audio' });
     try {
       await millicastView.current.project(sourceId === mainSourceIdRef.current ? undefined : sourceId, mapping);
-    } catch (err) {
-      handleError(err);
+    } catch (error: unknown) {
+      _handleError(error);
     }
   };
 

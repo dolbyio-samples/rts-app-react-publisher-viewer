@@ -15,6 +15,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
 import {
   IconProfile,
@@ -36,6 +37,7 @@ import InfoLabel from '@millicast-react/info-label';
 import ControlBar from '@millicast-react/control-bar';
 
 const Content = () => {
+  const { showError } = useNotification();
   const {
     viewerState,
     mainStream,
@@ -47,7 +49,7 @@ const Content = () => {
     streamQualityOptions,
     updateStreamQuality,
     statistics,
-  } = useViewer();
+  } = useViewer({ handleError: showError });
 
   const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
   const [mainStreamMuted, setMainStreamMuted] = useState(true);
@@ -108,7 +110,7 @@ const Content = () => {
             </Flex>
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            {isStreaming && <ParticipantCount count={viewerCount} />}
+            {isStreaming && viewerCount > 0 && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
       </Box>

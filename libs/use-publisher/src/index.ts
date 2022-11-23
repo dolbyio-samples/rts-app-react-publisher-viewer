@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
+import {
+  Director,
+  Publish,
+  PeerConnection,
+  BroadcastOptions,
+  BroadcastEvent,
+  ViewerCount,
+  Capabilities,
+} from '@millicast/sdk';
 
 import type { StreamStats } from '@millicast/sdk';
 
@@ -25,7 +33,11 @@ export interface Publisher {
   statistics?: StreamStats;
 }
 
-const usePublisher = (): Publisher => {
+type UsePublisherArguments = {
+  handleError?: (error: string) => void;
+};
+
+const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher => {
   const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
@@ -38,16 +50,30 @@ const usePublisher = (): Publisher => {
 
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
+    }
+  };
+
   useEffect(() => {
-    const capabilities = PeerConnection.getCapabilities('video');
-    const supportedCodecs = capabilities.codecs
+    let capabilities: Capabilities;
+    try {
+      capabilities = PeerConnection.getCapabilities('video');
+    } catch (error: unknown) {
+      _handleError(error);
+      return;
+    }
+    const supportedCodecs = capabilities?.codecs
       .filter((item) => item.codec.toLowerCase() !== 'av1')
       .sort((item) => {
         return item.codec.toLowerCase() === 'h264' ? -1 : 1;
       })
       .map((item) => item.codec);
 
-    if (supportedCodecs.length === 0) return;
+    if (!supportedCodecs || supportedCodecs.length === 0) return;
     setCodec(supportedCodecs[0]);
     setCodecList(supportedCodecs);
     return () => {
@@ -62,9 +88,14 @@ const usePublisher = (): Publisher => {
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
     if (publisher.current && publisher.current.isActive()) stopStreaming();
-    const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
-    publisher.current = new Publish(streamName, tokenGenerator, true);
-    displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+    try {
+      const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
+      publisher.current = new Publish(streamName, tokenGenerator, true);
+      displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+    } catch (error: unknown) {
+      _handleError(error);
+      return;
+    }
     setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
     publisher.current.on('broadcastEvent', broadcastEventHandler);
     setPublisherState('ready');
@@ -83,9 +114,9 @@ const usePublisher = (): Publisher => {
       setPublisherState('streaming');
       publisher.current.webRTCPeer?.initStats();
       publisher.current.webRTCPeer?.addListener('stats', statisticsEventHandler);
-    } catch (e) {
+    } catch (error: unknown) {
       setPublisherState('ready');
-      console.error(e);
+      _handleError(error);
     }
   };
 
@@ -98,7 +129,8 @@ const usePublisher = (): Publisher => {
   };
 
   const updateStreaming = (stream: MediaStream) => {
-    if (publisher.current && publisher.current.isActive()) {
+    if (!publisher.current || !publisher.current.isActive()) return;
+    try {
       const audioTracks = stream.getAudioTracks();
       if (audioTracks.length) {
         publisher.current.webRTCPeer?.replaceTrack(audioTracks[0]);
@@ -107,6 +139,8 @@ const usePublisher = (): Publisher => {
       if (videoTracks.length) {
         publisher.current.webRTCPeer?.replaceTrack(videoTracks[0]);
       }
+    } catch (error: unknown) {
+      _handleError(error);
     }
   };
 
@@ -119,8 +153,8 @@ const usePublisher = (): Publisher => {
     if (!displayPublisher.current || displayPublisher.current.isActive()) return;
     try {
       await displayPublisher.current.connect(options);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      _handleError(error);
     }
   };
 
