@@ -1,17 +1,17 @@
 import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
 import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
 
-import { IconFullScreen, IconFullScreenExit, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
+import { IconFullScreen, IconFullScreenExit } from '@millicast-react/dolbyio-icons';
 // import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import type { StreamStats } from '@millicast/sdk';
 
 export type VideoViewProps = {
-  width?: string;
-  height?: string;
+  width: string;
+  height: string;
   mirrored?: boolean;
   muted?: boolean;
-  video?: boolean;
+  displayVideo?: boolean;
   displayMuteButton?: boolean;
   displayFullscreenButton?: boolean;
   mediaStream?: MediaStream;
@@ -26,32 +26,31 @@ const VideoView = ({
   width,
   height,
   mirrored = false,
-  muted = false,
-  video = true,
-  displayMuteButton = false,
+  muted = true, // Has to be true for AutoPlay in chromium
+  displayVideo = true,
   displayFullscreenButton = true,
   mediaStream,
   // statistics,
   label,
   placeholderNode,
   onClick,
-  showDotIndicator: dotIndicator,
+  showDotIndicator,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
-  const [isMuted, setIsMuted] = useState(muted);
 
   useEffect(() => {
-    if (videoRef.current && mediaStream) {
-      videoRef.current.srcObject = mediaStream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = mediaStream ?? null;
     }
   }, [mediaStream]);
 
   const componentElementsStyle = {
     '.video': {
       transform: `${mirrored ? 'scaleX(-1)' : ''}`,
-      display: video ? 'block' : 'none',
+      display: `${displayVideo ? 'block' : 'none'}`,
       overflow: 'hidden',
       width: '100%',
       height: '100%',
@@ -66,8 +65,6 @@ const VideoView = ({
       boxShadow: 'unset',
     },
   };
-
-  const [loadingVideo, setLoadingVideo] = useState(false);
 
   return (
     <Flex
@@ -89,27 +86,34 @@ const VideoView = ({
       justifyContent="center"
       alignItems="center"
     >
-      {loadingVideo && video && (
+      {loadingVideo && displayVideo && (
         <Center w="100%" h="100%" position="absolute">
           <Spinner size="lg" />
         </Center>
       )}
-      {dotIndicator && (
+      {showDotIndicator && (
         <Box position="absolute" top={5} right={4} w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" />
       )}
 
-      {!video && placeholderNode}
+      {!displayVideo && placeholderNode}
       <video
-        // eslint-disable-next-line react/no-unknown-property
-        test-id="video-view"
         className="video"
-        playsInline
         autoPlay
+        playsInline
+        crossOrigin="anonymous"
         ref={videoRef}
-        muted={isMuted}
+        muted={muted}
         onWaiting={() => setLoadingVideo(true)}
         onLoadStart={() => setLoadingVideo(true)}
-        onPlay={() => setLoadingVideo(false)}
+        onPlaying={() => setLoadingVideo(false)}
+        onStalled={() => {
+          console.error('video is on stalled');
+        }}
+        onError={() => {
+          console.error(`video player error: ${videoRef.current?.error}`);
+        }}
+        // eslint-disable-next-line react/no-unknown-property
+        test-id="video-view"
       />
       {label && (
         <InfoLabel
@@ -132,19 +136,19 @@ const VideoView = ({
         right="0"
         spacing="0"
       >
-        {displayMuteButton && (
+        {/* {displayMuteButton && (
           <IconButton
             test-id="muteSpeakerButton"
             aria-label="Mute button"
             className="icon-button"
             size="md"
-            icon={isMuted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
+            icon={videoRef.current?.muted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
             onClick={(e) => {
               e.stopPropagation();
-              setIsMuted(!isMuted);
+              if (videoRef.current) videoRef.current.muted = !videoRef.current.muted;
             }}
           />
-        )}
+        )} */}
         <Spacer />
         {displayFullscreenButton && (
           <IconButton

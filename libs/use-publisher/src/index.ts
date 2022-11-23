@@ -1,6 +1,14 @@
-import { useEffect, useRef } from 'react';
-import { Director, Publish, PeerConnection, BroadcastOptions, BroadcastEvent, ViewerCount } from '@millicast/sdk';
+import { useCallback, useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
+import {
+  Director,
+  Publish,
+  PeerConnection,
+  BroadcastOptions,
+  BroadcastEvent,
+  ViewerCount,
+  Capabilities,
+} from '@millicast/sdk';
 
 import type { StreamStats } from '@millicast/sdk';
 
@@ -16,12 +24,10 @@ export interface Bitrate {
 // presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
   setupPublisher: (token: string, streamName: string, streamId: string) => void;
-  startStreaming: (options: BroadcastOptions) => void;
+  startStreaming: (options: BroadcastOptions, bitrate: string) => void;
   stopStreaming: () => void;
   updateStreaming: (mediaStream: MediaStream) => void;
-  codec: string;
   codecList: string[];
-  updateCodec: (codec: string) => void;
   bitrate: Bitrate;
   bitRateList: Bitrate[];
   updateBitrate: (updatedBitrate: string) => void;
@@ -33,48 +39,75 @@ export interface Publisher {
   statistics?: StreamStats;
 }
 
-const usePublisher = (): Publisher => {
+type UsePublisherArguments = {
+  handleError?: (error: string) => void;
+};
+
+const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher => {
   const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
-
-  const [codec, setCodec] = useState<string>('');
   const [codecList, setCodecList] = useState<string[]>([]);
-
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
   const [bitrate, setBitrate] = useState<Bitrate>({ name: 'Auto', value: 0 });
-
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
+    }
+  };
+
   useEffect(() => {
-    const capabilities = PeerConnection.getCapabilities('video');
-    const supportedCodecs = capabilities.codecs
+    let capabilities: Capabilities;
+    try {
+      capabilities = PeerConnection.getCapabilities('video');
+    } catch (error: unknown) {
+      _handleError(error);
+      return;
+    }
+    const supportedCodecs = capabilities?.codecs
       .filter((item) => item.codec.toLowerCase() !== 'av1')
       .sort((item) => {
         return item.codec.toLowerCase() === 'h264' ? -1 : 1;
       })
       .map((item) => item.codec);
 
-    if (supportedCodecs.length === 0) return;
-    setCodec(supportedCodecs[0]);
+    if (!supportedCodecs || supportedCodecs.length === 0) return;
     setCodecList(supportedCodecs);
+    return () => {
+      publisher.current?.removeAllListeners();
+    };
+  }, []);
+
+  const broadcastEventHandler = useCallback((event: BroadcastEvent) => {
+    if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
   }, []);
 
   const setupPublisher = (token: string, streamName: string, streamId: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
     if (publisher.current && publisher.current.isActive()) stopStreaming();
-    const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
-    publisher.current = new Publish(streamName, tokenGenerator, true);
-    displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+    try {
+      const tokenGenerator = () => Director.getPublisher({ token: token, streamName: streamName });
+      publisher.current = new Publish(streamName, tokenGenerator, true);
+      displayPublisher.current = new Publish(streamName, tokenGenerator, true);
+    } catch (error: unknown) {
+      _handleError(error);
+      return;
+    }
     setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
-    publisher.current.on('broadcastEvent', (event: BroadcastEvent) => {
-      if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
-    });
+    publisher.current.on('broadcastEvent', broadcastEventHandler);
     setPublisherState('ready');
   };
 
-  const startStreaming = async (options: BroadcastOptions) => {
+  const statisticsEventHandler = useCallback((statistics: StreamStats) => {
+    setStatistics(statistics);
+  }, []);
+
+  const startStreaming = async (options: BroadcastOptions, bitrate: string) => {
     if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
     try {
       //TODO: refine the state by broadcastEvent
@@ -82,26 +115,25 @@ const usePublisher = (): Publisher => {
       await publisher.current.connect(options);
       setPublisherState('streaming');
       publisher.current.webRTCPeer?.initStats();
-      publisher.current.webRTCPeer?.on('stats', (statistics) => {
-        setStatistics(statistics);
-      });
-
-      await updateBitrate(bitrate.name);
-    } catch (e) {
+      publisher.current.webRTCPeer?.addListener('stats', statisticsEventHandler);
+      await updateBitrate(bitrate);
+    } catch (error: unknown) {
       setPublisherState('ready');
-      console.error(e);
+      _handleError(error);
     }
   };
 
   const stopStreaming = async () => {
-    publisher.current?.stop();
+    publisher.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
     publisher.current?.webRTCPeer?.stopStats();
+    publisher.current?.stop();
     setPublisherState('ready');
     setStatistics(undefined);
   };
 
   const updateStreaming = (stream: MediaStream) => {
-    if (publisher.current && publisher.current.isActive()) {
+    if (!publisher.current || !publisher.current.isActive()) return;
+    try {
       const audioTracks = stream.getAudioTracks();
       if (audioTracks.length) {
         publisher.current.webRTCPeer?.replaceTrack(audioTracks[0]);
@@ -110,20 +142,17 @@ const usePublisher = (): Publisher => {
       if (videoTracks.length) {
         publisher.current.webRTCPeer?.replaceTrack(videoTracks[0]);
       }
+    } catch (error: unknown) {
+      _handleError(error);
     }
-  };
-
-  const updateCodec = (codecValue: string) => {
-    if (publisherState !== 'ready' && codecList != undefined && !codecList.includes(codecValue)) return;
-    setCodec(codecValue);
   };
 
   const startDisplayStreaming = async (options: DisplayStreamingOptions) => {
     if (!displayPublisher.current || displayPublisher.current.isActive()) return;
     try {
       await displayPublisher.current.connect(options);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      _handleError(error);
     }
   };
 
@@ -162,9 +191,7 @@ const usePublisher = (): Publisher => {
     startStreaming,
     stopStreaming,
     updateStreaming,
-    codec,
     codecList,
-    updateCodec,
     bitrate,
     bitRateList,
     updateBitrate,

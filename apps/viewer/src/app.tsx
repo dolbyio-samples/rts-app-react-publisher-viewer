@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Spacer, VStack, Text, Center } from '@chakra-ui/react';
+import { Box, Button, Text, Center } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import Content from './components/content';
@@ -32,19 +32,9 @@ function App() {
   };
 
   return (
-    <VStack w="100%">
-      <Flex w="100%" gap="2" minWidth="max-content" alignItems="center">
-        <Box>
-          <Heading size="md" p="4">
-            Company name
-          </Heading>
-        </Box>
-        <Spacer />
-      </Flex>
-      <ErrorBoundary fallbackRender={ErrorFallback}>
-        <Content />
-      </ErrorBoundary>
-    </VStack>
+    <ErrorBoundary fallbackRender={ErrorFallback}>
+      <Content />
+    </ErrorBoundary>
   );
 }
 

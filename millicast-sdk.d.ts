@@ -206,6 +206,7 @@ declare namespace millicast {
     stop(): void;
     isActive(): boolean;
     connect(options?: ViewOptions): Promise<void>;
+    reconnect();
     project(sourceId?: string, mapping?: ViewProjectSourceMapping[]): Promise<void>;
     unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
@@ -218,6 +219,7 @@ declare namespace millicast {
     events?: Event[];
   };
 
+  interface PeerConnection extends EventEmitter {}
   /**
    * @class PeerConnection
    * @extends EventEmitter

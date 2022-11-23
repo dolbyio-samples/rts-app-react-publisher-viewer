@@ -3,6 +3,7 @@ import Button from './styles/Button';
 import Heading from './styles/Heading';
 import Text from './styles/Text';
 import Tooltip from './styles/Tooltip';
+import Alert from './styles/Alert';
 
 const dolbyioTheme = extendTheme({
   fonts: {
@@ -40,12 +41,17 @@ const dolbyioTheme = extendTheme({
       500: '#0BCB74',
       600: '#06B365',
     },
+    dolbyFeedbackInvalid: {
+      500: '#FCB91A',
+      900: '#332400',
+    },
   },
   components: {
     Button,
     Heading,
     Text,
     Tooltip,
+    Alert,
   },
 });
 

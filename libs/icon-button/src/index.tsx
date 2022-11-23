@@ -1,5 +1,5 @@
 import {
-  Box,
+  Flex,
   IconButton as ChakraIconButton,
   IconButtonProps as ChakraIconButtonProps,
   Tooltip,
@@ -23,7 +23,11 @@ const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, reverse
         aria-label={label}
         onClick={onClick}
         variant={reversed ? 'iconReversed' : 'icon'}
-        icon={<Box height="24px">{icon}</Box>}
+        icon={
+          <Flex boxSize="24px" justifyContent="center" alignItems="center">
+            {icon}
+          </Flex>
+        }
         size="lg"
         {...rest}
       />

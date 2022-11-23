@@ -54,11 +54,13 @@ import Dropdown from '@millicast-react/dropdown';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
+import useNotification from '@millicast-react/use-notification';
 
 const displayShareSourceId = 'DisplayShare';
 
 function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+  const { showError } = useNotification();
 
   const {
     setupPublisher,
@@ -67,9 +69,7 @@ function App() {
     updateStreaming,
     startDisplayStreaming,
     stopDisplayStreaming,
-    codec,
     codecList,
-    updateCodec,
     bitrate,
     bitRateList,
     updateBitrate,
@@ -77,7 +77,7 @@ function App() {
     viewerCount,
     linkText,
     statistics,
-  } = usePublisher();
+  } = usePublisher({ handleError: showError });
 
   const {
     cameraList,
@@ -98,9 +98,11 @@ function App() {
     cameraCapabilities,
     cameraSettings,
     microphoneSettings,
-  } = useMediaDevices();
+  } = useMediaDevices({ handleError: showError });
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
+  const [codec, setCodec] = useState<string>();
+  // const [bitrate, setBitrate] = useState<string>();
   const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
@@ -131,6 +133,10 @@ function App() {
   }, [mediaStream]);
 
   useEffect(() => {
+    if (!codec) setCodec(codecList[0]);
+  }, [codecList]);
+
+  useEffect(() => {
     if (!displayStream) stopDisplayStreaming();
     else if (publisherState === 'streaming')
       startDisplayStreaming({
@@ -151,35 +157,41 @@ function App() {
       const videoConstraints = cameraSettings as MediaTrackConstraintSet;
       if (videoConstraints && cameraSettings) {
         videoConstraints.deviceId = { exact: cameraSettings?.deviceId };
-        // videoConstraints.groupId = { exact: cameraSettings?.groupId };
         videoConstraints.width = { exact: resolution.width };
         videoConstraints.height = { exact: resolution.height };
-        // videoConstraints.aspectRatio = resolution.width / resolution.height;
         delete videoConstraints.frameRate;
         delete videoConstraints.aspectRatio;
       } else {
         return;
       }
       const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      try {
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      } catch (error) {
+        videoConstraints.width = { ideal: resolution.width };
+        videoConstraints.height = { ideal: resolution.height };
+        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
+      }
     },
     [resolutionList]
   );
 
-  const toggleShare = () => {
-    displayStream ? stopDisplayCapture() : startDisplayCapture();
+  const toggleShare = async () => {
+    displayStream ? stopDisplayCapture() : await startDisplayCapture();
   };
 
   const isStreaming = publisherState === 'streaming';
 
-  const VideoControlBar = () => (
+  const MediaControlBar = () => (
     <ControlBar
       controls={[
         {
           key: 'toggleMicrophoneButton',
           'test-id': 'toggleMicrophoneButton',
           tooltip: { label: 'Toggle microphone', placement: 'top' },
-          onClick: toggleAudio,
+          onClick: () => {
+            toggleAudio();
+          },
           isActive: !isAudioEnabled,
           isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
           icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
@@ -188,7 +200,9 @@ function App() {
           key: 'toggleCameraButton',
           'test-id': 'toggleCameraButton',
           tooltip: { label: 'Toggle camera', placement: 'top' },
-          onClick: toggleVideo,
+          onClick: () => {
+            toggleVideo();
+          },
           isActive: !isVideoEnabled,
           isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
           icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
@@ -196,6 +210,17 @@ function App() {
       ]}
     />
   );
+
+  const displayStreamLabel = useMemo(() => {
+    if (displayStream) {
+      if (displayStream.getVideoTracks()[0].label.length > 0) {
+        return displayStream.getVideoTracks()[0].label.split(':')[0];
+      } else {
+        return 'Screen Share';
+      }
+    }
+    return '';
+  }, [displayStream]);
 
   return (
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
@@ -220,20 +245,24 @@ function App() {
             <LiveIndicator
               isActive={isStreaming}
               isLoading={publisherState === 'connecting'}
+              disabled={publisherState === 'initial' || !mediaStream}
               start={() => {
                 if (publisherState == 'ready' && mediaStream) {
-                  startStreaming({
-                    mediaStream,
-                    simulcast: isSimulcastEnabled,
-                    codec,
-                    events: ['viewercount'],
-                  });
                   if (displayStream) {
                     startDisplayStreaming({
                       mediaStream: displayStream,
                       sourceId: displayShareSourceId,
                     });
                   }
+                  startStreaming(
+                    {
+                      mediaStream,
+                      simulcast: isSimulcastEnabled,
+                      codec,
+                      events: ['viewercount'],
+                    },
+                    bitrate.name
+                  );
                 }
               }}
               stop={() => {
@@ -265,19 +294,18 @@ function App() {
                 width={displayStream ? '688px' : '836px'}
                 height={displayStream ? '382px' : '464px'}
                 mirrored={true}
-                muted={true}
                 mediaStream={mediaStream}
                 displayFullscreenButton={false}
-                video={isVideoEnabled}
+                displayVideo={isVideoEnabled}
                 label={camera?.label}
                 placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px">
+                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
                     <IconProfile />
                   </Box>
                 }
                 showDotIndicator={isStreaming}
               />
-              <VideoControlBar />)
+              <MediaControlBar />)
             </Stack>
           )}
           {displayStream && (
@@ -286,7 +314,8 @@ function App() {
                 width="688px"
                 height="382px"
                 mediaStream={displayStream}
-                label={displayStream.getVideoTracks()[0].label}
+                displayFullscreenButton={false}
+                label={displayStreamLabel}
                 showDotIndicator={isStreaming}
               />
               <ControlBar
@@ -296,7 +325,7 @@ function App() {
                     'test-id': 'stopScreenShare',
                     tooltip: { label: 'Stop screen share', placement: 'top' },
                     onClick: stopDisplayCapture,
-                    icon: <IconClose width="16px" />,
+                    icon: <IconClose width="16px" height="16px" />,
                     reversed: true,
                   },
                 ]}
@@ -306,9 +335,9 @@ function App() {
         </Stack>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box ml="32px">
+        <Box>
           {isStreaming && statistics && (
-            <Popover placement="top-end">
+            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
               <PopoverTrigger>
                 <Box>
                   <IconButton
@@ -347,6 +376,7 @@ function App() {
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
           {!displayStream && (
             <PopupMenu
+              buttonTitle="Add Source"
               items={[
                 { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
                 // {
@@ -371,6 +401,7 @@ function App() {
             isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
             icon={<IconSettings />}
             borderRadius="50%"
+            ml="16px"
             reversed
           />
         </Flex>
@@ -440,7 +471,7 @@ function App() {
                         label: element as string,
                         data: element as string,
                       })}
-                      onSelect={(data) => updateCodec(data as string)}
+                      onSelect={(data) => setCodec(data as string)}
                       selected={codec || codecList[0]}
                       placeholder="Codec"
                     />
