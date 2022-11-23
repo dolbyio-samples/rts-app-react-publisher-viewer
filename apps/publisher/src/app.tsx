@@ -23,7 +23,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import './styles/font.css';
-import usePublisher from '@millicast-react/use-publisher';
+import usePublisher, { Bitrate } from '@millicast-react/use-publisher';
 import useMediaDevices from '@millicast-react/use-media-devices';
 import {
   IconMicrophoneOn,
@@ -70,8 +70,7 @@ function App() {
     startDisplayStreaming,
     stopDisplayStreaming,
     codecList,
-    bitrate,
-    bitRateList,
+    bitrateList,
     updateBitrate,
     publisherState,
     viewerCount,
@@ -102,7 +101,7 @@ function App() {
 
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
   const [codec, setCodec] = useState<string>();
-  // const [bitrate, setBitrate] = useState<string>();
+  const [bitrate, setBitrate] = useState<number>(0);
   const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
@@ -180,6 +179,18 @@ function App() {
     displayStream ? stopDisplayCapture() : await startDisplayCapture();
   };
 
+  const onSelectBitrate = async (bitrate: number) => {
+    try {
+      if (isStreaming) {
+        await updateBitrate(bitrate);
+      }
+      setBitrate(bitrate);
+    } catch {
+      setBitrate(0);
+      showError(`Failed to set bitrate ${bitrate}`);
+    }
+  };
+
   const isStreaming = publisherState === 'streaming';
 
   const MediaControlBar = () => (
@@ -246,23 +257,26 @@ function App() {
               isActive={isStreaming}
               isLoading={publisherState === 'connecting'}
               disabled={publisherState === 'initial' || !mediaStream}
-              start={() => {
+              start={async () => {
                 if (publisherState == 'ready' && mediaStream) {
-                  if (displayStream) {
-                    startDisplayStreaming({
-                      mediaStream: displayStream,
-                      sourceId: displayShareSourceId,
-                    });
-                  }
-                  startStreaming(
-                    {
+                  try {
+                    await startStreaming({
                       mediaStream,
                       simulcast: isSimulcastEnabled,
                       codec,
                       events: ['viewercount'],
-                    },
-                    bitrate.name
-                  );
+                      bandwidth: bitrate,
+                    });
+                    if (displayStream) {
+                      startDisplayStreaming({
+                        mediaStream: displayStream,
+                        sourceId: displayShareSourceId,
+                      });
+                    }
+                  } catch (err) {
+                    showError(`Failed to start streaming: ${err}`);
+                    setBitrate(0);
+                  }
                 }
               }}
               stop={() => {
@@ -477,20 +491,25 @@ function App() {
                     />
                   </Box>
                 )}
-                {bitRateList.length && (
+                {bitrateList.length && (
                   <Box>
                     <Dropdown
                       leftIcon={<IconBitrate />}
-                      disabled={bitRateList.length === 0}
+                      disabled={bitrateList.length === 0}
                       testId="bitrateSelect"
-                      elementsList={bitRateList.map((bitrate) => bitrate.name)}
-                      elementResolver={(element) => ({
-                        id: element as string,
-                        label: element as string,
-                        data: element as string,
-                      })}
-                      onSelect={(data) => updateBitrate(data as string)}
-                      selected={bitrate.name || bitRateList[0].name}
+                      elementsList={bitrateList}
+                      elementResolver={(element) => {
+                        const bitrate = element as Bitrate;
+                        return {
+                          id: bitrate.name,
+                          label: bitrate.name,
+                          data: bitrate.value,
+                        };
+                      }}
+                      onSelect={(data) => {
+                        onSelectBitrate(data as number);
+                      }}
+                      selected={bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name}
                       placeholder="Bitrate"
                     />
                   </Box>

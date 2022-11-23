@@ -2,17 +2,18 @@ declare namespace millicast {
   type Event = 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
   type ViewEvent = 'active' | 'inactive' | 'vad' | 'layers' | 'viewercount';
   type CapabilityKind = 'audio' | 'video';
+  type VideoCodec = 'VP8' | 'VP9' | 'H264' | 'AV1';
 
   interface Capabilities {
     codecs: Array<CodecInfo>;
-    /**
-     * - Audio or video codec name.
-     */
-    codec: string;
-    /**
-     * - Audio or video codec mime type.
-     */
-    mimeType: string;
+    // /**
+    //  * - Audio or video codec name.
+    //  */
+    // codec: VideoCodec;
+    // /**
+    //  * - Audio or video codec mime type.
+    //  */
+    // mimeType: string;
     /**
      * - In case of SVC support, a list of scalability modes supported.
      */
@@ -32,11 +33,12 @@ declare namespace millicast {
     events?: Event[];
     sourceId?: string;
     simulcast?: boolean;
-    codec?: string;
+    codec?: VideoCodec;
+    bandwidth?: number; // 0 means unlimited
   }
 
   interface CodecInfo {
-    codec: string;
+    codec: VideoCodec;
     mimetype: string;
   }
 

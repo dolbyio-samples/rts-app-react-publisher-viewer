@@ -24,13 +24,12 @@ export interface Bitrate {
 // presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
   setupPublisher: (token: string, streamName: string, streamId: string) => void;
-  startStreaming: (options: BroadcastOptions, bitrate: string) => void;
+  startStreaming: (options: BroadcastOptions) => Promise<void>;
   stopStreaming: () => void;
   updateStreaming: (mediaStream: MediaStream) => void;
   codecList: string[];
-  bitrate: Bitrate;
-  bitRateList: Bitrate[];
-  updateBitrate: (updatedBitrate: string) => void;
+  bitrateList: Bitrate[];
+  updateBitrate: (bitrate: number) => Promise<void>;
   startDisplayStreaming: (options: DisplayStreamingOptions) => void;
   stopDisplayStreaming: () => void;
   publisherState: PublisherState;
@@ -50,7 +49,6 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
   const [codecList, setCodecList] = useState<string[]>([]);
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const [bitrate, setBitrate] = useState<Bitrate>({ name: 'Auto', value: 0 });
   const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
 
   const _handleError = (error: unknown) => {
@@ -107,25 +105,40 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     setStatistics(statistics);
   }, []);
 
-  const startStreaming = async (options: BroadcastOptions, bitrate: string) => {
-    if (!publisher.current || publisher.current.isActive() || publisherState !== 'ready') return;
+  useEffect(() => {
+    switch (publisherState) {
+      case 'streaming':
+        {
+          publisher.current?.webRTCPeer?.initStats();
+          publisher.current?.webRTCPeer?.addListener('stats', statisticsEventHandler);
+        }
+        break;
+      case 'ready':
+        {
+          publisher.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
+          publisher.current?.webRTCPeer?.stopStats();
+        }
+        break;
+      default:
+        break;
+    }
+  }, [publisherState]);
+
+  const startStreaming = async (options: BroadcastOptions): Promise<void> => {
+    if (!publisher.current || publisherState !== 'ready') return Promise.reject('Please set up publisher first');
+    if (publisher.current.isActive()) return Promise.reject('Publihser is connected already');
     try {
-      //TODO: refine the state by broadcastEvent
       setPublisherState('connecting');
       await publisher.current.connect(options);
       setPublisherState('streaming');
-      publisher.current.webRTCPeer?.initStats();
-      publisher.current.webRTCPeer?.addListener('stats', statisticsEventHandler);
-      await updateBitrate(bitrate);
+      return Promise.resolve();
     } catch (error: unknown) {
       setPublisherState('ready');
-      _handleError(error);
+      return Promise.reject(error);
     }
   };
 
   const stopStreaming = async () => {
-    publisher.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
-    publisher.current?.webRTCPeer?.stopStats();
     publisher.current?.stop();
     setPublisherState('ready');
     setStatistics(undefined);
@@ -160,30 +173,24 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     displayPublisher.current?.stop();
   };
 
-  const updateBitrate = async (updatedBitrate: string) => {
-    if (!publisher.current) return;
+  const updateBitrate = async (bitrate: number): Promise<void> => {
+    if (
+      !publisher.current ||
+      !publisher.current.isActive() ||
+      !publisher.current.webRTCPeer ||
+      !bitrateList.some((bitrateItem) => bitrateItem.value === bitrate)
+    )
+      return Promise.reject();
 
-    const updatedValue = bitRateList.find((x) => x.name === updatedBitrate);
-    if (!updatedValue) return;
-
-    try {
-      // Bitrate can only be updated when a stream is active and we have a peer connection
-      // So we save the value (even if the SDK call fails) and update it again when the stream is connected.
-      await publisher.current.webRTCPeer?.updateBitrate(updatedValue.value);
-    } catch (error) {
-      console.error('Could not set max bitrate', error);
-    } finally {
-      setBitrate(updatedValue);
-    }
+    return publisher.current.webRTCPeer.updateBitrate(bitrate);
   };
 
-  const bitRateList: Bitrate[] = [
+  const bitrateList: Bitrate[] = [
     { name: 'Auto', value: 0 },
     { name: '2 Mbps', value: 2_000 },
     { name: '1 Mbps', value: 1_000 },
     { name: '500 Kbps', value: 500 },
     { name: '250 Kbps', value: 250 },
-    { name: '125 Kbps', value: 125 },
   ];
 
   return {
@@ -192,8 +199,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     stopStreaming,
     updateStreaming,
     codecList,
-    bitrate,
-    bitRateList,
+    bitrateList,
     updateBitrate,
     startDisplayStreaming,
     stopDisplayStreaming,
