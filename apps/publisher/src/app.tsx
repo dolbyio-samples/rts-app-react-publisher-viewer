@@ -132,7 +132,7 @@ function App() {
   }, [mediaStream]);
 
   useEffect(() => {
-    if (!codec) setCodec(codecList[0]);
+    if (!codec && codecList.length) setCodec(codecList[0]);
   }, [codecList]);
 
   useEffect(() => {
