@@ -287,7 +287,7 @@ function App() {
             />
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />
+            {linkText && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />}
             {isStreaming && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>

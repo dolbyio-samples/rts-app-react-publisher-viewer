@@ -23,7 +23,7 @@ export interface Bitrate {
 // TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
 // presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
-  setupPublisher: (token: string, streamName: string, streamId: string, viewerAppBaseUrl: string) => void;
+  setupPublisher: (token: string, streamName: string, streamId: string, viewerAppBaseUrl?: string) => void;
   startStreaming: (options: BroadcastOptions) => Promise<void>;
   stopStreaming: () => void;
   updateStreaming: (mediaStream: MediaStream) => void;
@@ -34,7 +34,7 @@ export interface Publisher {
   stopDisplayStreaming: () => void;
   publisherState: PublisherState;
   viewerCount: number;
-  linkText: string;
+  linkText?: string;
   statistics?: StreamStats;
 }
 
@@ -49,7 +49,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments): Publisher => {
   const [codecList, setCodecList] = useState<string[]>([]);
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const [linkText, setLinkText] = useState<string>('');
+  const [linkText, setLinkText] = useState<string>();
 
   const _handleError = (error: unknown) => {
     if (error instanceof Error) {
@@ -85,7 +85,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments): Publisher => {
     if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
   }, []);
 
-  const setupPublisher = (token: string, streamName: string, streamId: string, viewerAppBaseUrl: string) => {
+  const setupPublisher = (token: string, streamName: string, streamId: string, viewerAppBaseUrl?: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
     if (publisher.current && publisher.current.isActive()) stopStreaming();
     try {
@@ -96,7 +96,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments): Publisher => {
       _handleError(error);
       return;
     }
-    setLinkText(`${viewerAppBaseUrl}?streamAccountId=${streamId}&streamName=${streamName}`);
+    if (viewerAppBaseUrl) setLinkText(`${viewerAppBaseUrl}?streamAccountId=${streamId}&streamName=${streamName}`);
     publisher.current.on('broadcastEvent', broadcastEventHandler);
     setPublisherState('ready');
   };
