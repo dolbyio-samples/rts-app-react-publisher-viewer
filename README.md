@@ -1,6 +1,6 @@
-# WIP: stream-demo-react-milicast
+# rts-app-react-publisher-viewer
 
-A sample app to showcase the capabilities of the Millicast SDK and how it can be used to design solutions that require ultra low latency (sub 500ms).
+A sample app to showcase the capabilities of Dolby.io's Real Time Streaming (RTS) SDK and how it can be used to design solutions that require ultra low latency (sub 500ms).
 
 ## Prerequisites
 
@@ -54,6 +54,37 @@ Run the command below in terminal and open the browser
 yarn nx preview publisher
 ```
 
+##### Configuring the viewer link
+
+The viewer link is configured in the `.env` file in your `apps/publisher` directory. To set the URL, update the following variable
+
+**TODO update name**
+
+```bash
+VITE_VIEWER_URL=""
+```
+
+> If you are using a particular port number, please add this to the URL. The application will use this key in the following manner.
+
+```javascript
+// This is only pseudo-code and may not be exactly
+const linkText = `${VITE_VIEWER_URL}/?streamId=${STREAM_ID}&streamToken=${STREAM_TOKEN}`;
+```
+
+#### Run the viewer app
+
+To run your app in dev mode, run the command below in your terminal and open the browser
+
+```bash
+yarn nx serve viewer
+```
+
+And to run in preview mode
+
+```bash
+yarn nx preview viewer
+```
+
 #### Run the end to end test
 
 ```bash
@@ -77,6 +108,30 @@ Then, run the command below:
 yarn nx storybook stories
 ```
 
+The following components and hooks are available for you to use in your applications to simplify your workflow.
+
+#### Hooks
+
+- Alert
+- ActionBar
+- ControlBar
+- DropDown
+- InfoLabel
+- LiveIndicator
+- PopupMenu
+- ShareLinkButton
+- StatisticInfo
+- Timer
+- ToggleButton
+- VideoView
+
+#### Components
+
+- useMediaCapabilities
+- useNotification
+- usePublisher
+- useViewer
+
 ## Project roadmap
 
 In next iteration following features will be added
@@ -87,6 +142,8 @@ In next iteration following features will be added
 - [ ] Recording your streams.
 - [ ] Chromecast support.
 - [ ] Picture in Picture Support.
+- [ ] Ability to see stats for each individual source.
+- [ ] Improved simulcast stats for the publisher.
 
 ## Browser compatibility
 
@@ -94,6 +151,12 @@ While utmost care has been taken to ensure this works across all browsers, pleas
 
 - Simulcast only works when the publisher is on chrome (and uses H.264 or VP8 as the codec).
 - Screen sharing does not reliably work with Firefox.
+
+Generally speaking, our app has been tested to work on the following browser versions.
+
+- Google Chrome v100+
+- Apple Safari v16.x
+- Edge v107.x
 
 ## Known Issues
 
