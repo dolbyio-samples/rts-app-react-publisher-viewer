@@ -23,7 +23,7 @@ export interface Bitrate {
 // TODO: refactor to support multi-sources, treat presenter stream, display stream as sources and manage them in a map
 // presenter stream should be the main stream, other source streams will depend on it.
 export interface Publisher {
-  setupPublisher: (token: string, streamName: string, streamId: string) => void;
+  setupPublisher: (token: string, streamName: string, streamId: string, viewerAppBaseUrl: string) => void;
   startStreaming: (options: BroadcastOptions) => Promise<void>;
   stopStreaming: () => void;
   updateStreaming: (mediaStream: MediaStream) => void;
@@ -42,14 +42,14 @@ type UsePublisherArguments = {
   handleError?: (error: string) => void;
 };
 
-const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher => {
+const usePublisher = ({ handleError }: UsePublisherArguments): Publisher => {
   const [publisherState, setPublisherState] = useState<PublisherState>('initial');
   const [viewerCount, setViewerCount] = useState(0);
   const [statistics, setStatistics] = useState<StreamStats>();
   const [codecList, setCodecList] = useState<string[]>([]);
   const publisher = useRef<Publish>();
   const displayPublisher = useRef<Publish>();
-  const [linkText, setLinkText] = useState<string>('https://viewer.millicast.com/?streamId=/');
+  const [linkText, setLinkText] = useState<string>('');
 
   const _handleError = (error: unknown) => {
     if (error instanceof Error) {
@@ -85,7 +85,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
     if (event.name === 'viewercount') setViewerCount((event.data as ViewerCount).viewercount);
   }, []);
 
-  const setupPublisher = (token: string, streamName: string, streamId: string) => {
+  const setupPublisher = (token: string, streamName: string, streamId: string, viewerAppBaseUrl: string) => {
     if (displayPublisher.current && displayPublisher.current.isActive()) stopDisplayStreaming();
     if (publisher.current && publisher.current.isActive()) stopStreaming();
     try {
@@ -96,7 +96,7 @@ const usePublisher = ({ handleError }: UsePublisherArguments = {}): Publisher =>
       _handleError(error);
       return;
     }
-    setLinkText(`https://viewer.millicast.com/?streamId=${streamId}/${streamName}`);
+    setLinkText(`${viewerAppBaseUrl}?streamAccountId=${streamId}&streamName=${streamName}`);
     publisher.current.on('broadcastEvent', broadcastEventHandler);
     setPublisherState('ready');
   };
