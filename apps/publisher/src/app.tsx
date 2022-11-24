@@ -108,7 +108,8 @@ function App() {
     setupPublisher(
       import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
       import.meta.env.VITE_MILLICAST_STREAM_NAME,
-      import.meta.env.VITE_MILLICAST_STREAM_ID
+      import.meta.env.VITE_MILLICAST_STREAM_ID,
+      import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL
     );
   }, []);
 
@@ -286,7 +287,7 @@ function App() {
             />
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />
+            {linkText && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />}
             {isStreaming && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
