@@ -56,19 +56,17 @@ yarn nx preview publisher
 
 ##### Configuring the viewer link
 
-The viewer link is configured in the `.env` file in your `apps/publisher` directory. To set the URL, update the following variable
-
-**TODO update name**
+The viewer link is configured in the `.env` file in your `apps/publisher` directory. To set the URL, insert/update the following variable
 
 ```bash
-VITE_VIEWER_URL=""
+VITE_MILLICAST_VIEWER_BASE_URL
 ```
 
 > If you are using a particular port number, please add this to the URL. The application will use this key in the following manner.
 
 ```javascript
 // This is only pseudo-code and may not be exactly
-const linkText = `${VITE_VIEWER_URL}/?streamId=${STREAM_ID}&streamToken=${STREAM_TOKEN}`;
+const linkText = `${VITE_VIEWER_URL}/?streamAccountId=${streamId}&streamName=${streamName}`;
 ```
 
 #### Run the viewer app
