@@ -237,6 +237,7 @@ function App() {
             <LiveIndicator
               isActive={isStreaming}
               isLoading={publisherState === 'connecting'}
+              disabled={publisherState === 'initial' || !mediaStream}
               start={() => {
                 if (publisherState == 'ready' && mediaStream) {
                   if (displayStream) {

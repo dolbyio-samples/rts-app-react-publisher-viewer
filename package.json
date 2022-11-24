@@ -78,6 +78,7 @@
   "resolutions": {
     "**/trim": "^1.0.0",
     "**/trim-newlines": "^4.0.0",
-    "**/glob-parent": "^6.0.2"
+    "**/glob-parent": "^6.0.2",
+    "**/got": "^5.1.2"
   }
 }
