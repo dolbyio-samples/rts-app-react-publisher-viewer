@@ -112,25 +112,6 @@ yarn nx preview viewer
 yarn nx e2e publisher
 ```
 
-### Add a new component in libs
-
-After the command below, your component should be in `libs/<your component name>`
-
-```bash
-yarn nx g @nxext/vite:library <your component name>
-```
-
-### Storybook
-
-If you need storybook to support your UI component development, add your component code in `libs`, and add the story into `apps/stories`. Also don't forget to add your component path in `.storybook/main.ts`
-Then, run the command below:
-
-```bash
-yarn nx storybook stories
-```
-
-The following components and hooks are available for you to use in your applications to simplify your workflow.
-
 #### Components
 
 - Alert
@@ -159,7 +140,7 @@ While utmost care has been taken to ensure this works across all browsers, pleas
 
 - Simulcast only works when the publisher is on chrome (and uses H.264 or VP8 as the codec).
 - Screen sharing does not reliably work with Firefox.
-- The publisher app does not work on Firefox because of how it implements the `MediaTrackCapabilites APIs`. Therefore, it may not be the ideal candidate for testing out the code. 
+- The publisher app does not work on Firefox because of how it implements the `MediaTrackCapabilites APIs`. Therefore, it may not be the ideal candidate for testing out the code.
 
 Generally speaking, our app has been tested to work on the following browser versions.
 
