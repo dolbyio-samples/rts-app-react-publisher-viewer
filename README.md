@@ -107,28 +107,6 @@ yarn nx preview viewer
 yarn nx e2e publisher
 ```
 
-#### Components
-
-- Alert
-- ActionBar
-- ControlBar
-- DropDown
-- InfoLabel
-- LiveIndicator
-- PopupMenu
-- ShareLinkButton
-- StatisticInfo
-- Timer
-- ToggleButton
-- VideoView
-
-#### Hooks
-
-- useMediaCapabilities
-- useNotification
-- usePublisher
-- useViewer
-
 ## Browser compatibility
 
 While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend chromium based browsers or safari as the best means to test out these applications. Some known issues are.
