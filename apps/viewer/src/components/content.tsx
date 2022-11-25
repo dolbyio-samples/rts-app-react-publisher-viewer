@@ -13,8 +13,12 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Stack,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
 import {
@@ -36,8 +40,59 @@ import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import ControlBar from '@millicast-react/control-bar';
 
+type StreamsAttributes = { muted: boolean; volume: number; video: boolean };
+
+type StreamsReducerState = Record<string, StreamsAttributes>;
+
+enum StreamsActionType {
+  ADD = 'ADD',
+  TOGGLE_MUTE = 'MUTE',
+  TOGGLE_VIDEO = 'VIDEO',
+  VOLUME = 'VOLUME',
+}
+
+type StreamsAction =
+  | {
+      type: StreamsActionType.ADD;
+      id: string;
+    }
+  | {
+      type: StreamsActionType.TOGGLE_MUTE | StreamsActionType.TOGGLE_VIDEO;
+      id: string;
+    }
+  | {
+      type: StreamsActionType.VOLUME;
+      id: string;
+      value: number;
+    };
+
+const initialStreamAttributes = { muted: true, video: true, volume: 0 };
+
+const streamsReducer = (state: StreamsReducerState, action: StreamsAction) => {
+  const prev = state[action.id];
+
+  switch (action.type) {
+    case StreamsActionType.ADD: {
+      return { ...state, [action.id]: initialStreamAttributes };
+    }
+    case StreamsActionType.TOGGLE_MUTE: {
+      return { ...state, [action.id]: { ...prev, muted: !prev.muted } };
+    }
+    case StreamsActionType.TOGGLE_VIDEO: {
+      return { ...state, [action.id]: { ...prev, video: !prev.video } };
+    }
+    case StreamsActionType.VOLUME: {
+      return { ...state, [action.id]: { ...prev, volume: action.value } };
+    }
+    default:
+      throw new Error('Unknown action');
+  }
+};
+
 const Content = () => {
   const { showError } = useNotification();
+  const [streamsAttributes, dispatch] = useReducer(streamsReducer, {});
+
   const {
     viewerState,
     mainStream,
@@ -52,11 +107,7 @@ const Content = () => {
   } = useViewer({ handleError: showError });
 
   const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
-  const [mainStreamMuted, setMainStreamMuted] = useState(true);
-  const [mainStreamDisplayVideo, setMainStreamDisplayVideo] = useState(true);
   // TODO: map to remote track sources
-  const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
-  const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
   const projectingSourceId = useRef<string>('main');
 
   useEffect(() => {
@@ -72,6 +123,14 @@ const Content = () => {
       startViewer({ events: ['active', 'inactive', 'layers', 'viewercount'] });
     }
   }, [viewerState]);
+
+  useEffect(() => {
+    if (mainStream) {
+      if (!streamsAttributes[mainStream.id]) {
+        dispatch({ type: StreamsActionType.ADD, id: mainStream.id });
+      }
+    }
+  }, [mainStream]);
 
   // TODO: Enable project other source to main stream
   // useEffect(() => {
@@ -130,9 +189,10 @@ const Content = () => {
                   width={hasMultiStream ? '688px' : '836px'}
                   height={hasMultiStream ? '382px' : '464px'}
                   mediaStream={mainStream}
-                  displayVideo={mainStreamDisplayVideo}
-                  muted={mainStreamMuted}
+                  displayVideo={streamsAttributes[mainStream.id]?.video}
+                  muted={streamsAttributes[mainStream.id]?.muted}
                   displayMuteButton={true}
+                  volume={streamsAttributes[mainStream.id]?.volume}
                   placeholderNode={
                     <Box color="dolbyNeutral.700" position="absolute" width="174px">
                       <IconProfile />
@@ -142,30 +202,58 @@ const Content = () => {
                 <ControlBar
                   controls={[
                     {
-                      key: 'toggleMainStreamAudioButton',
-                      'test-id': 'toggleMainStreamAudioButton',
-                      tooltip: { label: 'Toggle Audio', placement: 'top' },
-                      onClick: () => {
-                        setMainStreamMuted(!mainStreamMuted);
-                      },
-                      isActive: mainStreamMuted,
-                      icon: mainStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
+                      key: 'volumeSlider',
+                      'test-id': 'volumeSlider',
+                      node: (
+                        <Popover trigger="hover" placement="top">
+                          <PopoverTrigger>
+                            <Box>
+                              <IconButton
+                                test-id="mainStreamAudioVolumeButton"
+                                as="div"
+                                icon={
+                                  streamsAttributes[mainStream.id]?.volume === 0 ? <IconSpeakerOff /> : <IconSpeaker />
+                                }
+                              />
+                            </Box>
+                          </PopoverTrigger>
+                          <PopoverContent px={3} py={2.5}>
+                            <Slider
+                              defaultValue={0}
+                              value={streamsAttributes[mainStream.id]?.volume}
+                              min={0}
+                              step={0.1}
+                              max={1}
+                              orientation="vertical"
+                              h="90px"
+                              onChange={(value) =>
+                                dispatch({ type: StreamsActionType.VOLUME, id: mainStream.id, value })
+                              }
+                            >
+                              <SliderTrack width="4px" h="90px" bg="dolbySecondary.200">
+                                <SliderFilledTrack bg="dolbyPurple.400" />
+                              </SliderTrack>
+                              <SliderThumb bg="dolbyNeutral.800" />
+                            </Slider>
+                          </PopoverContent>
+                        </Popover>
+                      ),
                     },
                     {
                       key: 'toggleMainStreamVideoButton',
                       'test-id': 'toggleMainStreamVideoButton',
                       tooltip: { label: 'Toggle Video', placement: 'top' },
                       onClick: () => {
-                        setMainStreamDisplayVideo(!mainStreamDisplayVideo);
+                        dispatch({ type: StreamsActionType.TOGGLE_VIDEO, id: mainStream.id });
                       },
-                      isActive: !mainStreamDisplayVideo,
-                      icon: mainStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                      isActive: !streamsAttributes[mainStream.id]?.video,
+                      icon: streamsAttributes[mainStream.id]?.video ? <IconCameraOn /> : <IconCameraOff />,
                     },
                   ]}
                 />
               </Stack>
             )}
-            {hasMultiStream && (
+            {/* {hasMultiStream && (
               <HStack spacing={4}>
                 {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
                   if (trackSource.id !== 'main') {
@@ -177,6 +265,7 @@ const Content = () => {
                           mediaStream={trackSource.source.mediaStream}
                           muted={displayStreamMuted}
                           displayVideo={displayStreamDisplayVideo}
+                          volume={streamsAttributes?.[trackSource.id]?.volume}
                         />
                         <ControlBar
                           controls={[
@@ -208,7 +297,7 @@ const Content = () => {
                   return null;
                 })}
               </HStack>
-            )}
+            )} */}
           </Stack>
         )}
       </Flex>

@@ -8,31 +8,35 @@ import {
 import React from 'react';
 
 export type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
-  tooltip: Omit<TooltipProps, 'children'> & {
+  tooltip?: Omit<TooltipProps, 'children'> & {
     label: string;
   };
+  showTooltip?: boolean;
   onClick?: ChakraIconButtonProps['onClick'];
   icon: ChakraIconButtonProps['icon'];
   reversed?: boolean;
+  'test-id': string;
 };
 
-const IconButton = ({ tooltip: { label, ...restTooltip }, onClick, icon, reversed, ...rest }: IconButtonProps) => {
-  return (
-    <Tooltip label={label} {...restTooltip}>
-      <ChakraIconButton
-        aria-label={label}
-        onClick={onClick}
-        variant={reversed ? 'iconReversed' : 'icon'}
-        icon={
-          <Flex boxSize="24px" justifyContent="center" alignItems="center">
-            {icon}
-          </Flex>
-        }
-        size="lg"
-        {...rest}
-      />
-    </Tooltip>
+const IconButton = ({ tooltip, onClick, icon, reversed, ...rest }: IconButtonProps) => {
+  const renderButton = () => (
+    <ChakraIconButton
+      onClick={onClick}
+      variant={reversed ? 'iconReversed' : 'icon'}
+      icon={
+        <Flex boxSize="24px" justifyContent="center" alignItems="center">
+          {icon}
+        </Flex>
+      }
+      size="lg"
+      {...rest}
+      aria-label={rest['test-id']}
+    />
   );
+  if (tooltip) {
+    return <Tooltip {...tooltip}>{renderButton()}</Tooltip>;
+  }
+  return renderButton();
 };
 
 export default IconButton;
