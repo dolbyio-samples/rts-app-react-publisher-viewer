@@ -6,21 +6,16 @@ A sample app to showcase the capabilities of Dolby.io's Real Time Streaming (RTS
 
 In order to run this demo, you will need a Dolby.io account. If you don't already have one, you can create one on [our website](https://dashboard.dolby.io).
 
-## Features
+## Features and roadmap
 
-- Publish and view streams.
-- Invite viewers to watch your stream.
-- Mute audio and video both as publisher and viewer.
-- Screen sharing.
-- Publish with simulcast (only on chrome).
-- Microphone and camera device selection.
-- Resolution, bandwidth, codec and bitrate selection.
-- Observing stream statistics.
-
-## Project roadmap
-
-In the next iterations, the following features will be added
-
+- [x] Publish and view streams.
+- [x] Invite viewers to watch your stream.
+- [x] Mute audio and video both as publisher and viewer.
+- [x] Screen sharing.
+- [x] Publish with simulcast (only on chrome).
+- [x] Microphone and camera device selection.
+- [x] Resolution, bandwidth, codec and bitrate selection.
+- [x] Observing stream statistics.
 - [ ] Ability to stream from 2+ sources.
 - [ ] Ability to have multiple publishers.
 - [ ] Grid layout for Video sources.
