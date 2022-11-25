@@ -139,14 +139,14 @@ yarn nx e2e publisher
 While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend chromium based browsers or safari as the best means to test out these applications. Some known issues are.
 
 - Simulcast only works when the publisher is on chrome (and uses H.264 or VP8 as the codec).
-- Screen sharing does not reliably work with Firefox.
-- The publisher app does not work on Firefox because of how it implements the `MediaTrackCapabilites APIs`. Therefore, it may not be the ideal candidate for testing out the code.
 
 Generally speaking, our app has been tested to work on the following browser versions.
 
 - Google Chrome v100+
 - Apple Safari v16.x
 - Edge v107.x
+
+There are known limitations with webRTC and Mozilla Firefox, and therefore the browser is not recommended.
 
 ## Known Issues
 
