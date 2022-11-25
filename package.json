@@ -15,7 +15,7 @@
     "@emotion/styled": "^11",
     "@millicast/sdk": "^0.1.35",
     "@playwright/test": "^1.27.1",
-    "clipboardy": "^2.3.0",
+    "clipboardy": "^3.0.0",
     "core-js": "^3.6.5",
     "cucumber-html-reporter": "^5.5.0",
     "framer-motion": "^7",
