@@ -17,6 +17,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
+  PopoverArrow,
 } from '@chakra-ui/react';
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import useNotification from '@millicast-react/use-notification';
@@ -130,19 +131,14 @@ const Content = () => {
         dispatch({ type: StreamsActionType.ADD, id: mainStream.id });
       }
     }
-  }, [mainStream]);
-
-  // TODO: Enable project other source to main stream
-  // useEffect(() => {
-  //   if (
-  //     projectingSourceId.current &&
-  //     remoteTrackSources.size > 0 &&
-  //     !remoteTrackSources.get(projectingSourceId.current)
-  //   ) {
-  //     const newSourceId = remoteTrackSources.keys().next().value as string;
-  //     projectRemoteTrackToMain(newSourceId);
-  //   }
-  // }, [remoteTrackSources]);
+    if (remoteTrackSources.size > 0) {
+      Array.from(remoteTrackSources).forEach(([id]) => {
+        if (!streamsAttributes[id]) {
+          dispatch({ type: StreamsActionType.ADD, id });
+        }
+      });
+    }
+  }, [mainStream, remoteTrackSources]);
 
   const isStreaming = viewerState === 'liveOn';
   const hasMultiStream = remoteTrackSources.size > 0;
@@ -190,7 +186,7 @@ const Content = () => {
                   height={hasMultiStream ? '382px' : '464px'}
                   mediaStream={mainStream}
                   displayVideo={streamsAttributes[mainStream.id]?.video}
-                  muted={streamsAttributes[mainStream.id]?.muted}
+                  muted={streamsAttributes[mainStream.id]?.volume === 0}
                   displayMuteButton={true}
                   volume={streamsAttributes[mainStream.id]?.volume}
                   placeholderNode={
@@ -217,7 +213,8 @@ const Content = () => {
                               />
                             </Box>
                           </PopoverTrigger>
-                          <PopoverContent px={3} py={2.5}>
+                          <PopoverContent px={3} py={2.5} maxW="max-content">
+                            <PopoverArrow />
                             <Slider
                               defaultValue={0}
                               value={streamsAttributes[mainStream.id]?.volume}
@@ -233,7 +230,7 @@ const Content = () => {
                               <SliderTrack width="4px" h="90px" bg="dolbySecondary.200">
                                 <SliderFilledTrack bg="dolbyPurple.400" />
                               </SliderTrack>
-                              <SliderThumb bg="dolbyNeutral.800" />
+                              <SliderThumb w="12px" h="12px" bg="dolbyNeutral.800" />
                             </Slider>
                           </PopoverContent>
                         </Popover>
@@ -253,41 +250,69 @@ const Content = () => {
                 />
               </Stack>
             )}
-            {/* {hasMultiStream && (
+            {hasMultiStream && (
               <HStack spacing={4}>
-                {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
-                  if (trackSource.id !== 'main') {
+                {Array.from(remoteTrackSources).map(([id, source]) => {
+                  if (id !== 'main') {
                     return (
-                      <VStack key={trackSource.id}>
+                      <VStack key={id}>
                         <VideoView
                           width="688px"
                           height="382px"
-                          mediaStream={trackSource.source.mediaStream}
-                          muted={displayStreamMuted}
-                          displayVideo={displayStreamDisplayVideo}
-                          volume={streamsAttributes?.[trackSource.id]?.volume}
+                          mediaStream={source.mediaStream}
+                          volume={streamsAttributes?.[id]?.volume}
+                          displayVideo={streamsAttributes[id]?.video}
+                          muted={streamsAttributes[id]?.volume === 0}
+                          displayMuteButton={true}
                         />
                         <ControlBar
                           controls={[
                             {
-                              key: `toggle${trackSource.id}AudioButton`,
-                              'test-id': `toggle${trackSource.id}AudioButton`,
-                              tooltip: { label: 'Toggle Audio', placement: 'top' },
-                              onClick: () => {
-                                setDisplayStreamMuted(!displayStreamMuted);
-                              },
-                              isActive: displayStreamMuted,
-                              icon: displayStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
+                              key: `volume${id}Slider`,
+                              'test-id': `volume${id}Slider`,
+                              node: (
+                                <Popover trigger="hover" placement="top">
+                                  <PopoverTrigger>
+                                    <Box>
+                                      <IconButton
+                                        test-id="mainStreamAudioVolumeButton"
+                                        as="div"
+                                        icon={
+                                          streamsAttributes[id]?.volume === 0 ? <IconSpeakerOff /> : <IconSpeaker />
+                                        }
+                                      />
+                                    </Box>
+                                  </PopoverTrigger>
+                                  <PopoverContent px={3} py={2.5} maxW="max-content">
+                                    <PopoverArrow />
+                                    <Slider
+                                      defaultValue={0}
+                                      value={streamsAttributes[id]?.volume}
+                                      min={0}
+                                      step={0.1}
+                                      max={1}
+                                      orientation="vertical"
+                                      h="90px"
+                                      onChange={(value) => dispatch({ type: StreamsActionType.VOLUME, id: id, value })}
+                                    >
+                                      <SliderTrack width="4px" h="90px" bg="dolbySecondary.200">
+                                        <SliderFilledTrack bg="dolbyPurple.400" />
+                                      </SliderTrack>
+                                      <SliderThumb w="12px" h="12px" bg="dolbyNeutral.800" />
+                                    </Slider>
+                                  </PopoverContent>
+                                </Popover>
+                              ),
                             },
                             {
-                              key: `toggle${trackSource.id}VideoButton`,
-                              'test-id': `toggle${trackSource.id}VideoButton`,
+                              key: `toggle${id}VideoButton`,
+                              'test-id': `toggle${id}VideoButton`,
                               tooltip: { label: 'Toggle Video', placement: 'top' },
                               onClick: () => {
-                                setDisplayStreamDisplayVideo(!displayStreamDisplayVideo);
+                                dispatch({ type: StreamsActionType.TOGGLE_VIDEO, id });
                               },
-                              isActive: !displayStreamDisplayVideo,
-                              icon: displayStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                              isActive: !streamsAttributes[id]?.video,
+                              icon: streamsAttributes[id]?.video ? <IconCameraOn /> : <IconCameraOff />,
                             },
                           ]}
                         />
@@ -297,7 +322,7 @@ const Content = () => {
                   return null;
                 })}
               </HStack>
-            )} */}
+            )}
           </Stack>
         )}
       </Flex>

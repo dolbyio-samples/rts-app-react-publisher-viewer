@@ -32,7 +32,7 @@ type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputD
 type UseMediaDevicesArguments = {
   handleError?: (error: string) => void;
 };
-const ideaCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
+const idealCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
 
 const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
@@ -47,26 +47,48 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
   const [mediaStream, setMediaStream, mediaStreamRef] = useState<MediaStream>();
   const [displayStream, setDisplayStream, displayStreamRef] = useState<MediaStream>();
 
-  useEffect(() => {
-    const initializeDeviceList = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: ideaCameraConfig,
-        });
-        if (stream) {
-          const { cameraList, microphoneList } = await getMediaDevicesLists();
+  const initializeDeviceList = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: idealCameraConfig,
+      });
+      if (stream) {
+        const { cameraList, microphoneList } = await getMediaDevicesLists();
+        if (!camera) {
           setCamera(cameraList[0]);
+        } else {
+          const prevCameraIsAvailable = cameraList.find((element) => element.deviceId === camera.deviceId);
+          if (!prevCameraIsAvailable) {
+            setCamera(cameraList[0]);
+          }
+        }
+        if (!microphone) {
           setMicrophone(microphoneList[0]);
         } else {
-          handleError?.(`Cannot get user's media stream`);
+          const prevMicrophoneIsAvailable = microphoneList.find((element) => element.deviceId === microphone.deviceId);
+          if (!prevMicrophoneIsAvailable) {
+            setMicrophone(microphoneList[0]);
+          }
         }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          handleError?.(error.message);
-        }
+      } else {
+        handleError?.(`Cannot get user's media stream`);
       }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        handleError?.(error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    navigator.mediaDevices.addEventListener('devicechange', initializeDeviceList);
+    return () => {
+      navigator.mediaDevices.removeEventListener('devicechange', initializeDeviceList);
     };
+  }, [camera, microphone]);
+
+  useEffect(() => {
     initializeDeviceList();
   }, []);
 
@@ -97,7 +119,7 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
         },
         video: {
           deviceId: { exact: cameraId },
-          ...ideaCameraConfig,
+          ...idealCameraConfig,
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
