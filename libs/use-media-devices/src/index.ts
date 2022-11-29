@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import useState from 'react-usestateref';
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
@@ -47,7 +47,15 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
   const [mediaStream, setMediaStream, mediaStreamRef] = useState<MediaStream>();
   const [displayStream, setDisplayStream, displayStreamRef] = useState<MediaStream>();
 
-  const initializeDeviceList = async () => {
+  const _handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      handleError?.(error.message);
+    } else {
+      handleError?.(`${error}`);
+    }
+  };
+
+  const initializeDeviceList = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -72,21 +80,19 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
           }
         }
       } else {
-        handleError?.(`Cannot get user's media stream`);
+        _handleError(`Cannot get user's media stream`);
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
-  };
+  }, [camera, microphone]);
 
   useEffect(() => {
     navigator.mediaDevices.addEventListener('devicechange', initializeDeviceList);
     return () => {
       navigator.mediaDevices.removeEventListener('devicechange', initializeDeviceList);
     };
-  }, [camera, microphone]);
+  }, []);
 
   useEffect(() => {
     initializeDeviceList();
@@ -125,9 +131,7 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setMediaStream(stream);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
   };
 
@@ -143,9 +147,7 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
       setCameraList(cameraList);
       setMicrophoneList(microphoneList);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
     }
     return Promise.resolve({ cameraList, microphoneList });
   };
@@ -182,9 +184,7 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
       });
       return Promise.resolve();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
       return Promise.reject(error);
     }
   };
@@ -212,9 +212,8 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
       setMediaStream(newStream);
       return Promise.resolve();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        handleError?.(error.message);
-      }
+      _handleError(error);
+
       return Promise.reject(error);
     }
   };

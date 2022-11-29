@@ -1,4 +1,4 @@
-import React, { memo, useRef, useEffect, useState, ReactNode, VideoHTMLAttributes } from 'react';
+import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
 import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
 
 import { IconFullScreen, IconFullScreenExit } from '@millicast-react/dolbyio-icons';
@@ -21,7 +21,6 @@ export type VideoViewProps = {
   onClick?: BoxProps['onClick'];
   showDotIndicator?: boolean;
   volume?: number;
-  video?: VideoHTMLAttributes<HTMLVideoElement>;
 };
 
 const VideoView = ({
@@ -37,7 +36,6 @@ const VideoView = ({
   placeholderNode,
   onClick,
   showDotIndicator,
-  video,
   volume = 1,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -124,7 +122,6 @@ const VideoView = ({
         }}
         // eslint-disable-next-line react/no-unknown-property
         test-id="video-view"
-        {...video}
       />
       {label && (
         <InfoLabel

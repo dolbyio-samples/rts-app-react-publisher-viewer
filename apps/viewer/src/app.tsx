@@ -2,6 +2,7 @@ import { Box, Button, Text, Center } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import Content from './components/content';
+import './styles/font.css';
 
 function App() {
   useEffect(() => {
