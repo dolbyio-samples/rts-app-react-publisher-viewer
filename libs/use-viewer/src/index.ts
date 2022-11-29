@@ -83,6 +83,9 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
       case 'liveOff':
         millicastView.current?.webRTCPeer?.stopStats();
         millicastView.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
+
+        // Disable simulcast. We'll only turn it on next time when the stream starts and we get data back.
+        setStreamQualityOptions([{ streamQuality: 'Auto' }]);
         break;
       case 'liveOn':
         {
