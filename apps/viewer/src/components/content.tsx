@@ -13,8 +13,13 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Stack,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  PopoverArrow,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
 import {
@@ -36,8 +41,76 @@ import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import ControlBar from '@millicast-react/control-bar';
 
+type StreamAttributes = { muteAudio: boolean; displayVideo: boolean; volume: number };
+
+type StreamId = string;
+
+type StreamsReducerState = Map<StreamId, StreamAttributes>;
+
+enum StreamsActionType {
+  ADD_STREAM = 'ADD_STREAM',
+  TOGGLE_AUDIO = 'TOGGLE_AUDIO',
+  TOGGLE_VIDEO = 'TOGGLE_VIDEO',
+  ADJUST_VOLUME = 'ADJUST_VOLUME',
+}
+
+type StreamsAction =
+  | {
+      type: StreamsActionType.ADD_STREAM;
+      id: string;
+    }
+  | {
+      type: StreamsActionType.TOGGLE_AUDIO | StreamsActionType.TOGGLE_VIDEO;
+      id: string;
+    }
+  | {
+      type: StreamsActionType.ADJUST_VOLUME;
+      id: string;
+      value: number;
+    };
+
+const initialStreamAttributes: StreamAttributes = { muteAudio: true, displayVideo: true, volume: 0.5 };
+
+const streamsReducer = (state: StreamsReducerState, action: StreamsAction) => {
+  const prev = state.get(action.id);
+
+  switch (action.type) {
+    case StreamsActionType.ADD_STREAM: {
+      const updated = new Map(state);
+      updated.set(action.id, initialStreamAttributes);
+      return updated;
+    }
+    case StreamsActionType.TOGGLE_AUDIO: {
+      const updated = new Map(state);
+      if (prev) {
+        updated.set(action.id, { ...prev, muteAudio: !prev.muteAudio });
+      }
+      return updated;
+    }
+    case StreamsActionType.TOGGLE_VIDEO: {
+      const updated = new Map(state);
+      if (prev) {
+        updated.set(action.id, { ...prev, displayVideo: !prev.displayVideo });
+      }
+      return updated;
+    }
+    case StreamsActionType.ADJUST_VOLUME: {
+      const updated = new Map(state);
+      if (prev) {
+        updated.set(action.id, { ...prev, volume: action.value });
+      }
+      return updated;
+    }
+    default:
+      console.error('Unknown action');
+      return state;
+  }
+};
+
 const Content = () => {
   const { showError } = useNotification();
+  const [streamsAttributes, dispatch] = useReducer(streamsReducer, new Map());
+
   const {
     viewerState,
     mainStream,
@@ -52,11 +125,6 @@ const Content = () => {
   } = useViewer({ handleError: showError });
 
   const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
-  const [mainStreamMuted, setMainStreamMuted] = useState(true);
-  const [mainStreamDisplayVideo, setMainStreamDisplayVideo] = useState(true);
-  // TODO: map to remote track sources
-  const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
-  const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
   const projectingSourceId = useRef<string>('main');
 
   useEffect(() => {
@@ -73,17 +141,20 @@ const Content = () => {
     }
   }, [viewerState]);
 
-  // TODO: Enable project other source to main stream
-  // useEffect(() => {
-  //   if (
-  //     projectingSourceId.current &&
-  //     remoteTrackSources.size > 0 &&
-  //     !remoteTrackSources.get(projectingSourceId.current)
-  //   ) {
-  //     const newSourceId = remoteTrackSources.keys().next().value as string;
-  //     projectRemoteTrackToMain(newSourceId);
-  //   }
-  // }, [remoteTrackSources]);
+  useEffect(() => {
+    if (mainStream) {
+      if (!streamsAttributes.has(mainStream.id)) {
+        dispatch({ type: StreamsActionType.ADD_STREAM, id: mainStream.id });
+      }
+    }
+    if (remoteTrackSources.size > 0) {
+      Array.from(remoteTrackSources).forEach(([id]) => {
+        if (!streamsAttributes.has(id)) {
+          dispatch({ type: StreamsActionType.ADD_STREAM, id });
+        }
+      });
+    }
+  }, [mainStream, remoteTrackSources]);
 
   const isStreaming = viewerState === 'liveOn';
   const hasMultiStream = remoteTrackSources.size > 0;
@@ -124,91 +195,172 @@ const Content = () => {
           </VStack>
         ) : (
           <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="6">
-            {mainStream && (
-              <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
-                <VideoView
-                  width={hasMultiStream ? '688px' : '836px'}
-                  height={hasMultiStream ? '382px' : '464px'}
-                  mediaStream={mainStream}
-                  displayVideo={mainStreamDisplayVideo}
-                  muted={mainStreamMuted}
-                  displayMuteButton={true}
-                  placeholderNode={
-                    <Box color="dolbyNeutral.700" position="absolute" width="174px">
-                      <IconProfile />
-                    </Box>
-                  }
-                />
-                <ControlBar
-                  controls={[
-                    {
-                      key: 'toggleMainStreamAudioButton',
-                      'test-id': 'toggleMainStreamAudioButton',
-                      tooltip: { label: 'Toggle Audio', placement: 'top' },
-                      onClick: () => {
-                        setMainStreamMuted(!mainStreamMuted);
-                      },
-                      isActive: mainStreamMuted,
-                      icon: mainStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
-                    },
-                    {
-                      key: 'toggleMainStreamVideoButton',
-                      'test-id': 'toggleMainStreamVideoButton',
-                      tooltip: { label: 'Toggle Video', placement: 'top' },
-                      onClick: () => {
-                        setMainStreamDisplayVideo(!mainStreamDisplayVideo);
-                      },
-                      isActive: !mainStreamDisplayVideo,
-                      icon: mainStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
-                    },
-                  ]}
-                />
-              </Stack>
-            )}
-            {hasMultiStream && (
-              <HStack spacing={4}>
-                {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
-                  if (trackSource.id !== 'main') {
-                    return (
-                      <VStack key={trackSource.id}>
-                        <VideoView
-                          width="688px"
-                          height="382px"
-                          mediaStream={trackSource.source.mediaStream}
-                          muted={displayStreamMuted}
-                          displayVideo={displayStreamDisplayVideo}
-                        />
-                        <ControlBar
-                          controls={[
-                            {
-                              key: `toggle${trackSource.id}AudioButton`,
-                              'test-id': `toggle${trackSource.id}AudioButton`,
-                              tooltip: { label: 'Toggle Audio', placement: 'top' },
-                              onClick: () => {
-                                setDisplayStreamMuted(!displayStreamMuted);
-                              },
-                              isActive: displayStreamMuted,
-                              icon: displayStreamMuted ? <IconSpeakerOff /> : <IconSpeaker />,
+            <>
+              {mainStream &&
+                (() => {
+                  const { id } = mainStream;
+                  const attributes = streamsAttributes.get(id);
+                  return (
+                    <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
+                      <VideoView
+                        width={hasMultiStream ? '688px' : '836px'}
+                        height={hasMultiStream ? '382px' : '464px'}
+                        mediaStream={mainStream}
+                        displayVideo={attributes?.displayVideo}
+                        muted={attributes?.muteAudio}
+                        displayMuteButton={true}
+                        volume={attributes?.volume}
+                        placeholderNode={
+                          <Box color="dolbyNeutral.700" position="absolute" width="174px">
+                            <IconProfile />
+                          </Box>
+                        }
+                      />
+                      <ControlBar
+                        controls={[
+                          {
+                            key: 'volumeSlider',
+                            'test-id': 'volumeSlider',
+                            node: (
+                              <Box>
+                                <Popover trigger="hover" placement="top">
+                                  <PopoverTrigger>
+                                    <Box>
+                                      <IconButton
+                                        test-id="mainStreamAudioVolumeButton"
+                                        icon={attributes?.muteAudio ? <IconSpeakerOff /> : <IconSpeaker />}
+                                        isActive={attributes?.muteAudio}
+                                        onClick={() => {
+                                          dispatch({ type: StreamsActionType.TOGGLE_AUDIO, id });
+                                        }}
+                                      />
+                                    </Box>
+                                  </PopoverTrigger>
+                                  {!attributes?.muteAudio && (
+                                    <PopoverContent px={3} py={2.5} width="inherit">
+                                      <PopoverArrow />
+                                      <Flex justifyContent="center">
+                                        <Slider
+                                          value={attributes?.volume}
+                                          min={0}
+                                          step={0.1}
+                                          max={1}
+                                          orientation="vertical"
+                                          h="90px"
+                                          onChange={(value) =>
+                                            dispatch({ type: StreamsActionType.ADJUST_VOLUME, id, value })
+                                          }
+                                        >
+                                          <SliderTrack width="4px" h="90px" bg="dolbySecondary.200">
+                                            <SliderFilledTrack bg="dolbyPurple.400" />
+                                          </SliderTrack>
+                                          <SliderThumb w="12px" h="12px" bg="dolbyNeutral.800" />
+                                        </Slider>
+                                      </Flex>
+                                    </PopoverContent>
+                                  )}
+                                </Popover>
+                              </Box>
+                            ),
+                          },
+                          {
+                            key: 'toggleMainStreamVideoButton',
+                            'test-id': 'toggleMainStreamVideoButton',
+                            tooltip: { label: 'Toggle Video', placement: 'top' },
+                            onClick: () => {
+                              dispatch({ type: StreamsActionType.TOGGLE_VIDEO, id });
                             },
-                            {
-                              key: `toggle${trackSource.id}VideoButton`,
-                              'test-id': `toggle${trackSource.id}VideoButton`,
-                              tooltip: { label: 'Toggle Video', placement: 'top' },
-                              onClick: () => {
-                                setDisplayStreamDisplayVideo(!displayStreamDisplayVideo);
+                            isActive: !attributes?.displayVideo,
+                            icon: attributes?.displayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                          },
+                        ]}
+                      />
+                    </Stack>
+                  );
+                })()}
+
+              {hasMultiStream && (
+                <HStack spacing={4}>
+                  {Array.from(remoteTrackSources).map(([id, source]) => {
+                    if (id !== 'main') {
+                      const attributes = streamsAttributes.get(id);
+                      return (
+                        <VStack key={id}>
+                          <VideoView
+                            width="688px"
+                            height="382px"
+                            mediaStream={source.mediaStream}
+                            volume={attributes?.volume}
+                            displayVideo={attributes?.displayVideo}
+                            muted={attributes?.volume === 0}
+                            displayMuteButton={true}
+                          />
+                          <ControlBar
+                            controls={[
+                              {
+                                key: `volume${id}Slider`,
+                                'test-id': `volume${id}Slider`,
+                                node: (
+                                  <Box>
+                                    <Popover trigger="hover" placement="top">
+                                      <PopoverTrigger>
+                                        <Box>
+                                          <IconButton
+                                            test-id={`volume${id}SliderTrigger`}
+                                            icon={attributes?.muteAudio ? <IconSpeakerOff /> : <IconSpeaker />}
+                                            isActive={attributes?.muteAudio}
+                                            onClick={() => {
+                                              dispatch({ type: StreamsActionType.TOGGLE_AUDIO, id });
+                                            }}
+                                          />
+                                        </Box>
+                                      </PopoverTrigger>
+                                      {!attributes?.muteAudio && (
+                                        <PopoverContent px={3} py={2.5} maxW="max-content">
+                                          <PopoverArrow />
+                                          <Slider
+                                            defaultValue={0}
+                                            value={attributes?.volume}
+                                            min={0}
+                                            step={0.1}
+                                            max={1}
+                                            orientation="vertical"
+                                            h="90px"
+                                            onChange={(value) =>
+                                              dispatch({ type: StreamsActionType.ADJUST_VOLUME, id: id, value })
+                                            }
+                                          >
+                                            <SliderTrack width="4px" h="90px" bg="dolbySecondary.200">
+                                              <SliderFilledTrack bg="dolbyPurple.400" />
+                                            </SliderTrack>
+                                            <SliderThumb w="12px" h="12px" bg="dolbyNeutral.800" />
+                                          </Slider>
+                                        </PopoverContent>
+                                      )}
+                                    </Popover>
+                                  </Box>
+                                ),
                               },
-                              isActive: !displayStreamDisplayVideo,
-                              icon: displayStreamDisplayVideo ? <IconCameraOn /> : <IconCameraOff />,
-                            },
-                          ]}
-                        />
-                      </VStack>
-                    );
-                  }
-                  return null;
-                })}
-              </HStack>
-            )}
+                              {
+                                key: `toggle${id}VideoButton`,
+                                'test-id': `toggle${id}VideoButton`,
+                                tooltip: { label: 'Toggle Video', placement: 'top' },
+                                onClick: () => {
+                                  dispatch({ type: StreamsActionType.TOGGLE_VIDEO, id });
+                                },
+                                isActive: !attributes?.displayVideo,
+                                icon: attributes?.displayVideo ? <IconCameraOn /> : <IconCameraOff />,
+                              },
+                            ]}
+                          />
+                        </VStack>
+                      );
+                    }
+                    return null;
+                  })}
+                </HStack>
+              )}
+            </>
           </Stack>
         )}
       </Flex>
