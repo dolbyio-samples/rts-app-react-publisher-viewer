@@ -108,7 +108,7 @@ function App() {
     const date = new Date();
     setupPublisher(
       import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-      date.valueOf().toString(), // or VITE_MILLICAST_STREAM_NAME
+      import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
       import.meta.env.VITE_MILLICAST_STREAM_ID,
       import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL
     );
