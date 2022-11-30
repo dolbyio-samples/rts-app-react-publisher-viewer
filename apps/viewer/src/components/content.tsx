@@ -69,7 +69,7 @@ type StreamsAction =
       value: number;
     };
 
-const initialStreamAttributes: StreamAttributes = { muteAudio: true, displayVideo: true, volume: 0 };
+const initialStreamAttributes: StreamAttributes = { muteAudio: true, displayVideo: true, volume: 0.5 };
 
 const streamsReducer = (state: StreamsReducerState, action: StreamsAction) => {
   const prev = state.get(action.id);
