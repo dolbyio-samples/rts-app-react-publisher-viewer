@@ -156,6 +156,17 @@ const Content = () => {
     }
   }, [mainStream, remoteTrackSources]);
 
+  useEffect(() => {
+    if (
+      streamQualityOptions.length &&
+      (!streamQualityOptions.some((options) => options.streamQuality === selectedQuality) ||
+        streamQualityOptions.length === 1)
+    ) {
+      updateStreamQuality('Auto');
+      setSelectedQuality('Auto');
+    }
+  }, [streamQualityOptions]);
+
   const isStreaming = viewerState === 'liveOn';
   const hasMultiStream = remoteTrackSources.size > 0;
 
