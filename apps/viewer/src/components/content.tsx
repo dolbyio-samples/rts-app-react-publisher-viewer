@@ -131,8 +131,14 @@ const Content = () => {
     const href = new URL(window.location.href);
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
     const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
-    setupViewer(streamName, streamAccountId, projectingSourceId.current);
-    return stopViewer;
+    try {
+      setupViewer(streamName, streamAccountId, projectingSourceId.current);
+    } catch (err) {
+      showError(`${err}`);
+    }
+    return () => {
+      stopViewer();
+    };
   }, []);
 
   useEffect(() => {
