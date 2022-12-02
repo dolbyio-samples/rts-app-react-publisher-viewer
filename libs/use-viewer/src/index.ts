@@ -53,7 +53,7 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
   const mainAudioMidRef = useRef<string>();
   const [viewerCount, setViewerCount] = useState<number>(0);
   const streamQuality = useRef<StreamQuality>();
-  const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([{ streamQuality: 'Auto' }]);
+  const [streamQualityOptions, setStreamQualityOptions] = useState<SimulcastQuality[]>([]);
 
   const _handleError = (error: unknown) => {
     if (error instanceof Error) {
@@ -99,7 +99,10 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
   }, [viewerState]);
 
   const constructLayers = (layers: MediaLayer[]) => {
-    if (layers.length > 3 || layers.length < 2) return;
+    if (layers.length > 3 || layers.length < 2) {
+      setStreamQualityOptions([{ streamQuality: 'Auto' }]);
+      return;
+    }
     const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
     const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
       return {
@@ -170,15 +173,7 @@ const useViewer = ({ handleError }: UseViewerArguments = {}): Viewer => {
       case 'layers': {
         // We only check active layers for main stream which always has media id 0
         const layers = (event.data as MediaStreamLayers).medias['0']?.active;
-        if (!layers || layers.length == 0) {
-          setStreamQualityOptions([]);
-          return;
-        }
         constructLayers(layers);
-        if (!streamQuality.current) {
-          streamQuality.current = 'Auto';
-          millicastView.current?.select({});
-        }
         break;
       }
     }
