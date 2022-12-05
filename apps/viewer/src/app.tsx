@@ -1,9 +1,52 @@
-import { Box, Button, Text, Center } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import Content from './components/content';
+import {
+  VStack,
+  Text,
+  HStack,
+  Flex,
+  Spacer,
+  Box,
+  Heading,
+  Popover,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Stack,
+  Button,
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import useNotification from '@millicast-react/use-notification';
+import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
+import {
+  IconProfile,
+  IconInfo,
+  IconSettings,
+  IconCameraOn,
+  IconCameraOff,
+  IconSpeaker,
+  IconSpeakerOff,
+} from '@millicast-react/dolbyio-icons';
+import VideoView from '@millicast-react/video-view';
+import ParticipantCount from '@millicast-react/participant-count';
+import Timer from '@millicast-react/timer';
+import IconButton from '@millicast-react/icon-button';
+import ActionBar from '@millicast-react/action-bar';
+import Dropdown from '@millicast-react/dropdown';
+import StatisticsInfo from '@millicast-react/statistics-info';
+import InfoLabel from '@millicast-react/info-label';
+import ControlBar from '@millicast-react/control-bar';
+
+type TrackSourceState = {
+  muteAudio: boolean;
+  hideVideo: boolean;
+};
+
+type TrackSourcesStates = Map<string, TrackSourceState>;
 
 function App() {
+  const [trackSourcesStates, setTrackSourcesStates] = useState<TrackSourcesStates>(new Map());
+
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
@@ -17,24 +60,237 @@ function App() {
     };
   }, []);
 
-  const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-    return (
-      <Box borderWidth="1px" p="4">
-        <Text fontSize="lg">Something went wrong:</Text>
-        <Text fontSize="md" p="2">
-          {error.message}
-        </Text>
-        <Center mt="4">
-          <Button onClick={resetErrorBoundary}>Try again</Button>
-        </Center>
-      </Box>
-    );
-  };
+  const { showError } = useNotification();
+  const href = new URL(window.location.href);
+  const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
+  const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
+  const {
+    startViewer,
+    stopViewer,
+    remoteTrackSources,
+    viewerCount,
+    // updateSourceQuality: updateStreamQuality,
+  } = useViewer({
+    streamName,
+    streamAccountId,
+    handleError: showError,
+  });
+
+  // const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
+  // const [mainStreamMuted, setMainStreamMuted] = useState(true);
+  // const [mainStreamDisplayVideo, setMainStreamDisplayVideo] = useState(true);
+  // TODO: map to remote track sources
+  // const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
+  // const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
+
+  useEffect(() => {
+    const newTrackSourcesStates = new Map(trackSourcesStates);
+    remoteTrackSources.forEach((source) => {
+      if (!newTrackSourcesStates.get(source.sourceId)) newTrackSourcesStates.delete(source.sourceId);
+    });
+    if (newTrackSourcesStates.size !== trackSourcesStates.size) {
+      setTrackSourcesStates(newTrackSourcesStates);
+    }
+  }, [remoteTrackSources]);
+
+  const isStreaming = remoteTrackSources.size > 0;
+  const hasMultiStream = remoteTrackSources.size > 1;
+
+  console.log('app log', remoteTrackSources, viewerCount);
 
   return (
-    <ErrorBoundary fallbackRender={ErrorFallback}>
-      <Content />
-    </ErrorBoundary>
+    <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
+      <Box w="100%" h="94px">
+        <ActionBar title="Company name" />
+        <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
+          <VStack spacing="4" alignItems="flex-start">
+            <Button
+              onClick={() => {
+                isStreaming ? stopViewer() : startViewer();
+              }}
+            >
+              {' '}
+              Start/Stop{' '}
+            </Button>
+            <Flex alignItems="center">
+              <Timer isActive={isStreaming} />
+              {hasMultiStream && (
+                <InfoLabel
+                  text="Multi–stream view"
+                  ml="2.5"
+                  color="white"
+                  bgColor="dolbyNeutral.300"
+                  py="5px"
+                  h="auto"
+                  fontWeight="600"
+                />
+              )}
+            </Flex>
+            {isStreaming && viewerCount > 0 && <ParticipantCount count={viewerCount} />}
+          </VStack>
+        </Flex>
+      </Box>
+      <Flex flex={1} width="100%" alignItems="center" justifyContent="center">
+        {!isStreaming ? (
+          <VStack>
+            <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
+              Stream is not live
+            </Heading>
+            <Text>Please wait for livestream to begin.</Text>
+          </VStack>
+        ) : (
+          <HStack justifyContent="center" alignItems="center" w="100%" spacing="6">
+            {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
+              const muteAudio = trackSourcesStates.get(trackSource.id)?.muteAudio ?? true;
+              const hideVideo = trackSourcesStates.get(trackSource.id)?.hideVideo ?? false;
+              return (
+                <VStack key={trackSource.id}>
+                  <VideoView
+                    width="688px"
+                    height="382px"
+                    mediaStream={trackSource.source.mediaStream}
+                    muted={muteAudio}
+                    displayVideo={!hideVideo}
+                  />
+                  <ControlBar
+                    controls={[
+                      {
+                        key: `toggle${trackSource.id}AudioButton`,
+                        'test-id': `toggle${trackSource.id}AudioButton`,
+                        tooltip: { label: 'Toggle Audio', placement: 'top' },
+                        onClick: () => {
+                          const state = trackSourcesStates.get(trackSource.id);
+                          if (!state) return;
+                          const newState = { ...state };
+                          newState.muteAudio = !newState.muteAudio;
+                          const newStates = new Map(trackSourcesStates);
+                          newStates.set(trackSource.id, newState);
+                          setTrackSourcesStates(newStates);
+                        },
+                        isActive: muteAudio,
+                        icon: muteAudio ? <IconSpeakerOff /> : <IconSpeaker />,
+                      },
+                      {
+                        key: `toggle${trackSource.id}VideoButton`,
+                        'test-id': `toggle${trackSource.id}VideoButton`,
+                        tooltip: { label: 'Toggle Video', placement: 'top' },
+                        onClick: () => {
+                          const state = trackSourcesStates.get(trackSource.id);
+                          if (!state) return;
+                          const newState = { ...state };
+                          newState.hideVideo = !newState.hideVideo;
+                          const newStates = new Map(trackSourcesStates);
+                          newStates.set(trackSource.id, newState);
+                          setTrackSourcesStates(newStates);
+                        },
+                        isActive: hideVideo,
+                        icon: hideVideo ? <IconCameraOff /> : <IconCameraOn />,
+                      },
+                    ]}
+                  />
+                </VStack>
+              );
+            })}
+          </HStack>
+        )}
+      </Flex>
+      {/* <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
+        <Box>
+          {isStreaming && statistics && (
+            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
+              <PopoverTrigger>
+                <Box>
+                  <IconButton
+                    test-id="streamInfoButton"
+                    aria-label="Stream Information"
+                    tooltip={{ label: 'Stream Information' }}
+                    size="md"
+                    className="icon-button"
+                    icon={<IconInfo fill="white" />}
+                    borderRadius="50%"
+                    reversed
+                  />
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
+                <PopoverHeader
+                  color="white"
+                  alignContent="flex-start"
+                  border="none"
+                  p={0}
+                  fontSize="20px"
+                  fontWeight="600"
+                  mb={4}
+                >
+                  Streaming Information
+                </PopoverHeader>
+                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
+                <PopoverBody p={0}>
+                  <StatisticsInfo statistics={statistics} />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          )}
+        </Box>
+        <Spacer />
+        <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
+          {isStreaming && (
+            <Popover placement="top-end">
+              <PopoverTrigger>
+                <Box>
+                  <IconButton
+                    test-id="settingsButton"
+                    tooltip={{ label: 'Settings' }}
+                    icon={<IconSettings />}
+                    borderRadius="50%"
+                    reversed
+                  />
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent bg="dolbyNeutral.800" width="364px" border="none" p={6}>
+                <PopoverHeader
+                  color="white"
+                  alignContent="flex-start"
+                  border="none"
+                  p={0}
+                  fontSize="20px"
+                  fontWeight="600"
+                  mb={4}
+                >
+                  Settings
+                </PopoverHeader>
+                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
+                <PopoverBody p={0}>
+                  <Dropdown
+                    leftIcon={<IconCameraOn />}
+                    testId="quality-select"
+                    elementsList={streamQualityOptions}
+                    elementResolver={(element) => {
+                      const quality = element as SimulcastQuality;
+                      return {
+                        id: quality.streamQuality,
+                        label: quality.streamQuality,
+                        data: quality.streamQuality,
+                      };
+                    }}
+                    onSelect={(data) => {
+                      updateStreamQuality(data as StreamQuality);
+                      setSelectedQuality(data as StreamQuality);
+                    }}
+                    selected={selectedQuality}
+                    placeholder="Video quality"
+                    disabled={streamQualityOptions.length < 2}
+                  />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          )}
+        </Flex>
+      </HStack> */}
+      <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
+        <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
+      </Box>
+    </Flex>
   );
 }
 

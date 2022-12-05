@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import {
   Box,
   Drawer,
@@ -22,9 +22,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import './styles/font.css';
-import usePublisher, { Bitrate } from '@millicast-react/use-publisher';
-import useMediaDevices from '@millicast-react/use-media-devices';
 import {
   IconMicrophoneOn,
   IconMicrophoneOff,
@@ -40,6 +37,10 @@ import {
   IconClose,
   IconBitrate,
 } from '@millicast-react/dolbyio-icons';
+import './styles/font.css';
+import usePublisher from '@millicast-react/use-publisher';
+import type { SourceState, Bitrate } from '@millicast-react/use-publisher';
+import useMediaDevices from '@millicast-react/use-media-devices';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
@@ -51,32 +52,50 @@ import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
 import ControlBar from '@millicast-react/control-bar';
 import Dropdown from '@millicast-react/dropdown';
-import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import useNotification from '@millicast-react/use-notification';
+import type { StreamStats, VideoCodec } from '@millicast/sdk';
+import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 
-const displayShareSourceId = 'DisplayShare';
+//TODO: Support more than 2 sources
+const MainSourceId = 'Main';
+const DisplayShareSourceId = 'DisplayShare';
+type PublisherState = SourceState;
 
 function App() {
+  useEffect(() => {
+    // prevent closing the page
+    const pageCloseHandler = (event: BeforeUnloadEvent) => {
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', pageCloseHandler);
+    return () => {
+      window.removeEventListener('beforeunload', pageCloseHandler);
+    };
+  }, []);
+
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
   const { showError } = useNotification();
 
+  const date = new Date();
   const {
-    setupPublisher,
-    startStreaming,
-    stopStreaming,
-    updateStreaming,
-    startDisplayStreaming,
-    stopDisplayStreaming,
+    startStreamingSource,
+    stopStreamingSource,
+    updateSourceMediaStream,
+    updateSourceBitrate,
+    sources,
     codecList,
     bitrateList,
-    updateBitrate,
-    publisherState,
     viewerCount,
-    linkText,
-    statistics,
-  } = usePublisher({ handleError: showError });
+    shareUrl,
+  } = usePublisher({
+    token: import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+    streamId: import.meta.env.VITE_MILLICAST_STREAM_ID,
+    streamName: import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
+    viewerAppBaseUrl: import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL,
+    handleError: showError,
+  });
 
   const {
     cameraList,
@@ -99,58 +118,69 @@ function App() {
     microphoneSettings,
   } = useMediaDevices({ handleError: showError });
 
+  const [publisherState, setPublisherState] = useState<PublisherState>('ready');
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
-  const [codec, setCodec] = useState<string>();
+  const [codec, setCodec] = useState<VideoCodec>();
   const [bitrate, setBitrate] = useState<number>(0);
+  const [statistics, setStatistics] = useState<StreamStats>();
   const resolutionList = useCameraCapabilities(cameraCapabilities);
 
   useEffect(() => {
-    setupPublisher(
-      import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-      import.meta.env.VITE_MILLICAST_STREAM_NAME,
-      import.meta.env.VITE_MILLICAST_STREAM_ID,
-      import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL
-    );
-  }, []);
-
-  useEffect(() => {
-    // prevent closing the page
-    const pageCloseHandler = (event: BeforeUnloadEvent) => {
-      event.returnValue = '';
-    };
-
-    window.addEventListener('beforeunload', pageCloseHandler);
-
-    return () => {
-      window.removeEventListener('beforeunload', pageCloseHandler);
-    };
-  }, []);
+    if (sources.size === 0) {
+      setPublisherState('ready');
+      return;
+    }
+    for (const [id, source] of sources) {
+      if (id === MainSourceId) {
+        setPublisherState(source.state);
+        if (source.broadcastOptions.bandwidth) setBitrate(source.broadcastOptions.bandwidth);
+        if (source.statistics) setStatistics(source.statistics);
+        break;
+      }
+    }
+  }, [sources]);
 
   useEffect(() => {
     if (mediaStream) {
-      updateStreaming(mediaStream);
+      updateSourceMediaStream(MainSourceId, mediaStream);
     }
   }, [mediaStream]);
+
+  const displayStreamLabel = useMemo(() => {
+    if (displayStream) {
+      if (displayStream.getVideoTracks()[0].label.length > 0) {
+        return displayStream.getVideoTracks()[0].label.split(':')[0];
+      } else {
+        return 'Screen Share';
+      }
+    }
+    return '';
+  }, [displayStream]);
+
+  useEffect(() => {
+    if (!displayStream) stopStreamingSource(DisplayShareSourceId);
+    else if (publisherState === 'streaming')
+      startStreamingSource({
+        mediaStream: displayStream,
+        sourceId: DisplayShareSourceId,
+      });
+  }, [displayStream, publisherState]);
 
   useEffect(() => {
     if (!codec && codecList.length) setCodec(codecList[0]);
   }, [codecList]);
 
-  useEffect(() => {
-    if (!displayStream) stopDisplayStreaming();
-    else if (publisherState === 'streaming')
-      startDisplayStreaming({
-        mediaStream: displayStream,
-        sourceId: displayShareSourceId,
-      });
-  }, [displayStream, publisherState]);
-
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
-      return codecList.filter((item) => item !== 'vp9');
+      return codecList.filter((item) => item !== 'VP9');
     }
     return codecList;
   }, [codecList, isSimulcastEnabled]);
+
+  const onSelectBitrate = (bitrate: number) => {
+    if (isStreaming) updateSourceBitrate(MainSourceId, bitrate);
+    else setBitrate(bitrate);
+  };
 
   const onSelectVideoResolution = useCallback(
     async (resolution: Resolution) => {
@@ -176,23 +206,8 @@ function App() {
     [resolutionList]
   );
 
-  const toggleShare = async () => {
-    displayStream ? stopDisplayCapture() : await startDisplayCapture();
-  };
-
-  const onSelectBitrate = async (bitrate: number) => {
-    try {
-      if (isStreaming) {
-        await updateBitrate(bitrate);
-      }
-      setBitrate(bitrate);
-    } catch {
-      setBitrate(0);
-      showError(`Failed to set bitrate ${bitrate}`);
-    }
-  };
-
   const isStreaming = publisherState === 'streaming';
+  const isConnecting = publisherState === 'connecting';
 
   const MediaControlBar = () => (
     <ControlBar
@@ -223,26 +238,18 @@ function App() {
     />
   );
 
-  const displayStreamLabel = useMemo(() => {
-    if (displayStream) {
-      if (displayStream.getVideoTracks()[0].label.length > 0) {
-        return displayStream.getVideoTracks()[0].label.split(':')[0];
-      } else {
-        return 'Screen Share';
-      }
-    }
-    return '';
-  }, [displayStream]);
-
+  const toggleDisplayCapture = async () => {
+    displayStream ? stopDisplayCapture() : await startDisplayCapture();
+  };
   return (
-    <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
+    <VStack minH="100vh" w="100vw" bg="background" p="6">
       <Box w="100%" h="146px">
         <ActionBar title="Company name" />
         <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
           <Stack direction="column" spacing="4" alignItems="flex-start">
             <Flex alignItems="center">
               <Timer isActive={isStreaming} />
-              {displayStream && (
+              {sources.size > 1 && (
                 <InfoLabel
                   text="Multisource enabled"
                   ml="2.5"
@@ -256,22 +263,23 @@ function App() {
             </Flex>
             <LiveIndicator
               isActive={isStreaming}
-              isLoading={publisherState === 'connecting'}
-              disabled={publisherState === 'initial' || !mediaStream}
-              start={async () => {
-                if (publisherState == 'ready' && mediaStream) {
+              isLoading={isConnecting}
+              disabled={!mediaStream && !displayStream}
+              start={() => {
+                if (mediaStream) {
                   try {
-                    await startStreaming({
+                    startStreamingSource({
                       mediaStream,
+                      sourceId: MainSourceId,
                       simulcast: isSimulcastEnabled,
                       codec,
                       events: ['viewercount'],
                       bandwidth: bitrate,
                     });
                     if (displayStream) {
-                      startDisplayStreaming({
+                      startStreamingSource({
                         mediaStream: displayStream,
-                        sourceId: displayShareSourceId,
+                        sourceId: DisplayShareSourceId,
                       });
                     }
                   } catch (err) {
@@ -281,13 +289,14 @@ function App() {
                 }
               }}
               stop={() => {
-                stopDisplayStreaming();
-                stopStreaming();
+                for (const sourceId of sources.keys()) {
+                  stopStreamingSource(sourceId);
+                }
               }}
             />
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            {linkText && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />}
+            {shareUrl && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={shareUrl} />}
             {isStreaming && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
@@ -339,7 +348,9 @@ function App() {
                     key: 'stopScreenShare',
                     'test-id': 'stopScreenShare',
                     tooltip: { label: 'Stop screen share', placement: 'top' },
-                    onClick: stopDisplayCapture,
+                    onClick: () => {
+                      stopDisplayCapture();
+                    },
                     icon: <IconClose width="16px" height="16px" />,
                     reversed: true,
                   },
@@ -393,7 +404,11 @@ function App() {
             <PopupMenu
               buttonTitle="Add Source"
               items={[
-                { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
+                {
+                  icon: <IconPresent />,
+                  text: displayStream ? 'Stop share' : 'Share screen',
+                  onClick: toggleDisplayCapture,
+                },
                 // {
                 //   icon: <IconAddCamera />,
                 //   text: 'Add cameras',
@@ -474,7 +489,7 @@ function App() {
                     />
                   )}
                 </Box>
-                {!isStreaming && codecList.length !== 0 && (
+                {!isStreaming && codecList.length > 0 && (
                   <Box>
                     <Dropdown
                       leftIcon={<IconCodec />}
@@ -484,9 +499,9 @@ function App() {
                       elementResolver={(element) => ({
                         id: element as string,
                         label: element as string,
-                        data: element as string,
+                        data: element as VideoCodec,
                       })}
-                      onSelect={(data) => setCodec(data as string)}
+                      onSelect={(data) => setCodec(data as VideoCodec)}
                       selected={codec || codecList[0]}
                       placeholder="Codec"
                     />
@@ -543,7 +558,7 @@ function App() {
                     isActive={isSimulcastEnabled}
                     label="Simulcast"
                     leftIcon={<IconSimulcast />}
-                    isDisabled={codec === 'vp9'}
+                    isDisabled={codec === 'VP9'}
                   />
                 )}
               </Stack>
@@ -554,7 +569,7 @@ function App() {
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
-    </Flex>
+    </VStack>
   );
 }
 
