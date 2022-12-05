@@ -115,6 +115,7 @@ const Content = () => {
     addStream,
     cameraList,
     microphoneList,
+    applyConstraints,
   } = useMultiMediaDevices();
 
   const addCustomStream = async () => {
@@ -125,7 +126,7 @@ const Content = () => {
   };
 
   const updateResolution = async (id: StreamId, resolution: Resolution) => {
-    // await addStream({ type: StreamTypes.MEDIA, microphone, camera });
+    await applyConstraints({ id, videoConstraints: { width: resolution.width, height: resolution.height } });
   };
 
   useEffect(() => {
@@ -153,48 +154,44 @@ const Content = () => {
             <ModalBody>
               <Stack direction="column" spacing={4}>
                 <Box>
-                  {cameraList.length && (
-                    <Dropdown
-                      leftIcon={<IconCameraOn />}
-                      testId="camera-select"
-                      elementsList={cameraList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setCamera(data as InputDeviceInfo);
-                      }}
-                      selected={camera?.label}
-                      placeholder="Camera"
-                    />
-                  )}
+                  <Dropdown
+                    leftIcon={<IconCameraOn />}
+                    testId="camera-select"
+                    elementsList={cameraList}
+                    elementResolver={(element) => {
+                      const device = element as InputDeviceInfo;
+                      return {
+                        id: device.deviceId,
+                        label: device.label,
+                        data: device,
+                      };
+                    }}
+                    onSelect={(data) => {
+                      setCamera(data as InputDeviceInfo);
+                    }}
+                    selected={camera?.label}
+                    placeholder="Camera"
+                  />
                 </Box>
                 <Box>
-                  {microphoneList.length && (
-                    <Dropdown
-                      leftIcon={<IconMicrophoneOn />}
-                      testId="microphone-select"
-                      elementsList={microphoneList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setMicrophone(data as InputDeviceInfo);
-                      }}
-                      selected={microphone?.label}
-                      placeholder="Microphone"
-                    />
-                  )}
+                  <Dropdown
+                    leftIcon={<IconMicrophoneOn />}
+                    testId="microphone-select"
+                    elementsList={microphoneList}
+                    elementResolver={(element) => {
+                      const device = element as InputDeviceInfo;
+                      return {
+                        id: device.deviceId,
+                        label: device.label,
+                        data: device,
+                      };
+                    }}
+                    onSelect={(data) => {
+                      setMicrophone(data as InputDeviceInfo);
+                    }}
+                    selected={microphone?.label}
+                    placeholder="Microphone"
+                  />
                 </Box>
               </Stack>
             </ModalBody>

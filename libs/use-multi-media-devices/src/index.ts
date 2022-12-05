@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useReducer } from 'react';
-import useState from 'react-usestateref';
+import { useState, useEffect, useReducer } from 'react';
+
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
   microphoneList: InputDeviceInfo[];
@@ -21,6 +21,15 @@ export type MediaDevices = {
   toggleAudio: (id: StreamId) => void;
   toggleVideo: (id: StreamId) => void;
   removeStream: (id: StreamId) => void;
+  applyConstraints: ({
+    id,
+    audioConstraints,
+    videoConstraints,
+  }: {
+    id: StreamId;
+    audioConstraints?: MediaTrackConstraints;
+    videoConstraints?: MediaTrackConstraints;
+  }) => Promise<void>;
   reset: () => void;
 };
 
@@ -146,7 +155,7 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
       [...state].forEach(([_, stream]) => {
         stopTracks(stream.display);
       });
-      return new Map();
+      return new Map<StreamId, Stream>();
     }
     case StreamsActionType.ADD_STREAM: {
       const prev = state.get(action.id);
@@ -202,6 +211,11 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
       }
       return updated;
     }
+    case StreamsActionType.APPLY_CONSTRAINS: {
+      const updated = new Map(state);
+      updated.set(action.id, action.stream);
+      return updated;
+    }
 
     default:
       console.error('Unknown action');
@@ -211,6 +225,7 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
 
 type UseMediaDevicesArguments = {
   handleError?: (error: string) => void;
+  filterOutUsedDevices?: boolean;
 };
 
 const idealCameraConfig = { width: { ideal: 7680 }, height: { ideal: 4320 }, aspectRatio: 7680 / 4320 };
@@ -221,8 +236,10 @@ const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) 
 
 type MediaDevicesLists = { cameraList: InputDeviceInfo[]; microphoneList: InputDeviceInfo[] };
 
-const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaDevices => {
+const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [streams, dispatch] = useReducer(streamsReducer, new Map());
+  const [rootCameraList, setRootCameraList] = useState<InputDeviceInfo[]>([]);
+  const [rootMicrophoneList, setRootMicrophoneList] = useState<InputDeviceInfo[]>([]);
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
@@ -243,8 +260,8 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
         if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
         else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
       });
-      setCameraList(cameraList);
-      setMicrophoneList(microphoneList);
+      setRootCameraList(cameraList);
+      setRootMicrophoneList(microphoneList);
     } catch (error: unknown) {
       _handleError(error);
     }
@@ -326,11 +343,11 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
     }
   };
 
-  const initDefaultStream = useCallback(() => {
+  const initDefaultStream = () => {
     if (microphoneList.length > 0 && cameraList.length > 0) {
       addStream({ type: StreamTypes.MEDIA, microphone: microphoneList[0], camera: cameraList[0] });
     }
-  }, [microphoneList, cameraList]);
+  };
 
   const toggleAudio = (id: StreamId) => {
     dispatch({ type: StreamsActionType.TOGGLE_AUDIO, id });
@@ -342,6 +359,52 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
 
   const removeStream = (id: StreamId) => {
     dispatch({ type: StreamsActionType.REMOVE_STREAM, id });
+  };
+
+  const applyConstraints: MediaDevices['applyConstraints'] = async ({
+    id,
+    audioConstraints = {},
+    videoConstraints = {},
+  }) => {
+    try {
+      const prev = streams.get(id);
+      if (prev) {
+        stopTracks(prev.display);
+        const constraints = {
+          audio: {
+            ...prev.settings?.microphone,
+            ...audioConstraints,
+          },
+          video: {
+            ...prev.settings?.camera,
+            ...videoConstraints,
+          },
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        const audioTracks = stream.getAudioTracks()[0];
+        const videoTracks = stream.getVideoTracks()[0];
+        dispatch({
+          type: StreamsActionType.APPLY_CONSTRAINS,
+          id,
+          stream: {
+            ...prev,
+            display: stream,
+            capabilities: {
+              microphone: audioTracks.getCapabilities(),
+              camera: videoTracks.getCapabilities(),
+            },
+            settings: {
+              microphone: audioTracks.getSettings(),
+              camera: videoTracks.getSettings(),
+            },
+            state: initialStreamState,
+          },
+        });
+      }
+    } catch (error: unknown) {
+      console.log(error);
+      _handleError(error);
+    }
   };
 
   const reset = () => {
@@ -379,28 +442,20 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
     };
   }, []);
 
-  //   const applyMediaTrackConstraints = async (
-  //     audioConstraints: MediaTrackConstraints,
-  //     videoConstraints: MediaTrackConstraints
-  //   ): Promise<void> => {
-  //     // Chrome requires to create a new media stream if audio constraints are changed
-  //     // [See this](https://bugs.chromium.org/p/chromium/issues/detail?id=796964)
-  //     mediaStreamRef.current?.getTracks().forEach((track) => {
-  //       track.stop();
-  //     });
-  //     try {
-  //       const newStream = await navigator.mediaDevices.getUserMedia({
-  //         audio: audioConstraints,
-  //         video: videoConstraints,
-  //       });
-  //       setMediaStream(newStream);
-  //       return Promise.resolve();
-  //     } catch (error: unknown) {
-  //       _handleError(error);
-
-  //       return Promise.reject(error);
-  //     }
-  //   };
+  useEffect(() => {
+    if (filterOutUsedDevices && (rootCameraList.length > 0 || rootMicrophoneList.length > 0)) {
+      const usedDevices = new Set();
+      [...streams].forEach(([_id, stream]) => {
+        usedDevices.add(stream.device?.camera.deviceId);
+        usedDevices.add(stream.device?.microphone.deviceId);
+      });
+      setCameraList(rootCameraList.filter((device) => !usedDevices.has(device.deviceId)));
+      setMicrophoneList(rootMicrophoneList.filter((device) => !usedDevices.has(device.deviceId)));
+    } else {
+      setCameraList(rootCameraList);
+      setMicrophoneList(rootMicrophoneList);
+    }
+  }, [filterOutUsedDevices, streams, rootCameraList, rootMicrophoneList]);
 
   return {
     cameraList,
@@ -412,6 +467,7 @@ const useMediaDevices = ({ handleError }: UseMediaDevicesArguments = {}): MediaD
     toggleVideo,
     reset,
     removeStream,
+    applyConstraints,
   };
 };
 
