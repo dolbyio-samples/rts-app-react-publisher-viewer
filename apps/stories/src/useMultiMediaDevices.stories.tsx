@@ -47,7 +47,7 @@ const StreamWrapper = ({ stream, removeStream, toggleAudio, toggleVideo, updateR
   const { state, resolutions, settings } = stream;
   return (
     <Stack>
-      <VideoView width="300px" height="168px" mediaStream={stream.display} />
+      <VideoView width="300px" height="168px" mediaStream={stream.mediaStream} />
       <ControlBar
         controls={[
           {

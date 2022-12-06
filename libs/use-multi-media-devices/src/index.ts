@@ -1,5 +1,19 @@
 import { useState, useEffect, useReducer } from 'react';
 
+type AddStreamActionOptions = {
+  type: StreamTypes;
+  microphone?: InputDeviceInfo;
+  camera?: InputDeviceInfo;
+  audioConstraints?: MediaTrackConstraints;
+  videoConstraints?: MediaTrackConstraints;
+};
+
+type ApplyConstraintsOptions = {
+  id: StreamId;
+  audioConstraints?: MediaTrackConstraints;
+  videoConstraints?: MediaTrackConstraints;
+};
+
 export type MediaDevices = {
   cameraList: InputDeviceInfo[];
   microphoneList: InputDeviceInfo[];
@@ -11,25 +25,11 @@ export type MediaDevices = {
     camera,
     audioConstraints,
     videoConstraints,
-  }: {
-    type: StreamTypes;
-    microphone?: InputDeviceInfo;
-    camera?: InputDeviceInfo;
-    audioConstraints?: MediaTrackConstraints;
-    videoConstraints?: MediaTrackConstraints;
-  }) => Promise<void>;
+  }: AddStreamActionOptions) => Promise<void>;
   toggleAudio: (id: StreamId) => void;
   toggleVideo: (id: StreamId) => void;
   removeStream: (id: StreamId) => void;
-  applyConstraints: ({
-    id,
-    audioConstraints,
-    videoConstraints,
-  }: {
-    id: StreamId;
-    audioConstraints?: MediaTrackConstraints;
-    videoConstraints?: MediaTrackConstraints;
-  }) => Promise<void>;
+  applyConstraints: ({ id, audioConstraints, videoConstraints }: ApplyConstraintsOptions) => Promise<void>;
   reset: () => void;
 };
 
@@ -84,7 +84,7 @@ export enum StreamTypes {
 
 export type Stream = {
   type: StreamTypes;
-  display: MediaStream;
+  mediaStream: MediaStream;
   capabilities?: {
     camera: MediaTrackCapabilities;
     microphone: MediaTrackCapabilities;
@@ -101,14 +101,12 @@ export type Stream = {
   state: {
     muteAudio: boolean;
     displayVideo: boolean;
-    codec: string | null;
   };
 };
 
 const initialStreamState: Stream['state'] = {
   muteAudio: true,
   displayVideo: true,
-  codec: null,
 };
 
 export type StreamId = string;
@@ -129,18 +127,13 @@ type StreamsAction =
       type: StreamsActionType.RESET;
     }
   | {
-      type: StreamsActionType.ADD_STREAM;
+      type: StreamsActionType.ADD_STREAM | StreamsActionType.APPLY_CONSTRAINS;
       id: StreamId;
       stream: Stream;
     }
   | {
       type: StreamsActionType.REMOVE_STREAM | StreamsActionType.TOGGLE_AUDIO | StreamsActionType.TOGGLE_VIDEO;
       id: StreamId;
-    }
-  | {
-      type: StreamsActionType.APPLY_CONSTRAINS;
-      id: StreamId;
-      stream: Stream;
     };
 
 const stopTracks = (stream: MediaStream) => {
@@ -153,14 +146,14 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
   switch (action.type) {
     case StreamsActionType.RESET: {
       [...state].forEach(([_, stream]) => {
-        stopTracks(stream.display);
+        stopTracks(stream.mediaStream);
       });
       return new Map<StreamId, Stream>();
     }
     case StreamsActionType.ADD_STREAM: {
       const prev = state.get(action.id);
       if (prev) {
-        stopTracks(prev.display);
+        stopTracks(prev.mediaStream);
       }
       const updated = new Map(state);
       updated.set(action.id, action.stream);
@@ -170,7 +163,7 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
       const prev = state.get(action.id);
       const updated = new Map(state);
       if (prev) {
-        stopTracks(prev.display);
+        stopTracks(prev.mediaStream);
       }
       updated.delete(action.id);
       return updated;
@@ -179,7 +172,7 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
       const prev = state.get(action.id);
       const updated = new Map(state);
       if (prev) {
-        const audioTracks = prev.display.getAudioTracks();
+        const audioTracks = prev.mediaStream.getAudioTracks();
         if (audioTracks && audioTracks.length) {
           audioTracks[0].enabled = !audioTracks[0].enabled;
           updated.set(action.id, {
@@ -197,7 +190,7 @@ const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
       const prev = state.get(action.id);
       const updated = new Map(state);
       if (prev) {
-        const videoTracks = prev.display.getVideoTracks();
+        const videoTracks = prev.mediaStream.getVideoTracks();
         if (videoTracks && videoTracks.length) {
           videoTracks[0].enabled = !videoTracks[0].enabled;
           updated.set(action.id, {
@@ -298,7 +291,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
             id: stream.id,
             stream: {
               type,
-              display: stream,
+              mediaStream: stream,
               capabilities: {
                 microphone: audioTracks.getCapabilities(),
                 camera: videoTracks.getCapabilities(),
@@ -321,7 +314,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
             },
           });
         }
-      } else {
+      } else if (type === StreamTypes.DISPLAY) {
         const constraints = {
           video: { cursor: 'always' },
           audio: true,
@@ -332,13 +325,12 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
           id: stream.id,
           stream: {
             type,
-            display: stream,
+            mediaStream: stream,
             state: initialStreamState,
           },
         });
       }
     } catch (error: unknown) {
-      console.log(error);
       _handleError(error);
     }
   };
@@ -369,7 +361,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
     try {
       const prev = streams.get(id);
       if (prev) {
-        stopTracks(prev.display);
+        stopTracks(prev.mediaStream);
         const constraints = {
           audio: {
             ...prev.settings?.microphone,
@@ -388,7 +380,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
           id,
           stream: {
             ...prev,
-            display: stream,
+            mediaStream: stream,
             capabilities: {
               microphone: audioTracks.getCapabilities(),
               camera: videoTracks.getCapabilities(),
@@ -402,7 +394,6 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
         });
       }
     } catch (error: unknown) {
-      console.log(error);
       _handleError(error);
     }
   };
