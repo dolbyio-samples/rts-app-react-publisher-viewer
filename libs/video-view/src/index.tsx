@@ -15,6 +15,7 @@ export type VideoViewProps = {
   displayMuteButton?: boolean;
   displayFullscreenButton?: boolean;
   mediaStream?: MediaStream;
+  url?: string;
   statistics?: StreamStats;
   label?: string;
   placeholderNode?: ReactNode;
@@ -31,6 +32,7 @@ const VideoView = ({
   displayVideo = true,
   displayFullscreenButton = true,
   mediaStream,
+  url,
   // statistics,
   label,
   placeholderNode,
@@ -45,9 +47,17 @@ const VideoView = ({
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = mediaStream ?? null;
+      if (url) {
+        //@ts-expect-error property exists but it isn't in the built-in type
+        const stream = videoRef.current?.captureStream();
+        console.log(stream);
+        videoRef.current.srcObject = null;
+        videoRef.current.src = url;
+      } else {
+        videoRef.current.srcObject = mediaStream ?? null;
+      }
     }
-  }, [mediaStream]);
+  }, [mediaStream, url]);
 
   useEffect(() => {
     if (videoRef.current) {

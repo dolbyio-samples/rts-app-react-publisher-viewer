@@ -17,6 +17,8 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/participant-count': path.resolve(__dirname, '../libs/participant-count/src/index.tsx'),
           '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
           '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
+          '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
+          '@millicast-react/video-view': path.resolve(__dirname, '../libs/video-view/src/index.tsx'),
         },
       },
     });
