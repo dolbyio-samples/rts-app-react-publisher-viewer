@@ -1,52 +1,21 @@
 import { useCallback, useEffect, useRef, useMemo, useReducer } from 'react';
 import useState from 'react-usestateref';
-import { Director, LayerInfo, MediaLayer, MediaStreamLayers, MediaTrackInfo, View, ViewerCount } from '@millicast/sdk';
+import {
+  Director,
+  LayerInfo,
+  MediaLayer,
+  MediaStreamLayers,
+  MediaTrackInfo,
+  StreamAudioInboundsStats,
+  StreamVideoInboundsStats,
+  View,
+  ViewerCount,
+} from '@millicast/sdk';
 import { MediaStreamSource, ViewOptions, BroadcastEvent, ViewProjectSourceMapping } from '@millicast/sdk';
 
 import type { StreamStats } from '@millicast/sdk';
-
-export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
-
-export type SimulcastQuality = {
-  streamQuality: StreamQuality;
-  simulcastLayer?: LayerInfo; // Auto has an idx of null
-};
-
-type SourceId = string;
-export type RemoteTrackSource = {
-  sourceId: SourceId;
-  mediaStream: MediaStream;
-  videoMediaId?: string;
-  audioMediaId?: string;
-  streamQualityOptions: SimulcastQuality[];
-  statistics?: StreamStats;
-};
-
-export type RemoteTrackSources = Map<SourceId, RemoteTrackSource>;
-
-export type Viewer = {
-  stopViewer: () => void;
-  startViewer: () => void;
-  // updateSourceQuality: (sourceId: SourceId, quality: StreamQuality) => void;
-  remoteTrackSources: RemoteTrackSources;
-  viewerCount: number;
-};
-
-type ViewerProps = {
-  streamName: string;
-  streamAccountId: string;
-  subscriberToken?: string;
-  handleError?: (error: string) => void;
-};
-
-enum ViewerActionType {
-  ADD_SOURCE = 'ADD_SOURCE',
-  REMOVE_SOURCE = 'REMOVE_SOURCE',
-}
-
-type ViewerAction =
-  | { type: ViewerActionType.ADD_SOURCE; source: RemoteTrackSource }
-  | { type: ViewerActionType.REMOVE_SOURCE; sourceId: SourceId; viewer: View };
+import { RemoteTrackSources, ViewerAction, ViewerActionType, ViewerProps, Viewer } from './types';
+import { addRemoteTrackAndProject, unprojectAndRemoveRemoteTrack } from './utils';
 
 const missedSourceId = new Date().valueOf().toString();
 const initialRemoteSources = new Map() as RemoteTrackSources;
@@ -72,58 +41,6 @@ const reducer = (sources: RemoteTrackSources, action: ViewerAction): RemoteTrack
     }
     default:
       return sources;
-  }
-};
-
-const addRemoteTrackAndProject = async (
-  sourceId: string,
-  trackInfos: MediaTrackInfo[],
-  viewer: View
-): Promise<RemoteTrackSource> => {
-  let videoTransceiver: RTCRtpTransceiver | undefined;
-  let audioTransceiver: RTCRtpTransceiver | undefined;
-  const mediaStream = new MediaStream();
-  const mapping: ViewProjectSourceMapping[] = [];
-  const trackSource: RemoteTrackSource = { sourceId, mediaStream, streamQualityOptions: [{ streamQuality: 'Auto' }] };
-  let trackInfo = trackInfos.find((info) => info.media == 'video');
-  if (trackInfo) {
-    videoTransceiver = await viewer.addRemoteTrack('video', [mediaStream]);
-    const videoMid = videoTransceiver?.mid ?? undefined;
-    if (videoMid) {
-      mapping.push({ trackId: trackInfo.trackId, mediaId: videoMid, media: trackInfo.media });
-      trackSource.videoMediaId = videoMid;
-    }
-  }
-  trackInfo = trackInfos.find((info) => info.media == 'audio');
-  if (trackInfo) {
-    audioTransceiver = await viewer.addRemoteTrack('audio', [mediaStream]);
-    const audioMid = audioTransceiver?.mid ?? undefined;
-    if (audioMid) {
-      mapping.push({ trackId: trackInfo.trackId, mediaId: audioMid, media: trackInfo.media });
-      trackSource.audioMediaId = audioMid;
-    }
-  }
-  if (mapping.length === 0) {
-    return Promise.reject('No valid video or audio track');
-  }
-  try {
-    await viewer.project(sourceId, mapping);
-    return Promise.resolve(trackSource);
-  } catch (error: unknown) {
-    return Promise.reject(error);
-  }
-};
-
-const unprojectAndRemoveRemoteTrack = async (source: RemoteTrackSource, viewer: View) => {
-  const mids = [];
-  if (source.videoMediaId) mids.push(source.videoMediaId);
-  if (source.audioMediaId) mids.push(source.audioMediaId);
-  if (mids.length === 0) return;
-  try {
-    console.log('unproject remote track', source);
-    await viewer.unproject(mids);
-  } catch (error: unknown) {
-    console.error(`Failed to unproject remote track: ${error}`);
   }
 };
 
@@ -291,4 +208,5 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
   };
 };
 
+export * from './types';
 export default useViewer;
