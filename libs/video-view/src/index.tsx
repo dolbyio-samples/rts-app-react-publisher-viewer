@@ -20,6 +20,7 @@ export type VideoViewProps = {
   placeholderNode?: ReactNode;
   onClick?: BoxProps['onClick'];
   showDotIndicator?: boolean;
+  volume?: number;
 };
 
 const VideoView = ({
@@ -35,6 +36,7 @@ const VideoView = ({
   placeholderNode,
   onClick,
   showDotIndicator,
+  volume = 1,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -46,6 +48,12 @@ const VideoView = ({
       videoRef.current.srcObject = mediaStream ?? null;
     }
   }, [mediaStream]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume;
+    }
+  }, [volume]);
 
   const componentElementsStyle = {
     '.video': {

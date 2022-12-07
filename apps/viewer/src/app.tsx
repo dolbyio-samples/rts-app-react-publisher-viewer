@@ -36,6 +36,7 @@ import Dropdown from '@millicast-react/dropdown';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import ControlBar from '@millicast-react/control-bar';
+import './styles/font.css';
 
 type TrackSourceState = {
   muteAudio: boolean;

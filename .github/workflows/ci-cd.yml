@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  # VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+  # VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }} // disabled this for random stream name
   VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
   VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
   VITE_MILLICAST_VIEWER_BASE_URL: ${{ secrets.VIEWER_BASE_URL }}
