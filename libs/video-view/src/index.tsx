@@ -22,6 +22,8 @@ export type VideoViewProps = {
   onClick?: BoxProps['onClick'];
   showDotIndicator?: boolean;
   volume?: number;
+  setMediaStream?: (value: MediaStream) => void;
+  removeMediaStream?: (id: string) => void;
 };
 
 const VideoView = ({
@@ -39,6 +41,8 @@ const VideoView = ({
   onClick,
   showDotIndicator,
   volume = 1,
+  setMediaStream,
+  removeMediaStream,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -46,17 +50,25 @@ const VideoView = ({
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
 
   useEffect(() => {
+    let stream: MediaStream;
     if (videoRef.current) {
       if (url) {
+        console.log('trigger');
         //@ts-expect-error property exists but it isn't in the built-in type
-        const stream = videoRef.current?.captureStream();
-        console.log(stream);
+        stream = videoRef.current?.captureStream() as MediaStream;
+        setMediaStream?.(stream);
+
         videoRef.current.srcObject = null;
         videoRef.current.src = url;
       } else {
         videoRef.current.srcObject = mediaStream ?? null;
       }
     }
+    return () => {
+      if (stream) {
+        removeMediaStream?.(stream.id);
+      }
+    };
   }, [mediaStream, url]);
 
   useEffect(() => {

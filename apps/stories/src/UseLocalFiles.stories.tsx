@@ -4,11 +4,26 @@ import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import * as React from 'react';
 import useLocalFiles from '@millicast-react/use-local-files';
 import VideoView from '@millicast-react/video-view';
+import { useEffect, useState } from 'react';
 
 export default {} as Meta;
 
 export const Default: Story = () => {
+  const [mediaStreams, setMediaStreams] = useState<MediaStream[]>([]);
   const { register, files, remove, reset } = useLocalFiles();
+
+  const setMediaStream = (stream: MediaStream) => {
+    setMediaStreams((prev) => [...prev, stream]);
+  };
+
+  const removeMediaStream = (id: string) => {
+    setMediaStreams((prev) => prev.filter((stream) => stream.id !== id));
+  };
+
+  useEffect(() => {
+    console.log(mediaStreams);
+  }, [mediaStreams]);
+
   return (
     <ChakraProvider theme={dolbyioTheme}>
       <Box mb={2}>
@@ -23,7 +38,13 @@ export const Default: Story = () => {
       <Stack direction="row" flexWrap="wrap">
         {files.map((file) => (
           <Stack key={file}>
-            <VideoView url={file} width="400px" height="auto" />
+            <VideoView
+              url={file}
+              width="400px"
+              height="auto"
+              setMediaStream={setMediaStream}
+              removeMediaStream={removeMediaStream}
+            />
             <Box>
               <Button onClick={() => remove(file)}>remove</Button>
             </Box>
