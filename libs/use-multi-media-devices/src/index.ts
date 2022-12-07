@@ -375,6 +375,8 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         const audioTracks = stream.getAudioTracks()[0];
         const videoTracks = stream.getVideoTracks()[0];
+        audioTracks.enabled = !prev.state.muteAudio;
+        videoTracks.enabled = prev.state.displayVideo;
         dispatch({
           type: StreamsActionType.APPLY_CONSTRAINS,
           id,
@@ -389,7 +391,6 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
               microphone: audioTracks.getSettings(),
               camera: videoTracks.getSettings(),
             },
-            state: initialStreamState,
           },
         });
       }
