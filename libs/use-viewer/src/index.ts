@@ -39,6 +39,23 @@ const reducer = (sources: RemoteTrackSources, action: ViewerAction): RemoteTrack
       newSources.delete(action.sourceId);
       return newSources;
     }
+    case ViewerActionType.UPDATE_SOURCES_STATISTICS: {
+      const { audio, video } = action.statistics;
+      const newSources = new Map();
+      for (const [id, source] of sources) {
+        const sourceAudio = audio.filter(({ mid }) => mid === source.audioMediaId);
+        const sourceVideo = video.filter(({ mid }) => mid === source.videoMediaId);
+        const newSource = {
+          ...source,
+          statistics: {
+            audio: sourceAudio,
+            video: sourceVideo,
+          },
+        };
+        newSources.set(id, newSource);
+      }
+      return newSources;
+    }
     default:
       return sources;
   }
@@ -166,11 +183,11 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
       console.log('register broadcastEvent');
       viewer.current?.webRTCPeer?.initStats();
       viewer.current?.webRTCPeer?.on('stats', (statistics: StreamStats) => {
-        // console.log('statistics event', statistics);
-        // const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
-        // if (videoInbounds) statistics.video.inbounds = videoInbounds;
-        // const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
-        // if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+        dispatch({
+          statistics: { audio: statistics.audio.inbounds, video: statistics.video.inbounds },
+          type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
+          viewer: viewer.current as View,
+        });
       });
     }
   };

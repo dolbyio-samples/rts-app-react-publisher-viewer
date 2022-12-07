@@ -13,6 +13,7 @@ export const addRemoteTrackAndProject = async (
   const trackSource: RemoteTrackSource = {
     mediaStream,
     sourceId,
+    statistics: { audio: [], video: [] },
     streamQualityOptions: [{ streamQuality: 'Auto' }],
   };
   console.log({ trackInfos });
