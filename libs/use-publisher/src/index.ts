@@ -1,75 +1,30 @@
-import { useCallback, useEffect, useState, useRef, useReducer } from 'react';
+import { useCallback, useEffect, useRef, useReducer, useState } from 'react';
 import {
-  Director,
-  Publish,
-  PeerConnection,
-  BroadcastOptions,
   BroadcastEvent,
-  ViewerCount,
+  BroadcastOptions,
+  Director,
+  PeerConnection,
+  Publish,
+  StreamStats,
   VideoCodec,
+  ViewerCount,
 } from '@millicast/sdk';
+import {
+  Bitrate,
+  Publisher,
+  PublisherAction,
+  PublisherActionType,
+  PublisherProps,
+  PublisherSource,
+  PublisherSources,
+  SourceId,
+} from './types';
 
-import type { StreamStats } from '@millicast/sdk';
-
-export type SourceState = 'ready' | 'connecting' | 'streaming';
-
-export type Bitrate = {
-  name: string;
-  value: number;
-};
-
-export type PublisherSource = {
-  publish: Publish;
-  state: SourceState;
-  broadcastOptions: BroadcastOptions;
-  statistics?: StreamStats;
-};
-
-export type SourceId = string;
-export type PublihserSources = Map<SourceId, PublisherSource>;
-
-export type Publisher = {
-  // startStreaming will add a new source to publisher
-  startStreamingSource: (options: BroadcastOptions) => void;
-  // stopStreaming will remove an exsiting source from publisher
-  stopStreamingSource: (sourceId: string) => void;
-  updateSourceMediaStream: (sourceId: string, mediaStream: MediaStream) => void;
-  updateSourceBitrate: (sourceId: string, bitrate: number) => void;
-  sources: PublihserSources;
-  codecList: VideoCodec[];
-  bitrateList: Bitrate[];
-  viewerCount: number;
-  shareUrl?: string;
-};
-
-export type PublisherProps = {
-  token: string;
-  streamName: string;
-  streamId: string;
-  viewerAppBaseUrl?: string;
-  handleError?: (error: string) => void;
-};
-
-enum PublisherActionType {
-  ADD_SOURCE = 'ADD_SOURCE',
-  UPDATE_SOURCE_STATE = 'UPDATE_SOURCE_STATE',
-  UPDATE_SOURCE_STATISTICS = 'UPDATE_SOURCE_STATISTICS',
-  UPDATE_SOURCE_BITRATE = 'UPDATE_SOURCE_BITRATE',
-  REMOVE_SOURCE = 'REMOVE_SOURCE',
-}
-
-type PublisherAction =
-  | { type: PublisherActionType.ADD_SOURCE; source: PublisherSource }
-  | { type: PublisherActionType.UPDATE_SOURCE_STATE; sourceId: SourceId; state: SourceState }
-  | { type: PublisherActionType.UPDATE_SOURCE_STATISTICS; sourceId: SourceId; statistics: StreamStats }
-  | { type: PublisherActionType.UPDATE_SOURCE_BITRATE; sourceId: SourceId; bitrate: number }
-  | { type: PublisherActionType.REMOVE_SOURCE; sourceId: SourceId };
-
-const reducer = (sources: PublihserSources, action: PublisherAction): PublihserSources => {
+const reducer = (sources: PublisherSources, action: PublisherAction): PublisherSources => {
   switch (action.type) {
     case PublisherActionType.ADD_SOURCE: {
       if (sources.get(action.source.broadcastOptions.sourceId)) return sources;
-      const newSources = new Map(sources) as PublihserSources;
+      const newSources = new Map(sources) as PublisherSources;
       newSources.set(action.source.broadcastOptions.sourceId, action.source);
       return newSources;
     }
@@ -78,7 +33,7 @@ const reducer = (sources: PublihserSources, action: PublisherAction): PublihserS
       if (!source || source.state === action.state) return sources;
       const newSource = { ...source };
       newSource.state = action.state;
-      const newSources = new Map(sources) as PublihserSources;
+      const newSources = new Map(sources) as PublisherSources;
       newSources.set(action.sourceId, newSource);
       return newSources;
     }
@@ -123,7 +78,7 @@ const usePublisher = ({ token, streamName, streamId, viewerAppBaseUrl, handleErr
   const [viewerCount, setViewerCount] = useState(0);
   const viewerCountSourceIdRef = useRef<SourceId>();
   const [codecList, setCodecList] = useState<VideoCodec[]>([]);
-  const [sources, dispatch] = useReducer(reducer, new Map() as PublihserSources);
+  const [sources, dispatch] = useReducer(reducer, new Map() as PublisherSources);
 
   const handleInternalError = (error: unknown) => {
     if (error instanceof Error) {
@@ -254,4 +209,5 @@ const usePublisher = ({ token, streamName, streamId, viewerAppBaseUrl, handleErr
   };
 };
 
+export * from './types';
 export default usePublisher;
