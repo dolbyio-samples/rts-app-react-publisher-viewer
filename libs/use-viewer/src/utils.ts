@@ -1,5 +1,5 @@
-import { MediaTrackInfo, View, ViewProjectSourceMapping } from '@millicast/sdk';
-import { RemoteTrackSource } from './types';
+import { MediaLayer, MediaTrackInfo, View, ViewProjectSourceMapping } from '@millicast/sdk';
+import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
 export const addRemoteTrackAndProject = async (
   sourceId: string,
@@ -45,6 +45,32 @@ export const addRemoteTrackAndProject = async (
   } catch (error: unknown) {
     return Promise.reject(error);
   }
+};
+
+export const buildQualityOptions = (layers: MediaLayer[]) => {
+  const qualities: StreamQuality[] = [];
+  switch (layers.length) {
+    case 2:
+      qualities.push('High', 'Low');
+      break;
+    case 3:
+      qualities.push('High', 'Medium', 'Low');
+      break;
+    default:
+      return [{ streamQuality: 'Auto' } as SimulcastQuality];
+  }
+  console.log('buildQualityOptions');
+  const qualityOptions: SimulcastQuality[] = layers.map((layer, idx) => ({
+    simulcastLayer: {
+      bitrate: layer.bitrate,
+      encodingId: layer.id,
+      simulcastIdx: layer.simulcastIdx,
+      spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
+      temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
+    },
+    streamQuality: qualities[idx],
+  }));
+  return qualityOptions;
 };
 
 export const unprojectAndRemoveRemoteTrack = async (source: RemoteTrackSource, viewer: View) => {
