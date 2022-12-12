@@ -251,6 +251,7 @@ function App() {
               <Timer isActive={isStreaming} />
               {sources.size > 1 && (
                 <InfoLabel
+                  test-id="multiSource"
                   text="Multisource enabled"
                   ml="2.5"
                   color="white"
@@ -304,10 +305,10 @@ function App() {
       <Flex width="100%" alignItems="center" position="relative" pt="20px">
         {!isStreaming && (
           <VStack position="absolute" top="0" left="50%" transform="translate(-50%, -110%)">
-            <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
+            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
               Get started
             </Heading>
-            <Text>Setup your audio and video before going live.</Text>
+            <Text test-id="pageDesc">Setup your audio and video before going live.</Text>
           </VStack>
         )}
         <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="6">
@@ -439,8 +440,10 @@ function App() {
         <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
           <DrawerOverlay />
           <DrawerContent bg="dolbyNeutral.800" color="white">
-            <DrawerHeader textAlign="center">Settings</DrawerHeader>
-            <DrawerCloseButton />
+            <DrawerHeader test-id="settingTitle" textAlign="center">
+              Settings
+            </DrawerHeader>
+            <DrawerCloseButton test-id="settingClose" />
             <DrawerBody>
               <Stack direction="column" spacing={4}>
                 <Box>
@@ -448,7 +451,7 @@ function App() {
                     <Dropdown
                       leftIcon={<IconCameraOn />}
                       disabled={publisherState === 'connecting'}
-                      testId="camera-select"
+                      testId="cameraSelect"
                       elementsList={cameraList}
                       elementResolver={(element) => {
                         const device = element as InputDeviceInfo;
@@ -471,7 +474,7 @@ function App() {
                     <Dropdown
                       leftIcon={<IconMicrophoneOn />}
                       disabled={publisherState === 'connecting'}
-                      testId="microphone-select"
+                      testId="microphoneSelect"
                       elementsList={microphoneList}
                       elementResolver={(element) => {
                         const device = element as InputDeviceInfo;

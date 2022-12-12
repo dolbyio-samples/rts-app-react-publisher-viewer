@@ -80,30 +80,31 @@ Feature: Publisher Preview - Not Live
         And the "share screen button" should be enabled
         And the "add source menu" should contain "Share screen" options
 
-    Scenario: Publisher should be able to share screen before starting the stream
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "add source button"
-        And the publisher clicks on the "share screen button"
+    # Bug/Issue: #200
+    # Scenario: Publisher should be able to share screen before starting the stream
+    #     Given a publisher is on the "preview" page
+    #     When the publisher clicks on the "add source button"
+    #     And the publisher clicks on the "share screen button"
         
-        Then the "screen view" should be displayed
-        And the "screen view source name" text should be "screen"
-        And the "screen view full screen button" should not be displayed
-        And the "screen view stop share button" should be displayed
-        And the "screen view stop share button" should be enabled
-        And the "screen view" should be in Normal size
+    #     Then the "screen view" should be displayed
+    #     And the "screen view source name" text should be "screen"
+    #     And the "screen view full screen button" should not be displayed
+    #     And the "screen view stop share button" should be displayed
+    #     And the "screen view stop share button" should be enabled
+    #     And the "screen view" should be in Normal size
 
-        Then the "video view" should be displayed
-        And the "video view" should be in Normal size
-        And the "video view microphone" should be displayed
-        And the "video view microphone" should be enabled
-        And the "video view camera" should be displayed
-        And the "video view camera" should be enabled
-        And the "video view source name" text should contain "fake"
-        And the "video view full screen button" should not be displayed
+    #     Then the "video view" should be displayed
+    #     And the "video view" should be in Normal size
+    #     And the "video view microphone" should be displayed
+    #     And the "video view microphone" should be enabled
+    #     And the "video view camera" should be displayed
+    #     And the "video view camera" should be enabled
+    #     And the "video view source name" text should contain "fake"
+    #     And the "video view full screen button" should not be displayed
 
-        And the "add source button" should not be displayed
-        And the "multi source label" should be displayed
-        And the "multi source label" text should be "Multisource enabled"
+    #     And the "add source button" should not be displayed
+    #     And the "multi source label" should be displayed
+    #     And the "multi source label" text should be "Multisource enabled"
 
     Scenario: Publisher should be able to stop share screen before starting the stream
         Given a publisher is on the "preview" page
@@ -161,14 +162,15 @@ Feature: Publisher Preview - Not Live
         And the "resolution dropdown default" text should be "Resolution  - 3840x2160"
         And the "resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
 
-    Scenario: Publisher should be presented with codec selection dropdown under settings
-        Given a publisher is on the "preview" page
-        And the publisher clicks on the "setting button"
-        Then the "settings drawer" should be displayed
-        And the "codec dropdown" should be displayed
-        And the "codec dropdown" should be enabled
-        And the "codec dropdown default" text should be "Codec  - h264"
-        And the "codec dropdown options" should contain "h264,vp8" options
+    # Bug/Issue: #201
+    # Scenario: Publisher should be presented with codec selection dropdown under settings
+    #     Given a publisher is on the "preview" page
+    #     And the publisher clicks on the "setting button"
+    #     Then the "settings drawer" should be displayed
+    #     And the "codec dropdown" should be displayed
+    #     And the "codec dropdown" should be enabled
+    #     And the "codec dropdown default" text should be "Codec  - h264"
+    #     And the "codec dropdown options" should contain "h264,vp8" options
 
     Scenario: Publisher should be presented with bitrate selection dropdown under settings
         Given a publisher is on the "preview" page
@@ -189,20 +191,21 @@ Feature: Publisher Preview - Not Live
         And the "simulcast" feature should be turned On
         And the "codec dropdown default" text should be "Codec  - h264"
 
-    Scenario: VP9 codec is available for streaming when simulcast is disabled
-        Given a publisher is on the "preview" page
-        And the publisher clicks on the "setting button"
-        Then the "settings drawer" should be displayed
+    # Bug/Issue: #201
+    # Scenario: VP9 codec is available for streaming when simulcast is disabled
+    #     Given a publisher is on the "preview" page
+    #     And the publisher clicks on the "setting button"
+    #     Then the "settings drawer" should be displayed
 
-        Then the publisher turns Off the "simulcast" feature
-        And the "simulcast" feature should be turned Off
-        And the "codec dropdown default" text should be "Codec  - h264"
-        And the "codec dropdown options" should contain "h264,vp8,vp9" options
+    #     Then the publisher turns Off the "simulcast" feature
+    #     And the "simulcast" feature should be turned Off
+    #     And the "codec dropdown default" text should be "Codec  - h264"
+    #     And the "codec dropdown options" should contain "h264,vp8,vp9" options
 
-        Then the publisher turns On the "simulcast" feature
-        And the "simulcast" feature should be turned On
-        And the "codec dropdown default" text should be "Codec  - h264"
-        And the "codec dropdown options" should contain "h264,vp8" options
+    #     Then the publisher turns On the "simulcast" feature
+    #     And the "simulcast" feature should be turned On
+    #     And the "codec dropdown default" text should be "Codec  - h264"
+    #     And the "codec dropdown options" should contain "h264,vp8" options
 
 
     # Without Screen Share
@@ -289,30 +292,31 @@ Feature: Publisher Preview - Not Live
         And the "invite button" should be enabled
         And the "stream info button" should not be displayed
 
-    Scenario: Publisher should be presented with streaming information after the live stream is stopped with screen sharing
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "add source button"
-        And the publisher clicks on the "share screen button"
-        And the "video view" should be displayed
-        Then the "screen view" should be displayed
+    # Bug/Issue: #200
+    # Scenario: Publisher should be presented with streaming information after the live stream is stopped with screen sharing
+    #     Given a publisher is on the "preview" page
+    #     When the publisher clicks on the "add source button"
+    #     And the publisher clicks on the "share screen button"
+    #     And the "video view" should be displayed
+    #     Then the "screen view" should be displayed
 
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
-        And the "stop button" should be displayed
-        And the "video view" should be displayed
-        Then the "screen view" should be displayed
+    #     When the publisher clicks on the "go live button"
+    #     Then the publisher should be navigated to "stream" page
+    #     And the "stop button" should be displayed
+    #     And the "video view" should be displayed
+    #     Then the "screen view" should be displayed
 
-        When the publisher clicks on the "stop button"
-        Then the publisher should be navigated to "preview" page
+    #     When the publisher clicks on the "stop button"
+    #     Then the publisher should be navigated to "preview" page
 
-        Then the "streaming status dot" should not be displayed
-        And the "multi source label" should be displayed
-        And the "multi source label" text should be "Multisource enabled"
-        And the "viewers count" should not be displayed
-        And the "company name" text should be "Company name"
-        And the "timer" text should be "00:00:00"
-        And the "page header" text should be "Get started"
-        And the "page description" text should be "Setup your audio and video before going live."
+    #     Then the "streaming status dot" should not be displayed
+    #     And the "multi source label" should be displayed
+    #     And the "multi source label" text should be "Multisource enabled"
+    #     And the "viewers count" should not be displayed
+    #     And the "company name" text should be "Company name"
+    #     And the "timer" text should be "00:00:00"
+    #     And the "page header" text should be "Get started"
+    #     And the "page description" text should be "Setup your audio and video before going live."
 
     Scenario: Publisher should be presented with main video and screen view after the live stream is stopped with screen sharing
         Given a publisher is on the "preview" page
