@@ -16,7 +16,6 @@ export const addRemoteTrackAndProject = async (
     statistics: { audio: [], video: [] },
     streamQualityOptions: [{ streamQuality: 'Auto' }],
   };
-  console.log({ trackInfos });
   let trackInfo = trackInfos.find((info) => info.media == 'video');
   if (trackInfo) {
     videoTransceiver = await viewer.addRemoteTrack('video', [mediaStream]);
@@ -29,7 +28,6 @@ export const addRemoteTrackAndProject = async (
   trackInfo = trackInfos.find((info) => info.media == 'audio');
   if (trackInfo) {
     audioTransceiver = await viewer.addRemoteTrack('audio', [mediaStream]);
-    console.log({ audioTransceiver });
     const audioMid = audioTransceiver?.mid ?? undefined;
     if (audioMid) {
       mapping.push({ trackId: trackInfo.trackId, mediaId: audioMid, media: trackInfo.media });
@@ -59,7 +57,6 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
     default:
       return [{ streamQuality: 'Auto' } as SimulcastQuality];
   }
-  console.log('buildQualityOptions');
   const qualityOptions: SimulcastQuality[] = layers.map((layer, idx) => ({
     simulcastLayer: {
       bitrate: layer.bitrate,
