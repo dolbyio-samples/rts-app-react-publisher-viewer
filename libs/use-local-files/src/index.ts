@@ -1,16 +1,9 @@
 import { ChangeEventHandler, DetailedHTMLProps, InputHTMLAttributes, useState } from 'react';
 
-export type RegisterOptions = {
-  name: string;
-  accept?: string;
-};
-
 const useLocalFiles = () => {
   const [files, setFiles] = useState<string[]>([]);
 
-  const register = (
-    args: RegisterOptions
-  ): DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> => {
+  const register = (): DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> => {
     const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
       const { files } = e.target;
       if (files) {
@@ -25,10 +18,9 @@ const useLocalFiles = () => {
     return {
       type: 'file',
       accept: 'video/*',
-      multiple: true,
+      multiple: false,
       value: [],
       onChange,
-      ...args,
     };
   };
 

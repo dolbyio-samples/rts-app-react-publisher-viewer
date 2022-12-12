@@ -20,10 +20,6 @@ export const Default: Story = () => {
     setMediaStreams((prev) => prev.filter((stream) => stream.id !== id));
   };
 
-  useEffect(() => {
-    console.log(mediaStreams);
-  }, [mediaStreams]);
-
   return (
     <ChakraProvider theme={dolbyioTheme}>
       <Box mb={2}>
@@ -31,7 +27,7 @@ export const Default: Story = () => {
           <FormLabel htmlFor="uploadFile" cursor="pointer" textTransform="uppercase">
             upload
           </FormLabel>
-          <input id="uploadFile" hidden {...register({ name: 'file' })} />
+          <input id="uploadFile" hidden {...register()} />
         </Box>
         {files.length > 0 && <Button onClick={reset}>reset</Button>}
       </Box>
@@ -39,11 +35,12 @@ export const Default: Story = () => {
         {files.map((file) => (
           <Stack key={file}>
             <VideoView
-              url={file}
+              src={file}
               width="400px"
               height="auto"
-              setMediaStream={setMediaStream}
-              removeMediaStream={removeMediaStream}
+              onSrcMediaStreamReady={setMediaStream}
+              onSrcMediaStreamClose={removeMediaStream}
+              onError={(e) => console.log(e)}
             />
             <Box>
               <Button onClick={() => remove(file)}>remove</Button>
