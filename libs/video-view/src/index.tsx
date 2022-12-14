@@ -57,8 +57,8 @@ const VideoView = ({
       if (src) {
         videoRef.current.srcObject = null;
         videoRef.current.src = src;
-      } else {
-        videoRef.current.srcObject = mediaStream ?? null;
+      } else if (mediaStream) {
+        videoRef.current.srcObject = mediaStream;
       }
     }
   }, [mediaStream, src]);
@@ -137,7 +137,6 @@ const VideoView = ({
         className="video"
         autoPlay
         playsInline
-        crossOrigin="anonymous"
         loop={src ? true : false}
         ref={videoRef}
         muted={muted}
