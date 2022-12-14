@@ -84,6 +84,16 @@ function App() {
   // const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
   // const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
 
+  const isStreaming = remoteTrackSources.size > 0;
+  const hasMultiStream = remoteTrackSources.size > 1;
+
+  useEffect(() => {
+    startViewer();
+    return () => {
+      stopViewer();
+    };
+  }, []);
+
   useEffect(() => {
     const newTrackSourcesStates = new Map(trackSourcesStates);
     remoteTrackSources.forEach((source) => {
@@ -93,9 +103,6 @@ function App() {
       setTrackSourcesStates(newTrackSourcesStates);
     }
   }, [remoteTrackSources]);
-
-  const isStreaming = remoteTrackSources.size > 0;
-  const hasMultiStream = remoteTrackSources.size > 1;
 
   console.log('app log', remoteTrackSources, viewerCount);
 
