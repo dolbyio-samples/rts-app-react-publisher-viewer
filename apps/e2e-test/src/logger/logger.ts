@@ -4,6 +4,7 @@ export class Logger {
   private static instance: CustomLogger<unknown>;
 
   private static logMap = new Map<string, number>([
+    ['silly', 0],
     ['trace', 1],
     ['debug', 2],
     ['info', 3],
@@ -42,9 +43,6 @@ export class Logger {
   }
 
   private static getMinLevel(logLevel: string): number {
-    if (Logger.logMap.has(logLevel.trim().toLowerCase())) {
-      return Logger.logMap.get(logLevel.trim().toLowerCase()) as number;
-    }
-    return Logger.logMap.get('info') as number;
+    return (Logger.logMap.get(logLevel.trim().toLowerCase()) || Logger.logMap.get('info')) as number;
   }
 }

@@ -14,10 +14,11 @@ export const verifyViewScreenSize = async (
   negate = false
 ): Promise<void> => {
   logger.trace(`Verify element view size${negate ? ' not' : ''} to be ${screenSize}`);
+  const viewSize = await getViewScreenSize(page, selector);
   if (negate) {
-    expect(await getViewScreenSize(page, selector)).not.toEqual(screenSize);
+    expect(viewSize).not.toEqual(screenSize);
   } else {
-    expect(await getViewScreenSize(page, selector)).toEqual(screenSize);
+    expect(viewSize).toEqual(screenSize);
   }
 };
 
@@ -28,10 +29,11 @@ export const verifyDeviceStatus = async (
   negate = false
 ): Promise<void> => {
   logger.trace(`Verify device status${negate ? ' not' : ''} to be turned ${status}`);
+  const deviceStatus = await getDeviceStatus(page, selector);
   if (negate) {
-    expect(await getDeviceStatus(page, selector)).not.toEqual(status);
+    expect(deviceStatus).not.toEqual(status);
   } else {
-    expect(await getDeviceStatus(page, selector)).toEqual(status);
+    expect(deviceStatus).toEqual(status);
   }
 };
 
@@ -42,9 +44,10 @@ export const verifyOptions = async (
   negate = false
 ): Promise<void> => {
   logger.trace(`Verify element should${negate ? ' not' : ''} contain ${options} options`);
+  const actOptions = await getOptions(page, selector);
   if (negate) {
-    expect(await getOptions(page, selector)).not.toEqual(options);
+    expect(actOptions).not.toEqual(options);
   } else {
-    expect(await getOptions(page, selector)).toEqual(options);
+    expect(actOptions).toEqual(options);
   }
 };
