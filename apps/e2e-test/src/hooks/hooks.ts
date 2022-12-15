@@ -17,6 +17,7 @@ import { logger } from '../logger';
 import { closePages, openPages } from '../playwright-support/app-specific/browser-actions';
 import { BrowserManager } from '../playwright-support/utils/BrowserManager';
 import { captureArtifacts } from '../playwright-support/utils/test-artifacts';
+import { formatURL } from '../utils/helper';
 import { SelectorMapper } from '../utils/selector-mapper';
 
 import { ScenarioWorld } from './ScenarioWorld';
@@ -38,6 +39,8 @@ AfterAll(async () => {
 Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   this.selectorMap = selectorMap;
   this.options = options;
+
+  setAppURLs(this);
 
   setFeatureAndScenarioName(this, scenario);
 
@@ -72,4 +75,9 @@ const logScenarioName = (scenarioWorld: ScenarioWorld) => {
   logger.info(liner);
   logger.scenario(scDesc);
   logger.info(liner);
+};
+
+const setAppURLs = (scenarioWorld: ScenarioWorld) => {
+  scenarioWorld.globalVariables['PublisherURL'] = formatURL(options?.publisherURL as string);
+  scenarioWorld.globalVariables['ViewerURL'] = formatURL(options?.viewerURL as string);
 };

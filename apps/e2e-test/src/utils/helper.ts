@@ -1,3 +1,5 @@
+import { GlobalVariables } from './types';
+
 export function env(key: string): string {
   const value = process.env[key];
   if (!value) {
@@ -13,4 +15,20 @@ export function delay(ms: number) {
 
 export function capitalize(string: string) {
   return string[0].toUpperCase() + string.slice(1);
+}
+
+export function formatURL(url: string): string {
+  url += url.endsWith('/') ? '' : '/';
+  return url;
+}
+
+export function replacePlaceholder(text: string, globalVariables: GlobalVariables): string {
+  const replaceRegEx = /\$\{(.*?)\}/g;
+
+  const foundMatches = text.matchAll(replaceRegEx);
+  for (const match of foundMatches) {
+    const placeholderValue = globalVariables[match[1]];
+    text = text.replace(`$\{${match[1]}}`, placeholderValue);
+  }
+  return text;
 }

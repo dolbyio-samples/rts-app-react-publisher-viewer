@@ -454,5 +454,14 @@ Feature: Publisher Preview - Not Live
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Copy link"
 
-    #Scenario: Manual verify copied clipboard text for invite viewers
+    @only
+    Scenario: Publisher should be able to copy the viewer link before going live for the streaming
+        Given a publisher is on the "preview" page
+        When the publisher clicks on the "invite button"
+        Then the copied clipboard text should contain "^${ViewerURL}\?streamAccountId=\w+&streamName=\w+$"
+        Then store the copied clipboard text in "invite_link_1" variable
+        Then wait for "2" seconds
+        When the publisher clicks on the "invite button"
+        Then the copied clipboard text should be equal to the stored "invite_link_1" variable
+
     # TODO: After hover tooltip should not be displayed
