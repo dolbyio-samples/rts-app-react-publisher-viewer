@@ -1,0 +1,34 @@
+setting button: '[test-id=settingsButton]'
+settings drawer: '//*[@test-id="settingTitle"]/parent::*[@role="dialog"]'
+settings drawer title: '[test-id=settingTitle]'
+settings dropdowns: '[test-id*=SelectDefault]'
+
+camera dropdown: '[test-id=cameraSelectDefault]'
+camera dropdown default: '$ref: camera dropdown'
+camera dropdown options: '[test-id=cameraSelectOptions]'
+ 
+microphone dropdown: '[test-id=microphoneSelectDefault]'
+microphone dropdown default: '$ref: microphone dropdown'
+microphone dropdown options: '[test-id=microphoneSelectOptions]'
+
+codec dropdown: '[test-id=codecSelectDefault]'
+codec dropdown default: '$ref: codec dropdown'
+codec dropdown options: '[test-id=codecSelectOptions]'
+
+resolution dropdown: '[test-id=resolutionSelectDefault]'
+resolution dropdown default: '$ref: resolution dropdown'
+resolution dropdown options: '[test-id=resolutionSelectOptions]'
+
+bitrate dropdown: '[test-id=bitrateSelectDefault]'
+bitrate dropdown default: '$ref: bitrate dropdown'
+bitrate dropdown options: '[test-id=bitrateSelectOptions]'
+
+simulcast label: '[test-id=simulcastSwitch] p'
+simulcast switch: '[test-id=simulcastSwitch] input'
+simulcast: '$ref: simulcast switch'
+
+quality dropdown: '[test-id=qualitySelectDefault]'
+quality dropdown default: '$ref: quality dropdown'
+quality dropdown options: '[test-id=qualitySelectOptions]'
+
+settings close button: '[test-id=settingClose]'

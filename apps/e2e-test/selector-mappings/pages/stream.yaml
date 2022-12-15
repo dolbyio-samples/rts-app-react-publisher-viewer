@@ -1,0 +1,7 @@
+COMPONENTS: 
+  - 'header-footer'
+  - 'stream-views'
+  - 'add-source'
+  - 'settings'
+  - 'stream-stats'
+stop button: "[test-id=stop-live-indicator]"

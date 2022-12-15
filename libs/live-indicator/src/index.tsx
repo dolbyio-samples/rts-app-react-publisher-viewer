@@ -11,7 +11,7 @@ type GoLiveProps = ButtonProps & {
 const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
   return (
     <Button
-      test-id="live-indicator"
+      test-id={isActive ? 'stop-live-indicator' : 'start-live-indicator'}
       px="4"
       fontSize="12px"
       size="sm"

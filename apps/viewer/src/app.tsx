@@ -134,10 +134,10 @@ function App() {
       <Flex flex={1} width="100%" alignItems="center" justifyContent="center">
         {!isStreaming ? (
           <VStack>
-            <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
+            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
               Stream is not live
             </Heading>
-            <Text>Please wait for livestream to begin.</Text>
+            <Text test-id="pageDesc">Please wait for livestream to begin.</Text>
           </VStack>
         ) : (
           <HStack justifyContent="center" alignItems="center" w="100%" spacing="6">

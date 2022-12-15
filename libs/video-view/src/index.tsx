@@ -82,7 +82,7 @@ const VideoView = ({
 
   return (
     <Flex
-      test-id="video-view-wrapper"
+      test-id="videoViewWrapper"
       sx={componentElementsStyle}
       pos={isFullScreen ? 'fixed' : 'relative'}
       bg="dolbyNeutral.800"
@@ -127,10 +127,11 @@ const VideoView = ({
           console.error(`video player error: ${videoRef.current?.error}`);
         }}
         // eslint-disable-next-line react/no-unknown-property
-        test-id="video-view"
+        test-id="videoView"
       />
       {label && (
         <InfoLabel
+          test-id="sourceName"
           text={label}
           color="dolbySecondary.200"
           bg="dolbyNeutral.700"
