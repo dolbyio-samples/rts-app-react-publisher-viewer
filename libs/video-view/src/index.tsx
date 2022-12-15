@@ -1,47 +1,53 @@
-import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
-import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
-
-import { IconFullScreen, IconFullScreenExit } from '@millicast-react/dolbyio-icons';
-// import StatisticsInfo from '@millicast-react/statistics-info';
-import InfoLabel from '@millicast-react/info-label';
+import { Box, BoxProps, Center, Flex, Spacer, Spinner, Stack, useDisclosure } from '@chakra-ui/react';
 import type { StreamStats } from '@millicast/sdk';
+import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
+
+import { IconFullScreen, IconFullScreenExit, IconSettings } from '@millicast-react/dolbyio-icons';
+import IconButton from '@millicast-react/icon-button';
+import InfoLabel from '@millicast-react/info-label';
+import SettingsDrawer, { SettingsDrawerProps } from '@millicast-react/settings-drawer';
+// import StatisticsInfo from '@millicast-react/statistics-info';
 
 export type VideoViewProps = {
-  width: string;
+  displayFullscreenButton?: boolean;
+  displayMuteButton?: boolean;
+  displayVideo?: boolean;
   height: string;
+  label?: string;
+  mediaStream?: MediaStream;
   mirrored?: boolean;
   muted?: boolean;
-  displayVideo?: boolean;
-  displayMuteButton?: boolean;
-  displayFullscreenButton?: boolean;
-  mediaStream?: MediaStream;
-  statistics?: StreamStats;
-  label?: string;
-  placeholderNode?: ReactNode;
   onClick?: BoxProps['onClick'];
+  placeholderNode?: ReactNode;
+  settings?: Omit<SettingsDrawerProps, 'isOpen' | 'onClose'>;
   showDotIndicator?: boolean;
+  statistics?: StreamStats;
   volume?: number;
+  width: string;
 };
 
 const VideoView = ({
-  width,
+  // statistics,
+  displayFullscreenButton = true,
+  displayVideo = true,
   height,
+  label,
+  mediaStream,
   mirrored = false,
   muted = true, // Has to be true for AutoPlay in chromium
-  displayVideo = true,
-  displayFullscreenButton = true,
-  mediaStream,
-  // statistics,
-  label,
-  placeholderNode,
   onClick,
+  placeholderNode,
+  settings,
   showDotIndicator,
   volume = 1,
+  width,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
+
+  const { onClose: handleDrawerClose, onOpen: handleDrawerOpen, isOpen: isDrawerOpen } = useDisclosure();
 
   useEffect(() => {
     if (videoRef.current) {
@@ -137,12 +143,13 @@ const VideoView = ({
       )}
       {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
       <Stack
-        position="absolute"
-        direction="row"
-        width="100%"
         bottom={isFullScreen ? ['120px', '120px', 0] : 0}
+        direction="row"
+        margin="0 8px 8px"
+        position="absolute"
         right="0"
         spacing="0"
+        width="100%"
       >
         {/* {displayMuteButton && (
           <IconButton
@@ -171,6 +178,17 @@ const VideoView = ({
             icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           />
         )}
+        <IconButton
+          background="transparent"
+          icon={<IconSettings />}
+          isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
+          isRound
+          onClick={handleDrawerOpen}
+          reversed
+          size="sm"
+          test-id="settingsOpenButton"
+          tooltip={{ label: 'Settings' }}
+        />
         {/* Disable it temporarily, will bring it back in next release
          <IconButton
           test-id="streamInfoButton"
@@ -184,6 +202,7 @@ const VideoView = ({
           icon={<IconInfo fill="white" />}
         /> */}
       </Stack>
+      <SettingsDrawer isOpen={isDrawerOpen} onClose={handleDrawerClose} {...settings} />
     </Flex>
   );
 };
