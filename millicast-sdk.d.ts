@@ -2,7 +2,7 @@ declare namespace millicast {
   type Event = 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
   type ViewEvent = 'active' | 'inactive' | 'vad' | 'layers' | 'viewercount';
   type CapabilityKind = 'audio' | 'video';
-  type VideoCodec = 'VP8' | 'VP9' | 'H264' | 'AV1';
+  type VideoCodec = 'av1' | 'h264' | 'vp8' | 'vp9';
 
   interface Capabilities {
     codecs: Array<CodecInfo>;

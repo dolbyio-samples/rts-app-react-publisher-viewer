@@ -38,6 +38,12 @@ const SettingsDrawer = ({
     };
   };
 
+  const codecElementResolver = (element: unknown) => ({
+    data: element as VideoCodec,
+    id: element as string,
+    label: element as string,
+  });
+
   const deviceElementResolver = (element: unknown) => {
     const deviceElement = element as InputDeviceInfo;
     return {
@@ -46,12 +52,6 @@ const SettingsDrawer = ({
       label: deviceElement.label,
     };
   };
-
-  const elementResolver = (element: unknown) => ({
-    data: element as VideoCodec,
-    id: element as string,
-    label: element as string,
-  });
 
   const resolutionElementResolver = (element: unknown) => {
     const resolution = element as Resolution;
@@ -88,10 +88,10 @@ const SettingsDrawer = ({
           test-id="settingsCloseButton"
           top="8px"
         />
-        <Box overflowY="auto">
+        <Box>
           <Box height="100%" padding="8px 24px">
             <Stack direction="column" spacing={4}>
-              {camera && camera.isVisible ? (
+              {camera?.isVisible ? (
                 <Box>
                   <Dropdown
                     disabled={camera.isDisabled}
@@ -105,7 +105,7 @@ const SettingsDrawer = ({
                   />
                 </Box>
               ) : null}
-              {microphone && microphone.isVisible ? (
+              {microphone?.isVisible ? (
                 <Box>
                   <Dropdown
                     disabled={microphone.isDisabled}
@@ -119,12 +119,12 @@ const SettingsDrawer = ({
                   />
                 </Box>
               ) : null}
-              {codec && codec.isVisible ? (
+              {codec?.isVisible ? (
                 <Box>
                   <Dropdown
                     disabled={codec.isDisabled}
                     elementsList={codec.options}
-                    elementResolver={elementResolver}
+                    elementResolver={codecElementResolver}
                     leftIcon={<IconCodec />}
                     onSelect={codec.handleSelect}
                     placeholder="Codec"
@@ -133,7 +133,7 @@ const SettingsDrawer = ({
                   />
                 </Box>
               ) : null}
-              {bitrate && bitrate.isVisible ? (
+              {bitrate?.isVisible ? (
                 <Box>
                   <Dropdown
                     disabled={bitrate.isDisabled}
@@ -147,7 +147,7 @@ const SettingsDrawer = ({
                   />
                 </Box>
               ) : null}
-              {resolution && resolution.isVisible ? (
+              {resolution?.isVisible ? (
                 <Box>
                   <Dropdown
                     disabled={resolution.isDisabled}
@@ -161,7 +161,7 @@ const SettingsDrawer = ({
                   />
                 </Box>
               ) : null}
-              {simulcast && simulcast.isVisible ? (
+              {simulcast?.isVisible ? (
                 <ToggleButton
                   isActive={simulcast.value}
                   isDisabled={simulcast.isDisabled}

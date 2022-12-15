@@ -200,7 +200,7 @@ function App() {
       handleSelect: (data: unknown) => {
         handleSelectBitrate(data as number);
       },
-      isDisabled: false,
+      isDisabled: isConnecting,
       isVisible: !!bitrateList.length,
       options: bitrateList,
       value: bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name,
@@ -227,7 +227,7 @@ function App() {
       handleSelect: (data: unknown) => {
         setMicrophone(data as InputDeviceInfo);
       },
-      isDisabled: publisherState === 'connecting',
+      isDisabled: isConnecting,
       isVisible: !isStreaming || (!!microphoneList.length && !!microphoneSettings),
       options: microphoneList,
       value: microphone?.label ?? '',
@@ -236,7 +236,7 @@ function App() {
       handleSelect: (data: unknown) => {
         handleSelectResolution(data as Resolution);
       },
-      isDisabled: false,
+      isDisabled: isConnecting,
       isVisible: !isStreaming || (!!resolutionList.length && !!mediaStream),
       options: resolutionList,
       value: cameraSettings ? `${cameraSettings.width}x${cameraSettings.height}` : '',
@@ -245,8 +245,8 @@ function App() {
       handleToggle: () => {
         setIsSimulcastEnabled((prevIsSimulcastEnabled) => !prevIsSimulcastEnabled);
       },
-      isDisabled: codec === 'VP9',
-      isVisible: !isStreaming,
+      isDisabled: isConnecting,
+      isVisible: !isStreaming && codec !== 'vp9',
       value: isSimulcastEnabled,
     },
   };
