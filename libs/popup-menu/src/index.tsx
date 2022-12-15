@@ -16,6 +16,7 @@ const PopupMenu = ({ buttonTitle, items }: PopupMenuProps) => {
   return (
     <Menu placement="top" gutter={14} autoSelect={false}>
       <MenuButton
+        test-id="addSourceButton"
         as={Button}
         textTransform="uppercase"
         size="sm"
@@ -36,9 +37,18 @@ const PopupMenu = ({ buttonTitle, items }: PopupMenuProps) => {
       >
         {buttonTitle}
       </MenuButton>
-      <MenuList bg="dolbyNeutral.800" w="200px" color="white" border="none" p="0" overflow="hidden">
+      <MenuList
+        data-id="addSourceMenu"
+        bg="dolbyNeutral.800"
+        w="200px"
+        color="white"
+        border="none"
+        p="0"
+        overflow="hidden"
+      >
         {items.map(({ icon, text, onClick, isDisabled }) => (
           <MenuItem
+            test-id={text.replace(' ', '')}
             key={text}
             onClick={onClick}
             bg="dolbyNeutral.800"

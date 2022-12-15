@@ -57,7 +57,7 @@ jobs:
         if: always()
         with:
           name: test-artifacts
-          path: ./apps/bdd-test/reports/
+          path: ./apps/e2e-test/reports/
           retention-days: 2
       - name: deploy
         run: eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"

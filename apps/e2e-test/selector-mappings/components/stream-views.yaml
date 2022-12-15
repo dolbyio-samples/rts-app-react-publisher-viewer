@@ -1,0 +1,44 @@
+
+video frame: '[test-id=videoView]'
+source name: '[test-id=sourceName]'
+microphone button: '[test-id=toggleMicrophoneButton], [test-id=toggleMainStreamAudioButton]'
+camera button: '[test-id=toggleCameraButton], [test-id=toggleMainStreamVideoButton]'
+full screen button: '[test-id=fullScreenButton]'
+
+video view container: '(//*[@test-id="videoViewWrapper"]/parent::*)[1]'
+screen view container: '(//*[@test-id="videoViewWrapper"]/parent::*)[2]'
+
+video view:
+  - '$ref: video view container'
+  - '$ref: video frame'
+video view source name:
+  - '$ref: video view container'
+  - '$ref: source name'
+video view microphone:
+  - '$ref: video view container'
+  - '$ref: microphone button'
+video view camera:
+  - '$ref: video view container'
+  - '$ref: camera button'
+video view full screen button:
+  - '$ref: video view container'
+  - '$ref: full screen button'
+
+screen view:
+  - '$ref: screen view container'
+  - '$ref: video frame'
+screen view source name:
+  - '$ref: screen view container'
+  - '$ref: source name'
+screen view microphone:
+  - '$ref: screen view container'
+  - '$ref: microphone button'
+screen view camera:
+  - '$ref: screen view container'
+  - '$ref: camera button'
+screen view stop share button:
+  - '$ref: screen view container'
+  - '[test-id=stopScreenShare]'
+screen view full screen button:
+  - '$ref: screen view container'
+  - '$ref: full screen button'
