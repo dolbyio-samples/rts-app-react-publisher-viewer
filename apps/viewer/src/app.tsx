@@ -1,39 +1,12 @@
-import {
-  VStack,
-  Text,
-  HStack,
-  Flex,
-  Spacer,
-  Box,
-  Heading,
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Stack,
-  Button,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import useNotification from '@millicast-react/use-notification';
-import useViewer, { SimulcastQuality, StreamQuality } from '@millicast-react/use-viewer';
-import {
-  IconProfile,
-  IconInfo,
-  IconSettings,
-  IconCameraOn,
-  IconCameraOff,
-  IconSpeaker,
-  IconSpeakerOff,
-} from '@millicast-react/dolbyio-icons';
+import useViewer from '@millicast-react/use-viewer';
+import { IconCameraOff, IconCameraOn, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
 import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
-import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
-import Dropdown from '@millicast-react/dropdown';
-import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import ControlBar from '@millicast-react/control-bar';
 import './styles/font.css';
@@ -103,8 +76,6 @@ function App() {
       setTrackSourcesStates(newTrackSourcesStates);
     }
   }, [remoteTrackSources]);
-
-  console.log('app log', remoteTrackSources, viewerCount);
 
   return (
     <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
