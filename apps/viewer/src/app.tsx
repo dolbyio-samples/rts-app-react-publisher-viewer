@@ -112,14 +112,6 @@ function App() {
         <ActionBar title="Company name" />
         <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
           <VStack spacing="4" alignItems="flex-start">
-            <Button
-              onClick={() => {
-                isStreaming ? stopViewer() : startViewer();
-              }}
-            >
-              {' '}
-              Start/Stop{' '}
-            </Button>
             <Flex alignItems="center">
               <Timer isActive={isStreaming} />
               {hasMultiStream && (
