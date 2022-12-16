@@ -87,7 +87,6 @@ VITE_MILLICAST_VIEWER_BASE_URL=<Your URL goes here>
 
 > If you are using a particular port number, please add this to the URL. The best way to do this is to first [run the viewer app](#running-the-viewer-app), grab the URL from your browser and add it to your `.env` file as such.
 
-
 ```bash
 VITE_MILLICAST_VIEWER_BASE_URL=http://localhost:5174/
 ```
@@ -134,7 +133,7 @@ yarn nx e2e publisher
 
 While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend Chromium based browsers or Safari as the best means to test out these applications. Some browser known issues are:
 
-* Simulcast only works when the publisher is on Chrome (and uses H.264 or VP8 as the codec).
+- Simulcast only works when the publisher is on Chrome (and uses H.264 or VP8 as the codec).
 
 Generally speaking, our app has been tested to work on the following browser versions:
 
