@@ -31,7 +31,7 @@ You will also need the following tools installed on your machine.
 
 ## Project structure
 
-This project is setup as a yarn based nx-managed monorepo, and contains the following:
+This project is setup as a [yarn](https://yarnpkg.com/) based [nx-managed](https://nx.dev/) monorepo, and contains the following:
 
 - Publisher app (under `apps/publisher`)
 - Viewer/subscriber app (under `apps/viewer`)
@@ -43,7 +43,7 @@ The Millicast solution is broken down into 2 parts - the publisher (or the broad
 
 ## Installation and setup
 
-To install the libraries necessary, clone the repo. Then at the root directory of the project, run the following command in a terminal window:
+To install the libraries necessary, clone the repo. Then from the root directory of the project, run the following command in a terminal window:
 
 ```bash
 yarn
