@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
-import { readClipboardText } from '../../common-support/clipboard-actions';
+import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { verifyText, verifyTextMatch } from '../../playwright-support/generic/element-verification';
