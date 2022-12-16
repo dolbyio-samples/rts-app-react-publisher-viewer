@@ -157,7 +157,7 @@ function App() {
 
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
-      return codecList.filter((item) => item !== 'VP9');
+      return codecList.filter((item) => item !== 'vp9');
     }
     return codecList;
   }, [codecList, isSimulcastEnabled]);
@@ -201,52 +201,34 @@ function App() {
         handleSelectBitrate(data as number);
       },
       isDisabled: isConnecting,
-      isVisible: !!bitrateList.length,
+      isHidden: !bitrateList.length,
       options: bitrateList,
       value: bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name,
-    },
-    camera: {
-      handleSelect: (data: unknown) => {
-        setCamera(data as InputDeviceInfo);
-      },
-      isDisabled: isConnecting,
-      isVisible: !isStreaming || !!cameraList.length,
-      options: cameraList,
-      value: camera?.label ?? '',
     },
     codec: {
       handleSelect: (data: unknown) => {
         setCodec(data as VideoCodec);
       },
       isDisabled: publisherState !== 'ready',
-      isVisible: !isStreaming || (!!codecList.length && !isStreaming),
+      isHidden: isStreaming || !codecList.length,
       options: codecListSimulcast,
       value: codec || codecList[0],
     },
-    microphone: {
-      handleSelect: (data: unknown) => {
-        setMicrophone(data as InputDeviceInfo);
-      },
+    fullHeight: true,
+    name: {
+      // TODO: update name
+      handleChange: () => null,
       isDisabled: isConnecting,
-      isVisible: !isStreaming || (!!microphoneList.length && !!microphoneSettings),
-      options: microphoneList,
-      value: microphone?.label ?? '',
-    },
-    resolution: {
-      handleSelect: (data: unknown) => {
-        handleSelectResolution(data as Resolution);
-      },
-      isDisabled: isConnecting,
-      isVisible: !isStreaming || (!!resolutionList.length && !!mediaStream),
-      options: resolutionList,
-      value: cameraSettings ? `${cameraSettings.width}x${cameraSettings.height}` : '',
+      isHidden: isStreaming,
+      // TODO: current name
+      value: '',
     },
     simulcast: {
       handleToggle: () => {
         setIsSimulcastEnabled((prevIsSimulcastEnabled) => !prevIsSimulcastEnabled);
       },
       isDisabled: isConnecting,
-      isVisible: !isStreaming && codec !== 'vp9',
+      isHidden: isStreaming || codec === 'vp9',
       value: isSimulcastEnabled,
     },
   };

@@ -111,47 +111,57 @@ function App() {
           </VStack>
         ) : (
           <HStack justifyContent="center" alignItems="center" w="100%" spacing="6">
-            {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map((trackSource) => {
-              const muteAudio = trackSourcesStates.get(trackSource.id)?.muteAudio ?? true;
-              const hideVideo = trackSourcesStates.get(trackSource.id)?.hideVideo ?? false;
+            {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map(({ id, source }) => {
+              const muteAudio = trackSourcesStates.get(id)?.muteAudio ?? true;
+              const hideVideo = trackSourcesStates.get(id)?.hideVideo ?? false;
+              const settings = {
+                quality: {
+                  // TODO: set quality
+                  handleSelect: () => null,
+                  options: source.streamQualityOptions,
+                  // TODO: current quality
+                  value: '',
+                },
+              };
               return (
-                <VStack key={trackSource.id}>
+                <VStack key={id}>
                   <VideoView
-                    width="688px"
-                    height="382px"
-                    mediaStream={trackSource.source.mediaStream}
-                    muted={muteAudio}
                     displayVideo={!hideVideo}
+                    height="382px"
+                    mediaStream={source.mediaStream}
+                    muted={muteAudio}
+                    settings={settings}
+                    width="688px"
                   />
                   <ControlBar
                     controls={[
                       {
-                        key: `toggle${trackSource.id}AudioButton`,
-                        'test-id': `toggle${trackSource.id}AudioButton`,
+                        key: `toggle${id}AudioButton`,
+                        'test-id': `toggle${id}AudioButton`,
                         tooltip: { label: 'Toggle Audio', placement: 'top' },
                         onClick: () => {
-                          const state = trackSourcesStates.get(trackSource.id);
+                          const state = trackSourcesStates.get(id);
                           if (!state) return;
                           const newState = { ...state };
                           newState.muteAudio = !newState.muteAudio;
                           const newStates = new Map(trackSourcesStates);
-                          newStates.set(trackSource.id, newState);
+                          newStates.set(id, newState);
                           setTrackSourcesStates(newStates);
                         },
                         isActive: muteAudio,
                         icon: muteAudio ? <IconSpeakerOff /> : <IconSpeaker />,
                       },
                       {
-                        key: `toggle${trackSource.id}VideoButton`,
-                        'test-id': `toggle${trackSource.id}VideoButton`,
+                        key: `toggle${id}VideoButton`,
+                        'test-id': `toggle${id}VideoButton`,
                         tooltip: { label: 'Toggle Video', placement: 'top' },
                         onClick: () => {
-                          const state = trackSourcesStates.get(trackSource.id);
+                          const state = trackSourcesStates.get(id);
                           if (!state) return;
                           const newState = { ...state };
                           newState.hideVideo = !newState.hideVideo;
                           const newStates = new Map(trackSourcesStates);
-                          newStates.set(trackSource.id, newState);
+                          newStates.set(id, newState);
                           setTrackSourcesStates(newStates);
                         },
                         isActive: hideVideo,

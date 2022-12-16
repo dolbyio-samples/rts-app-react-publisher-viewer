@@ -167,7 +167,7 @@ const VideoView = ({
           />
         )} */}
         <Spacer />
-        {displayFullscreenButton && (
+        {/* {displayFullscreenButton && (
           <IconButton
             test-id="fullScreenButton"
             aria-label="Full screen"
@@ -179,7 +179,7 @@ const VideoView = ({
             }}
             icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           />
-        )}
+        )} */}
         <IconButton
           background="transparent"
           icon={<IconSettings />}
