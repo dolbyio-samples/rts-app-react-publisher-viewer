@@ -5,8 +5,9 @@ import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
 import { IconFullScreen, IconFullScreenExit, IconSettings } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import InfoLabel from '@millicast-react/info-label';
-import SettingsDrawer, { SettingsDrawerProps } from '@millicast-react/settings-drawer';
 // import StatisticsInfo from '@millicast-react/statistics-info';
+
+import SettingsDrawer, { SettingsDrawerProps } from './settings-drawer';
 
 export type VideoViewProps = {
   displayFullscreenButton?: boolean;
