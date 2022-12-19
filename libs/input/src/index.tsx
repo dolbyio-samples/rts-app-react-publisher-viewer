@@ -30,9 +30,9 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
         fontWeight="500"
         left="12px"
         m="0"
+        p="0 4px"
         pointerEvents="none"
         position="absolute"
-        p="0 4px"
         top={0}
         transform={'translateY(-50%)'}
         zIndex={2}
@@ -64,7 +64,7 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
           </InputRightElement>
         ) : null}
       </InputGroup>
-      {helper ? <FormHelperText>{helper}</FormHelperText> : null}
+      {helper ? <FormHelperText fontSize="12px">{helper}</FormHelperText> : null}
       {error ? <FormErrorMessage fontSize="12px">{error}</FormErrorMessage> : null}
     </FormControl>
   );
