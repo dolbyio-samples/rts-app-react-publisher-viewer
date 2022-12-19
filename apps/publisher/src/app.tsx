@@ -64,6 +64,9 @@ const DisplayShareSourceId = 'DisplayShare';
 type PublisherState = SourceState;
 
 function App() {
+  const date = new Date();
+  const [streamName, _] = useState(import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString());
+
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
@@ -78,7 +81,6 @@ function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
   const { showError } = useNotification();
 
-  const date = new Date();
   const {
     startStreamingSource,
     stopStreamingSource,
@@ -92,7 +94,7 @@ function App() {
   } = usePublisher({
     token: import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
     streamId: import.meta.env.VITE_MILLICAST_STREAM_ID,
-    streamName: import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
+    streamName: streamName,
     viewerAppBaseUrl: import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL,
     handleError: showError,
   });
@@ -176,7 +178,7 @@ function App() {
 
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
-      return codecList.filter((item) => item.toLowerCase() !== 'vp9');
+      return codecList.filter((item) => item !== 'VP9');
     }
     return codecList;
   }, [codecList, isSimulcastEnabled]);
