@@ -63,10 +63,11 @@ const MainSourceId = 'Main';
 const DisplayShareSourceId = 'DisplayShare';
 type PublisherState = SourceState;
 
-function App() {
-  const date = new Date();
-  const [streamName, _] = useState(import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString());
+const date = new Date();
+const streamName =
+  typeof window !== 'undefined' ? import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString() : undefined;
 
+function App() {
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
