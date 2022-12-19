@@ -148,6 +148,10 @@ function App() {
       startStreamingSource({
         mediaStream: displayStream,
         sourceId: DisplayShareSourceId,
+        simulcast: isSimulcastEnabled,
+        codec,
+        events: ['viewercount'],
+        bandwidth: bitrate,
       });
   }, [displayStream, publisherState]);
 
@@ -305,6 +309,10 @@ function App() {
                       startStreamingSource({
                         mediaStream: displayStream,
                         sourceId: DisplayShareSourceId,
+                        simulcast: isSimulcastEnabled,
+                        codec,
+                        events: ['viewercount'],
+                        bandwidth: bitrate,
                       });
                     }
                   } catch (err) {

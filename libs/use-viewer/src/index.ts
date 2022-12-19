@@ -15,7 +15,7 @@ import { MediaStreamSource, ViewOptions, BroadcastEvent, ViewProjectSourceMappin
 
 import type { StreamStats } from '@millicast/sdk';
 import { RemoteTrackSources, ViewerAction, ViewerActionType, ViewerProps, Viewer } from './types';
-import { addRemoteTrackAndProject, unprojectAndRemoveRemoteTrack } from './utils';
+import { addRemoteTrackAndProject, buildQualityOptions, unprojectAndRemoveRemoteTrack } from './utils';
 
 const missedSourceId = new Date().valueOf().toString();
 const initialRemoteSources = new Map() as RemoteTrackSources;
@@ -37,6 +37,37 @@ const reducer = (sources: RemoteTrackSources, action: ViewerAction): RemoteTrack
       unprojectAndRemoveRemoteTrack(source, action.viewer);
       const newSources = new Map(sources) as RemoteTrackSources;
       newSources.delete(action.sourceId);
+      return newSources;
+    }
+    case ViewerActionType.UPDATE_SOURCES_STATISTICS: {
+      const { audio, video } = action.statistics;
+      const newSources = new Map() as RemoteTrackSources;
+      for (const [id, source] of sources) {
+        const sourceAudio = audio.filter(({ mid }) => mid === source.audioMediaId);
+        const sourceVideo = video.filter(({ mid }) => mid === source.videoMediaId);
+        const newSource = {
+          ...source,
+          statistics: {
+            audio: sourceAudio,
+            video: sourceVideo,
+          },
+        };
+        newSources.set(id, newSource);
+      }
+      return newSources;
+    }
+    case ViewerActionType.UPDATE_SOURCES_QUALITIES: {
+      const newSources = new Map(sources) as RemoteTrackSources;
+      Object.entries(action.medias).forEach(([mid, { active }]) => {
+        const [id, source] = Array.from(sources).find(([, { videoMediaId }]) => videoMediaId === mid) ?? [];
+        if (id && source) {
+          const newSource = {
+            ...source,
+            streamQualityOptions: buildQualityOptions(active),
+          };
+          newSources.set(id, newSource);
+        }
+      });
       return newSources;
     }
     default:
@@ -73,27 +104,6 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
   //       break;
   //   }
   // }, [viewerState]);
-
-  // const buildQualityOptions = (layers: MediaLayer[]) => {
-  //   if (layers.length > 3 || layers.length < 2) return;
-  //   const qualities: StreamQuality[] = layers.length === 3 ? ['High', 'Medium', 'Low'] : ['High', 'Low'];
-  //   const newStreamQualityOptions: SimulcastQuality[] = layers.map((layer, idx) => {
-  //     return {
-  //       streamQuality: qualities[idx],
-  //       simulcastLayer: {
-  //         encodingId: layer.id,
-  //         bitrate: layer.bitrate,
-  //         simulcastIdx: layer.simulcastIdx,
-  //         spatialLayerId: layer.layers[0]?.spatialLayerId, // H264 doesn't have layers.
-  //         temporalLayerId: layer.layers[0]?.temporalLayerId, // H264 doesn't have layers.
-  //       },
-  //     };
-  //   });
-  //   newStreamQualityOptions.unshift({
-  //     streamQuality: 'Auto',
-  //   });
-  //   setStreamQualityOptions(newStreamQualityOptions);
-  // };
 
   // const updateSourceQuality = (sourceId: SourceId, quality: StreamQuality) => {
   //   if (!viewer.current) return;
@@ -138,17 +148,11 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
         setViewerCount((event.data as ViewerCount).viewercount);
         break;
       case 'layers': {
-        // We only check active layers for main stream which always has media id 0
-        // const layers = (event.data as MediaStreamLayers).medias['0']?.active;
-        // if (!layers || layers.length == 0) {
-        //   setStreamQualityOptions([]);
-        //   return;
-        // }
-        // buildQualityOptions(layers);
-        // if (!streamQuality.current) {
-        //   streamQuality.current = 'Auto';
-        //   viewer.current?.select({});
-        // }
+        dispatch({
+          medias: (event.data as MediaStreamLayers).medias,
+          type: ViewerActionType.UPDATE_SOURCES_QUALITIES,
+          viewer: viewer.current as View,
+        });
         break;
       }
     }
@@ -158,7 +162,7 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
     if (!viewer.current) return;
     console.log('connecting');
     try {
-      await viewer.current.connect();
+      await viewer.current.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
     } catch (error) {
       console.error(error);
       viewer.current?.reconnect();
@@ -166,11 +170,11 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
       console.log('register broadcastEvent');
       viewer.current?.webRTCPeer?.initStats();
       viewer.current?.webRTCPeer?.on('stats', (statistics: StreamStats) => {
-        // console.log('statistics event', statistics);
-        // const videoInbounds = statistics.video.inbounds.filter((stats) => stats.mid === mainVideoMidRef.current);
-        // if (videoInbounds) statistics.video.inbounds = videoInbounds;
-        // const audioInbounds = statistics.audio.inbounds.filter((stats) => stats.mid === mainAudioMidRef.current);
-        // if (audioInbounds) statistics.audio.inbounds = audioInbounds;
+        dispatch({
+          statistics: { audio: statistics.audio.inbounds, video: statistics.video.inbounds },
+          type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
+          viewer: viewer.current as View,
+        });
       });
     }
   };
