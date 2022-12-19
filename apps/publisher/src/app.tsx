@@ -176,7 +176,7 @@ function App() {
 
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
-      return codecList.filter((item) => item !== 'VP9');
+      return codecList.filter((item) => item.toLowerCase() !== 'vp9');
     }
     return codecList;
   }, [codecList, isSimulcastEnabled]);
