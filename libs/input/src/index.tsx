@@ -41,7 +41,7 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
       </FormLabel>
       <InputGroup>
         <ChakraInput
-          _focus={{ borderColor: 'dolbyNeutral.500', boxShadow: 'none' }}
+          _focus={{ borderColor: 'dolbyPurple.400', boxShadow: 'none' }}
           _hover={{ borderColor: 'dolbyNeutral.500', boxShadow: 'none' }}
           bg="dolbyNeutral.800"
           border="2px solid"
@@ -65,7 +65,7 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
         ) : null}
       </InputGroup>
       {helper ? <FormHelperText>{helper}</FormHelperText> : null}
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {error ? <FormErrorMessage fontSize="12px">{error}</FormErrorMessage> : null}
     </FormControl>
   );
 };
