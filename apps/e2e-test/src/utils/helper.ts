@@ -18,8 +18,7 @@ export function capitalize(string: string) {
 }
 
 export function formatURL(url: string): string {
-  url += url.endsWith('/') ? '' : '/';
-  return url;
+  return url.endsWith('/') ? url : `${url}/`;
 }
 
 export function replacePlaceholder(text: string, globalVariables: GlobalVariables): string {
