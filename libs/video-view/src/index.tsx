@@ -7,7 +7,7 @@ import IconButton from '@millicast-react/icon-button';
 import InfoLabel from '@millicast-react/info-label';
 // import StatisticsInfo from '@millicast-react/statistics-info';
 
-import SettingsDrawer, { SettingsDrawerProps } from './settings-drawer';
+import SettingsDrawer, { SettingsDrawerProps } from './components/settings-drawer';
 
 export type VideoViewProps = {
   displayFullscreenButton?: boolean;
