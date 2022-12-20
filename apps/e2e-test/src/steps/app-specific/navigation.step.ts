@@ -3,7 +3,7 @@ import { Given, When } from '@cucumber/cucumber';
 
 import { options } from '../../../playwright.config';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData, hasData, saveData } from '../../hooks/utils';
+import { getData, saveData } from '../../hooks/utils';
 import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';
 import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 import { click, hover } from '../../playwright-support/generic/element-action';
