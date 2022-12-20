@@ -1,9 +1,7 @@
 import { BrowserContextOptions, LaunchOptions } from 'playwright';
 
-export type GlobalVariables = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ScenarioData = Map<string, any>;
 
 export type BrowserName = 'chrome' | 'chromium' | 'firefox';
 

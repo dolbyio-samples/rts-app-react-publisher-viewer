@@ -40,7 +40,7 @@ export class BrowserManager {
     const context = await this.browser.newContext(contextOptions);
 
     if (this.options.trace !== 'off') {
-      logger.trace(`\tBrowserManager:: Starting the trace`);
+      logger.trace(`BrowserManager:: Starting the trace`);
       await context.tracing.start({
         screenshots: true,
         snapshots: true,

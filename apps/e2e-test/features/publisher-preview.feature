@@ -440,7 +440,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be able to get the same viewer link when copied mulitple times before going live for the broadcast
         Given a publisher is on the "preview" page
         When the publisher clicks on the "invite button"
-        Then the copied clipboard text should contain "^${ViewerURL}\?streamAccountId=\w+&streamName=\w+$"
+        Then the copied clipboard text should contain "^${ViewerBaseURL}/\?streamAccountId=\w+&streamName=\w+$"
         Then store the copied clipboard text in "invite_link_1" variable
         Then wait for "2" seconds
         When the publisher clicks on the "invite button"
