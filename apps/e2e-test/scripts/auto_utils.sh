@@ -6,6 +6,7 @@ installDependencies(){
   echo "#################################"
   yarn global add pm2 strip-ansi-cli
   export VITE_MILLICAST_VIEWER_BASE_URL=http://localhost:5174/
+  sudo apt install xsel
 }
 
 runApp(){

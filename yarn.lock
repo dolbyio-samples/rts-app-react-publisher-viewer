@@ -7508,11 +7508,6 @@ call-me-maybe@^1.0.1:
   resolved "https://registry.yarnpkg.com/call-me-maybe/-/call-me-maybe-1.0.2.tgz#03f964f19522ba643b1b0693acb9152fe2074baa"
   integrity sha512-HpX65o1Hnr9HH25ojC1YGs7HCQLq0GCOibSaWER0eNpgJ/Z1MZv2mTc7+xh6WOPxbRVcmgbv4hGU+uSQ/2xFZQ==
 
-call-once@:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/call-once/-/call-once-1.0.3.tgz#f150a14b341032fb47721090adbbec6a2588c4e0"
-  integrity sha512-Y40/nFP10Rnz1jGho4TEQeL7CrCdFli088mk6dmtCL1nIrfU0bpqnLKVCwPB5KGKqCVusaUzm5wYTJrqVMI0AQ==
-
 callsite@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/callsite/-/callsite-1.0.0.tgz#280398e5d664bd74038b6f0905153e6e8af1bc20"
@@ -20899,13 +20894,6 @@ xmlchars@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
-
-xsel@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/xsel/-/xsel-1.0.0.tgz#d8ef26fd038a5b616f24e7f29e9d32fd3f7e3bfc"
-  integrity sha512-IehZBEZlDq00D5aTd5qYPRzD192cQ3MuSgDCiiWaC5Uqq5X2wxA66QBZzjF8YLgux5fajvPKEjhA4KhqA7F0HQ==
-  dependencies:
-    call-once "^1.0.3"
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"
