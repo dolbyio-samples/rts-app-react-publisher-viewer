@@ -22,6 +22,7 @@ import { SelectorMapper } from '../utils/selector-mapper';
 import { GlobalData } from './GlobalData';
 
 import { ScenarioWorld } from './ScenarioWorld';
+import { saveData } from './utils';
 
 const selectorMap = new SelectorMapper(selectorMappingPath);
 const browserMgr = new BrowserManager();
@@ -81,5 +82,5 @@ const logScenarioName = (scenarioWorld: ScenarioWorld) => {
 };
 
 const setAppURLs = (scenarioWorld: ScenarioWorld) => {
-  scenarioWorld.localData.set('PublisherURL', formatURL(options?.publisherURL as string));
+  saveData(scenarioWorld, 'PublisherURL', formatURL(options?.publisherURL as string), false);
 };

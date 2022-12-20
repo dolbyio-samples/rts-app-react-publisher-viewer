@@ -4,7 +4,7 @@
 import { expect } from '@playwright/test';
 import { BrowserContext } from 'playwright';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData } from '../../hooks/utils';
+import { getData, saveData } from '../../hooks/utils';
 import { logger } from '../../logger';
 import { BrowserManager } from '../utils/BrowserManager';
 
@@ -15,14 +15,14 @@ export async function openPages(
 ): Promise<void> {
   logger.trace('Create context and page');
   const context = await browserMgr.newContext(scenarioWorld);
-  scenarioWorld.localData.set('context', context);
+  saveData(scenarioWorld, 'context', context);
 
   for (const app of apps) {
     const appPage = await browserMgr.newPage(context);
-    scenarioWorld.localData.set(app, appPage);
-    scenarioWorld.localData.set(`${app}ConsoleLogs`, BrowserManager.monitorConsoleLogs(appPage));
+    saveData(scenarioWorld, app, appPage);
+    saveData(scenarioWorld, `${app}ConsoleLogs`, BrowserManager.monitorConsoleLogs(appPage));
     const videoFile = (await appPage.video()?.path()) as string;
-    if (videoFile.trim() !== '') scenarioWorld.localData.set(`${app}VideoFile`, videoFile);
+    if (videoFile.trim() !== '') saveData(scenarioWorld, `${app}VideoFile`, videoFile);
   }
 }
 

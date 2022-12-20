@@ -5,12 +5,12 @@ import { readClipboardText } from '../../playwright-support/generic/clipboard-ac
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { verifyText, verifyTextMatch } from '../../playwright-support/generic/element-verification';
 import { replacePlaceholder } from './utils';
-import { getData } from '../../hooks/utils';
+import { getData, saveData } from '../../hooks/utils';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,
   async function (this: ScenarioWorld, variableName: string) {
-    this.localData.set(variableName, readClipboardText());
+    saveData(this, variableName, readClipboardText());
   }
 );
 
