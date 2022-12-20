@@ -20,6 +20,7 @@ export type PlaywrightOptions = {
   launchOptions?: { [K in BrowserName]?: LaunchOptions };
   contextOptions?: BrowserContextOptions;
   reportPath?: string;
+  dynamicStreamName: boolean;
 };
 
 export type SetupConfig = {
