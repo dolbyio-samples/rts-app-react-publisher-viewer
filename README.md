@@ -49,7 +49,7 @@ To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard
 
 ## Project structure
 
-This project is setup as a yarn based nx-managed monorepo, and contains the following:
+This project is setup as a [yarn](https://yarnpkg.com/) based [nx-managed](https://nx.dev/) monorepo, and contains the following:
 
 - Publisher app (under `apps/publisher`)
 - Viewer/subscriber app (under `apps/viewer`)
@@ -61,7 +61,7 @@ The RTS solution is broken down into 2 parts - the publisher (or the broadcaster
 
 ## Installation and setup
 
-To install the libraries necessary, run the following command:
+To install the libraries necessary, clone the repo. Then from the root directory of the project, run the following command in a terminal window:
 
 ```bash
 yarn
@@ -69,17 +69,29 @@ yarn
 
 ### RTS Tokens
 
-In order for this application to work, you need three sets of tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the streaming tab for a given token.
+In order for this application to work, you need three tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the streaming tab for a given token.
+
+![token create](docs/img/setup_create_new.png)
+
+To allow screen share to work with your token, remember to go to advanced settings and enable "Multisource".
+
+![multi-source](docs/img/token_multi_source.png)
+
+Once created, you can grab the stream name, publisher token and stream ID from the Token details page.
 
 ![tokens screenshot](docs/img/tokens.png)
+
+For your application to pick these values up, you can either set them as environment variables or store them in a .env file. The `.env` file must be under `apps/publisher/` and `apps/viewer/`.
+
+**note** : This file is typically not added to git. When you clone the repo, you will not find this file and will have to create one yourself.
+
+![env file folder structure](docs/img/env.png)
 
 ```bash
 VITE_RTS_STREAM_NAME=<your stream name>
 VITE_RTS_STREAM_PUBLISHING_TOKEN=<your stream token>
 VITE_RTS_ACCOUNT_ID=<your account id>
 ```
-
-![docs](docs/img/env.png)
 
 **Note**: Please set these env variables before you launch the apps. You can either set them via the command line in your bash/zsh environment or by entering them in your .env file.
 
@@ -91,19 +103,23 @@ The viewer link is configured in the `.env` file in your `apps/publisher` direct
 VITE_RTS_VIEWER_BASE_URL=<Your URL goes here>
 ```
 
-> If you are using a particular port number, please add this to the URL.
+> If you are using a particular port number, please add this to the URL. The best way to do this is to first [run the viewer app](#running-the-viewer-app), grab the URL from your browser and add it to your `.env` file as such.
 
 ```bash
 VITE_RTS_VIEWER_BASE_URL=http://localhost:5174/
 ```
 
-#### Run the publisher app in dev mode
+#### Running the publisher app in dev mode
 
 ```bash
 yarn nx serve publisher
 ```
 
-#### Build the publisher app and preview it
+**Note**: Remember to grant the publisher app all the necessary camera and microphone permissions.
+
+![permissions](docs/img/permissions.png)
+
+#### Building the publisher app and previewing it
 
 Run the following command in terminal and open the browser:
 
@@ -111,7 +127,7 @@ Run the following command in terminal and open the browser:
 yarn nx preview publisher
 ```
 
-#### Run the viewer app
+#### Running the viewer app
 
 To run your app in dev mode, run the following command in your terminal and open the browser:
 
