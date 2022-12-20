@@ -13,7 +13,21 @@ import { IconClose } from '@millicast-react/dolbyio-icons';
 
 import { InputProps } from './types';
 
-const Input = ({ disabled, error, label, helper, onChange, placeholder, required, testId, value }: InputProps) => {
+const Input = ({
+  disabled,
+  error,
+  errorProps = {},
+  label,
+  labelProps = {},
+  helper,
+  helperProps = {},
+  inputProps = {},
+  onChange,
+  placeholder,
+  required,
+  testId,
+  value,
+}: InputProps) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
@@ -23,9 +37,11 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
   };
 
   return (
-    <FormControl isDisabled={disabled} isInvalid={!!error} isRequired={required} test-id={testId}>
+    <FormControl bg="inherit" isDisabled={disabled} isInvalid={!!error} isRequired={required} test-id={testId}>
       <FormLabel
-        background="dolbyNeutral.800"
+        _disabled={{ opacity: 1 }}
+        bg="inherit"
+        backgroundO
         fontSize="12px"
         fontWeight="500"
         left="12px"
@@ -36,6 +52,7 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
         top={0}
         transform={'translateY(-50%)'}
         zIndex={2}
+        {...labelProps}
       >
         {label}
       </FormLabel>
@@ -43,13 +60,15 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
         <ChakraInput
           _focus={{ borderColor: 'dolbyPurple.400', boxShadow: 'none' }}
           _hover={{ borderColor: 'dolbyNeutral.500', boxShadow: 'none' }}
-          bg="dolbyNeutral.800"
+          _placeholder={{ color: 'dolbySecondary.200' }}
+          bg="inherit"
           border="2px solid"
           borderColor="dolbyNeutral.500"
           borderRadius="8px"
-          fontSize="14px"
+          fontSize="15px"
           fontWeight="500"
-          height="48px"
+          maxHeight="48px"
+          maxWidth="400px"
           onChange={handleChange}
           placeholder={placeholder}
           px={3}
@@ -57,6 +76,7 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
           textAlign="left"
           value={value}
           w="100%"
+          {...inputProps}
         />
         {value ? (
           <InputRightElement cursor="pointer" height="100%" onClick={handleClear}>
@@ -64,8 +84,16 @@ const Input = ({ disabled, error, label, helper, onChange, placeholder, required
           </InputRightElement>
         ) : null}
       </InputGroup>
-      {helper ? <FormHelperText fontSize="12px">{helper}</FormHelperText> : null}
-      {error ? <FormErrorMessage fontSize="12px">{error}</FormErrorMessage> : null}
+      {helper ? (
+        <FormHelperText fontSize="12px" {...helperProps}>
+          {helper}
+        </FormHelperText>
+      ) : null}
+      {error ? (
+        <FormErrorMessage fontSize="12px" {...errorProps}>
+          {error}
+        </FormErrorMessage>
+      ) : null}
     </FormControl>
   );
 };
