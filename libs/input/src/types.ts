@@ -4,11 +4,11 @@ export interface InputProps {
   disabled?: boolean;
   error?: string;
   errorProps?: FormErrorMessageProps;
-  label: string;
-  labelProps?: FormLabelProps;
   helper?: string;
   helperProps?: HelpTextProps;
   inputProps?: ChakraInputProps;
+  label: string;
+  labelProps?: FormLabelProps;
   onChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;

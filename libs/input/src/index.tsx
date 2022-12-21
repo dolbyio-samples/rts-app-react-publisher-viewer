@@ -17,11 +17,11 @@ const Input = ({
   disabled,
   error,
   errorProps = {},
-  label,
-  labelProps = {},
   helper,
   helperProps = {},
   inputProps = {},
+  label,
+  labelProps = {},
   onChange,
   placeholder,
   required,
@@ -41,7 +41,6 @@ const Input = ({
       <FormLabel
         _disabled={{ opacity: 1 }}
         bg="inherit"
-        backgroundO
         fontSize="12px"
         fontWeight="500"
         left="12px"

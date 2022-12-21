@@ -24,8 +24,12 @@ export const Default: Story = (args: InputProps) => {
 Default.args = {
   disabled: false,
   error: '',
-  helper: '',
+  errorProps: {},
   label: 'Input label',
+  labelProps: {},
+  helper: '',
+  helperProps: {},
+  inputProps: {},
   placeholder: '',
   required: true,
 };
