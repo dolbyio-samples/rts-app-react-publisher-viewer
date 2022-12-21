@@ -104,3 +104,22 @@ export const verifyElementCount = async (
     await expect(locator).toHaveCount(count);
   }
 };
+
+export const verifyTextMatch = (actText: string, expPattern: string, negate = false): void => {
+  logger.trace(`Verify text should ${negate ? ' not' : ''} match to ${expPattern}`);
+  const regExp = new RegExp(expPattern, 'i');
+  if (negate) {
+    expect(actText).not.toMatch(regExp);
+  } else {
+    expect(actText).toMatch(regExp);
+  }
+};
+
+export const verifyText = (actText: string, expText: string, negate = false): void => {
+  logger.trace(`Verify text should ${negate ? ' not' : ''} be equal to ${expText}`);
+  if (negate) {
+    expect(actText).not.toEqual(expText);
+  } else {
+    expect(actText).toEqual(expText);
+  }
+};

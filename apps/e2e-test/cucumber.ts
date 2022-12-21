@@ -12,6 +12,7 @@ const all = [
 const smoke = `${all} --tags @smoke`;
 const publisher = `${all} --tags @publisher`;
 const viewer = `${all} --tags @viewer`;
+const local = `${all} --tags @local`;
 const only = `${all} --tags @only`;
 
-module.exports = { default: all, smoke, publisher, viewer, only };
+module.exports = { default: all, smoke, publisher, viewer, local, only };

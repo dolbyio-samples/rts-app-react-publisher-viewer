@@ -1,7 +1,8 @@
 import { World, IWorldOptions, setWorldConstructor } from '@cucumber/cucumber';
 
 import { SelectorMapper } from '../utils/selector-mapper';
-import { GlobalVariables, PlaywrightOptions } from '../utils/types';
+import { ScenarioData, PlaywrightOptions } from '../utils/types';
+import { GlobalData } from './GlobalData';
 
 export class ScenarioWorld extends World {
   currentPage!: any;
@@ -22,13 +23,15 @@ export class ScenarioWorld extends World {
 
   debug?: boolean = false;
 
-  globalVariables: GlobalVariables;
+  localData: ScenarioData;
+
+  globalData!: GlobalData;
 
   selectorMap!: SelectorMapper;
 
   constructor(options: IWorldOptions) {
     super(options);
-    this.globalVariables = {};
+    this.localData = new Map();
   }
 }
 

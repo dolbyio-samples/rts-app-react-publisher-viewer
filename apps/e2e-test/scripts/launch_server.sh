@@ -20,15 +20,6 @@ installDependencies
 stopApp ${PUBLISHER_APP_NAME}
 stopApp ${VIEWER_APP_NAME}
 
-# Launch publisher app locally
-runApp ${PUBLISHER_APP_NAME}
-
-# Verify publisher app server logs
-verifyServerLogs ${PUBLISHER_APP_NAME}
-
-# Set App URL Environment variable
-getAppURL ${PUBLISHER_APP_NAME}
-
 # Launch viewer app locally
 runApp ${VIEWER_APP_NAME}
 
@@ -37,3 +28,12 @@ verifyServerLogs ${VIEWER_APP_NAME}
 
 # Set App URL Environment variable
 getAppURL ${VIEWER_APP_NAME}
+
+# Launch publisher app locally
+runApp ${PUBLISHER_APP_NAME}
+
+# Verify publisher app server logs
+verifyServerLogs ${PUBLISHER_APP_NAME}
+
+# Set App URL Environment variable
+getAppURL ${PUBLISHER_APP_NAME}
