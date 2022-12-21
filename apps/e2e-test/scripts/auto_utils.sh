@@ -12,10 +12,11 @@ runApp(){
   echo "Start the $1 app in dev mode"
   echo "######################"
   local NAME=$1
-  yarn nx reset
+  #yarn nx reset
   pm2 flush ${NAME}
   rm -f ~/.pm2/logs/${NAME}*
-  pm2 start yarn --name ${NAME} -- start ${NAME}:preview
+  echo pm2 start npm --name ${NAME} -- start ${NAME}:preview
+  pm2 start npm --name ${NAME} -- start ${NAME}:preview
 }
 
 verifyServerLogs(){
@@ -53,7 +54,7 @@ verifyServerLogs(){
 
   if [[ ${started} != "true" ]]; then
     echo "Failed to start the development server"
-    pm2 logs ${NAME} --nostream
+    pm2 logs ${NAME} --nostream --lines 100
     exit 1
   fi
 }
