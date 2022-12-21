@@ -43,9 +43,9 @@ export const options: PlaywrightOptions = {
   video: 'retain-on-failure',
   screenshot: 'only-on-failure',
   trace: 'retain-on-failure',
-  baseURL: 'http://localhost:5173',
-  publisherURL: process.env.PUBLISHER_URL || 'http://localhost:5173/',
-  viewerURL: process.env.VIEWER_URL || 'http://localhost:5174/',
+  baseURL: 'http://localhost:4173',
+  publisherURL: process.env.PUBLISHER_URL || 'http://localhost:4173/',
+  viewerURL: process.env.VIEWER_URL || 'http://localhost:4174/',
   launchOptions: {
     chromium: launchOptionsChromium,
     chrome: launchOptionsChrome,

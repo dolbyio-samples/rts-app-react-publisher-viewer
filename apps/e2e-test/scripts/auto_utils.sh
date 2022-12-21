@@ -5,7 +5,6 @@ installDependencies(){
   echo "Install Dependencies"
   echo "#################################"
   yarn global add pm2 strip-ansi-cli
-  export VITE_MILLICAST_VIEWER_BASE_URL=http://localhost:5174/
 }
 
 runApp(){
@@ -17,7 +16,7 @@ runApp(){
   pm2 flush ${NAME}
   rm -f ~/.pm2/logs/${NAME}*
 
-  pm2 start npm --name ${NAME} -- start ${NAME}
+  pm2 start yarn --name ${NAME} -- start ${NAME}:preview
 }
 
 verifyServerLogs(){
@@ -33,7 +32,7 @@ verifyServerLogs(){
   local retry=1
   while [ ${retry} -lt 20 ]
   do
-      sleep 2
+      sleep 3
       local LOGS=$(pm2 logs ${NAME} --nostream)
       echo "${LOGS}"
       local URL_LINE=$(pm2 logs ${NAME} --nostream | grep "Local")
@@ -71,8 +70,10 @@ getAppURL(){
 
   if [[ ${NAME} == publisher ]];then
     echo "PUBLISHER_URL=$URL" >> .test.env
+    export VITE_MILLICAST_PUBLISHER_BASE_URL=$URL
   else
     echo "VIEWER_URL=$URL" >> .test.env
+    export VITE_MILLICAST_VIEWER_BASE_URL=$URL
   fi
 }
 

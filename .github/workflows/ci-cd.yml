@@ -29,10 +29,7 @@ jobs:
         with:
           node-version: 16
       - name: install
-        run: |
-          rm -rf node_modules
-          npm cache clean --force
-          yarn --frozen-lockfile
+        run: yarn --frozen-lockfile
       # waiting for approval - uses: nrwl/nx-set-shas@v3
       - name: set base branch
         run: |

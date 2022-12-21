@@ -5,14 +5,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react(), eslint()],
-  resolve: {
-    preserveSymlinks: true,
-  },
   define: {
     __APP_VERSION__: JSON.stringify('0.0.1'),
   },
   preview: {
-    open: true,
+    open: false,
   },
   build: {
     rollupOptions: {
