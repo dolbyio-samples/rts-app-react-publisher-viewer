@@ -4,6 +4,7 @@ installDependencies(){
   echo "#################################"
   echo "Install Dependencies"
   echo "#################################"
+  yarn nx reset
   yarn global add pm2 strip-ansi-cli
 }
 
@@ -15,7 +16,6 @@ runApp(){
 
   pm2 flush ${NAME}
   rm -f ~/.pm2/logs/${NAME}*
-
   pm2 start yarn --name ${NAME} -- start ${NAME}:preview
 }
 

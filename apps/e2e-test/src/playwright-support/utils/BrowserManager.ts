@@ -146,8 +146,18 @@ export class BrowserManager {
 
   static filterErrorLogs(consoleLogs: string[]): string[] {
     const errorLogs: string[] = [];
+    const skipErrorListReg = [
+      /roboto/,
+      /Error: stream not being published/,
+      /the server responded with a status of 400/,
+      /Failed to load resource: net::ERR_EMPTY_RESPONSE/,
+      /^log:: start viewer/,
+      /^log:: connecting$/,
+      /^log:: register broadcastEvent$/,
+    ];
+
     consoleLogs.forEach((log) => {
-      if (log.startsWith('error') || log.toLowerCase().includes('roboto')) {
+      if (log.startsWith('error') || skipErrorListReg.findIndex((value) => value.test(log)) === -1) {
         errorLogs.push(log);
       }
     });
