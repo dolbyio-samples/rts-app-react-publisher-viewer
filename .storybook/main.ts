@@ -12,15 +12,16 @@ export const rootMain: StorybookViteConfig = {
     return mergeConfig(config, {
       resolve: {
         alias: {
+          '@millicast-react/control-bar': path.resolve(__dirname, '../libs/control-bar/src/index.tsx'),
+          '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
+          '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
+          '@millicast-react/dropdown': path.resolve(__dirname, '../libs/dropdown/src/index.tsx'),
+          '@millicast-react/icon-button': path.resolve(__dirname, '../libs/icon-button/src/index.tsx'),
           '@millicast-react/info-label': path.resolve(__dirname, '../libs/info-label/src/index.tsx'),
           '@millicast-react/live-indicator': path.resolve(__dirname, '../libs/live-indicator/src/index.tsx'),
           '@millicast-react/participant-count': path.resolve(__dirname, '../libs/participant-count/src/index.tsx'),
-          '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
-          '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
+          '@millicast-react/tabs': path.resolve(__dirname, '../libs/tabs/src/index.tsx'),
           '@millicast-react/video-view': path.resolve(__dirname, '../libs/video-view/src/index.tsx'),
-          '@millicast-react/control-bar': path.resolve(__dirname, '../libs/control-bar/src/index.tsx'),
-          '@millicast-react/icon-button': path.resolve(__dirname, '../libs/icon-button/src/index.tsx'),
-          '@millicast-react/dropdown': path.resolve(__dirname, '../libs/dropdown/src/index.tsx'),
           '@millicast-react/use-multi-media-devices': path.resolve(
             __dirname,
             '../libs/use-multi-media-devices/src/index.ts'
