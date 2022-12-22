@@ -81,18 +81,18 @@ const Input = ({
           <InputRightElement cursor="pointer" height="100%" onClick={handleClear}>
             <IconClose color="dolbyNeutral.500" height="12px" width="12px" />
           </InputRightElement>
-        ) : null}
+        ) : undefined}
       </InputGroup>
       {helper ? (
         <FormHelperText fontSize="12px" {...helperProps}>
           {helper}
         </FormHelperText>
-      ) : null}
+      ) : undefined}
       {error ? (
         <FormErrorMessage fontSize="12px" {...errorProps}>
           {error}
         </FormErrorMessage>
-      ) : null}
+      ) : undefined}
     </FormControl>
   );
 };
