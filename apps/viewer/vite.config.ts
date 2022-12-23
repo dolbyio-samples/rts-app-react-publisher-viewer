@@ -9,7 +9,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify('0.0.1'),
   },
   preview: {
-    open: true,
+    open: false,
   },
   build: {
     rollupOptions: {

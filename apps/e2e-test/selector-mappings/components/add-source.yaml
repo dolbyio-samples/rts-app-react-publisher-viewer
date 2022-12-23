@@ -1,0 +1,3 @@
+add source button: '[test-id=addSourceButton]'
+add source menu: '[data-id=addSourceMenu] button'
+share screen button: '[test-id=Sharescreen]'

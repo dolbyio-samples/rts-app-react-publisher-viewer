@@ -1,4 +1,4 @@
-name: BDD-TESTS
+name: E2E-TESTS
 
 on:
   push:
@@ -16,7 +16,7 @@ env:
   PR_NUM: ${{ github.event.number }}
 
 jobs:
-  BDD-Tests:
+  E2E-Tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -32,21 +32,21 @@ jobs:
       # waiting for approval - uses: nrwl/nx-set-shas@v3
       - name: Lint Check
         run: |
-          yarn nx lint bdd-test --skip-nx-cache
+          yarn nx lint e2e-test --skip-nx-cache
       - name: Start Publisher and Viewer App Locally
         run: |
-          yarn nx launch-server bdd-test --skip-nx-cache
-      - name: Execute BDD Tests
+          yarn nx launch-server e2e-test --skip-nx-cache
+      - name: Execute E2E Tests
         run: |
-          yarn nx test bdd-test --skip-nx-cache
+          yarn nx test e2e-test --skip-nx-cache
       - name: Generate Test Report
         if: always()
         run: |
-          yarn nx test-report bdd-test --skip-nx-cache
+          yarn nx test-report e2e-test --skip-nx-cache
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: test-artifacts
-          path: ./apps/bdd-test/reports/
+          path: ./apps/e2e-test/reports/
           retention-days: 2

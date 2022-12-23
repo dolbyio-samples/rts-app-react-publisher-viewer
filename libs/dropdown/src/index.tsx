@@ -36,6 +36,7 @@ const Dropdown = ({
       {({ isOpen }) => (
         <>
           <MenuButton
+            test-id={testId + 'Default'}
             as={Button}
             leftIcon={
               leftIcon ? (
@@ -66,6 +67,7 @@ const Dropdown = ({
               const { id, label, data } = elementResolver(element);
               return (
                 <MenuItem
+                  test-id={testId + 'Options'}
                   key={id}
                   onClick={() => onSelect(data)}
                   _active={{ bg: 'dolbyNeutral.600' }}

@@ -29,12 +29,12 @@ declare namespace millicast {
   }
 
   interface BroadcastOptions {
-    mediaStream: MediaStream | MediaStreamTrack[];
+    mediaStream: MediaStream;
+    sourceId: string;
     events?: Event[];
-    sourceId?: string;
     simulcast?: boolean;
     codec?: VideoCodec;
-    bandwidth?: number; // 0 means unlimited
+    bandwidth?: number; // bitrate restriction, 0 means unlimited
   }
 
   interface CodecInfo {
@@ -217,8 +217,8 @@ declare namespace millicast {
   }
 
   type ViewOptions = {
-    pinnedSourceId?: string;
-    events?: Event[];
+    pinnedSourceId?: string; // Id of the main source that will be received by the default MediaStream
+    events?: Event[]; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
   };
 
   interface PeerConnection extends EventEmitter {}

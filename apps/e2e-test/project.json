@@ -1,0 +1,81 @@
+{
+  "name": "e2e-test",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/e2e-test/src",
+  "projectType": "application",
+  "outputCapture": "pipe",
+  "targets": {
+    "cleanup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then rimraf {args.report}/*; else rimraf ./apps/e2e-test/reports/*; fi"
+        ]
+      }
+    },
+    "launch-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./apps/e2e-test/scripts/launch_server.sh"]
+      }
+    },
+    "stop-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./apps/e2e-test/scripts/stop_server.sh"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "only": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags @only"
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-publisher": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@publisher and not @local\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-viewer": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "if [ {args.report} != undefined ]; then export REPORT_PATH={args.report}; fi; yarn ts-node ./apps/e2e-test/src/reporter/cucumber-report.ts"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/e2e-test/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
