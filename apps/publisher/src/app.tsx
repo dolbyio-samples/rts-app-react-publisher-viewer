@@ -63,6 +63,8 @@ const MainSourceId = 'Main';
 const DisplayShareSourceId = 'DisplayShare';
 type PublisherState = SourceState;
 
+const date = new Date();
+
 function App() {
   useEffect(() => {
     // prevent closing the page
@@ -78,7 +80,6 @@ function App() {
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
   const { showError } = useNotification();
 
-  const date = new Date();
   const {
     startStreamingSource,
     stopStreamingSource,
