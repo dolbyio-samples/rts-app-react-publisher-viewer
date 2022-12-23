@@ -5,7 +5,6 @@ installDependencies(){
   echo "Install Dependencies"
   echo "#################################"
   yarn global add pm2 strip-ansi-cli
-  export VITE_MILLICAST_VIEWER_BASE_URL=http://localhost:5174/
 }
 
 runApp(){
@@ -13,11 +12,11 @@ runApp(){
   echo "Start the $1 app in dev mode"
   echo "######################"
   local NAME=$1
-
+  #yarn nx reset
   pm2 flush ${NAME}
   rm -f ~/.pm2/logs/${NAME}*
-
-  pm2 start npm --name ${NAME} -- start ${NAME}
+  echo pm2 start npm --name ${NAME} -- start ${NAME}:preview
+  pm2 start npm --name ${NAME} -- start ${NAME}:preview
 }
 
 verifyServerLogs(){
@@ -33,7 +32,7 @@ verifyServerLogs(){
   local retry=1
   while [ ${retry} -lt 20 ]
   do
-      sleep 2
+      sleep 3
       local LOGS=$(pm2 logs ${NAME} --nostream)
       echo "${LOGS}"
       local URL_LINE=$(pm2 logs ${NAME} --nostream | grep "Local")
@@ -55,7 +54,7 @@ verifyServerLogs(){
 
   if [[ ${started} != "true" ]]; then
     echo "Failed to start the development server"
-    pm2 logs ${NAME} --nostream
+    pm2 logs ${NAME} --nostream --lines 100
     exit 1
   fi
 }
@@ -71,8 +70,10 @@ getAppURL(){
 
   if [[ ${NAME} == publisher ]];then
     echo "PUBLISHER_URL=$URL" >> .test.env
+    export VITE_MILLICAST_PUBLISHER_BASE_URL=$URL
   else
     echo "VIEWER_URL=$URL" >> .test.env
+    export VITE_MILLICAST_VIEWER_BASE_URL=$URL
   fi
 }
 

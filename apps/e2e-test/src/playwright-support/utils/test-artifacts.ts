@@ -9,6 +9,7 @@ import { BrowserContext, Page } from 'playwright';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { logger } from '../../logger';
+import { getData } from '../../hooks/utils';
 
 export async function captureArtifacts(
   scenarioWorld: ScenarioWorld,
@@ -29,7 +30,7 @@ async function trace(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
 
   if (!(scenarioStatus === Status.PASSED && scenarioWorld.options.trace === 'retain-on-failure')) {
     traceFile = `${scenarioWorld.options.reportPath}/traces/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}-trace.zip`;
-    const context = scenarioWorld.globalVariables.context as BrowserContext;
+    const context = getData(scenarioWorld, 'context') as BrowserContext;
     await context.tracing.stop({
       path: traceFile,
     });
@@ -49,7 +50,7 @@ async function screenshot(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookP
       const screenshotDir = `${scenarioWorld.options.reportPath}/screenshots/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`;
       for (const app of apps) {
         const filename = `${screenshotDir}/${app}.png`;
-        const appPage = scenarioWorld.globalVariables[app] as Page;
+        const appPage = getData(scenarioWorld, app) as Page;
         const screenshotBuff = await appPage.screenshot({
           path: filename,
         });
@@ -65,7 +66,7 @@ async function video(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
   const scenarioStatus = scenario.result?.status;
 
   if (scenarioStatus === Status.PASSED && scenarioWorld.options.video === 'retain-on-failure') {
-    const videoFile = scenarioWorld.globalVariables[`${apps[0]}VideoFile`] as string;
+    const videoFile = getData(scenarioWorld, `${apps[0]}VideoFile`) as string;
     const videoDir = path.dirname(videoFile);
 
     fs.rmSync(videoDir, { recursive: true, force: true });
@@ -75,7 +76,7 @@ async function video(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
   } else {
     for (const app of apps) {
       try {
-        const videoFile = scenarioWorld.globalVariables[`${app}VideoFile`] as string;
+        const videoFile = getData(scenarioWorld, `${app}VideoFile`) as string;
         const newVideoFile = videoFile.replace(path.basename(videoFile), `${app}.webm`);
         fs.renameSync(videoFile, newVideoFile);
         await scenarioWorld.attach(`${app} Video File: ${newVideoFile}`);

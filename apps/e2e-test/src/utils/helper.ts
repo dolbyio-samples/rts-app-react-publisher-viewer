@@ -14,3 +14,7 @@ export function delay(ms: number) {
 export function capitalize(string: string) {
   return string[0].toUpperCase() + string.slice(1);
 }
+
+export function formatURL(url: string): string {
+  return url.endsWith('/') ? url : `${url}/`;
+}

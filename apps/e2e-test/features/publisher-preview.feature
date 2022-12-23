@@ -436,23 +436,42 @@ Feature: Publisher Preview - Not Live
         And the "tooltip" text should be "Link copied!"
         And the "invite button" text should be "Invite viewers"
 
+    @local
+    Scenario: Publisher should be able to get the same viewer link when copied mulitple times before going live for the broadcast
+        Given a publisher is on the "preview" page
+        When the publisher clicks on the "invite button"
+        Then the copied clipboard text should contain "^${ViewerBaseURL}/\?streamAccountId=\w+&streamName=\w+$"
+        Then store the copied clipboard text in "invite_link_1" variable
+        Then wait for "2" seconds
+        When the publisher clicks on the "invite button"
+        Then the copied clipboard text should be equal to the stored "invite_link_1" variable
+
     Scenario: Publisher should be able to see the tooltip for different controls
         Given a publisher is on the "preview" page
+        Then the "tooltip" should not be displayed
+
         When the publisher hovers the mouse over the "setting button"
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Settings"
+        When the publisher hovers the mouse over the "go live button"
+        Then the "tooltip" should not be displayed
         
         When the publisher hovers the mouse over the "video view camera"
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Toggle camera"
+        When the publisher hovers the mouse over the "timer"
+        Then the "tooltip" should not be displayed
 
         When the publisher hovers the mouse over the "video view microphone"
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Toggle microphone"
+        When the publisher hovers the mouse over the "company name"
+        Then the "tooltip" should not be displayed
 
         When the publisher hovers the mouse over the "invite button"
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Copy link"
+        When the publisher hovers the mouse over the "add source button"
+        Then the "tooltip" should not be displayed
 
-    #Scenario: Manual verify copied clipboard text for invite viewers
-    # TODO: After hover tooltip should not be displayed
+    # TODO: After page refresh, on prod the stream name should be changed

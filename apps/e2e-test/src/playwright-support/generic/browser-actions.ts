@@ -12,3 +12,8 @@ export const bringToFront = async (page: Page): Promise<void> => {
   logger.trace(`Bring to front`);
   await page.bringToFront();
 };
+
+export const refresh = async (page: Page): Promise<void> => {
+  logger.trace(`Refresh page`);
+  await page.reload();
+};

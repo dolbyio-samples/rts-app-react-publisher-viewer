@@ -17,14 +17,18 @@ import { logger } from '../logger';
 import { closePages, openPages } from '../playwright-support/app-specific/browser-actions';
 import { BrowserManager } from '../playwright-support/utils/BrowserManager';
 import { captureArtifacts } from '../playwright-support/utils/test-artifacts';
+import { formatURL } from '../utils/helper';
 import { SelectorMapper } from '../utils/selector-mapper';
+import { GlobalData } from './GlobalData';
 
 import { ScenarioWorld } from './ScenarioWorld';
+import { saveData } from './utils';
 
 const selectorMap = new SelectorMapper(selectorMappingPath);
 const browserMgr = new BrowserManager();
 setDefaultTimeout(options.timeout as number);
 const apps = ['publisherApp', 'viewerApp'];
+const globalData = GlobalData.getInstance();
 
 BeforeAll(async () => {
   logger.debug(`BeforeAll:: Options \n ${JSON.stringify(options, null, 2)}`);
@@ -38,6 +42,9 @@ AfterAll(async () => {
 Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   this.selectorMap = selectorMap;
   this.options = options;
+  this.globalData = globalData;
+
+  setAppURLs(this);
 
   setFeatureAndScenarioName(this, scenario);
 
@@ -72,4 +79,8 @@ const logScenarioName = (scenarioWorld: ScenarioWorld) => {
   logger.info(liner);
   logger.scenario(scDesc);
   logger.info(liner);
+};
+
+const setAppURLs = (scenarioWorld: ScenarioWorld) => {
+  saveData(scenarioWorld, 'PublisherURL', formatURL(options?.publisherURL as string), false);
 };
