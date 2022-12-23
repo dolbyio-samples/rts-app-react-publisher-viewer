@@ -4,12 +4,12 @@ import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import * as React from 'react';
 import useLocalFiles from '@millicast-react/use-local-files';
 import VideoView from '@millicast-react/video-view';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default {} as Meta;
 
 export const Default: Story = () => {
-  const [mediaStreams, setMediaStreams] = useState<MediaStream[]>([]);
+  const [, setMediaStreams] = useState<MediaStream[]>([]);
   const { register, files, remove, reset } = useLocalFiles();
 
   const setMediaStream = (stream: MediaStream) => {

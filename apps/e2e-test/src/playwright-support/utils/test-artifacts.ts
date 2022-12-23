@@ -80,7 +80,7 @@ async function video(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
         const newVideoFile = videoFile.replace(path.basename(videoFile), `${app}.webm`);
         fs.renameSync(videoFile, newVideoFile);
         await scenarioWorld.attach(`${app} Video File: ${newVideoFile}`);
-      } catch (e: any) {
+      } catch (e: unknown) {
         // Do nothing
       }
     }
