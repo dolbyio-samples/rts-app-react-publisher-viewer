@@ -15,7 +15,6 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/control-bar': path.resolve(__dirname, '../libs/control-bar/src/index.tsx'),
           '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
           '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
-          '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
           '@millicast-react/dropdown': path.resolve(__dirname, '../libs/dropdown/src/index.tsx'),
           '@millicast-react/icon-button': path.resolve(__dirname, '../libs/icon-button/src/index.tsx'),
           '@millicast-react/info-label': path.resolve(__dirname, '../libs/info-label/src/index.tsx'),

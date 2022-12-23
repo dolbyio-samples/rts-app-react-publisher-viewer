@@ -15,16 +15,12 @@ export type VideoViewProps = {
   displayMuteButton?: boolean;
   displayFullscreenButton?: boolean;
   mediaStream?: MediaStream;
-  src?: string;
   statistics?: StreamStats;
   label?: string;
   placeholderNode?: ReactNode;
   onClick?: BoxProps['onClick'];
   showDotIndicator?: boolean;
   volume?: number;
-  onSrcMediaStreamReady?: (value: MediaStream) => void;
-  onSrcMediaStreamClose?: (id: string) => void;
-  onError?: (error: MediaError) => void;
 };
 
 const VideoView = ({
@@ -35,54 +31,29 @@ const VideoView = ({
   displayVideo = true,
   displayFullscreenButton = true,
   mediaStream,
-  src,
   // statistics,
   label,
   placeholderNode,
   onClick,
   showDotIndicator,
   volume = 1,
-  onSrcMediaStreamReady,
-  onSrcMediaStreamClose,
-  onError,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [streamId, setStreamId] = useState<string | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
 
   useEffect(() => {
     if (videoRef.current) {
-      if (src) {
-        videoRef.current.srcObject = null;
-        videoRef.current.src = src;
-      } else if (mediaStream) {
-        videoRef.current.srcObject = mediaStream;
-      }
+      videoRef.current.srcObject = mediaStream ?? null;
     }
-  }, [mediaStream, src]);
+  }, [mediaStream]);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.volume = volume;
     }
   }, [volume]);
-
-  useEffect(() => {
-    return () => {
-      if (streamId) {
-        onSrcMediaStreamClose?.(streamId);
-      }
-    };
-  }, [streamId]);
-
-  const onCanPlay = () => {
-    //@ts-expect-error property exists but it isn't in the built-in type
-    const stream = videoRef.current?.captureStream() as MediaStream;
-    onSrcMediaStreamReady?.(stream);
-    setStreamId(stream.id);
-  };
 
   const componentElementsStyle = {
     '.video': {
@@ -137,10 +108,9 @@ const VideoView = ({
         className="video"
         autoPlay
         playsInline
-        loop={src ? true : false}
+        crossOrigin="anonymous"
         ref={videoRef}
         muted={muted}
-        onCanPlay={onCanPlay}
         onWaiting={() => setLoadingVideo(true)}
         onLoadStart={() => setLoadingVideo(true)}
         onPlaying={() => setLoadingVideo(false)}
@@ -148,9 +118,7 @@ const VideoView = ({
           console.error('video is on stalled');
         }}
         onError={() => {
-          onError && videoRef.current?.error
-            ? onError(videoRef.current.error)
-            : console.error(`video player error: ${videoRef.current?.error}`);
+          console.error(`video player error: ${videoRef.current?.error}`);
         }}
         // eslint-disable-next-line react/no-unknown-property
         test-id="videoView"
