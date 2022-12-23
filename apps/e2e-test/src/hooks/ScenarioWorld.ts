@@ -5,7 +5,7 @@ import { ScenarioData, PlaywrightOptions } from '../utils/types';
 import { GlobalData } from './GlobalData';
 
 export class ScenarioWorld extends World {
-  currentPage!: any;
+  currentPage!: unknown;
 
   currentPageName!: string;
 

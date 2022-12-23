@@ -134,6 +134,7 @@ const VideoView = ({
 
       {!displayVideo && placeholderNode}
       <video
+        crossOrigin="anonymous"
         className="video"
         autoPlay
         playsInline

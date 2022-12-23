@@ -14,7 +14,7 @@ export const getData = (scenarioWorld: ScenarioWorld, name: string, globalSearch
   }
 };
 
-export const saveData = (scenarioWorld: ScenarioWorld, name: string, value: any, local = true) => {
+export const saveData = (scenarioWorld: ScenarioWorld, name: string, value: unknown, local = true) => {
   logger.info(`Save local or global test data for ${name}`);
   if (local) {
     scenarioWorld.localData.set(name, value);
