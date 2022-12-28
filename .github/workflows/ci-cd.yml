@@ -46,13 +46,12 @@ jobs:
           yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
       - name: build & test
         run: |
-          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
-          echo $VITE_MILLICAST_VIEWER_BASE_URL
+          ls -lrth; rm -rf dist
+          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
       - name: Generate Test Report
         if: always()
         run: |
-          echo $VITE_MILLICAST_VIEWER_BASE_URL
           eval "yarn nx affected --target=e2e-report --base=${{ env.BASE_BRANCH }} --skip-nx-cache"
       - name: Upload artifact
         uses: actions/upload-artifact@v3
