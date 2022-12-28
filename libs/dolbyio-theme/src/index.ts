@@ -32,6 +32,7 @@ const dolbyioTheme = extendTheme({
     },
     dolbySecondary: {
       200: '#B9B9BA',
+      500: '#6A6A6D',
     },
     dolbyEmerald: {
       100: '#CFFEEB',
