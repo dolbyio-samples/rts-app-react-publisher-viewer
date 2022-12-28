@@ -48,7 +48,7 @@ jobs:
         run: |
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
           rm -rf dist
-          if [[ $BRANCH_REF != 'refs/heads/main' ]]; then search='https://'; replace='https://dp-'${PR_NUM}; export VITE_MILLICAST_VIEWER_BASE_URL=${VITE_MILLICAST_VIEWER_BASE_URL/$search/$replace}; fi
+          if [[ $BRANCH_REF != 'refs/heads/main' ]]; then search='https://'; replace='https://dp-'${PR_NUM}'--'; export VITE_MILLICAST_VIEWER_BASE_URL=${VITE_MILLICAST_VIEWER_BASE_URL/$search/$replace}; fi
           eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
       - name: Generate Test Report
         if: always()
