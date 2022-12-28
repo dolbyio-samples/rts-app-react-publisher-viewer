@@ -47,7 +47,8 @@ jobs:
       - name: build & test
         run: |
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
-          ls -lrth; rm -rf dist
+          rm -rf dist
+          if [[ $BRANCH_REF != 'refs/heads/main' ]]; then export VITE_MILLICAST_VIEWER_BASE_URL=DP-$PR_NUM$VITE_MILLICAST_VIEWER_BASE_URL fi
           eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
       - name: Generate Test Report
         if: always()
