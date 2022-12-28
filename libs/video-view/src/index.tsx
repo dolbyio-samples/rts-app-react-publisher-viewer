@@ -1,35 +1,13 @@
-import { Box, BoxProps, Center, Flex, Spacer, Spinner, Stack, useDisclosure } from '@chakra-ui/react';
-import type { StreamStats } from '@millicast/sdk';
-import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
+import { Box, Center, Flex, Spacer, Spinner, Stack, useDisclosure } from '@chakra-ui/react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { IconFullScreen, IconFullScreenExit, IconSettings } from '@millicast-react/dolbyio-icons';
+import { IconSettings } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import InfoLabel from '@millicast-react/info-label';
 // import StatisticsInfo from '@millicast-react/statistics-info';
 
-import SettingsDrawer, { SettingsDrawerProps } from './components/settings-drawer';
-
-export type VideoViewProps = {
-  displayFullscreenButton?: boolean;
-  displayMuteButton?: boolean;
-  displayVideo?: boolean;
-  height: string;
-  label?: string;
-  mediaStream?: MediaStream;
-  mirrored?: boolean;
-  muted?: boolean;
-  onClick?: BoxProps['onClick'];
-  onError?: (error: MediaError) => void;
-  onSrcMediaStreamClose?: (id: string) => void;
-  onSrcMediaStreamReady?: (value: MediaStream) => void;
-  placeholderNode?: ReactNode;
-  settings?: Omit<SettingsDrawerProps, 'isOpen' | 'onClose'>;
-  showDotIndicator?: boolean;
-  src?: string;
-  statistics?: StreamStats;
-  volume?: number;
-  width: string;
-};
+import SettingsDrawer from './components/settings-drawer';
+import { VideoViewProps } from './types';
 
 const VideoView = ({
   // displayFullscreenButton = true,
