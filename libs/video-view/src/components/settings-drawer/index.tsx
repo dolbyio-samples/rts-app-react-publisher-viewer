@@ -76,7 +76,7 @@ const SettingsDrawer = ({
             <Box>
               <Input disabled={name.isDisabled} label="Source name" onChange={name.handleChange} value={name.value} />
             </Box>
-          ) : null}
+          ) : undefined}
           {camera && !camera.isHidden ? (
             <Box>
               <Dropdown
@@ -90,7 +90,7 @@ const SettingsDrawer = ({
                 testId="cameraSelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {microphone && !microphone.isHidden ? (
             <Box>
               <Dropdown
@@ -104,7 +104,7 @@ const SettingsDrawer = ({
                 testId="microphoneSelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {bitrate && !bitrate.isHidden ? (
             <Box>
               <Dropdown
@@ -118,7 +118,7 @@ const SettingsDrawer = ({
                 testId="bitrateSelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {codec && !codec.isHidden ? (
             <Box>
               <Dropdown
@@ -132,7 +132,7 @@ const SettingsDrawer = ({
                 testId="codecSelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {resolution && !resolution.isHidden ? (
             <Box>
               <Dropdown
@@ -146,7 +146,7 @@ const SettingsDrawer = ({
                 testId="resolutionSelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {quality && !quality.isHidden ? (
             <Box>
               <Dropdown
@@ -160,7 +160,7 @@ const SettingsDrawer = ({
                 testId="qualitySelect"
               />
             </Box>
-          ) : null}
+          ) : undefined}
           {simulcast && !simulcast.isHidden ? (
             <ToggleButton
               height="48px"
@@ -171,7 +171,7 @@ const SettingsDrawer = ({
               onClick={simulcast.handleToggle}
               test-id="simulcastToggle"
             />
-          ) : null}
+          ) : undefined}
         </Stack>
       </Flex>
     </Slide>
