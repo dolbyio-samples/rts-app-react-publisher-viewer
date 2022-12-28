@@ -28,7 +28,9 @@ const SettingsDrawer = ({
   bitrate,
   camera,
   codec,
+  drawerProps: { background, bg, ...drawerProps } = {},
   fullHeight,
+  headingProps = {},
   isOpen,
   microphone,
   name,
@@ -36,37 +38,40 @@ const SettingsDrawer = ({
   quality,
   resolution,
   simulcast,
-}: SettingsDrawerProps) => (
-  <Slide in={isOpen} style={{ position: 'absolute' }} unmountOnExit>
-    <Flex
-      bg="dolbyNeutral.800"
-      borderRadius="6px"
-      bottom={0}
-      color="white"
-      flexDir="column"
-      height={fullHeight ? '100%' : ''}
-      position="absolute"
-      right="0"
-      width="346px"
-      padding="24px 16px 48px"
-    >
-      <Heading as="h3" fontSize="20px" fontWeight={600} mb="16px">
-        Settings
-      </Heading>
-      <IconButton
-        background="transparent"
-        borderRadius="50%"
-        icon={<IconClose fill="white" height="16px" width="16px" />}
-        isRound
-        onClick={handleDrawerClose}
+}: SettingsDrawerProps) => {
+  const drawerBackground = background ?? bg ?? 'dolbyNeutral.800';
+
+  return (
+    <Slide in={isOpen} style={{ position: 'absolute' }} unmountOnExit>
+      <Flex
+        bg={drawerBackground}
+        borderRadius="6px"
+        bottom={0}
+        color="white"
+        flexDir="column"
+        height={fullHeight ? '100%' : ''}
         position="absolute"
-        right="12px"
-        size="sm"
-        test-id="settingsCloseButton"
-        top="8px"
-      />
-      <Box height="100%">
-        <Stack direction="column" spacing={4}>
+        right="0"
+        width="346px"
+        padding="24px 16px 48px"
+        {...drawerProps}
+      >
+        <Heading as="h3" fontSize="20px" fontWeight={600} mb="16px" {...headingProps}>
+          Settings
+        </Heading>
+        <IconButton
+          background="transparent"
+          borderRadius="50%"
+          icon={<IconClose fill="white" height="16px" width="16px" />}
+          isRound
+          onClick={handleDrawerClose}
+          position="absolute"
+          right="12px"
+          size="sm"
+          test-id="settingsCloseButton"
+          top="8px"
+        />
+        <Stack direction="column" height="100%" spacing={4} sx={{ '&>*': { bg: drawerBackground } }}>
           {name && !name.isHidden ? (
             <Box>
               <Input disabled={name.isDisabled} label="Source name" onChange={name.handleChange} value={name.value} />
@@ -168,10 +173,10 @@ const SettingsDrawer = ({
             />
           ) : null}
         </Stack>
-      </Box>
-    </Flex>
-  </Slide>
-);
+      </Flex>
+    </Slide>
+  );
+};
 
 export * from './types';
 export default SettingsDrawer;

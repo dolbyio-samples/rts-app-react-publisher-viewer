@@ -1,3 +1,4 @@
+import { FlexProps, HeadingProps } from '@chakra-ui/react';
 import type { VideoCodec } from '@millicast/sdk';
 
 import { Resolution } from '@millicast-react/use-multi-media-devices';
@@ -26,7 +27,9 @@ export interface SettingsDrawerProps {
     options: VideoCodec[];
     value: VideoCodec;
   };
+  drawerProps?: FlexProps;
   fullHeight?: boolean;
+  headingProps?: HeadingProps;
   isOpen: boolean;
   microphone?: {
     handleSelect: (data: unknown) => void;
