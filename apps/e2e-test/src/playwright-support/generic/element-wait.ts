@@ -24,7 +24,7 @@ export const waitFor = async <T>(
       if (result === undefined) return result;
       // predicate fn has returned true means verfication is passed
       if (result) return result;
-    } catch (e: any) {
+    } catch (e: unknown) {
       error = e;
     }
 

@@ -19,17 +19,20 @@ export type VideoViewProps = {
   mirrored?: boolean;
   muted?: boolean;
   onClick?: BoxProps['onClick'];
+  onError?: (error: MediaError) => void;
+  onSrcMediaStreamClose?: (id: string) => void;
+  onSrcMediaStreamReady?: (value: MediaStream) => void;
   placeholderNode?: ReactNode;
   settings?: Omit<SettingsDrawerProps, 'isOpen' | 'onClose'>;
   showDotIndicator?: boolean;
+  src?: string;
   statistics?: StreamStats;
   volume?: number;
   width: string;
 };
 
 const VideoView = ({
-  // statistics,
-  displayFullscreenButton = true,
+  // displayFullscreenButton = true,
   displayVideo = true,
   height,
   label,
@@ -37,13 +40,19 @@ const VideoView = ({
   mirrored = false,
   muted = true, // Has to be true for AutoPlay in chromium
   onClick,
+  onError,
+  onSrcMediaStreamClose,
+  onSrcMediaStreamReady,
   placeholderNode,
   settings,
   showDotIndicator,
+  src,
+  // statistics,
   volume = 1,
   width,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [streamId, setStreamId] = useState<string | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
@@ -52,15 +61,35 @@ const VideoView = ({
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = mediaStream ?? null;
+      if (src) {
+        videoRef.current.srcObject = null;
+        videoRef.current.src = src;
+      } else if (mediaStream) {
+        videoRef.current.srcObject = mediaStream;
+      }
     }
-  }, [mediaStream]);
+  }, [mediaStream, src]);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.volume = volume;
     }
   }, [volume]);
+
+  useEffect(() => {
+    return () => {
+      if (streamId) {
+        onSrcMediaStreamClose?.(streamId);
+      }
+    };
+  }, [streamId]);
+
+  const onCanPlay = () => {
+    //@ts-expect-error property exists but it isn't in the built-in type
+    const stream = videoRef.current?.captureStream() as MediaStream;
+    onSrcMediaStreamReady?.(stream);
+    setStreamId(stream.id);
+  };
 
   const componentElementsStyle = {
     '.video': {
@@ -112,12 +141,14 @@ const VideoView = ({
 
       {!displayVideo && placeholderNode}
       <video
+        crossOrigin="anonymous"
         className="video"
         autoPlay
         playsInline
-        crossOrigin="anonymous"
+        loop={src ? true : false}
         ref={videoRef}
         muted={muted}
+        onCanPlay={onCanPlay}
         onWaiting={() => setLoadingVideo(true)}
         onLoadStart={() => setLoadingVideo(true)}
         onPlaying={() => setLoadingVideo(false)}
@@ -125,7 +156,9 @@ const VideoView = ({
           console.error('video is on stalled');
         }}
         onError={() => {
-          console.error(`video player error: ${videoRef.current?.error}`);
+          onError && videoRef.current?.error
+            ? onError(videoRef.current.error)
+            : console.error(`video player error: ${videoRef.current?.error}`);
         }}
         // eslint-disable-next-line react/no-unknown-property
         test-id="videoView"

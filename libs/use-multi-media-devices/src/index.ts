@@ -145,7 +145,7 @@ const stopTracks = (stream: MediaStream) => {
 const streamsReducer = (state: StreamsMap, action: StreamsAction) => {
   switch (action.type) {
     case StreamsActionType.RESET: {
-      [...state].forEach(([_, stream]) => {
+      [...state].forEach(([, stream]) => {
         stopTracks(stream.mediaStream);
       });
       return new Map<StreamId, Stream>();
@@ -437,7 +437,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
   useEffect(() => {
     if (filterOutUsedDevices && (rootCameraList.length > 0 || rootMicrophoneList.length > 0)) {
       const usedDevices = new Set();
-      [...streams].forEach(([_id, stream]) => {
+      [...streams].forEach(([, stream]) => {
         usedDevices.add(stream.device?.camera.deviceId);
         usedDevices.add(stream.device?.microphone.deviceId);
       });
