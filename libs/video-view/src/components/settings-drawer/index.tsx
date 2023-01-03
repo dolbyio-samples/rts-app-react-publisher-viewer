@@ -56,7 +56,7 @@ const SettingsDrawer = ({
         padding="24px 16px 48px"
         {...drawerProps}
       >
-        <Heading as="h3" fontSize="20px" fontWeight={600} mb="16px" {...headingProps}>
+        <Heading test-id="settingTitle" as="h3" fontSize="20px" fontWeight={600} mb="16px" {...headingProps}>
           Settings
         </Heading>
         <IconButton
@@ -74,7 +74,7 @@ const SettingsDrawer = ({
         <Stack direction="column" height="100%" spacing={4} sx={{ '&>*': { bg: drawerBackground } }}>
           {name && !name.isHidden ? (
             <Box>
-              <Input disabled={name.isDisabled} label="Source name" onChange={name.handleChange} value={name.value} />
+              <Input disabled={name.isDisabled} testId="sourceName" label="Source name" onChange={name.handleChange} value={name.value} />
             </Box>
           ) : undefined}
           {camera && !camera.isHidden ? (
