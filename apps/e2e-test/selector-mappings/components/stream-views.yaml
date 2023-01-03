@@ -1,28 +1,37 @@
+camera view container: '//*[@test-id="sourceName" and contains(text(), "fake")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
+screen view container: '//*[@test-id="sourceName" and contains(text(), "screen")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
 
 video frame: '[test-id=videoView]'
 source name: '[test-id=sourceName]'
 microphone button: '[test-id=toggleMicrophoneButton], [test-id=toggleMainStreamAudioButton]'
 camera button: '[test-id=toggleCameraButton], [test-id=toggleMainStreamVideoButton]'
 full screen button: '[test-id=fullScreenButton]'
+setting button: '[test-id=settingsOpenButton]'
 
-video view container: '(//*[@test-id="videoViewWrapper"]/parent::*)[1]'
-screen view container: '(//*[@test-id="videoViewWrapper"]/parent::*)[2]'
-
-video view:
-  - '$ref: video view container'
+camera view:
+  - '$ref: camera view container'
   - '$ref: video frame'
-video view source name:
-  - '$ref: video view container'
+source name of camera view: '$ref: camera view source name'
+camera view source name:
+  - '$ref: camera view container'
   - '$ref: source name'
-video view microphone:
-  - '$ref: video view container'
+microphone of camera view: '$ref: camera view microphone button'
+camera view microphone button:
+  - '$ref: camera view container'
   - '$ref: microphone button'
-video view camera:
-  - '$ref: video view container'
+camera of camera view: '$ref: camera view camera button'
+camera view camera button:
+  - '$ref: camera view container'
   - '$ref: camera button'
-video view full screen button:
-  - '$ref: video view container'
+full screen of camera view: '$ref: camera view full screen button'
+camera view full screen button:
+  - '$ref: camera view container'
   - '$ref: full screen button'
+setting button of camera view: '$ref: camera view setting button'
+camera view setting button:
+  - '$ref: camera view container'
+  - '$ref: setting button'
+
 
 screen view:
   - '$ref: screen view container'
@@ -42,3 +51,6 @@ screen view stop share button:
 screen view full screen button:
   - '$ref: screen view container'
   - '$ref: full screen button'
+screen view setting button:
+  - '$ref: screen view container'
+  - '$ref: setting button'

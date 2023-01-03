@@ -74,7 +74,13 @@ const SettingsDrawer = ({
         <Stack direction="column" height="100%" spacing={4} sx={{ '&>*': { bg: drawerBackground } }}>
           {name && !name.isHidden ? (
             <Box>
-              <Input disabled={name.isDisabled} testId="sourceName" label="Source name" onChange={name.handleChange} value={name.value} />
+              <Input
+                disabled={name.isDisabled}
+                testId="sourceName"
+                label="Source name"
+                onChange={name.handleChange}
+                value={name.value}
+              />
             </Box>
           ) : undefined}
           {camera && !camera.isHidden ? (

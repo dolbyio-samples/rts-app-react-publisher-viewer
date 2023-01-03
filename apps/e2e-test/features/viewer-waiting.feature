@@ -15,10 +15,9 @@ Feature: Viewer Waiting Room
 
         And the "add source button" should not be displayed
         And the "invite button" should not be displayed
-        And the "setting button" should not be displayed
         And the "stream info button" should not be displayed
         And the "viewers count" should not be displayed
-        And the "video view" should not be displayed
+        And the "camera view" should not be displayed
         And the "screen view" should not be displayed        
 
     Scenario: Viewer should in the Waiting Room when the streaming is not started with screen sharing
@@ -28,7 +27,7 @@ Feature: Viewer Waiting Room
         When the publisher switch to "preview" page
         And the publisher clicks on the "add source button"
         And the publisher clicks on the "share screen button"
-        And the "video view" should be displayed
+        And the "camera view" should be displayed
         Then the "screen view" should be displayed
         
         When the viewer switch to "waiting-room" page
@@ -41,8 +40,7 @@ Feature: Viewer Waiting Room
 
         And the "add source button" should not be displayed
         And the "invite button" should not be displayed
-        And the "setting button" should not be displayed
         And the "stream info button" should not be displayed
         And the "viewers count" should not be displayed
-        And the "video view" should not be displayed
+        And the "camera view" should not be displayed
         And the "screen view" should not be displayed  

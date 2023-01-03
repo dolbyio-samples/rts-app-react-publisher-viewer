@@ -1,34 +1,125 @@
-setting button: '[test-id=settingsButton]'
-settings drawer: '//*[@test-id="settingTitle"]/parent::*[@role="dialog"]'
+camera view container: '//*[@test-id="sourceName" and contains(text(), "fake")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
+screen view container: '//*[@test-id="sourceName" and contains(text(), "screen")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
+
+settings drawer: '//*[@test-id="settingTitle"]/parent::*'
 settings drawer title: '[test-id=settingTitle]'
 settings dropdowns: '[test-id*=SelectDefault]'
-
+source name label: '[test-id=sourceName] label'
+source name input: '[test-id=sourceName] input'
 camera dropdown: '[test-id=cameraSelectDefault]'
-camera dropdown default: '$ref: camera dropdown'
 camera dropdown options: '[test-id=cameraSelectOptions]'
- 
 microphone dropdown: '[test-id=microphoneSelectDefault]'
-microphone dropdown default: '$ref: microphone dropdown'
 microphone dropdown options: '[test-id=microphoneSelectOptions]'
-
 codec dropdown: '[test-id=codecSelectDefault]'
-codec dropdown default: '$ref: codec dropdown'
 codec dropdown options: '[test-id=codecSelectOptions]'
-
 resolution dropdown: '[test-id=resolutionSelectDefault]'
-resolution dropdown default: '$ref: resolution dropdown'
 resolution dropdown options: '[test-id=resolutionSelectOptions]'
-
 bitrate dropdown: '[test-id=bitrateSelectDefault]'
-bitrate dropdown default: '$ref: bitrate dropdown'
 bitrate dropdown options: '[test-id=bitrateSelectOptions]'
-
-simulcast label: '[test-id=simulcastSwitch] p'
-simulcast switch: '[test-id=simulcastSwitch] input'
-simulcast: '$ref: simulcast switch'
-
 quality dropdown: '[test-id=qualitySelectDefault]'
-quality dropdown default: '$ref: quality dropdown'
 quality dropdown options: '[test-id=qualitySelectOptions]'
+simulcast label: '[test-id=simulcastToggle] p'
+simulcast switch: '[test-id=simulcastToggle] input'
+settings close button: '[test-id=settingsCloseButton]'
 
-settings close button: '[test-id=settingClose]'
+
+camera view settings drawer:
+  - '$ref: camera view container'
+  - '$ref: settings drawer'
+camera view settings drawer title:
+  - '$ref: camera view container'
+  - '$ref: settings drawer title'
+camera view settings dropdowns:
+  - '$ref: camera view container'
+  - '$ref: settings dropdowns'
+camera view source name input:
+  - '$ref: camera view container'
+  - '$ref: source name input'
+camera view codec dropdown:
+  - '$ref: camera view container'
+  - '$ref: codec dropdown'
+camera view codec dropdown default: '$ref: camera view codec dropdown'
+camera view codec dropdown options:
+  - '$ref: camera view container'
+  - '$ref: codec dropdown options'
+camera view resolution dropdown:
+  - '$ref: camera view container'
+  - '$ref: resolution dropdown'
+camera view resolution dropdown default: '$ref: camera view resolution dropdown'
+camera view resolution dropdown options:
+  - '$ref: camera view container'
+  - '$ref: resolution dropdown options'
+camera view bitrate dropdown:
+  - '$ref: camera view container'
+  - '$ref: bitrate dropdown'
+camera view bitrate dropdown default: '$ref: camera view bitrate dropdown'
+camera view bitrate dropdown options:
+  - '$ref: camera view container'
+  - '$ref: bitrate dropdown options'
+camera view simulcast label:
+  - '$ref: camera view container'
+  - '$ref: simulcast label'
+camera view simulcast switch:
+  - '$ref: camera view container'
+  - '$ref: simulcast switch'
+camera view simulcast: '$ref: camera view simulcast switch'
+camera view quality dropdown:
+  - '$ref: camera view container'
+  - '$ref: quality dropdown'
+camera view quality dropdown default: '$ref: camera view quality dropdown'
+camera view quality dropdown options:
+  - '$ref: camera view container'
+  - '$ref: quality dropdown options'
+camera view settings close button:
+  - '$ref: camera view container'
+  - '$ref: settings close button'
+
+
+screen view settings drawer:
+  - '$ref: screen view container'
+  - '$ref: settings drawer'
+screen view settings drawer title:
+  - '$ref: screen view container'
+  - '$ref: settings drawer title'
+screen view settings dropdowns:
+  - '$ref: screen view container'
+  - '$ref: settings dropdowns'
+screen view source name input:
+  - '$ref: screen view container'
+  - '$ref: source name input'
+screen view codec dropdown:
+  - '$ref: screen view container'
+  - '$ref: codec dropdown'
+screen view codec dropdown default: '$ref: screen view codec dropdown'
+screen view codec dropdown options:
+  - '$ref: screen view container'
+  - '$ref: codec dropdown options'
+screen view resolution dropdown:
+  - '$ref: screen view container'
+  - '$ref: resolution dropdown'
+screen view resolution dropdown default: '$ref: screen view resolution dropdown'
+screen view resolution dropdown options:
+  - '$ref: screen view container'
+  - '$ref: resolution dropdown options'
+screen view bitrate dropdown:
+  - '$ref: screen view container'
+  - '$ref: bitrate dropdown'
+screen view bitrate dropdown default: '$ref: screen view bitrate dropdown'
+screen view bitrate dropdown options:
+  - '$ref: screen view container'
+  - '$ref: bitrate dropdown options'
+screen view simulcast label:
+  - '$ref: screen view container'
+  - '$ref: simulcast label'
+screen view simulcast switch:
+  - '$ref: screen view container'
+  - '$ref: simulcast switch'
+screen view simulcast: '$ref: screen view simulcast switch'
+screen view quality dropdown:
+  - '$ref: screen view container'
+  - '$ref: quality dropdown'
+screen view quality dropdown default: '$ref: screen view quality dropdown'
+screen view quality dropdown options:
+  - '$ref: screen view container'
+  - '$ref: quality dropdown options'
+screen view settings close button:

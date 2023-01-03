@@ -157,9 +157,8 @@ export class BrowserManager {
     ];
 
     consoleLogs.forEach((log) => {
-      if (log.startsWith('error') || skipErrorListReg.findIndex((value) => value.test(log)) === -1) {
-        errorLogs.push(log);
-      }
+      if (skipErrorListReg.findIndex((value) => value.test(log)) !== -1) return;
+      if (log.startsWith('error')) errorLogs.push(log);
     });
 
     return errorLogs;
