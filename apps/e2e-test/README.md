@@ -30,7 +30,7 @@ yarn
 
 ## Publisher and Viewer app installation locally [Optional]
 
-Follow the Millicast Tokens section of the main ReadMe (`/README.md`) to configure the token as environment variable
+Follow the Millicast Tokens section of the main ReadMe [ReadMe file](../../README.md) to configure the token as environment variable
 
 To install the Publisher and Viewer App locally, run the following command:
 
