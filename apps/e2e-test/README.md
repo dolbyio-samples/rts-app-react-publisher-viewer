@@ -30,7 +30,7 @@ yarn
 
 ## Publisher and Viewer app installation locally [Optional]
 
-Follow the Millicast Tokens section of the main ReadMe ( `../../README.md`) to configure the token as environment variable
+Follow the Millicast Tokens section of the main ReadMe (`/README.md`) to configure the token as environment variable
 
 To install the Publisher and Viewer App locally, run the following command:
 
@@ -46,7 +46,7 @@ VIEWER_URL=http://localhost:4173/
 PUBLISHER_URL=http://localhost:4174/
 ```
 
-### Setup Browser and Headless Mode for test execution:
+## Setup Browser and Headless Mode for test execution:
 
 Tests are executed on chrome browser and in headless mode by default.
 
@@ -62,7 +62,7 @@ To set the HEADLESS mode, insert/update the following variable in the bash envir
 export HEADLESS=<true/false>
 ```
 
-### Setup Publisher and Viewer app URL for test execution:
+## Setup Publisher and Viewer app URL for test execution:
 
 To set the Publisher and Viewer URL, insert/update the following variable in the bash environment:
 
@@ -77,7 +77,7 @@ To set if the Viewer URL has dynamic stream name, insert/update the following va
 export DYNAMIC_STREAM_NAME=<true/false>
 ```
 
-### Test Execution and Report
+## Test Execution and Report
 
 ### Run All Tests/Features
 
