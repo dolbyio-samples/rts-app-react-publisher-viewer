@@ -53,5 +53,5 @@ export const options: PlaywrightOptions = {
   },
   contextOptions: browserContextOptions,
   reportPath: process.env.REPORT_PATH || defaultReportPath,
-  dynamicStreamName: false,
+  dynamicStreamName: process.env.DYNAMIC_STREAM_NAME?.toLowerCase() === 'true' || false,
 };

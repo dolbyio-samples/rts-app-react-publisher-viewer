@@ -29,7 +29,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts"
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
@@ -47,7 +47,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@publisher and not @local\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@publisher and not @local and not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
@@ -56,7 +56,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local and not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
