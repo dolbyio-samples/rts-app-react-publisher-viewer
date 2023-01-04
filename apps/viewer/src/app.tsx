@@ -127,7 +127,7 @@ function App() {
                 },
               };
               return (
-                <VStack key={id}>
+                <VStack key={id} test-id="millicastVideo">
                   <ViewerVideoView
                     settingsProps={settings}
                     videoProps={{

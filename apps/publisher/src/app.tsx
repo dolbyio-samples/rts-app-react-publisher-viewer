@@ -346,7 +346,7 @@ function App() {
         )}
         <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="6">
           {mediaStream && (
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={4} test-id="millicastVideo">
               (
               <PublisherVideoView
                 settingsProps={settings}
