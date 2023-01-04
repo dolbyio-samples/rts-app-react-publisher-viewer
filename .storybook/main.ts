@@ -15,7 +15,7 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/control-bar': path.resolve(__dirname, '../libs/control-bar/src/index.tsx'),
           '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
           '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
-          '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
+          '@millicast-react/drawer': path.resolve(__dirname, '../libs/drawer/src/index.tsx'),
           '@millicast-react/dropdown': path.resolve(__dirname, '../libs/dropdown/src/index.tsx'),
           '@millicast-react/icon-button': path.resolve(__dirname, '../libs/icon-button/src/index.tsx'),
           '@millicast-react/info-label': path.resolve(__dirname, '../libs/info-label/src/index.tsx'),
@@ -25,6 +25,7 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/settings-drawer': path.resolve(__dirname, '../libs/settings-drawer/src/index.tsx'),
           '@millicast-react/tabs': path.resolve(__dirname, '../libs/tabs/src/index.tsx'),
           '@millicast-react/toggle-button': path.resolve(__dirname, '../libs/toggle-button/src/index.tsx'),
+          '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
           '@millicast-react/use-multi-media-devices': path.resolve(
             __dirname,
             '../libs/use-multi-media-devices/src/index.ts'
