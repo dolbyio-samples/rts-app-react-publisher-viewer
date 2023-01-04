@@ -370,7 +370,7 @@ function App() {
             </Stack>
           )}
           {displayStream && (
-            <Stack direction="column" spacing={4}>
+            <Stack direction="column" spacing={4} test-id="millicastVideo">
               <PublisherVideoView
                 settingsProps={settings}
                 videoProps={{

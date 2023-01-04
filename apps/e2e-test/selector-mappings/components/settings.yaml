@@ -1,6 +1,3 @@
-camera view container: '//*[@test-id="sourceName" and contains(text(), "fake")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
-screen view container: '//*[@test-id="sourceName" and contains(text(), "screen")]/parent::*[@test-id="videoViewWrapper"]/parent::*'
-
 settings drawer: '//*[@test-id="settingTitle"]/parent::*'
 settings drawer title: '[test-id=settingTitle]'
 settings dropdowns: '[test-id*=SelectDefault]'
