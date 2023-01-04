@@ -1,14 +1,17 @@
 import { Box, Flex, HStack, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import useNotification from '@millicast-react/use-notification';
-import useViewer from '@millicast-react/use-viewer';
+
+import ActionBar from '@millicast-react/action-bar';
+import ControlBar from '@millicast-react/control-bar';
 import { IconCameraOff, IconCameraOn, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
-import VideoView from '@millicast-react/video-view';
+import InfoLabel from '@millicast-react/info-label';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
-import ActionBar from '@millicast-react/action-bar';
-import InfoLabel from '@millicast-react/info-label';
-import ControlBar from '@millicast-react/control-bar';
+import useNotification from '@millicast-react/use-notification';
+import useViewer from '@millicast-react/use-viewer';
+
+import ViewerVideoView from './components/viewer-video-view';
+
 import './styles/font.css';
 
 type TrackSourceState = {
@@ -125,13 +128,15 @@ function App() {
               };
               return (
                 <VStack key={id}>
-                  <VideoView
-                    displayVideo={!hideVideo}
-                    height="382px"
-                    mediaStream={source.mediaStream}
-                    muted={muteAudio}
-                    settings={settings}
-                    width="688px"
+                  <ViewerVideoView
+                    settingsProps={settings}
+                    videoProps={{
+                      displayVideo: !hideVideo,
+                      height: '382px',
+                      mediaStream: source.mediaStream,
+                      muted: muteAudio,
+                      width: '688px',
+                    }}
                   />
                   <ControlBar
                     controls={[

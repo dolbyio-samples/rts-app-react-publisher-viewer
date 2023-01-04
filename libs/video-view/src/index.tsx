@@ -1,12 +1,9 @@
-import { Box, Center, Flex, Spacer, Spinner, Stack, useDisclosure } from '@chakra-ui/react';
+import { Box, Center, Flex, Spacer, Spinner, Stack } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { IconSettings } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
 import InfoLabel from '@millicast-react/info-label';
 // import StatisticsInfo from '@millicast-react/statistics-info';
 
-import SettingsDrawer from './components/settings-drawer';
 import { VideoViewProps } from './types';
 
 const VideoView = ({
@@ -22,7 +19,6 @@ const VideoView = ({
   onSrcMediaStreamClose,
   onSrcMediaStreamReady,
   placeholderNode,
-  settings,
   showDotIndicator,
   src,
   // statistics,
@@ -34,8 +30,6 @@ const VideoView = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
   // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
-
-  const { onClose: handleDrawerClose, onOpen: handleDrawerOpen, isOpen: isDrawerOpen } = useDisclosure();
 
   useEffect(() => {
     if (videoRef.current) {
@@ -191,17 +185,6 @@ const VideoView = ({
             icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           />
         )} */}
-        <IconButton
-          background="transparent"
-          icon={<IconSettings />}
-          isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-          isRound
-          onClick={handleDrawerOpen}
-          reversed
-          size="sm"
-          test-id="settingsOpenButton"
-          tooltip={{ label: 'Settings' }}
-        />
         {/* Disable it temporarily, will bring it back in next release
          <IconButton
           test-id="streamInfoButton"
@@ -215,9 +198,9 @@ const VideoView = ({
           icon={<IconInfo fill="white" />}
         /> */}
       </Stack>
-      <SettingsDrawer isOpen={isDrawerOpen} onClose={handleDrawerClose} {...settings} />
     </Flex>
   );
 };
 
+export * from './types';
 export default memo(VideoView);

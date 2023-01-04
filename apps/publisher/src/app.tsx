@@ -29,7 +29,6 @@ import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';
 import type { SourceState } from '@millicast-react/use-publisher';
 import useMediaDevices from '@millicast-react/use-media-devices';
-import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import PopupMenu from '@millicast-react/popup-menu';
@@ -42,6 +41,8 @@ import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import useNotification from '@millicast-react/use-notification';
 import type { StreamStats, VideoCodec } from '@millicast/sdk';
+
+import PublisherVideoView from './components/publisher-video-view';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 
 //TODO: Support more than 2 sources
@@ -219,7 +220,6 @@ function App() {
       options: codecListSimulcast,
       value: codec || codecList[0],
     },
-    fullHeight: true,
     name: {
       // TODO: update name
       handleChange: () => null,
@@ -348,35 +348,39 @@ function App() {
           {mediaStream && (
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
               (
-              <VideoView
-                displayFullscreenButton={false}
-                displayVideo={isVideoEnabled}
-                height={displayStream ? '382px' : '464px'}
-                label={camera?.label}
-                mediaStream={mediaStream}
-                mirrored={true}
-                placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
-                    <IconProfile />
-                  </Box>
-                }
-                settings={settings}
-                showDotIndicator={isStreaming}
-                width={displayStream ? '688px' : '836px'}
+              <PublisherVideoView
+                settingsProps={settings}
+                videoProps={{
+                  displayFullscreenButton: false,
+                  displayVideo: isVideoEnabled,
+                  height: displayStream ? '382px' : '464px',
+                  label: camera?.label,
+                  mediaStream: mediaStream,
+                  mirrored: true,
+                  placeholderNode: (
+                    <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
+                      <IconProfile />
+                    </Box>
+                  ),
+                  showDotIndicator: isStreaming,
+                  width: displayStream ? '688px' : '836px',
+                }}
               />
               <MediaControlBar />)
             </Stack>
           )}
           {displayStream && (
             <Stack direction="column" spacing={4}>
-              <VideoView
-                displayFullscreenButton={false}
-                height="382px"
-                label={displayStreamLabel}
-                mediaStream={displayStream}
-                settings={settings}
-                showDotIndicator={isStreaming}
-                width="688px"
+              <PublisherVideoView
+                settingsProps={settings}
+                videoProps={{
+                  displayFullscreenButton: false,
+                  height: '382px',
+                  label: displayStreamLabel,
+                  mediaStream: displayStream,
+                  showDotIndicator: isStreaming,
+                  width: '688px',
+                }}
               />
               <ControlBar
                 controls={[

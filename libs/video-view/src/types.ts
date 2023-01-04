@@ -2,8 +2,6 @@ import { BoxProps } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 import { ReactNode } from 'react';
 
-import { SettingsDrawerProps } from './components/settings-drawer';
-
 export type VideoViewProps = {
   displayFullscreenButton?: boolean;
   displayMuteButton?: boolean;
@@ -18,7 +16,6 @@ export type VideoViewProps = {
   onSrcMediaStreamClose?: (id: string) => void;
   onSrcMediaStreamReady?: (value: MediaStream) => void;
   placeholderNode?: ReactNode;
-  settings?: Omit<SettingsDrawerProps, 'isOpen' | 'onClose'>;
   showDotIndicator?: boolean;
   src?: string;
   statistics?: StreamStats;
