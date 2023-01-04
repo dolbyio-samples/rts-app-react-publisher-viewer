@@ -22,7 +22,6 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/input': path.resolve(__dirname, '../libs/input/src/index.tsx'),
           '@millicast-react/live-indicator': path.resolve(__dirname, '../libs/live-indicator/src/index.tsx'),
           '@millicast-react/participant-count': path.resolve(__dirname, '../libs/participant-count/src/index.tsx'),
-          '@millicast-react/settings-drawer': path.resolve(__dirname, '../libs/settings-drawer/src/index.tsx'),
           '@millicast-react/tabs': path.resolve(__dirname, '../libs/tabs/src/index.tsx'),
           '@millicast-react/toggle-button': path.resolve(__dirname, '../libs/toggle-button/src/index.tsx'),
           '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
