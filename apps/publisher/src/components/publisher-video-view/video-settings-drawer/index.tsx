@@ -19,7 +19,13 @@ const VideoSettingsDrawer = ({
   resolution,
   simulcast,
 }: VideoSettingsDrawerProps) => (
-  <Drawer fullHeight heading="Settings" headingProps={{ testId: 'settingTitle' }} isOpen={isOpen} onClose={handleClose}>
+  <Drawer
+    fullHeight
+    heading="Settings"
+    headingProps={{ 'test-id': 'settingTitle' }}
+    isOpen={isOpen}
+    onClose={handleClose}
+  >
     {name && !name.isHidden ? (
       <Box>
         <Input

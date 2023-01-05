@@ -9,7 +9,7 @@ import { VideoSettingsDrawerProps } from './types';
 import { qualityElementResolver } from './utils';
 
 const VideoSettingsDrawer = ({ isOpen, onClose: handleClose, quality }: VideoSettingsDrawerProps) => (
-  <Drawer heading="Settings" headingProps={{ testId: 'settingTitle' }} isOpen={isOpen} onClose={handleClose}>
+  <Drawer heading="Settings" headingProps={{ 'test-id': 'settingTitle' }} isOpen={isOpen} onClose={handleClose}>
     {quality && !quality.isHidden ? (
       <Box>
         <Dropdown
