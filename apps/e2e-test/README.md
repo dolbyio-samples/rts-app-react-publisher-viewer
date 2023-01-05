@@ -6,7 +6,7 @@ The test automation framework for end-to-end testing with Cucumber-JS and Playwr
 
 In order to run the automated test, you will need the following tools installed on your machine.
 
-- Node v16.16.0
+- NodeJS v16.16.0
 - Yarn v1.22.19
 
 ## Project structure
@@ -28,11 +28,11 @@ To install the necessary libraries, clone the repo. Then from the root directory
 yarn
 ```
 
-## Publisher and Viewer app installation locally [Optional]
+## [Optional] Publisher and Viewer app installation locally
 
 Follow the Millicast Tokens section of the main ReadMe [ReadMe file](../../README.md) to configure the token as environment variable
 
-To install the Publisher and Viewer App locally, run the following command:
+To launch the Publisher and Viewer App locally, run the following command:
 
 ```bash
 yarn nx launch-server e2e-test
@@ -64,6 +64,7 @@ export HEADLESS=<true/false>
 
 ## Setup Publisher and Viewer app URL for test execution:
 
+If the Publisher and Viewer app is launched locally using the 'yarn nx launch-server e2e-test' command then skip setting the PUBLISHER_URL and VIEWER_URL environment variables.
 To set the Publisher and Viewer URL, insert/update the following variable in the bash environment:
 
 ```bash
@@ -104,6 +105,10 @@ yarn nx only e2e-test --skip-nx-cache
 To ignore the test execution of specific scenario(s) or feature file, tag it with @ignore as shown below:
 
 ![ignore-scenario-feature screenshot](../../docs/img/ignore-scenario.png)
+
+```bash
+yarn nx test e2e-test --skip-nx-cache
+```
 
 ### Generate HTML Reports
 
