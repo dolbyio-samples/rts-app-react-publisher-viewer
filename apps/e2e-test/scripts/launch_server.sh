@@ -9,6 +9,7 @@ fi
 PUBLISHER_APP_NAME=publisher
 VIEWER_APP_NAME=viewer
 > .test.env
+rm -rf dist
 
 # Check if OS is supported
 checkOS osType

@@ -144,6 +144,7 @@ export class SelectorMapper {
       targetSelector = this.checkReference(pageName, targetSelector);
     } else {
       const components = pageSelectorMap.get('COMPONENTS') as string[];
+      if (!components.includes('common-components')) components.push('common-components');
       targetSelector = this.searchSelectorInComponents(pageName, selectorName, components);
       targetSelector = this.checkReference(pageName, targetSelector);
     }
@@ -158,6 +159,7 @@ export class SelectorMapper {
     for (const component of components) {
       const componentMap = this.selectorMap.get(component) as PageSelectorMap;
       if (componentMap.has(selectorName)) {
+        logger.debug(`Selector ${selectorName} found in ${component}`);
         return componentMap.get(selectorName) as TargetSelector;
       }
     }
