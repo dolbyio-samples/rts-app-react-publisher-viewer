@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { IconButtonProps } from '@millicast-react/icon-button';
 
 export interface ControlBarProps extends StackProps {
-  controls: Array<ControlElement | ControlButtonProps>;
+  controls: Array<ControlButtonProps | ControlElement>;
 }
 
 export interface ControlButtonProps extends IconButtonProps {

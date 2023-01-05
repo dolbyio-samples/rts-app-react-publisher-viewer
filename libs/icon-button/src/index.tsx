@@ -1,20 +1,7 @@
-import {
-  Flex,
-  IconButton as ChakraIconButton,
-  IconButtonProps as ChakraIconButtonProps,
-  Tooltip,
-  TooltipProps,
-} from '@chakra-ui/react';
+import { Flex, IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
 import React, { forwardRef, Ref } from 'react';
 
-export interface IconButtonProps extends Omit<ChakraIconButtonProps, 'aria-label'> {
-  'aria-label'?: string;
-  reversed?: boolean;
-  testId: string;
-  tooltipProps?: Omit<TooltipProps, 'children'> & {
-    label: string;
-  };
-}
+import { IconButtonProps } from './types';
 
 const IconButton = forwardRef(
   ({ icon, reversed, testId, tooltipProps, ...iconButtonProps }: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
@@ -39,4 +26,5 @@ const IconButton = forwardRef(
 
 IconButton.displayName = 'IconButton';
 
+export * from './types';
 export default IconButton;
