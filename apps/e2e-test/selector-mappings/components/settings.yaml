@@ -17,7 +17,7 @@ quality dropdown: '[test-id=qualitySelectDefault]'
 quality dropdown options: '[test-id=qualitySelectOptions]'
 simulcast label: '[test-id=simulcastToggle] p'
 simulcast switch: '[test-id=simulcastToggle] input'
-settings close button: '[test-id=settingsCloseButton]'
+settings close button: '[test-id=drawerCloseButton]'
 
 
 camera view settings drawer:
