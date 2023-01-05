@@ -14,6 +14,7 @@ const IconButton = forwardRef(
           </Flex>
         }
         size="lg"
+        test-id={testId}
         variant={reversed ? 'iconReversed' : 'icon'}
         {...iconButtonProps}
         ref={ref}
