@@ -68,19 +68,17 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                 </Tr>
               ) : undefined}
               {video ? (
-                <Tr>
-                  <Th>Video resolution:</Th>
-                  <Td>{video ? `${video.frameWidth}x${video.frameHeight}` : ''}</Td>
-                </Tr>
-              ) : undefined}
-              {video && 'qualityLimitationReason' in video ? (
-                <Tr>
-                  <Th>Quality limitation reason:</Th>
-                  <Td>{(video as StreamVideoOutboundsStats).qualityLimitationReason}</Td>
-                </Tr>
-              ) : undefined}
-              {video ? (
                 <>
+                  <Tr>
+                    <Th>Video resolution:</Th>
+                    <Td>{video ? `${video.frameWidth}x${video.frameHeight}` : ''}</Td>
+                  </Tr>
+                  {'qualityLimitationReason' in video ? (
+                    <Tr>
+                      <Th>Quality limitation reason:</Th>
+                      <Td>{(video as StreamVideoOutboundsStats).qualityLimitationReason}</Td>
+                    </Tr>
+                  ) : undefined}
                   <Tr>
                     <Th>Frames per second:</Th>
                     <Td>{video ? video.framesPerSecond || 0 : ''}</Td>

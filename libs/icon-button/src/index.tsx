@@ -9,7 +9,7 @@ const IconButton = forwardRef(
       <ChakraIconButton
         aria-label={testId}
         icon={
-          <Flex boxSize="24px" justifyContent="center" alignItems="center">
+          <Flex alignItems="center" boxSize="24px" justifyContent="center">
             {icon}
           </Flex>
         }
