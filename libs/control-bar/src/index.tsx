@@ -1,20 +1,8 @@
-import { HStack, StackProps } from '@chakra-ui/react';
-import IconButton, { IconButtonProps } from '@millicast-react/icon-button';
-import React, { ReactNode } from 'react';
+import { HStack } from '@chakra-ui/react';
+import IconButton from '@millicast-react/icon-button';
+import React from 'react';
 
-type ControlButtonProps = IconButtonProps & {
-  key: string;
-  ['test-id']?: string;
-};
-
-type ControlElement = {
-  key: string;
-  node: ReactNode;
-};
-
-type ControlBarProps = StackProps & {
-  controls: Array<ControlElement | ControlButtonProps>;
-};
+import { ControlBarProps } from './types';
 
 const ControlBar = ({ controls, ...rest }: ControlBarProps) => {
   return (
@@ -34,4 +22,5 @@ const ControlBar = ({ controls, ...rest }: ControlBarProps) => {
   );
 };
 
+export * from './types';
 export default ControlBar;

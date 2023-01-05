@@ -28,8 +28,8 @@ export const Default: Story = (args: Omit<DrawerProps, 'isOpen' | 'onClose'>) =>
             right="18px"
             reversed
             size="sm"
-            test-id="drawerOpenButton"
-            tooltip={{ label: 'Drawer' }}
+            testId="drawerOpenButton"
+            tooltipProps={{ label: 'Drawer' }}
           />
           <Drawer isOpen={isOpen} onClose={handleClose} {...args} />
         </Box>

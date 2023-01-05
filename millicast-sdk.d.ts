@@ -123,8 +123,8 @@ declare namespace millicast {
   };
 
   type StreamAudioStats = {
-    inbounds: StreamAudioInboundsStats[];
-    outbounds: StreamAudioOutboundsStats[];
+    inbounds?: StreamAudioInboundsStats[];
+    outbounds?: StreamAudioOutboundsStats[];
   };
 
   type StreamVideoOutboundsStats = {
@@ -158,8 +158,8 @@ declare namespace millicast {
   };
 
   type StreamVideoStats = {
-    inbounds: StreamVideoInboundsStats[];
-    outbounds: StreamVideoOutboundsStats[];
+    inbounds?: StreamVideoInboundsStats[];
+    outbounds?: StreamVideoOutboundsStats[];
   };
 
   type StreamStats = {
@@ -167,7 +167,7 @@ declare namespace millicast {
     availableOutgoingBitrate?: number;
     candidateType?: string;
     currentRoundTripTime?: number;
-    raw: {
+    raw?: {
       size: number;
     };
     totalRoundTripTime?: number;

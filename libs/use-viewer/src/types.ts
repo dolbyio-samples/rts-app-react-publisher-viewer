@@ -1,4 +1,4 @@
-import { LayerInfo, Media, StreamAudioInboundsStats, StreamVideoInboundsStats, View } from '@millicast/sdk';
+import { LayerInfo, Media, StreamStats, View } from '@millicast/sdk';
 
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
@@ -11,17 +11,12 @@ export type RemoteTrackSource = {
   audioMediaId?: string;
   mediaStream: MediaStream;
   sourceId: SourceId;
-  statistics?: RemoteTrackSourceStatistics;
+  statistics?: StreamStats;
   streamQualityOptions: SimulcastQuality[];
   videoMediaId?: string;
 };
 
 export type RemoteTrackSources = Map<SourceId, RemoteTrackSource>;
-
-export type RemoteTrackSourceStatistics = {
-  audio: StreamAudioInboundsStats[];
-  video: StreamVideoInboundsStats[];
-};
 
 export type SimulcastQuality = {
   simulcastLayer?: LayerInfo; // Auto has an idx of null
@@ -43,7 +38,7 @@ export type Viewer = {
 export type ViewerAction =
   | { source: RemoteTrackSource; type: ViewerActionType.ADD_SOURCE }
   | { sourceId: SourceId; type: ViewerActionType.REMOVE_SOURCE; viewer: View }
-  | { statistics: RemoteTrackSourceStatistics; type: ViewerActionType.UPDATE_SOURCES_STATISTICS; viewer: View }
+  | { statistics: StreamStats; type: ViewerActionType.UPDATE_SOURCES_STATISTICS; viewer: View }
   | { medias: Media[]; type: ViewerActionType.UPDATE_SOURCES_QUALITIES; viewer: View };
 
 export type ViewerProps = {
