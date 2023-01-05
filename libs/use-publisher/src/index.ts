@@ -123,9 +123,9 @@ const usePublisher = ({ token, streamName, streamId, viewerAppBaseUrl, handleErr
   useEffect(() => {
     const capabilities = PeerConnection.getCapabilities('video');
     const supportedCodecs = capabilities.codecs
-      .filter((item) => item.codec.toLowerCase() !== 'av1')
+      .filter((item) => item.codec !== 'av1')
       .sort((item) => {
-        return item.codec.toLowerCase() === 'h264' ? -1 : 1;
+        return item.codec === 'h264' ? -1 : 1;
       })
       .map((item) => item.codec);
     setCodecList(supportedCodecs);

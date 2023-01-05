@@ -1,50 +1,29 @@
-import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
-import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
+import { Box, Center, Flex, Spacer, Spinner, Stack } from '@chakra-ui/react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { IconFullScreen, IconFullScreenExit } from '@millicast-react/dolbyio-icons';
-// import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
-import type { StreamStats } from '@millicast/sdk';
+// import StatisticsInfo from '@millicast-react/statistics-info';
 
-export type VideoViewProps = {
-  width: string;
-  height: string;
-  mirrored?: boolean;
-  muted?: boolean;
-  displayVideo?: boolean;
-  displayMuteButton?: boolean;
-  displayFullscreenButton?: boolean;
-  mediaStream?: MediaStream;
-  src?: string;
-  statistics?: StreamStats;
-  label?: string;
-  placeholderNode?: ReactNode;
-  onClick?: BoxProps['onClick'];
-  showDotIndicator?: boolean;
-  volume?: number;
-  onSrcMediaStreamReady?: (value: MediaStream) => void;
-  onSrcMediaStreamClose?: (id: string) => void;
-  onError?: (error: MediaError) => void;
-};
+import { VideoViewProps } from './types';
 
 const VideoView = ({
-  width,
+  // displayFullscreenButton = true,
+  displayVideo = true,
   height,
+  label,
+  mediaStream,
   mirrored = false,
   muted = true, // Has to be true for AutoPlay in chromium
-  displayVideo = true,
-  displayFullscreenButton = true,
-  mediaStream,
+  onClick,
+  onError,
+  onSrcMediaStreamClose,
+  onSrcMediaStreamReady,
+  placeholderNode,
+  showDotIndicator,
   src,
   // statistics,
-  label,
-  placeholderNode,
-  onClick,
-  showDotIndicator,
   volume = 1,
-  onSrcMediaStreamReady,
-  onSrcMediaStreamClose,
-  onError,
+  width,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [streamId, setStreamId] = useState<string | null>(null);
@@ -171,12 +150,13 @@ const VideoView = ({
       )}
       {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
       <Stack
-        position="absolute"
-        direction="row"
-        width="100%"
         bottom={isFullScreen ? ['120px', '120px', 0] : 0}
+        direction="row"
+        margin="0 8px 8px"
+        position="absolute"
         right="0"
         spacing="0"
+        width="100%"
       >
         {/* {displayMuteButton && (
           <IconButton
@@ -192,7 +172,7 @@ const VideoView = ({
           />
         )} */}
         <Spacer />
-        {displayFullscreenButton && (
+        {/* {displayFullscreenButton && (
           <IconButton
             test-id="fullScreenButton"
             aria-label="Full screen"
@@ -204,7 +184,7 @@ const VideoView = ({
             }}
             icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           />
-        )}
+        )} */}
         {/* Disable it temporarily, will bring it back in next release
          <IconButton
           test-id="streamInfoButton"
@@ -222,4 +202,5 @@ const VideoView = ({
   );
 };
 
+export * from './types';
 export default memo(VideoView);

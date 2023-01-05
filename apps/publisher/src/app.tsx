@@ -1,13 +1,8 @@
-import React, { useEffect, useMemo, useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   Flex,
+  HStack,
   Heading,
   Popover,
   PopoverBody,
@@ -17,45 +12,37 @@ import {
   PopoverTrigger,
   Spacer,
   Stack,
-  HStack,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import {
-  IconMicrophoneOn,
-  IconMicrophoneOff,
-  IconCameraOn,
   IconCameraOff,
-  IconSettings,
+  IconCameraOn,
+  IconClose,
+  IconInfo,
+  IconMicrophoneOff,
+  IconMicrophoneOn,
   IconPresent,
   IconProfile,
-  IconCodec,
-  IconResolution,
-  IconSimulcast,
-  IconInfo,
-  IconClose,
-  IconBitrate,
 } from '@millicast-react/dolbyio-icons';
 import './styles/font.css';
 import usePublisher from '@millicast-react/use-publisher';
-import type { SourceState, Bitrate } from '@millicast-react/use-publisher';
+import type { SourceState } from '@millicast-react/use-publisher';
 import useMediaDevices from '@millicast-react/use-media-devices';
-import VideoView from '@millicast-react/video-view';
 import ParticipantCount from '@millicast-react/participant-count';
 import ShareLinkButton from '@millicast-react/share-link-button';
-import ToggleButton from '@millicast-react/toggle-button';
 import PopupMenu from '@millicast-react/popup-menu';
 import LiveIndicator from '@millicast-react/live-indicator';
 import Timer from '@millicast-react/timer';
 import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
 import ControlBar from '@millicast-react/control-bar';
-import Dropdown from '@millicast-react/dropdown';
 import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import useNotification from '@millicast-react/use-notification';
 import type { StreamStats, VideoCodec } from '@millicast/sdk';
+
+import PublisherVideoView from './components/publisher-video-view';
 import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
 
 //TODO: Support more than 2 sources
@@ -77,7 +64,6 @@ function App() {
     };
   }, []);
 
-  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
   const { showError } = useNotification();
 
   const {
@@ -177,17 +163,17 @@ function App() {
 
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
-      return codecList.filter((item) => item.toLowerCase() !== 'vp9');
+      return codecList.filter((item) => item !== 'vp9');
     }
     return codecList;
   }, [codecList, isSimulcastEnabled]);
 
-  const onSelectBitrate = (bitrate: number) => {
+  const handleSelectBitrate = (bitrate: number) => {
     if (isStreaming) updateSourceBitrate(MainSourceId, bitrate);
     else setBitrate(bitrate);
   };
 
-  const onSelectVideoResolution = useCallback(
+  const handleSelectResolution = useCallback(
     async (resolution: Resolution) => {
       const videoConstraints = cameraSettings as MediaTrackConstraintSet;
       if (videoConstraints && cameraSettings) {
@@ -213,6 +199,44 @@ function App() {
 
   const isStreaming = publisherState === 'streaming';
   const isConnecting = publisherState === 'connecting';
+
+  // TODO: handle settings on a per-stream basis
+  const settings = {
+    bitrate: {
+      handleSelect: (data: unknown) => {
+        handleSelectBitrate(data as number);
+      },
+      isDisabled: isConnecting,
+      isHidden: !bitrateList.length,
+      options: bitrateList,
+      value: bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name,
+    },
+    codec: {
+      handleSelect: (data: unknown) => {
+        setCodec(data as VideoCodec);
+      },
+      isDisabled: publisherState !== 'ready',
+      isHidden: isStreaming || !codecList.length,
+      options: codecListSimulcast,
+      value: codec || codecList[0],
+    },
+    name: {
+      // TODO: update name
+      handleChange: () => null,
+      isDisabled: isConnecting,
+      isHidden: isStreaming,
+      // TODO: current name
+      value: '',
+    },
+    simulcast: {
+      handleToggle: () => {
+        setIsSimulcastEnabled((prevIsSimulcastEnabled) => !prevIsSimulcastEnabled);
+      },
+      isDisabled: isConnecting,
+      isHidden: isStreaming || codec === 'vp9',
+      value: isSimulcastEnabled,
+    },
+  };
 
   const MediaControlBar = () => (
     <ControlBar
@@ -322,35 +346,41 @@ function App() {
         )}
         <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="6">
           {mediaStream && (
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={4} test-id="millicastVideo">
               (
-              <VideoView
-                width={displayStream ? '688px' : '836px'}
-                height={displayStream ? '382px' : '464px'}
-                mirrored={true}
-                mediaStream={mediaStream}
-                displayFullscreenButton={false}
-                displayVideo={isVideoEnabled}
-                label={camera?.label}
-                placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
-                    <IconProfile />
-                  </Box>
-                }
-                showDotIndicator={isStreaming}
+              <PublisherVideoView
+                settingsProps={settings}
+                videoProps={{
+                  displayFullscreenButton: false,
+                  displayVideo: isVideoEnabled,
+                  height: displayStream ? '382px' : '464px',
+                  label: camera?.label,
+                  mediaStream: mediaStream,
+                  mirrored: true,
+                  placeholderNode: (
+                    <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
+                      <IconProfile />
+                    </Box>
+                  ),
+                  showDotIndicator: isStreaming,
+                  width: displayStream ? '688px' : '836px',
+                }}
               />
               <MediaControlBar />)
             </Stack>
           )}
           {displayStream && (
-            <Stack direction="column" spacing={4}>
-              <VideoView
-                width="688px"
-                height="382px"
-                mediaStream={displayStream}
-                displayFullscreenButton={false}
-                label={displayStreamLabel}
-                showDotIndicator={isStreaming}
+            <Stack direction="column" spacing={4} test-id="millicastVideo">
+              <PublisherVideoView
+                settingsProps={settings}
+                videoProps={{
+                  displayFullscreenButton: false,
+                  height: '382px',
+                  label: displayStreamLabel,
+                  mediaStream: displayStream,
+                  showDotIndicator: isStreaming,
+                  width: '688px',
+                }}
               />
               <ControlBar
                 controls={[
@@ -434,149 +464,7 @@ function App() {
               ]}
             />
           )}
-          <IconButton
-            test-id="settingsButton"
-            tooltip={{ label: 'Settings' }}
-            onClick={onDrawerOpen}
-            isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-            icon={<IconSettings />}
-            borderRadius="50%"
-            ml="16px"
-            reversed
-          />
         </Flex>
-        {/* Drawer */}
-        <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
-          <DrawerOverlay />
-          <DrawerContent bg="dolbyNeutral.800" color="white">
-            <DrawerHeader test-id="settingTitle" textAlign="center">
-              Settings
-            </DrawerHeader>
-            <DrawerCloseButton test-id="settingClose" />
-            <DrawerBody>
-              <Stack direction="column" spacing={4}>
-                <Box>
-                  {cameraList.length && cameraSettings && camera && (
-                    <Dropdown
-                      leftIcon={<IconCameraOn />}
-                      disabled={publisherState === 'connecting'}
-                      testId="cameraSelect"
-                      elementsList={cameraList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setCamera(data as InputDeviceInfo);
-                      }}
-                      selected={camera.label}
-                      placeholder="Camera"
-                    />
-                  )}
-                </Box>
-                <Box>
-                  {microphoneList.length && microphoneSettings && microphone && (
-                    <Dropdown
-                      leftIcon={<IconMicrophoneOn />}
-                      disabled={publisherState === 'connecting'}
-                      testId="microphoneSelect"
-                      elementsList={microphoneList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setMicrophone(data as InputDeviceInfo);
-                      }}
-                      selected={microphone.label}
-                      placeholder="Microphone"
-                    />
-                  )}
-                </Box>
-                {!isStreaming && codecList.length > 0 && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconCodec />}
-                      disabled={publisherState !== 'ready' || codecList.length === 0}
-                      testId="codecSelect"
-                      elementsList={codecListSimulcast}
-                      elementResolver={(element) => ({
-                        id: element as string,
-                        label: element as string,
-                        data: element as VideoCodec,
-                      })}
-                      onSelect={(data) => setCodec(data as VideoCodec)}
-                      selected={codec || codecList[0]}
-                      placeholder="Codec"
-                    />
-                  </Box>
-                )}
-                {bitrateList.length && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconBitrate />}
-                      disabled={bitrateList.length === 0}
-                      testId="bitrateSelect"
-                      elementsList={bitrateList}
-                      elementResolver={(element) => {
-                        const bitrate = element as Bitrate;
-                        return {
-                          id: bitrate.name,
-                          label: bitrate.name,
-                          data: bitrate.value,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        onSelectBitrate(data as number);
-                      }}
-                      selected={bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name}
-                      placeholder="Bitrate"
-                    />
-                  </Box>
-                )}
-                {mediaStream && resolutionList.length && cameraSettings && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconResolution />}
-                      testId="resolutionSelect"
-                      elementsList={resolutionList}
-                      elementResolver={(element) => {
-                        const resolution = element as Resolution;
-                        return {
-                          id: `${resolution.width}x${resolution.height}`,
-                          label: `${resolution.width}x${resolution.height}`,
-                          data: resolution,
-                        };
-                      }}
-                      onSelect={(data) => onSelectVideoResolution(data as Resolution)}
-                      selected={`${cameraSettings.width}x${cameraSettings.height}`}
-                      placeholder="Resolution"
-                    />
-                  </Box>
-                )}
-
-                {!isStreaming && (
-                  <ToggleButton
-                    test-id="simulcastSwitch"
-                    onClick={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                    isActive={isSimulcastEnabled}
-                    label="Simulcast"
-                    leftIcon={<IconSimulcast />}
-                    isDisabled={codec === 'VP9'}
-                  />
-                )}
-              </Stack>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
       </HStack>
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
