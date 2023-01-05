@@ -5,7 +5,7 @@ import { IconButtonProps } from './types';
 
 const IconButton = forwardRef(
   ({ icon, reversed, testId, tooltipProps, ...iconButtonProps }: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
-    const Button = (
+    const renderButton = () => (
       <ChakraIconButton
         aria-label={testId}
         icon={
@@ -20,7 +20,7 @@ const IconButton = forwardRef(
       />
     );
 
-    return tooltipProps ? <Tooltip {...tooltipProps}>{Button}</Tooltip> : Button;
+    return tooltipProps ? <Tooltip {...tooltipProps}>{renderButton()}</Tooltip> : renderButton();
   }
 );
 
