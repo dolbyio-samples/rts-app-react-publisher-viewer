@@ -101,3 +101,8 @@ checkOS(){
   echo ${machine}
   eval "${1}=${machine}"
 }
+
+unsetEnvVariables(){
+  unset VITE_MILLICAST_PUBLISHER_BASE_URL
+  unset VITE_MILLICAST_VIEWER_BASE_URL
+}

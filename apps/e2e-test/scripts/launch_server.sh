@@ -38,3 +38,6 @@ verifyServerLogs ${PUBLISHER_APP_NAME}
 
 # Set App URL Environment variable
 getAppURL ${PUBLISHER_APP_NAME}
+
+# Unset environment variables
+unsetEnvVariables
