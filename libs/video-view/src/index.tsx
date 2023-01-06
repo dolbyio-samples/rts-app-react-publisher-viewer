@@ -1,8 +1,7 @@
-import { Box, Center, Flex, Spacer, Spinner, Stack } from '@chakra-ui/react';
+import { Box, Center, Flex, IconButton, Spacer, Spinner, Stack } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import InfoLabel from '@millicast-react/info-label';
-// import StatisticsInfo from '@millicast-react/statistics-info';
 
 import { VideoViewProps } from './types';
 
@@ -21,7 +20,6 @@ const VideoView = ({
   placeholderNode,
   showDotIndicator,
   src,
-  // statistics,
   volume = 1,
   width,
 }: VideoViewProps) => {
@@ -148,7 +146,6 @@ const VideoView = ({
           textTransform="capitalize"
         />
       )}
-      {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
       <Stack
         bottom={isFullScreen ? ['120px', '120px', 0] : 0}
         direction="row"
@@ -185,18 +182,6 @@ const VideoView = ({
             icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           />
         )} */}
-        {/* Disable it temporarily, will bring it back in next release
-         <IconButton
-          test-id="streamInfoButton"
-          aria-label="Stream Information"
-          size="md"
-          className="icon-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowStatisticsInfo(!showStatisticsInfo);
-          }}
-          icon={<IconInfo fill="white" />}
-        /> */}
       </Stack>
     </Flex>
   );

@@ -43,13 +43,14 @@ const reducer = (sources: RemoteTrackSources, action: ViewerAction): RemoteTrack
       const { audio, video } = action.statistics;
       const newSources = new Map() as RemoteTrackSources;
       for (const [id, source] of sources) {
-        const sourceAudio = audio.filter(({ mid }) => mid === source.audioMediaId);
-        const sourceVideo = video.filter(({ mid }) => mid === source.videoMediaId);
+        const audioIn = audio.inbounds?.filter(({ mid }) => mid === source.audioMediaId) ?? [];
+        const videoIn = video.inbounds?.filter(({ mid }) => mid === source.videoMediaId) ?? [];
         const newSource = {
           ...source,
           statistics: {
-            audio: sourceAudio,
-            video: sourceVideo,
+            ...action.statistics,
+            audio: { inbounds: audioIn },
+            video: { inbounds: videoIn },
           },
         };
         newSources.set(id, newSource);
@@ -171,7 +172,7 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
       viewer.current?.webRTCPeer?.initStats();
       viewer.current?.webRTCPeer?.on('stats', (statistics: StreamStats) => {
         dispatch({
-          statistics: { audio: statistics.audio.inbounds, video: statistics.video.inbounds },
+          statistics,
           type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
           viewer: viewer.current as View,
         });

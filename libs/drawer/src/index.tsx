@@ -44,7 +44,7 @@ const Drawer = ({
           position="absolute"
           right="12px"
           size="sm"
-          test-id="drawerCloseButton"
+          testId="drawerCloseButton"
           top="8px"
         />
         <Stack direction="column" height="100%" spacing={4} sx={{ '&>*': { bg: drawerBackground } }}>

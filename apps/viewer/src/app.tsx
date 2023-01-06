@@ -1,4 +1,5 @@
 import { Box, Flex, HStack, Heading, Text, VStack } from '@chakra-ui/react';
+import { StreamStats } from '@millicast/sdk';
 import React, { useEffect, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
@@ -114,7 +115,7 @@ function App() {
           </VStack>
         ) : (
           <HStack justifyContent="center" alignItems="center" w="100%" spacing="6">
-            {Array.from(remoteTrackSources, ([id, source]) => ({ id, source })).map(({ id, source }) => {
+            {Array.from(remoteTrackSources).map(([id, source]) => {
               const muteAudio = trackSourcesStates.get(id)?.muteAudio ?? true;
               const hideVideo = trackSourcesStates.get(id)?.hideVideo ?? false;
               const settings = {
@@ -129,7 +130,9 @@ function App() {
               return (
                 <VStack key={id} test-id="millicastVideo">
                   <ViewerVideoView
+                    isActive={isStreaming}
                     settingsProps={settings}
+                    statistics={source.statistics as StreamStats}
                     videoProps={{
                       displayVideo: !hideVideo,
                       height: '382px',
@@ -141,9 +144,9 @@ function App() {
                   <ControlBar
                     controls={[
                       {
+                        isActive: muteAudio,
+                        icon: muteAudio ? <IconSpeakerOff /> : <IconSpeaker />,
                         key: `toggle${id}AudioButton`,
-                        'test-id': `toggle${id}AudioButton`,
-                        tooltip: { label: 'Toggle Audio', placement: 'top' },
                         onClick: () => {
                           const state = trackSourcesStates.get(id);
                           if (!state) return;
@@ -153,13 +156,13 @@ function App() {
                           newStates.set(id, newState);
                           setTrackSourcesStates(newStates);
                         },
-                        isActive: muteAudio,
-                        icon: muteAudio ? <IconSpeakerOff /> : <IconSpeaker />,
+                        testId: `toggle${id}AudioButton`,
+                        tooltipProps: { label: 'Toggle Audio', placement: 'top' },
                       },
                       {
+                        isActive: hideVideo,
+                        icon: hideVideo ? <IconCameraOff /> : <IconCameraOn />,
                         key: `toggle${id}VideoButton`,
-                        'test-id': `toggle${id}VideoButton`,
-                        tooltip: { label: 'Toggle Video', placement: 'top' },
                         onClick: () => {
                           const state = trackSourcesStates.get(id);
                           if (!state) return;
@@ -169,8 +172,8 @@ function App() {
                           newStates.set(id, newState);
                           setTrackSourcesStates(newStates);
                         },
-                        isActive: hideVideo,
-                        icon: hideVideo ? <IconCameraOff /> : <IconCameraOn />,
+                        testId: `toggle${id}VideoButton`,
+                        tooltipProps: { label: 'Toggle Video', placement: 'top' },
                       },
                     ]}
                   />
@@ -180,99 +183,6 @@ function App() {
           </HStack>
         )}
       </Flex>
-      {/* <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box>
-          {isStreaming && statistics && (
-            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
-              <PopoverTrigger>
-                <Box>
-                  <IconButton
-                    test-id="streamInfoButton"
-                    aria-label="Stream Information"
-                    tooltip={{ label: 'Stream Information' }}
-                    size="md"
-                    className="icon-button"
-                    icon={<IconInfo fill="white" />}
-                    borderRadius="50%"
-                    reversed
-                  />
-                </Box>
-              </PopoverTrigger>
-              <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-                <PopoverHeader
-                  color="white"
-                  alignContent="flex-start"
-                  border="none"
-                  p={0}
-                  fontSize="20px"
-                  fontWeight="600"
-                  mb={4}
-                >
-                  Streaming Information
-                </PopoverHeader>
-                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
-                <PopoverBody p={0}>
-                  <StatisticsInfo statistics={statistics} />
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          )}
-        </Box>
-        <Spacer />
-        <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
-          {isStreaming && (
-            <Popover placement="top-end">
-              <PopoverTrigger>
-                <Box>
-                  <IconButton
-                    test-id="settingsButton"
-                    tooltip={{ label: 'Settings' }}
-                    icon={<IconSettings />}
-                    borderRadius="50%"
-                    reversed
-                  />
-                </Box>
-              </PopoverTrigger>
-              <PopoverContent bg="dolbyNeutral.800" width="364px" border="none" p={6}>
-                <PopoverHeader
-                  color="white"
-                  alignContent="flex-start"
-                  border="none"
-                  p={0}
-                  fontSize="20px"
-                  fontWeight="600"
-                  mb={4}
-                >
-                  Settings
-                </PopoverHeader>
-                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
-                <PopoverBody p={0}>
-                  <Dropdown
-                    leftIcon={<IconCameraOn />}
-                    testId="quality-select"
-                    elementsList={streamQualityOptions}
-                    elementResolver={(element) => {
-                      const quality = element as SimulcastQuality;
-                      return {
-                        id: quality.streamQuality,
-                        label: quality.streamQuality,
-                        data: quality.streamQuality,
-                      };
-                    }}
-                    onSelect={(data) => {
-                      updateStreamQuality(data as StreamQuality);
-                      setSelectedQuality(data as StreamQuality);
-                    }}
-                    selected={selectedQuality}
-                    placeholder="Video quality"
-                    disabled={streamQualityOptions.length < 2}
-                  />
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          )}
-        </Flex>
-      </HStack> */}
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>

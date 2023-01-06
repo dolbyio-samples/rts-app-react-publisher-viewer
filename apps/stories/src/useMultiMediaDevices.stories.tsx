@@ -51,29 +51,29 @@ const StreamWrapper = ({ stream, removeStream, toggleAudio, toggleVideo, updateR
       <ControlBar
         controls={[
           {
-            key: 'removeStreamButton',
-            'test-id': 'removeStreamButton',
-            tooltip: { label: 'Remove stream', placement: 'top' },
-            onClick: removeStream,
             icon: <IconClose />,
+            key: 'removeStreamButton',
+            onClick: removeStream,
+            testId: 'removeStreamButton',
+            tooltipProps: { label: 'Remove stream', placement: 'top' },
           },
           settings
             ? {
-                key: 'toggleMicrophoneButton',
-                'test-id': 'toggleMicrophoneButton',
-                tooltip: { label: 'Toggle microphone', placement: 'top' },
-                onClick: toggleAudio,
-                isActive: !state.muteAudio,
                 icon: state.muteAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
+                isActive: !state.muteAudio,
+                key: 'toggleMicrophoneButton',
+                onClick: toggleAudio,
+                testId: 'toggleMicrophoneButton',
+                tooltipProps: { label: 'Toggle microphone', placement: 'top' },
               }
             : null,
           {
-            key: 'toggleCameraButton',
-            'test-id': 'toggleCameraButton',
-            tooltip: { label: 'Toggle camera', placement: 'top' },
-            onClick: toggleVideo,
-            isActive: !state.displayVideo,
             icon: state.displayVideo ? <IconCameraOn /> : <IconCameraOff />,
+            isActive: !state.displayVideo,
+            key: 'toggleCameraButton',
+            onClick: toggleVideo,
+            testId: 'toggleCameraButton',
+            tooltipProps: { label: 'Toggle camera', placement: 'top' },
           },
         ]}
       />

@@ -34,10 +34,8 @@ import ShareLinkButton from '@millicast-react/share-link-button';
 import PopupMenu from '@millicast-react/popup-menu';
 import LiveIndicator from '@millicast-react/live-indicator';
 import Timer from '@millicast-react/timer';
-import IconButton from '@millicast-react/icon-button';
 import ActionBar from '@millicast-react/action-bar';
 import ControlBar from '@millicast-react/control-bar';
-import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
 import useNotification from '@millicast-react/use-notification';
 import type { StreamStats, VideoCodec } from '@millicast/sdk';
@@ -242,26 +240,26 @@ function App() {
     <ControlBar
       controls={[
         {
+          icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
+          isActive: !isAudioEnabled,
+          isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
           key: 'toggleMicrophoneButton',
-          'test-id': 'toggleMicrophoneButton',
-          tooltip: { label: 'Toggle microphone', placement: 'top' },
           onClick: () => {
             toggleAudio();
           },
-          isActive: !isAudioEnabled,
-          isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
-          icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
+          testId: 'toggleMicrophoneButton',
+          tooltipProps: { label: 'Toggle microphone', placement: 'top' },
         },
         {
+          icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
+          isActive: !isVideoEnabled,
+          isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
           key: 'toggleCameraButton',
-          'test-id': 'toggleCameraButton',
-          tooltip: { label: 'Toggle camera', placement: 'top' },
           onClick: () => {
             toggleVideo();
           },
-          isActive: !isVideoEnabled,
-          isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
-          icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
+          testId: 'toggleCameraButton',
+          tooltipProps: { label: 'Toggle camera', placement: 'top' },
         },
       ]}
     />
@@ -349,7 +347,9 @@ function App() {
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={4} test-id="millicastVideo">
               (
               <PublisherVideoView
+                isActive={isStreaming}
                 settingsProps={settings}
+                statistics={statistics}
                 videoProps={{
                   displayFullscreenButton: false,
                   displayVideo: isVideoEnabled,
@@ -385,14 +385,14 @@ function App() {
               <ControlBar
                 controls={[
                   {
+                    icon: <IconClose width="16px" height="16px" />,
                     key: 'stopScreenShare',
-                    'test-id': 'stopScreenShare',
-                    tooltip: { label: 'Stop screen share', placement: 'top' },
                     onClick: () => {
                       stopDisplayCapture();
                     },
-                    icon: <IconClose width="16px" height="16px" />,
                     reversed: true,
+                    testId: 'stopScreenShare',
+                    tooltipProps: { label: 'Stop screen share', placement: 'top' },
                   },
                 ]}
               />
@@ -401,43 +401,6 @@ function App() {
         </Stack>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box>
-          {isStreaming && statistics && (
-            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
-              <PopoverTrigger>
-                <Box>
-                  <IconButton
-                    test-id="streamInfoButton"
-                    aria-label="Stream Information"
-                    tooltip={{ label: 'Stream Information' }}
-                    size="md"
-                    className="icon-button"
-                    icon={<IconInfo fill="white" />}
-                    borderRadius="50%"
-                    reversed
-                  />
-                </Box>
-              </PopoverTrigger>
-              <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-                <PopoverHeader
-                  color="white"
-                  alignContent="flex-start"
-                  border="none"
-                  p={0}
-                  fontSize="20px"
-                  fontWeight="600"
-                  mb={4}
-                >
-                  Streaming Information
-                </PopoverHeader>
-                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
-                <PopoverBody p={0}>
-                  <StatisticsInfo statistics={statistics} />
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          )}
-        </Box>
         <Spacer />
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
           {!displayStream && (
