@@ -130,6 +130,7 @@ function App() {
               return (
                 <VStack key={id} test-id="millicastVideo">
                   <ViewerVideoView
+                    isActive={isStreaming}
                     settingsProps={settings}
                     statistics={source.statistics as StreamStats}
                     videoProps={{

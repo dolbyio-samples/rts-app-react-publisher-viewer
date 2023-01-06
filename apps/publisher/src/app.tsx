@@ -347,6 +347,7 @@ function App() {
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={4} test-id="millicastVideo">
               (
               <PublisherVideoView
+                isActive={isStreaming}
                 settingsProps={settings}
                 statistics={statistics}
                 videoProps={{

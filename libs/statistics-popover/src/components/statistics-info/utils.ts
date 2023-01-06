@@ -1,14 +1,14 @@
 import { KILOBYTES, MEGABYTES } from './constants';
 
 export const formatBitrate = (bitrate: number): string => {
-  return `${formatNumber(bitrate)}bps`;
+  return `${formatNumberByMagnitude(bitrate)}bps`;
 };
 
 export const formatBytes = (bytes: number): string => {
-  return `${formatNumber(bytes)}B`;
+  return `${formatNumberByMagnitude(bytes)}B`;
 };
 
-export const formatNumber = (input: number): string => {
+export const formatNumberByMagnitude = (input: number): string => {
   if (input < KILOBYTES) return `${input}`;
 
   if (input >= KILOBYTES && input < MEGABYTES) return `${(input / KILOBYTES).toFixed(2)} K`;

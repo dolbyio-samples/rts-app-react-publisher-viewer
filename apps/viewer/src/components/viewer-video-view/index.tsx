@@ -9,7 +9,13 @@ import VideoView from '@millicast-react/video-view';
 import { ViewerVideoViewProps } from './types';
 import VideoSettingsDrawer from './video-settings-drawer';
 
-const ViewerVideoView = ({ disableSettings, settingsProps, statistics, videoProps }: ViewerVideoViewProps) => {
+const ViewerVideoView = ({
+  isActive,
+  disableSettings,
+  settingsProps,
+  statistics,
+  videoProps,
+}: ViewerVideoViewProps) => {
   const { isOpen: isSettingsOpen, onClose: handleSettingsClose, onOpen: handleSettingsOpen } = useDisclosure();
 
   const { mediaStream } = videoProps;
@@ -17,7 +23,7 @@ const ViewerVideoView = ({ disableSettings, settingsProps, statistics, videoProp
   return (
     <Box height="fit-content" overflow="hidden" margin="0 auto" position="relative" width="fit-content">
       <VideoView {...videoProps} />
-      {statistics ? (
+      {isActive && statistics ? (
         <Box bottom="12px" left="18px" position="absolute">
           <StatisticsPopover statistics={statistics} />
         </Box>

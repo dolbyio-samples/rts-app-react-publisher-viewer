@@ -13,7 +13,7 @@ import IconButton from '@millicast-react/icon-button';
 import Tabs from '@millicast-react/tabs';
 
 import StatisticsInfo from './components/statistics-info';
-import { StatisticsPopoverProps } from './types';
+import { StatisticsPopoverProps, TabQualities } from './types';
 
 const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
   const {
@@ -26,7 +26,7 @@ const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
 
   const tabs = useMemo(() => {
     const streamVideoStats = [...video].sort((a, b) => b.bitrate - a.bitrate);
-    const qualities = [];
+    const qualities: TabQualities = [];
 
     switch (streamVideoStats.length) {
       case 2:

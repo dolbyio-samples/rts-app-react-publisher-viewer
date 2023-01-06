@@ -38,8 +38,8 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
           <Table sx={{ tableLayout: 'fixed' }} variant="unstyled" width="100%">
             <Thead color="dolbyNeutral.100">
               <Tr sx={{ '&>th': { p: '0 0 8px', fontSize: '13px', textTransform: 'none' } }}>
-                <Th width="175px">Name</Th>
-                <Th width="165px">Value</Th>
+                <Th>Name</Th>
+                <Th>Value</Th>
               </Tr>
             </Thead>
             <Tbody
