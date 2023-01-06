@@ -3,9 +3,9 @@ import React from 'react';
 
 import { TabsProps } from './types';
 
-const Tabs = ({ tabListProps = {}, tabPanelProps = {}, tabs }: TabsProps) => {
+const Tabs = ({ tabListProps = {}, tabPanelProps = {}, tabsProps = {}, tabs }: TabsProps) => {
   return (
-    <ChakraTabs isFitted>
+    <ChakraTabs isFitted {...tabsProps}>
       <TabList
         sx={{
           '&>button': {
@@ -22,7 +22,7 @@ const Tabs = ({ tabListProps = {}, tabPanelProps = {}, tabs }: TabsProps) => {
         {...tabListProps}
       >
         {tabs.map(({ heading, id, tabProps }) => (
-          <Tab key={id} {...tabProps}>
+          <Tab _active={{ bg: 'unset' }} key={id} {...tabProps}>
             {heading}
           </Tab>
         ))}

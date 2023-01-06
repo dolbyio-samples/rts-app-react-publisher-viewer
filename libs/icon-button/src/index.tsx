@@ -1,41 +1,31 @@
-import {
-  Flex,
-  IconButton as ChakraIconButton,
-  IconButtonProps as ChakraIconButtonProps,
-  Tooltip,
-  TooltipProps,
-} from '@chakra-ui/react';
-import React from 'react';
+import { Flex, IconButton as ChakraIconButton, Tooltip } from '@chakra-ui/react';
+import React, { forwardRef, Ref } from 'react';
 
-export type IconButtonProps = Omit<ChakraIconButtonProps, 'onClick' | 'aria-label'> & {
-  tooltip?: Omit<TooltipProps, 'children'> & {
-    label: string;
-  };
-  onClick?: ChakraIconButtonProps['onClick'];
-  icon: ChakraIconButtonProps['icon'];
-  reversed?: boolean;
-  'test-id': string;
-};
+import { IconButtonProps } from './types';
 
-const IconButton = ({ tooltip, onClick, icon, reversed, ...rest }: IconButtonProps) => {
-  const renderButton = () => (
-    <ChakraIconButton
-      onClick={onClick}
-      variant={reversed ? 'iconReversed' : 'icon'}
-      icon={
-        <Flex boxSize="24px" justifyContent="center" alignItems="center">
-          {icon}
-        </Flex>
-      }
-      size="lg"
-      {...rest}
-      aria-label={rest['test-id']}
-    />
-  );
-  if (tooltip) {
-    return <Tooltip {...tooltip}>{renderButton()}</Tooltip>;
+const IconButton = forwardRef(
+  ({ icon, reversed, testId, tooltipProps, ...iconButtonProps }: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
+    const renderButton = () => (
+      <ChakraIconButton
+        aria-label={testId}
+        icon={
+          <Flex alignItems="center" boxSize="24px" justifyContent="center">
+            {icon}
+          </Flex>
+        }
+        size="lg"
+        test-id={testId}
+        variant={reversed ? 'iconReversed' : 'icon'}
+        {...iconButtonProps}
+        ref={ref}
+      />
+    );
+
+    return tooltipProps ? <Tooltip {...tooltipProps}>{renderButton()}</Tooltip> : renderButton();
   }
-  return renderButton();
-};
+);
 
+IconButton.displayName = 'IconButton';
+
+export * from './types';
 export default IconButton;
