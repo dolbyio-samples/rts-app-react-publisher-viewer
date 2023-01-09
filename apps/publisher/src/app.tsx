@@ -389,7 +389,13 @@ function App() {
             const isStreaming = publisherStates.get(streamId) === 'streaming';
 
             return (
-              <WrapItem key={streamId} flexBasis={flexBasis} maxHeight={maxHeight} maxWidth={maxWidth}>
+              <WrapItem
+                flexBasis={flexBasis}
+                key={streamId}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
+                test-id="millicastVideo"
+              >
                 <PublisherVideoView
                   isActive={isStreaming}
                   settingsProps={settings(streamId)}
