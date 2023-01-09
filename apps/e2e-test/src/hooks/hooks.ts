@@ -11,7 +11,7 @@ import {
 } from '@cucumber/cucumber';
 import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
-import { options } from '../../playwright.config';
+import { options } from '../../test.config';
 import { selectorMappingPath } from '../config/defaults';
 import { logger } from '../logger';
 import { closePages, openPages } from '../playwright-support/app-specific/browser-actions';
