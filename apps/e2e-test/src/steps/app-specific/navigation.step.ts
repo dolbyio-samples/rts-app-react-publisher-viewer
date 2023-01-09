@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 import { Given, When } from '@cucumber/cucumber';
 
-import { options } from '../../../playwright.config';
+import { options } from '../../../test.config';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData, saveData } from '../../hooks/utils';
 import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';

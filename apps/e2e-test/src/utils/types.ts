@@ -1,11 +1,9 @@
-import { BrowserContextOptions, LaunchOptions } from 'playwright';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ScenarioData = Map<string, any>;
 
-export type BrowserName = 'chrome' | 'chromium' | 'firefox';
+export type BrowserName = 'chrome' | 'chromium' | 'firefox' | 'edge';
 
-export type PlaywrightOptions = {
+export type TestOptions = {
   browserName: BrowserName;
   timeout?: number;
   headless?: boolean;
@@ -17,8 +15,8 @@ export type PlaywrightOptions = {
   publisherURL?: string;
   viewerURL?: string;
   // eslint-disable-next-line no-unused-vars
-  launchOptions?: { [K in BrowserName]?: LaunchOptions };
-  contextOptions?: BrowserContextOptions;
+  launchOptions?: { [K in BrowserName]?: Record<string, unknown> };
+  browserOptions?: Record<string, unknown>;
   reportPath?: string;
   dynamicStreamName: boolean;
 };

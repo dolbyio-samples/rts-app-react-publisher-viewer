@@ -1,16 +1,16 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import playwright, { Browser, BrowserContext, Page } from 'playwright';
+import playwright, { Browser, BrowserContext, BrowserContextOptions, LaunchOptions, Page } from 'playwright';
 
-import { options } from '../../../playwright.config';
+import { options } from '../../../test.config';
 import { defaultExecutionTimeout } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { logger } from '../../logger';
-import { PlaywrightOptions } from '../../utils/types';
+import { TestOptions } from '../../utils/types';
 
 export class BrowserManager {
-  options: PlaywrightOptions;
+  options: TestOptions;
 
   browser!: Browser;
 
@@ -77,8 +77,8 @@ export class BrowserManager {
     return browserName === 'firefox' ? 'firefox' : 'chromium';
   }
 
-  private getLaunchOptions() {
-    let launchOptions;
+  private getLaunchOptions(): LaunchOptions {
+    let launchOptions: LaunchOptions;
     const { browserName } = this.options;
 
     switch (browserName) {
@@ -88,18 +88,21 @@ export class BrowserManager {
       case 'firefox':
         launchOptions = this.options.launchOptions?.firefox || {};
         break;
+      case 'edge':
+        launchOptions = this.options.launchOptions?.edge || {};
+        launchOptions.channel = 'edge';
+        break;
       default:
         launchOptions = this.options.launchOptions?.chrome || {};
-        launchOptions.channel = launchOptions?.channel || 'chrome';
+        launchOptions.channel = 'chrome';
     }
 
     launchOptions.headless = 'headless' in launchOptions ? launchOptions.headless : this.options.headless;
     return launchOptions;
   }
 
-  private getContextOptions(scenarioWorld: ScenarioWorld) {
-    // const contextOptions = cloneDeep(this.options.contextOptions);
-    const contextOptions = { ...this.options.contextOptions };
+  private getContextOptions(scenarioWorld: ScenarioWorld): BrowserContextOptions {
+    const contextOptions: BrowserContextOptions = { ...this.options.browserOptions };
     if (!contextOptions?.recordVideo && this.options.video !== 'off') {
       contextOptions.recordVideo = {
         dir: `${this.options.reportPath}/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
@@ -119,9 +122,9 @@ export class BrowserManager {
 
     this.options.launchOptions = this.options?.launchOptions || {};
 
-    this.options.contextOptions = this.options?.contextOptions || {};
+    this.options.browserOptions = this.options?.browserOptions || {};
     if (typeof this.options.viewport !== 'undefined') {
-      this.options.contextOptions.viewport = this.options.viewport;
+      this.options.browserOptions.viewport = this.options.viewport;
     }
   }
 
