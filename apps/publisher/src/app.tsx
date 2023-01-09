@@ -147,14 +147,6 @@ function App() {
 
       // Handle initialisations if streams are already live
       if (hasStartedStreaming && mediaStream && publisherStates.get(streamId) !== 'streaming') {
-        console.log('lol', {
-          bandwidth: bitrate,
-          codec,
-          events: ['viewercount'],
-          mediaStream,
-          simulcast: isSimulcastEnabled,
-          sourceId: streamId,
-        });
         startStreamingSource({
           bandwidth: bitrate,
           codec,
