@@ -18,7 +18,7 @@ This project is setup as a yarn based nx-managed monorepo, and e2e tests are loc
 - src: contains the config, hooks, logger, utils, step definitions, reporter and playwright tool specific actions
 - scripts: contains the bash script to install publisher and viewer app locally
 - reports: contains the test execution artifacts and HTML report
-- playwright.config.ts: contains the test config
+- test.config.ts: contains the test config
 
 ## Installation and setup
 
