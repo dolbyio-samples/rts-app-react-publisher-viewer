@@ -9,19 +9,13 @@ import VideoView from '@millicast-react/video-view';
 import { PublisherVideoViewProps } from './types';
 import VideoSettingsDrawer from './video-settings-drawer';
 
-const PublisherVideoView = ({
-  isActive,
-  disableSettings,
-  settingsProps,
-  statistics,
-  videoProps,
-}: PublisherVideoViewProps) => {
+const PublisherVideoView = ({ isActive, settingsProps, statistics, videoProps }: PublisherVideoViewProps) => {
   const { onClose: handleSettingsClose, onOpen: handleSettingsOpen, isOpen: isSettingsOpen } = useDisclosure();
 
   const { mediaStream } = videoProps;
 
   return (
-    <Box height="fit-content" overflow="hidden" margin="0 auto" position="relative" width="fit-content">
+    <Box height="100%" overflow="hidden" margin="0 auto" position="relative" width="100%">
       <VideoView {...videoProps} />
       {isActive && statistics ? (
         <Box bottom="12px" left="18px" position="absolute">
@@ -42,7 +36,7 @@ const PublisherVideoView = ({
         testId="settingsOpenButton"
         tooltipProps={{ label: 'Settings' }}
       />
-      {!disableSettings ? (
+      {settingsProps ? (
         <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
       ) : undefined}
     </Box>

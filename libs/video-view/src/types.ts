@@ -2,11 +2,11 @@ import { BoxProps } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 import { ReactNode } from 'react';
 
-export type VideoViewProps = {
+export interface VideoViewProps {
   displayFullscreenButton?: boolean;
   displayMuteButton?: boolean;
   displayVideo?: boolean;
-  height: string;
+  height?: string;
   label?: string;
   mediaStream?: MediaStream;
   mirrored?: boolean;
@@ -20,5 +20,5 @@ export type VideoViewProps = {
   src?: string;
   statistics?: StreamStats;
   volume?: number;
-  width: string;
-};
+  width?: string;
+}

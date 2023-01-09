@@ -27,7 +27,6 @@ const VideoView = ({
   const [streamId, setStreamId] = useState<string | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [loadingVideo, setLoadingVideo] = useState(true);
-  // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -82,23 +81,24 @@ const VideoView = ({
 
   return (
     <Flex
-      test-id="videoViewWrapper"
-      sx={componentElementsStyle}
-      pos={isFullScreen ? 'fixed' : 'relative'}
-      bg="dolbyNeutral.800"
-      overflow="hidden"
-      borderRadius="8px"
-      top="0"
-      right="0"
-      bottom="0"
-      left="0"
-      width={isFullScreen ? '100vw' : width}
-      height={isFullScreen ? '100vh' : height}
-      zIndex={isFullScreen ? '1' : '0'}
-      onClick={onClick}
-      color="white"
-      justifyContent="center"
       alignItems="center"
+      bg="dolbyNeutral.800"
+      borderRadius="8px"
+      bottom="0"
+      color="white"
+      height={isFullScreen ? '100vh' : height ?? '100%'}
+      justifyContent="center"
+      left="0"
+      margin="0 auto"
+      onClick={onClick}
+      overflow="hidden"
+      pos={isFullScreen ? 'fixed' : 'relative'}
+      right="0"
+      sx={componentElementsStyle}
+      test-id="videoViewWrapper"
+      top="0"
+      width={isFullScreen ? '100vw' : width ?? '100%'}
+      zIndex={isFullScreen ? '1' : '0'}
     >
       {loadingVideo && displayVideo && (
         <Center w="100%" h="100%" position="absolute">
