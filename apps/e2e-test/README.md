@@ -88,11 +88,11 @@ yarn nx test e2e-test --skip-nx-cache
 
 ### Run Specific Tests/Features/Scenarios
 
-To run the all the scenarios from a specific feature file, tag the feature with @only as shown below:
+To run the all the scenarios from a specific feature file, tag the feature with `@only` as shown below:
 
 ![only-feature screenshot](../../docs/img/only-feature.png)
 
-To run the specific scenario(s) from a feature file, tag the scenario(s) with @only as shown below:
+To run the specific scenario(s) from a feature file, tag the scenario(s) with `@only` as shown below:
 
 ![only-scenario screenshot](../../docs/img/only-scenario.png)
 
@@ -102,7 +102,7 @@ yarn nx only e2e-test --skip-nx-cache
 
 ### Ignore Tests
 
-To ignore the test execution of specific scenario(s) or feature file, tag it with @ignore as shown below:
+To ignore the test execution of specific scenario(s) or feature file, tag it with `@ignore` as shown below:
 
 ![ignore-scenario-feature screenshot](../../docs/img/ignore-scenario.png)
 
