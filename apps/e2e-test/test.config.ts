@@ -1,12 +1,11 @@
 import dotenv from 'dotenv';
-import { BrowserContextOptions, LaunchOptions } from 'playwright';
 
 import { defaultReportPath } from './src/config/defaults';
-import { BrowserName, PlaywrightOptions } from './src/utils/types';
+import { BrowserName, TestOptions } from './src/utils/types';
 
 dotenv.config({ path: '.test.env' });
 
-export const launchOptionsChromium: LaunchOptions = {
+export const launchOptionsChromium = {
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
@@ -15,7 +14,7 @@ export const launchOptionsChromium: LaunchOptions = {
   ],
 };
 
-export const launchOptionsChrome: LaunchOptions = {
+export const launchOptionsChrome = {
   channel: 'chrome',
   args: [
     '--no-sandbox',
@@ -25,7 +24,17 @@ export const launchOptionsChrome: LaunchOptions = {
   ],
 };
 
-export const launchOptionsFirefox: LaunchOptions = {
+export const launchOptionsEdge = {
+  channel: 'edge',
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--use-fake-device-for-media-stream',
+    '--use-fake-ui-for-media-stream',
+  ],
+};
+
+export const launchOptionsFirefox = {
   args: ['--quiet', '--use-test-media-devices'],
   firefoxUserPrefs: {
     'media.navigator.streams.fake': true,
@@ -33,9 +42,9 @@ export const launchOptionsFirefox: LaunchOptions = {
   },
 };
 
-export const browserContextOptions: BrowserContextOptions = {};
+export const browserOptions = {};
 
-export const options: PlaywrightOptions = {
+export const options: TestOptions = {
   browserName: (process.env.BROWSER_NAME as BrowserName) || 'chrome',
   headless: process.env.HEADLESS?.toLowerCase() === 'true' || true,
   timeout: 60 * 1000,
@@ -50,8 +59,9 @@ export const options: PlaywrightOptions = {
     chromium: launchOptionsChromium,
     chrome: launchOptionsChrome,
     firefox: launchOptionsFirefox,
+    edge: launchOptionsEdge,
   },
-  contextOptions: browserContextOptions,
+  browserOptions: browserOptions,
   reportPath: process.env.REPORT_PATH || defaultReportPath,
-  dynamicStreamName: false,
+  dynamicStreamName: process.env.DYNAMIC_STREAM_NAME?.toLowerCase() === 'true',
 };

@@ -1,7 +1,7 @@
 import { World, IWorldOptions, setWorldConstructor } from '@cucumber/cucumber';
 
 import { SelectorMapper } from '../utils/selector-mapper';
-import { ScenarioData, PlaywrightOptions } from '../utils/types';
+import { ScenarioData, TestOptions } from '../utils/types';
 import { GlobalData } from './GlobalData';
 
 export class ScenarioWorld extends World {
@@ -9,7 +9,7 @@ export class ScenarioWorld extends World {
 
   currentPageName!: string;
 
-  options!: PlaywrightOptions;
+  options!: TestOptions;
 
   featureName!: string;
 
