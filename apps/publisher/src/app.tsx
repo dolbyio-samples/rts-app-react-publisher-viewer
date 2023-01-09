@@ -145,6 +145,11 @@ function App() {
         handleChangeLabel(streamId, label as string);
       }
 
+      // Initialise publisher state if not streaming
+      if (!hasStartedStreaming) {
+        setPublisherStates((prevPublisherStates) => new Map([...prevPublisherStates, [streamId, 'ready']]));
+      }
+
       // Handle initialisations if streams are already live
       if (hasStartedStreaming && mediaStream && publisherStates.get(streamId) !== 'streaming') {
         startStreamingSource({
