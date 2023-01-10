@@ -89,7 +89,7 @@ Feature: Publisher Preview - Not Live
         
         Then the "screen view" should be displayed
         And the "screen view" should be in Normal size
-        And the "screen view source name" should contain "screen"
+        And the "screen view source name" text should contain "screen"
         And the "screen view setting button" should be displayed
         And the "screen view setting button" should be enabled
         # TODO: issue 195
