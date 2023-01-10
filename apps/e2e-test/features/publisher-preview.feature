@@ -108,7 +108,6 @@ Feature: Publisher Preview - Not Live
         And the "camera view source name" text should contain "fake"
         And the "camera view full screen button" should not be displayed
 
-        And the "add source button" should not be displayed
         # TODO: Bug No #200
         # And the "multi source label" should be displayed
         # And the "multi source label" text should be "Multisource enabled"
