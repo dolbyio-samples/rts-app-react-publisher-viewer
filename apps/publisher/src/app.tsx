@@ -278,6 +278,7 @@ function App() {
     const codec = codecs.get(streamId);
     const isStreaming = publisherStates.get(streamId) === 'streaming';
     const stream = streams.get(streamId);
+    const { type } = stream;
 
     const { height, width } = stream?.settings?.camera ?? {};
     const resolution = `${width}x${height}`;
@@ -313,7 +314,8 @@ function App() {
         handleSelect: (data: unknown) => {
           handleSelectVideoResolution(streamId, data as Resolution);
         },
-        isDisabled: isConnecting,
+        isDisabled: type === StreamTypes.DISPLAY || isConnecting,
+        isHidden: type === StreamTypes.DISPLAY,
         options: stream?.resolutions ?? [],
         value: resolution,
       },
