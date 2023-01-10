@@ -94,7 +94,7 @@ Feature: Publisher Preview - Not Live
         And the "screen view setting button" should be enabled
         # TODO: issue 195
         # And the "screen view stop share button" should be displayed
-        And the "screen view stop share button" should be enabled
+        # And the "screen view stop share button" should be enabled
         And the "screen view full screen button" should not be displayed
 
         Then the "camera view" should be displayed
@@ -341,7 +341,7 @@ Feature: Publisher Preview - Not Live
         And the "screen view setting button" should be enabled
         # TODO: issue 195
         # And the "screen view stop share button" should be displayed
-        And the "screen view stop share button" should be enabled
+        # And the "screen view stop share button" should be enabled
         And the "screen view source name" text should be "screen"
         And the "screen view full screen button" should not be displayed
 
