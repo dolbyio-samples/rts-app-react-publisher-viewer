@@ -1,0 +1,53 @@
+video frame: '[test-id=videoView]'
+source name: '[test-id=sourceName]'
+microphone button: '[test-id=toggleMicrophoneButton], [test-id=toggleMainStreamAudioButton]'
+camera button: '[test-id=toggleCameraButton], [test-id=toggleMainStreamVideoButton]'
+full screen button: '[test-id=fullScreenButton]'
+setting button: '[test-id=settingsOpenButton]'
+
+camera view:
+  - '$ref: camera view container'
+  - '$ref: video frame'
+source name of camera view: '$ref: camera view source name'
+camera view source name:
+  - '$ref: camera view container'
+  - '$ref: source name'
+microphone of camera view: '$ref: camera view microphone button'
+camera view microphone button:
+  - '$ref: camera view container'
+  - '$ref: microphone button'
+camera of camera view: '$ref: camera view camera button'
+camera view camera button:
+  - '$ref: camera view container'
+  - '$ref: camera button'
+full screen of camera view: '$ref: camera view full screen button'
+camera view full screen button:
+  - '$ref: camera view container'
+  - '$ref: full screen button'
+setting button of camera view: '$ref: camera view setting button'
+camera view setting button:
+  - '$ref: camera view container'
+  - '$ref: setting button'
+
+
+screen view:
+  - '$ref: screen view container'
+  - '$ref: video frame'
+screen view source name:
+  - '$ref: screen view container'
+  - '$ref: source name'
+screen view microphone:
+  - '$ref: screen view container'
+  - '$ref: microphone button'
+screen view camera:
+  - '$ref: screen view container'
+  - '$ref: camera button'
+screen view stop share button:
+  - '$ref: screen view container'
+  - '[test-id=stopScreenShare]'
+screen view full screen button:
+  - '$ref: screen view container'
+  - '$ref: full screen button'
+screen view setting button:
+  - '$ref: screen view container'
+  - '$ref: setting button'

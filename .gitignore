@@ -32,4 +32,4 @@ cucumber_report.json*
 .netlify
 
 # test report
-tests/bdd-atf/reports/
+tests/e2e-atf/reports/

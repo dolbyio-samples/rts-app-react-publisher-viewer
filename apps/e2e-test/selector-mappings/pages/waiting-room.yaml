@@ -1,0 +1,6 @@
+COMPONENTS: 
+  - 'header-footer'
+  - 'stream-views'
+  - 'add-source'
+  - 'settings'
+  - 'stream-stats'

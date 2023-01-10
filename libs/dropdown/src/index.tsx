@@ -36,7 +36,15 @@ const Dropdown = ({
       {({ isOpen }) => (
         <>
           <MenuButton
+            _active={{ bg: 'dolbyNeutral.800' }}
+            _hover={{ bg: 'dolbyNeutral.800' }}
             as={Button}
+            bg="dolbyNeutral.800"
+            border="2px solid"
+            borderColor="dolbyNeutral.500"
+            borderRadius="8px"
+            disabled={disabled}
+            height="48px"
             leftIcon={
               leftIcon ? (
                 <Box boxSize="24px" color="dolbyNeutral.300">
@@ -44,18 +52,13 @@ const Dropdown = ({
                 </Box>
               ) : undefined
             }
-            rightIcon={<Box boxSize="12px">{rightIcon}</Box>}
-            w="100%"
-            textAlign="left"
-            disabled={disabled}
-            border="2px solid"
-            borderColor="dolbyNeutral.500"
-            bg="dolbyNeutral.800"
             px={3}
             py={5}
+            rightIcon={<Box boxSize="12px">{rightIcon}</Box>}
+            test-id={testId + 'Default'}
+            textAlign="left"
+            w="100%"
             zIndex={isOpen ? 2 : undefined}
-            _active={{ bg: 'dolbyNeutral.800' }}
-            _hover={{ bg: 'dolbyNeutral.800' }}
           >
             <Text noOfLines={1} textOverflow="ellipsis" fontSize="14px" fontWeight="500">
               {placeholder} {selected ? ` - ${selected}` : null}
@@ -66,6 +69,7 @@ const Dropdown = ({
               const { id, label, data } = elementResolver(element);
               return (
                 <MenuItem
+                  test-id={testId + 'Options'}
                   key={id}
                   onClick={() => onSelect(data)}
                   _active={{ bg: 'dolbyNeutral.600' }}

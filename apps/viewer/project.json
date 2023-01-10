@@ -69,8 +69,8 @@
       "options": {
         "parallel": false,
         "commands": [
-          "yarn nx launch-server bdd-test --skip-nx-cache",
-          "yarn nx test-viewer bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/viewer/"
+          "yarn nx launch-server e2e-test --skip-nx-cache",
+          "yarn nx test-viewer e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/"
         ]
       }
     },
@@ -78,7 +78,7 @@
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
-        "commands": ["yarn nx test-report bdd-test --skip-nx-cache --report=./apps/bdd-test/reports/viewer/"]
+        "commands": ["yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/"]
       }
     },
     "deploy": {

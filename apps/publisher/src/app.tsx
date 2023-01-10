@@ -1,150 +1,102 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Box,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   Flex,
+  HStack,
   Heading,
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Spacer,
   Stack,
-  HStack,
   Text,
   useDisclosure,
   VStack,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
-import './styles/font.css';
-import usePublisher, { Bitrate } from '@millicast-react/use-publisher';
-import useMediaDevices from '@millicast-react/use-media-devices';
-import {
-  IconMicrophoneOn,
-  IconMicrophoneOff,
-  IconCameraOn,
-  IconCameraOff,
-  IconSettings,
-  IconPresent,
-  IconProfile,
-  IconCodec,
-  IconResolution,
-  IconSimulcast,
-  IconInfo,
-  IconClose,
-  IconBitrate,
-} from '@millicast-react/dolbyio-icons';
-import VideoView from '@millicast-react/video-view';
-import ParticipantCount from '@millicast-react/participant-count';
-import ShareLinkButton from '@millicast-react/share-link-button';
-import ToggleButton from '@millicast-react/toggle-button';
-import PopupMenu from '@millicast-react/popup-menu';
-import LiveIndicator from '@millicast-react/live-indicator';
-import Timer from '@millicast-react/timer';
-import IconButton from '@millicast-react/icon-button';
-import ActionBar from '@millicast-react/action-bar';
-import ControlBar from '@millicast-react/control-bar';
-import Dropdown from '@millicast-react/dropdown';
-import useCameraCapabilities, { Resolution } from './hooks/use-camera-capabilities';
-import StatisticsInfo from '@millicast-react/statistics-info';
-import InfoLabel from '@millicast-react/info-label';
-import useNotification from '@millicast-react/use-notification';
+import { StreamStats, VideoCodec } from '@millicast/sdk';
+import React, { useEffect, useMemo, useState } from 'react';
 
-const displayShareSourceId = 'DisplayShare';
+import ActionBar from '@millicast-react/action-bar';
+import DeviceSelection from '@millicast-react/device-selection';
+import { IconAddCamera, IconPresent, IconProfile } from '@millicast-react/dolbyio-icons';
+import InfoLabel from '@millicast-react/info-label';
+import LiveIndicator from '@millicast-react/live-indicator';
+import ParticipantCount from '@millicast-react/participant-count';
+import PopupMenu from '@millicast-react/popup-menu';
+import ShareLinkButton from '@millicast-react/share-link-button';
+import Timer from '@millicast-react/timer';
+import useMultiMediaDevices, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-devices';
+import useNotification from '@millicast-react/use-notification';
+import usePublisher, { SourceState } from '@millicast-react/use-publisher';
+
+import PublisherVideoView from './components/publisher-video-view';
+import './styles/font.css';
+
+const MAX_SOURCES = 4;
+
+type PublisherState = SourceState;
+
+const date = new Date();
 
 function App() {
-  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
-  const { showError } = useNotification();
-
   const {
-    setupPublisher,
-    startStreaming,
-    stopStreaming,
-    updateStreaming,
-    startDisplayStreaming,
-    stopDisplayStreaming,
-    codecList,
-    bitrateList,
-    updateBitrate,
-    publisherState,
-    viewerCount,
-    linkText,
-    statistics,
-  } = usePublisher({ handleError: showError });
+    isOpen: isDeviceSelectionOpen,
+    onOpen: handleOpenDeviceSelection,
+    onClose: handleCloseDeviceSelection,
+  } = useDisclosure();
 
-  const {
-    cameraList,
-    microphoneList,
-    camera,
-    setCamera,
-    microphone,
-    setMicrophone,
-    isAudioEnabled,
-    isVideoEnabled,
-    toggleAudio,
-    toggleVideo,
-    mediaStream,
-    applyMediaTrackConstraints,
-    startDisplayCapture,
-    stopDisplayCapture,
-    displayStream,
-    cameraCapabilities,
-    cameraSettings,
-    microphoneSettings,
-  } = useMediaDevices({ handleError: showError });
-
+  const [bitrates, setBitrates] = useState<Map<StreamId, number>>(new Map());
+  const [codecs, setCodecs] = useState<Map<StreamId, VideoCodec>>(new Map());
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
-  const [codec, setCodec] = useState<string>();
-  const [bitrate, setBitrate] = useState<number>(0);
-  const resolutionList = useCameraCapabilities(cameraCapabilities);
+  const [labels, setLabels] = useState<Map<StreamId, string>>(new Map());
+  const [newCamera, setNewCamera] = useState<InputDeviceInfo | undefined>(undefined);
+  const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo | undefined>(undefined);
+  const [publisherStates, setPublisherStates] = useState<Map<StreamId, PublisherState>>(new Map());
+  const [statistics, setStatistics] = useState<Map<StreamId, StreamStats>>(new Map());
 
-  useEffect(() => {
-    const date = new Date();
-    setupPublisher(
-      import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-      import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
-      import.meta.env.VITE_MILLICAST_STREAM_ID,
-      import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL
-    );
-  }, []);
+  const { showError } = useNotification();
 
   useEffect(() => {
     // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
       event.returnValue = '';
     };
-
     window.addEventListener('beforeunload', pageCloseHandler);
-
     return () => {
       window.removeEventListener('beforeunload', pageCloseHandler);
     };
   }, []);
 
-  useEffect(() => {
-    if (mediaStream) {
-      updateStreaming(mediaStream);
-    }
-  }, [mediaStream]);
+  const {
+    addStream,
+    applyConstraints,
+    cameraList,
+    initDefaultStream,
+    microphoneList,
+    // TODO: remove and reset streams
+    // removeStream,
+    // reset,
+    streams,
+    // TODO: per-stream audio/video toggling
+    // toggleAudio,
+    // toggleVideo,
+  } = useMultiMediaDevices();
 
-  useEffect(() => {
-    if (!codec && codecList.length) setCodec(codecList[0]);
-  }, [codecList]);
-
-  useEffect(() => {
-    if (!displayStream) stopDisplayStreaming();
-    else if (publisherState === 'streaming')
-      startDisplayStreaming({
-        mediaStream: displayStream,
-        sourceId: displayShareSourceId,
-      });
-  }, [displayStream, publisherState]);
+  const {
+    bitrateList,
+    codecList,
+    shareUrl,
+    sources,
+    startStreamingSource,
+    stopStreamingSource,
+    updateSourceBitrate,
+    updateSourceMediaStream,
+    viewerCount,
+  } = usePublisher({
+    handleError: showError,
+    streamId: import.meta.env.VITE_MILLICAST_STREAM_ID,
+    streamName: import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
+    token: import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+    viewerAppBaseUrl: import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL,
+  });
 
   const codecListSimulcast = useMemo(() => {
     if (isSimulcastEnabled) {
@@ -153,98 +105,242 @@ function App() {
     return codecList;
   }, [codecList, isSimulcastEnabled]);
 
-  const onSelectVideoResolution = useCallback(
-    async (resolution: Resolution) => {
-      const videoConstraints = cameraSettings as MediaTrackConstraintSet;
-      if (videoConstraints && cameraSettings) {
-        videoConstraints.deviceId = { exact: cameraSettings?.deviceId };
-        videoConstraints.width = { exact: resolution.width };
-        videoConstraints.height = { exact: resolution.height };
-        delete videoConstraints.frameRate;
-        delete videoConstraints.aspectRatio;
+  const hasStartedStreaming =
+    !!publisherStates.size && Array.from(publisherStates).some(([, sourceState]) => sourceState === 'streaming');
+
+  const isConnecting = Array.from(publisherStates).some(([, sourceState]) => sourceState === 'connecting');
+
+  // Initialise default media device if no streams
+  useEffect(() => {
+    if (!streams.size) {
+      initDefaultStream();
+    }
+  }, [cameraList.length, microphoneList.length, streams.size]);
+
+  // Initialise new streams
+  useEffect(() => {
+    streams.forEach((stream, streamId) => {
+      const { mediaStream } = stream;
+      let bitrate, codec, label;
+
+      // Initialise bitrate if missing
+      if (!bitrates.get(streamId)) {
+        bitrate = bitrateList[0].value;
+        handleSelectBitrate(streamId, bitrate as number);
+      }
+
+      // Initialise codec if missing
+      if (!codecs.get(streamId)) {
+        codec = codecList[0];
+        handleSelectCodec(streamId, codec as VideoCodec);
+      }
+
+      // Initialise name if missing
+      if (!labels.get(streamId)) {
+        if (stream.type === StreamTypes.MEDIA) {
+          label = stream.device?.camera.label ?? '';
+        } else {
+          label = stream.mediaStream.getVideoTracks()[0].label ?? 'Screen share';
+        }
+        handleChangeLabel(streamId, label as string);
+      }
+
+      // Initialise publisher state if not streaming
+      if (!hasStartedStreaming) {
+        setPublisherStates((prevPublisherStates) => new Map([...prevPublisherStates, [streamId, 'ready']]));
+      }
+
+      // Handle initialisations if streams are already live
+      if (hasStartedStreaming && mediaStream && publisherStates.get(streamId) !== 'streaming') {
+        startStreamingSource({
+          bandwidth: bitrate,
+          codec,
+          events: ['viewercount'],
+          mediaStream,
+          simulcast: isSimulcastEnabled,
+          sourceId: streamId,
+        });
+      }
+
+      // Update or abort mediastream
+      if (mediaStream && sources.get(streamId)) {
+        updateSourceMediaStream(streamId, mediaStream);
       } else {
-        return;
+        stopStreamingSource(streamId);
       }
-      const audioConstraints = mediaStream?.getAudioTracks()[0].getSettings() ?? {};
-      try {
-        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
-      } catch (error) {
-        videoConstraints.width = { ideal: resolution.width };
-        videoConstraints.height = { ideal: resolution.height };
-        await applyMediaTrackConstraints(audioConstraints, videoConstraints);
-      }
-    },
-    [resolutionList]
-  );
+    });
+  }, [streams.size]);
 
-  const toggleShare = async () => {
-    displayStream ? stopDisplayCapture() : await startDisplayCapture();
-  };
+  useEffect(() => {
+    // If there are no sources (nothing is being provided to Millicast publisher), reset publisher states back to "ready"
+    if (!sources.size) {
+      setPublisherStates((prevPublisherStates) => {
+        const newPublisherStates = new Map();
 
-  const onSelectBitrate = async (bitrate: number) => {
-    try {
-      if (isStreaming) {
-        await updateBitrate(bitrate);
+        Array.from(prevPublisherStates.keys()).forEach((sourceId) => {
+          newPublisherStates.set(sourceId, 'ready');
+        });
+
+        return newPublisherStates;
+      });
+
+      return;
+    }
+
+    // Update local stream state using source state, bandwidth (bitrate), and statistics
+    sources.forEach((source, sourceId) => {
+      setPublisherStates((prevPublisherStates) => new Map([...prevPublisherStates, [sourceId, source.state]]));
+
+      if (source.broadcastOptions.bandwidth) {
+        handleSelectBitrate(sourceId, source.broadcastOptions.bandwidth);
       }
-      setBitrate(bitrate);
-    } catch {
-      setBitrate(0);
-      showError(`Failed to set bitrate ${bitrate}`);
+
+      if (source.statistics) {
+        setStatistics((prevStatistics) => new Map([...prevStatistics, [sourceId, source.statistics as StreamStats]]));
+      }
+    });
+  }, [sources]);
+
+  const addNewDevice = async () => {
+    if (sources.size < MAX_SOURCES) {
+      await addStream({ camera: newCamera, microphone: newMicrophone, type: StreamTypes.MEDIA });
+      handleCloseDeviceSelection();
+      setNewCamera(undefined);
+      setNewMicrophone(undefined);
     }
   };
 
-  const isStreaming = publisherState === 'streaming';
-
-  const MediaControlBar = () => (
-    <ControlBar
-      controls={[
-        {
-          key: 'toggleMicrophoneButton',
-          'test-id': 'toggleMicrophoneButton',
-          tooltip: { label: 'Toggle microphone', placement: 'top' },
-          onClick: () => {
-            toggleAudio();
-          },
-          isActive: !isAudioEnabled,
-          isDisabled: !(mediaStream && mediaStream.getAudioTracks().length),
-          icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
-        },
-        {
-          key: 'toggleCameraButton',
-          'test-id': 'toggleCameraButton',
-          tooltip: { label: 'Toggle camera', placement: 'top' },
-          onClick: () => {
-            toggleVideo();
-          },
-          isActive: !isVideoEnabled,
-          isDisabled: !(mediaStream && mediaStream.getVideoTracks().length),
-          icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
-        },
-      ]}
-    />
-  );
-
-  const displayStreamLabel = useMemo(() => {
-    if (displayStream) {
-      if (displayStream.getVideoTracks()[0].label.length > 0) {
-        return displayStream.getVideoTracks()[0].label.split(':')[0];
-      } else {
-        return 'Screen Share';
-      }
+  const handleSelectBitrate = (streamId: StreamId, newBitrate: number) => {
+    if (publisherStates.get(streamId) === 'streaming') {
+      updateSourceBitrate(streamId, newBitrate);
     }
-    return '';
-  }, [displayStream]);
+
+    setBitrates((prevBitrates) => new Map([...prevBitrates, [streamId, newBitrate]]));
+  };
+
+  const handleSelectCodec = (streamId: StreamId, newCodec: VideoCodec) => {
+    setCodecs((prevCodecs) => new Map([...prevCodecs, [streamId, newCodec]]));
+  };
+
+  const handleSelectVideoResolution = async (id: StreamId, resolution: Resolution) => {
+    await applyConstraints({ id, videoConstraints: { height: resolution.height, width: resolution.width } });
+  };
+
+  const handleChangeLabel = (streamId: StreamId, newLabel: string) => {
+    setLabels((prevLabels) => new Map([...prevLabels, [streamId, newLabel]]));
+  };
+
+  const handleSelectNewCamera = (camera: InputDeviceInfo) => {
+    setNewCamera(camera);
+  };
+
+  const handleSelectNewMicrophone = (microphone: InputDeviceInfo) => {
+    setNewMicrophone(microphone);
+  };
+
+  // const toggleDisplayCapture = async () => {
+  // displayStream ? stopDisplayCapture() : await startDisplayCapture();
+  // };
+  const handleStartDisplayCapture = async () => {
+    if (sources.size < MAX_SOURCES) {
+      await addStream({ type: StreamTypes.DISPLAY });
+    }
+  };
+  // TODO: handleStopDisplayCapture
+
+  const handleStartLive = () => {
+    if (streams.size) {
+      streams.forEach((stream, streamId) => {
+        try {
+          startStreamingSource({
+            bandwidth: bitrates.get(streamId),
+            codec: codecs.get(streamId),
+            events: ['viewercount'],
+            mediaStream: stream.mediaStream,
+            simulcast: isSimulcastEnabled,
+            sourceId: streamId,
+          });
+        } catch (err) {
+          showError(`Failed to start streaming: ${err}`);
+        }
+      });
+    }
+  };
+
+  const handleStopLive = () => {
+    for (const sourceId of sources.keys()) {
+      stopStreamingSource(sourceId);
+    }
+  };
+
+  const settings = (streamId: StreamId) => {
+    const bitrate = bitrates.get(streamId);
+    const codec = codecs.get(streamId);
+    const isStreaming = publisherStates.get(streamId) === 'streaming';
+    const stream = streams.get(streamId);
+    const { type } = stream;
+
+    const { height, width } = stream?.settings?.camera ?? {};
+    const resolution = `${width}x${height}`;
+
+    return {
+      bitrate: {
+        handleSelect: (data: unknown) => {
+          handleSelectBitrate(streamId, data as number);
+        },
+        isDisabled: isConnecting,
+        isHidden: !bitrateList.length,
+        options: bitrateList,
+        value: bitrateList.find(({ value }) => value === bitrate)?.name ?? bitrateList[0].name,
+      },
+      codec: {
+        handleSelect: (data: unknown) => {
+          handleSelectCodec(streamId, data as VideoCodec);
+        },
+        isDisabled: publisherStates.get(streamId) !== 'ready',
+        isHidden: isStreaming || !codecList.length,
+        options: codecListSimulcast,
+        value: codec ?? codecList[0],
+      },
+      name: {
+        handleChange: (data: unknown) => {
+          handleChangeLabel(streamId, data as string);
+        },
+        isDisabled: isConnecting,
+        isHidden: isStreaming,
+        value: labels.get(streamId) ?? '',
+      },
+      resolution: {
+        handleSelect: (data: unknown) => {
+          handleSelectVideoResolution(streamId, data as Resolution);
+        },
+        isDisabled: type === StreamTypes.DISPLAY || isConnecting,
+        isHidden: type === StreamTypes.DISPLAY,
+        options: stream?.resolutions ?? [],
+        value: resolution,
+      },
+      simulcast: {
+        handleToggle: () => {
+          setIsSimulcastEnabled((prevIsSimulcastEnabled) => !prevIsSimulcastEnabled);
+        },
+        isDisabled: isConnecting,
+        isHidden: isStreaming || codec === 'vp9',
+        value: isSimulcastEnabled,
+      },
+    };
+  };
 
   return (
-    <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
+    <VStack minH="100vh" w="100vw" bg="background" p="6">
       <Box w="100%" h="146px">
         <ActionBar title="Company name" />
         <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
           <Stack direction="column" spacing="4" alignItems="flex-start">
             <Flex alignItems="center">
-              <Timer isActive={isStreaming} />
-              {displayStream && (
+              <Timer isActive={hasStartedStreaming} />
+              {sources.size > 1 && (
                 <InfoLabel
+                  test-id="multiSource"
                   text="Multisource enabled"
                   ml="2.5"
                   color="white"
@@ -256,306 +352,117 @@ function App() {
               )}
             </Flex>
             <LiveIndicator
-              isActive={isStreaming}
-              isLoading={publisherState === 'connecting'}
-              disabled={publisherState === 'initial' || !mediaStream}
-              start={async () => {
-                if (publisherState == 'ready' && mediaStream) {
-                  try {
-                    await startStreaming({
-                      mediaStream,
-                      simulcast: isSimulcastEnabled,
-                      codec,
-                      events: ['viewercount'],
-                      bandwidth: bitrate,
-                    });
-                    if (displayStream) {
-                      startDisplayStreaming({
-                        mediaStream: displayStream,
-                        sourceId: displayShareSourceId,
-                      });
-                    }
-                  } catch (err) {
-                    showError(`Failed to start streaming: ${err}`);
-                    setBitrate(0);
-                  }
-                }
-              }}
-              stop={() => {
-                stopDisplayStreaming();
-                stopStreaming();
-              }}
+              disabled={!streams.size}
+              isActive={hasStartedStreaming}
+              isLoading={isConnecting}
+              start={handleStartLive}
+              stop={handleStopLive}
             />
           </Stack>
           <Stack direction="column" spacing="4" alignItems="flex-end">
-            {linkText && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={linkText} />}
-            {isStreaming && <ParticipantCount count={viewerCount} />}
+            {shareUrl && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={shareUrl} />}
+            {hasStartedStreaming && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
       </Box>
-      <Flex width="100%" alignItems="center" position="relative" pt="20px">
-        {!isStreaming && (
+      <Flex alignItems="center" position="relative" pt="20px" width="100%">
+        {!hasStartedStreaming && (
           <VStack position="absolute" top="0" left="50%" transform="translate(-50%, -110%)">
-            <Heading test-id="getStartedInfoTitle" as="h2" fontSize="24px" fontWeight="600">
+            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
               Get started
             </Heading>
-            <Text>Setup your audio and video before going live.</Text>
+            <Text test-id="pageDesc">Setup your audio and video before going live.</Text>
           </VStack>
         )}
-        <Stack direction="row" justifyContent="center" alignItems="center" w="100%" spacing="6">
-          {mediaStream && (
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={4}>
-              (
-              <VideoView
-                width={displayStream ? '688px' : '836px'}
-                height={displayStream ? '382px' : '464px'}
-                mirrored={true}
-                mediaStream={mediaStream}
-                displayFullscreenButton={false}
-                displayVideo={isVideoEnabled}
-                label={camera?.label}
-                placeholderNode={
-                  <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
-                    <IconProfile />
-                  </Box>
-                }
-                showDotIndicator={isStreaming}
-              />
-              <MediaControlBar />)
-            </Stack>
-          )}
-          {displayStream && (
-            <Stack direction="column" spacing={4}>
-              <VideoView
-                width="688px"
-                height="382px"
-                mediaStream={displayStream}
-                displayFullscreenButton={false}
-                label={displayStreamLabel}
-                showDotIndicator={isStreaming}
-              />
-              <ControlBar
-                controls={[
-                  {
-                    key: 'stopScreenShare',
-                    'test-id': 'stopScreenShare',
-                    tooltip: { label: 'Stop screen share', placement: 'top' },
-                    onClick: stopDisplayCapture,
-                    icon: <IconClose width="16px" height="16px" />,
-                    reversed: true,
-                  },
-                ]}
-              />
-            </Stack>
-          )}
-        </Stack>
+        <Wrap justify="center" margin="0 auto" maxWidth="1388px" spacing="12px" width="100%">
+          {Array.from(streams).map(([streamId, stream]) => {
+            const [maxHeight, maxWidth] = (() => {
+              switch (streams.size) {
+                case 1:
+                  return ['564px', '1035px'];
+                case 2:
+                  return ['382px', '688px'];
+                default:
+                  return ['282px', '508px'];
+              }
+            })();
+
+            const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
+            const isStreaming = publisherStates.get(streamId) === 'streaming';
+
+            return (
+              <WrapItem
+                flexBasis={flexBasis}
+                key={streamId}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
+                test-id="millicastVideo"
+              >
+                <PublisherVideoView
+                  isActive={isStreaming}
+                  settingsProps={settings(streamId)}
+                  statistics={statistics.get(streamId)}
+                  videoProps={{
+                    displayFullscreenButton: false,
+                    displayVideo: stream.mediaStream.getVideoTracks()[0].enabled,
+                    label: labels.get(streamId),
+                    mediaStream: stream.mediaStream,
+                    mirrored: stream.type === StreamTypes.MEDIA,
+                    placeholderNode: (
+                      <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
+                        <IconProfile />
+                      </Box>
+                    ),
+                    showDotIndicator: isStreaming,
+                  }}
+                />
+              </WrapItem>
+            );
+          })}
+        </Wrap>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
-        <Box>
-          {isStreaming && statistics && (
-            <Popover placement="top-end" closeOnBlur={false} closeOnEsc={false}>
-              <PopoverTrigger>
-                <Box>
-                  <IconButton
-                    test-id="streamInfoButton"
-                    aria-label="Stream Information"
-                    tooltip={{ label: 'Stream Information' }}
-                    size="md"
-                    className="icon-button"
-                    icon={<IconInfo fill="white" />}
-                    borderRadius="50%"
-                    reversed
-                  />
-                </Box>
-              </PopoverTrigger>
-              <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-                <PopoverHeader
-                  color="white"
-                  alignContent="flex-start"
-                  border="none"
-                  p={0}
-                  fontSize="20px"
-                  fontWeight="600"
-                  mb={4}
-                >
-                  Streaming Information
-                </PopoverHeader>
-                <PopoverCloseButton fontSize="20px" color="white" top={4} right={4} />
-                <PopoverBody p={0}>
-                  <StatisticsInfo statistics={statistics} />
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          )}
-        </Box>
         <Spacer />
         <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
-          {!displayStream && (
-            <PopupMenu
-              buttonTitle="Add Source"
-              items={[
-                { icon: <IconPresent />, text: displayStream ? 'Stop share' : 'Share screen', onClick: toggleShare },
-                // {
-                //   icon: <IconAddCamera />,
-                //   text: 'Add cameras',
-                //   onClick: () => console.log('cameras'),
-                //   isDisabled: true,
-                // },
-                // {
-                //   icon: <IconStream />,
-                //   text: 'Stream local file',
-                //   onClick: () => console.log('stream'),
-                //   isDisabled: true,
-                // },
-              ]}
-            />
-          )}
-          <IconButton
-            test-id="settingsButton"
-            tooltip={{ label: 'Settings' }}
-            onClick={onDrawerOpen}
-            isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-            icon={<IconSettings />}
-            borderRadius="50%"
-            ml="16px"
-            reversed
+          <PopupMenu
+            buttonTitle="Add Source"
+            items={[
+              {
+                icon: <IconPresent />,
+                text: 'Share screen',
+                onClick: handleStartDisplayCapture,
+              },
+              {
+                icon: <IconAddCamera />,
+                text: 'Add cameras',
+                onClick: handleOpenDeviceSelection,
+              },
+              // {
+              //   icon: <IconStream />,
+              //   text: 'Stream local file',
+              //   onClick: () => console.log('stream'),
+              //   isDisabled: true,
+              // },
+            ]}
+            disabled={streams.size >= MAX_SOURCES}
+          />
+          <DeviceSelection
+            camera={newCamera}
+            cameraList={cameraList}
+            isOpen={isDeviceSelectionOpen}
+            microphone={newMicrophone}
+            microphoneList={microphoneList}
+            onClose={handleCloseDeviceSelection}
+            onSelectCamera={handleSelectNewCamera}
+            onSelectMicrophone={handleSelectNewMicrophone}
+            onSubmit={addNewDevice}
           />
         </Flex>
-        {/* Drawer */}
-        <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
-          <DrawerOverlay />
-          <DrawerContent bg="dolbyNeutral.800" color="white">
-            <DrawerHeader textAlign="center">Settings</DrawerHeader>
-            <DrawerCloseButton />
-            <DrawerBody>
-              <Stack direction="column" spacing={4}>
-                <Box>
-                  {cameraList.length && cameraSettings && camera && (
-                    <Dropdown
-                      leftIcon={<IconCameraOn />}
-                      disabled={publisherState === 'connecting'}
-                      testId="camera-select"
-                      elementsList={cameraList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setCamera(data as InputDeviceInfo);
-                      }}
-                      selected={camera.label}
-                      placeholder="Camera"
-                    />
-                  )}
-                </Box>
-                <Box>
-                  {microphoneList.length && microphoneSettings && microphone && (
-                    <Dropdown
-                      leftIcon={<IconMicrophoneOn />}
-                      disabled={publisherState === 'connecting'}
-                      testId="microphone-select"
-                      elementsList={microphoneList}
-                      elementResolver={(element) => {
-                        const device = element as InputDeviceInfo;
-                        return {
-                          id: device.deviceId,
-                          label: device.label,
-                          data: device,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        setMicrophone(data as InputDeviceInfo);
-                      }}
-                      selected={microphone.label}
-                      placeholder="Microphone"
-                    />
-                  )}
-                </Box>
-                {!isStreaming && codecList.length !== 0 && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconCodec />}
-                      disabled={publisherState !== 'ready' || codecList.length === 0}
-                      testId="codecSelect"
-                      elementsList={codecListSimulcast}
-                      elementResolver={(element) => ({
-                        id: element as string,
-                        label: element as string,
-                        data: element as string,
-                      })}
-                      onSelect={(data) => setCodec(data as string)}
-                      selected={codec || codecList[0]}
-                      placeholder="Codec"
-                    />
-                  </Box>
-                )}
-                {bitrateList.length && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconBitrate />}
-                      disabled={bitrateList.length === 0}
-                      testId="bitrateSelect"
-                      elementsList={bitrateList}
-                      elementResolver={(element) => {
-                        const bitrate = element as Bitrate;
-                        return {
-                          id: bitrate.name,
-                          label: bitrate.name,
-                          data: bitrate.value,
-                        };
-                      }}
-                      onSelect={(data) => {
-                        onSelectBitrate(data as number);
-                      }}
-                      selected={bitrateList.find((b) => b.value === bitrate)?.name || bitrateList[0].name}
-                      placeholder="Bitrate"
-                    />
-                  </Box>
-                )}
-                {mediaStream && resolutionList.length && cameraSettings && (
-                  <Box>
-                    <Dropdown
-                      leftIcon={<IconResolution />}
-                      testId="resolutionSelect"
-                      elementsList={resolutionList}
-                      elementResolver={(element) => {
-                        const resolution = element as Resolution;
-                        return {
-                          id: `${resolution.width}x${resolution.height}`,
-                          label: `${resolution.width}x${resolution.height}`,
-                          data: resolution,
-                        };
-                      }}
-                      onSelect={(data) => onSelectVideoResolution(data as Resolution)}
-                      selected={`${cameraSettings.width}x${cameraSettings.height}`}
-                      placeholder="Resolution"
-                    />
-                  </Box>
-                )}
-
-                {!isStreaming && (
-                  <ToggleButton
-                    test-id="simulcastSwitch"
-                    onClick={() => setIsSimulcastEnabled(!isSimulcastEnabled)}
-                    isActive={isSimulcastEnabled}
-                    label="Simulcast"
-                    leftIcon={<IconSimulcast />}
-                    isDisabled={codec === 'vp9'}
-                  />
-                )}
-              </Stack>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
       </HStack>
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
-    </Flex>
+    </VStack>
   );
 }
 
