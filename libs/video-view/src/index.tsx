@@ -1,6 +1,8 @@
-import { Box, Center, Flex, IconButton, Spacer, Spinner, Stack } from '@chakra-ui/react';
+import { Box, Center, Flex, Spinner, Stack } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
+import ControlBar from '@millicast-react/control-bar';
+import { IconCameraOff, IconCameraOn, IconMicrophoneOff, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 
 import { VideoViewProps } from './types';
@@ -24,9 +26,12 @@ const VideoView = ({
   width,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [streamId, setStreamId] = useState<string | null>(null);
+
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [loadingVideo, setLoadingVideo] = useState(true);
+  const [streamId, setStreamId] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -149,26 +154,42 @@ const VideoView = ({
       <Stack
         bottom={isFullScreen ? ['120px', '120px', 0] : 0}
         direction="row"
-        margin="0 8px 8px"
+        margin="0 8px 12px"
         position="absolute"
         right="0"
         spacing="0"
         width="100%"
       >
-        {/* {displayMuteButton && (
-          <IconButton
-            test-id="muteSpeakerButton"
-            aria-label="Mute button"
-            className="icon-button"
-            size="md"
-            icon={videoRef.current?.muted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (videoRef.current) videoRef.current.muted = !videoRef.current.muted;
-            }}
-          />
-        )} */}
-        <Spacer />
+        <ControlBar
+          bottom="0"
+          controls={[
+            {
+              icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
+              isActive: !isAudioEnabled,
+              isDisabled: !mediaStream?.getAudioTracks().length,
+              key: 'toggleMicrophoneButton',
+              onClick: () => {
+                setIsAudioEnabled((prevIsAudioEnabled) => !prevIsAudioEnabled);
+              },
+              testId: 'toggleMicrophoneButton',
+              tooltipProps: { label: 'Toggle microphone', placement: 'top' },
+            },
+            {
+              icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
+              isActive: !isVideoEnabled,
+              isDisabled: !mediaStream?.getVideoTracks().length,
+              key: 'toggleCameraButton',
+              onClick: () => {
+                setIsVideoEnabled((prevIsVideoEnabled) => !prevIsVideoEnabled);
+              },
+              testId: 'toggleCameraButton',
+              tooltipProps: { label: 'Toggle camera', placement: 'top' },
+            },
+          ]}
+          left="50%"
+          position="absolute"
+          transform="translateX(-50%)"
+        />
         {/* {displayFullscreenButton && (
           <IconButton
             test-id="fullScreenButton"

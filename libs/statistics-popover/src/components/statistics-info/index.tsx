@@ -67,11 +67,11 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                   <Td>{candidateType}</Td>
                 </Tr>
               ) : undefined}
-              {video ? (
+              {video?.frameHeight !== undefined && video?.frameWidth !== undefined ? (
                 <>
                   <Tr>
                     <Th>Video resolution:</Th>
-                    <Td>{video ? `${video.frameWidth}x${video.frameHeight}` : ''}</Td>
+                    <Td>{`${video.frameWidth}x${video.frameHeight}`}</Td>
                   </Tr>
                   {'qualityLimitationReason' in video ? (
                     <Tr>
