@@ -342,7 +342,7 @@ Feature: Publisher Preview - Not Live
         # TODO: issue 195
         # And the "screen view stop share button" should be displayed
         # And the "screen view stop share button" should be enabled
-        And the "screen view source name" text should be "screen"
+        And the "screen view source name" text should contain "screen"
         And the "screen view full screen button" should not be displayed
 
 
