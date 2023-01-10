@@ -19,6 +19,7 @@
       "@millicast-react/action-bar": ["libs/action-bar/src/index.tsx"],
       "@millicast-react/alert": ["libs/alert/src/index.tsx"],
       "@millicast-react/control-bar": ["libs/control-bar/src/index.tsx"],
+      "@millicast-react/device-selection": ["libs/device-selection/src/index.tsx"],
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
       "@millicast-react/drawer": ["libs/drawer/src/index.tsx"],

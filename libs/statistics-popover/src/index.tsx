@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Portal,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 
@@ -70,19 +71,21 @@ const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
             tooltipProps={{ label: 'Stream information' }}
           />
         </PopoverTrigger>
-        <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-          <PopoverHeader border="none" color="white" fontSize="16px" fontWeight="600" mb="16px" p={0}>
-            Stream information
-          </PopoverHeader>
-          <PopoverCloseButton color="white" />
-          <PopoverBody p={0}>
-            {tabs.length ? (
-              <Tabs tabs={tabs} />
-            ) : (
-              <StatisticsInfo statistics={{ ...statistics, audio, video: video[0] }} />
-            )}
-          </PopoverBody>
-        </PopoverContent>
+        <Portal>
+          <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
+            <PopoverHeader border="none" color="white" fontSize="16px" fontWeight="600" mb="16px" p={0}>
+              Stream information
+            </PopoverHeader>
+            <PopoverCloseButton color="white" />
+            <PopoverBody p={0}>
+              {tabs.length ? (
+                <Tabs tabs={tabs} />
+              ) : (
+                <StatisticsInfo statistics={{ ...statistics, audio, video: video[0] }} />
+              )}
+            </PopoverBody>
+          </PopoverContent>
+        </Portal>
       </Popover>
     </>
   );

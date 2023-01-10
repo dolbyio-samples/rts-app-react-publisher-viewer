@@ -29,7 +29,7 @@ const Drawer = ({
         position="absolute"
         right="0"
         width="346px"
-        padding="24px 16px 48px"
+        padding="24px 16px"
         {...drawerProps}
       >
         <Heading as="h3" fontSize="20px" fontWeight={600} mb="16px" {...headingProps}>
@@ -47,7 +47,31 @@ const Drawer = ({
           testId="drawerCloseButton"
           top="8px"
         />
-        <Stack direction="column" height="100%" spacing={4} sx={{ '&>*': { bg: drawerBackground } }}>
+        <Stack
+          direction="column"
+          height="100%"
+          overflow="auto"
+          spacing={4}
+          sx={{
+            '::-webkit-scrollbar': {
+              width: '14px',
+            },
+            '::-webkit-scrollbar-thumb': {
+              boxShadow: 'inset 0 0 14px 14px white',
+              borderColor: 'transparent',
+              borderStyle: 'solid',
+              borderWidth: '0 0 0 11px',
+            },
+            '::-webkit-scrollbar-track': {
+              boxShadow: 'inset 0 0 14px 14px',
+              borderColor: 'transparent',
+              borderStyle: 'solid',
+              borderWidth: '0 0 0 11px',
+              color: 'dolbySecondary.500',
+            },
+            '&>*': { bg: drawerBackground },
+          }}
+        >
           {children}
         </Stack>
       </Flex>
