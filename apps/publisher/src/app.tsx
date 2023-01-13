@@ -364,7 +364,7 @@ function App() {
     } else {
       if (remoteFileURL) {
         setRemoteFileURLs((prev) => {
-          return [...prev, remoteFileURL];
+          return [...prev, `/cors-proxy/${remoteFileURL}`];
         });
       }
     }
