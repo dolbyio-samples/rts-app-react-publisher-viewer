@@ -1,1 +1,1 @@
-/cors-proxy/*  :splat  200!
+/cors-proxy/*  /:splat  200!
