@@ -1,1 +1,1 @@
-/cors-proxy/*  /:splat  200!
+/cors-proxy/dolby/*  https://streaming.dolby.io/media/:splat  200!
