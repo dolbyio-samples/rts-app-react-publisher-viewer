@@ -53,12 +53,7 @@ export const getSimulcastStatus = async (page: Page, selector: TargetSelector, i
   return (await locator.isChecked()) ? 'On' : 'Off';
 };
 
-export const getStreamStats = async (
-  page: Page,
-  tabSelector: TargetSelector,
-  tableSelector: TargetSelector,
-  index?: number
-) => {
+export const getStreamStats = async (page: Page, tabSelector: TargetSelector, tableSelector: TargetSelector) => {
   logger.trace(`Get stream info stats`);
 
   const infoData: { [k: string]: { [k: string]: string } } = {};

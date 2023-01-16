@@ -46,40 +46,24 @@ export const validateText = async (
   expText: string,
   elementIndex?: number | undefined
 ) => {
-  let verifyMethod;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  let verifyMethod: Function;
 
-  switch (true) {
-    case expText.startsWith('ignore: '):
-      return;
-    case expText.startsWith('contains: '):
-      verifyMethod = async () => {
-        await verifyElementContainsText(
-          scWorld.currentPage,
-          targetSelector,
-          expText.split('contains: ')[1],
-          false,
-          elementIndex
-        );
-      };
-      break;
-    case expText.startsWith('regex: '):
-      verifyMethod = async () => {
-        await verifyElementMatchText(
-          scWorld.currentPage,
-          targetSelector,
-          expText.split('regex: ')[1],
-          false,
-          elementIndex
-        );
-      };
-      break;
-    default:
-      verifyMethod = async () => {
-        await verifyElementText(scWorld.currentPage, targetSelector, expText, false, elementIndex);
-      };
+  if (expText.startsWith('ignore: ')) {
+    return;
+  } else if (expText.startsWith('contains: ')) {
+    expText = expText.split('contains: ')[1];
+    verifyMethod = verifyElementContainsText;
+  } else if (expText.startsWith('regex: ')) {
+    expText = expText.split('regex: ')[1];
+    verifyMethod = verifyElementMatchText;
+  } else {
+    verifyMethod = verifyElementText;
   }
 
-  await waitFor(verifyMethod);
+  await waitFor(async () => {
+    await verifyMethod(scWorld.currentPage, targetSelector, expText, false, elementIndex);
+  });
 };
 
 export const validateValue = async (

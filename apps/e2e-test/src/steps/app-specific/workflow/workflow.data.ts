@@ -39,6 +39,10 @@ const publisherPreviewHeaderData: ViewData = {
   'viewers count': 'hidden',
   'multi source label': 'hidden',
   'multi source label text': 'ignore: ',
+  'go live button': 'displayed|enabled',
+  'go live button text': 'GO LIVE',
+  'invite button': 'displayed|enabled',
+  'invite button text': 'Invite viewers',
 };
 
 const publisherStreamingHeaderData: ViewData = {
@@ -53,6 +57,10 @@ const publisherStreamingHeaderData: ViewData = {
   'viewers count text': '0 Viewers',
   'multi source label': 'hidden',
   'multi source label text': 'ignore: ',
+  'stop button': 'displayed|enabled',
+  'stop button text': 'STOP',
+  'invite button': 'displayed|enabled',
+  'invite button text': 'Invite viewers',
 };
 
 const publisherCameraViewSettings: ViewData = {

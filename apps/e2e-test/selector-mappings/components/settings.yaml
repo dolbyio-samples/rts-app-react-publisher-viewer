@@ -1,5 +1,5 @@
-settings drawer: '//*[@test-id="settingTitle"]/parent::*'
-settings drawer title: '[test-id=settingTitle]'
+settings: '//*[@test-id="settingTitle"]/parent::*'
+settings title: '[test-id=settingTitle]'
 settings dropdowns: '[test-id*=SelectDefault]'
 source name label: '[test-id=sourceName] label'
 source name input: '[test-id=sourceName] input'
@@ -20,12 +20,12 @@ simulcast switch: '[test-id=simulcastToggle] input'
 settings close button: '[test-id=drawerCloseButton]'
 
 
-camera view settings drawer:
+camera view settings:
   - '$ref: camera view container'
-  - '$ref: settings drawer'
-camera view settings drawer title:
+  - '$ref: settings'
+camera view settings title:
   - '$ref: camera view container'
-  - '$ref: settings drawer title'
+  - '$ref: settings title'
 camera view settings dropdowns:
   - '$ref: camera view container'
   - '$ref: settings dropdowns'
@@ -72,12 +72,12 @@ camera view settings close button:
   - '$ref: settings close button'
 
 
-screen view settings drawer:
+screen view settings:
   - '$ref: screen view container'
-  - '$ref: settings drawer'
-screen view settings drawer title:
+  - '$ref: settings'
+screen view settings title:
   - '$ref: screen view container'
-  - '$ref: settings drawer title'
+  - '$ref: settings title'
 screen view settings dropdowns:
   - '$ref: screen view container'
   - '$ref: settings dropdowns'

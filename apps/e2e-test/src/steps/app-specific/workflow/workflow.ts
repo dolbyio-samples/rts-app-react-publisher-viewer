@@ -210,6 +210,48 @@ export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [
     keyCount++;
   }
 
+  if (keys.includes('go live button')) {
+    logger.info(`Verify go live button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'go live button');
+    await validateState(scWorld, targetSelector, expectedData['go live button']);
+    keyCount++;
+  }
+
+  if (keys.includes('go live button text')) {
+    logger.info(`Verify go live button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'go live button');
+    await validateText(scWorld, targetSelector, expectedData['go live button text']);
+    keyCount++;
+  }
+
+  if (keys.includes('stop button')) {
+    logger.info(`Verify stop button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'stop button');
+    await validateState(scWorld, targetSelector, expectedData['stop button']);
+    keyCount++;
+  }
+
+  if (keys.includes('stop button text')) {
+    logger.info(`Verify stop button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'stop button');
+    await validateText(scWorld, targetSelector, expectedData['stop button text']);
+    keyCount++;
+  }
+
+  if (keys.includes('invite button')) {
+    logger.info(`Verify invite button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'invite button');
+    await validateState(scWorld, targetSelector, expectedData['invite button']);
+    keyCount++;
+  }
+
+  if (keys.includes('stop button text')) {
+    logger.info(`Verify invite button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'invite button');
+    await validateText(scWorld, targetSelector, expectedData['invite button text']);
+    keyCount++;
+  }
+
   verifyCount(keyCount, keys.length, false);
 };
 
@@ -227,7 +269,7 @@ export const verifySettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} setting button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings drawer`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
 
   if (keys.includes('source name')) {
@@ -274,7 +316,7 @@ export const verifySettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings close button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings drawer`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
   verifyCount(keyCount, keys.length, false);
@@ -283,8 +325,8 @@ export const verifySettings = async (
 export const verifyStats = async (
   scWorld: ScenarioWorld,
   elementPosition: string,
+  appName: string,
   viewName: string,
-  simulcast: Status,
   expectedData: { [key: string]: string }
 ) => {
   const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
@@ -305,8 +347,8 @@ export const verifyStats = async (
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
   const streamStatsKeys = Object.keys(streamStats);
-  if (simulcast === 'On') {
-    logger.info(`Verify ${viewName} stats with simulcast Off`);
+  if (streamStatsKeys.includes('High') && appName === 'publisher') {
+    logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
     verifyArrayContains(streamStatsKeys, 'High');
     verifyGreaterThanEqualTo(streamStatsKeys.length, 2);
 
@@ -315,7 +357,7 @@ export const verifyStats = async (
       validateStatsInfo(streamStats[quality], expectedData);
     }
   } else {
-    logger.info(`Verify ${viewName} stats with simulcast Off`);
+    logger.info(`Verify ${appName} ${viewName} stats`);
     verifyArrayContains(streamStatsKeys, 'Standard');
     verifyCount(streamStatsKeys.length, 1);
     validateStatsInfo(streamStats['Standard'], expectedData);
@@ -343,7 +385,7 @@ export const configureSettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} setting button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings drawer`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
 
   if (keys.includes('source name')) {
@@ -419,7 +461,7 @@ export const configureSettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings close button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings drawer`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
   verifyCount(keyCount, keys.length, false);

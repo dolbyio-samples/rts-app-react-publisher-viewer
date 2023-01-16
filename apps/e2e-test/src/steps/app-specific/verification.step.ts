@@ -151,10 +151,29 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats with simulcast "(On|Off)" should be displayed with default values$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string, simulcast: Status) {
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats should be displayed with default values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultStatsData(`${appName} ${viewName}`);
-    await verifyStats(this, elementPosition, viewName, simulcast, expectedData);
+    await verifyStats(this, elementPosition, appName, viewName, expectedData);
+  }
+);
+
+Then(
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats should be displayed with (following|only) values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
+    const appName = getData(this, 'App');
+    const defaultExpectedData = getDefaultStatsData(`${appName} ${viewName}`);
+    let expectedData = dataTable.rowsHash();
+
+    if (!arrayContainsAll(Object.keys(defaultExpectedData), Object.keys(expectedData))) {
+      throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
+    }
+
+    if (type === 'following') {
+      expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
+    }
+
+    await verifyStats(this, elementPosition, appName, viewName, expectedData);
   }
 );

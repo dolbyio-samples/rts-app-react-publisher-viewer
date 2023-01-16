@@ -140,14 +140,14 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be presented with Setting controls under Camera View
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
-        Then the "camera view settings drawer title" text should be "Settings"
+        Then the "camera view settings" should be displayed
+        Then the "camera view settings title" text should be "Settings"
         Then the number of "camera view settings dropdowns" count should be "3"
 
     Scenario: Publisher should be presented with resolution selection dropdown under settings
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view resolution dropdown" should be displayed
         And the "camera view resolution dropdown" should be enabled
         And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
@@ -156,7 +156,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be presented with codec selection dropdown under settings
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view codec dropdown" should be displayed
         And the "camera view codec dropdown" should be enabled
         And the "camera view codec dropdown default" text should be "Codec  - h264"
@@ -165,7 +165,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be presented with bitrate selection dropdown under settings
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view bitrate dropdown" should be displayed
         And the "camera view bitrate dropdown" should be enabled
         And the "camera view bitrate dropdown default" text should be "Bitrate  - Auto"
@@ -174,7 +174,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Simulcast should be enabled by default with codec as h264
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view simulcast switch" should be displayed
         And the "camera view simulcast switch" should be enabled
         And the "camera view simulcast label" text should be "Simulcast"
@@ -184,7 +184,7 @@ Feature: Publisher Preview - Not Live
     Scenario: VP9 codec is available for streaming when simulcast is disabled
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         Then the publisher turns Off the "camera view simulcast" feature
         And the "camera view simulcast" feature should be turned Off
@@ -355,7 +355,7 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
         And the "camera view codec dropdown default" text should be "Codec  - h264"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - Auto"
@@ -364,7 +364,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher settings should be preserved with Simulcast On when changed on preview page after the streaming is stopped
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the publisher selects "vp8" option from the "camera view codec dropdown"
         And the publisher selects "1280x720" option from the "resolution dropdown"
@@ -380,7 +380,7 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the "camera view resolution dropdown default" text should be "Resolution  - 1280x720"
         And the "camera view codec dropdown default" text should be "Codec  - vp8"
@@ -390,7 +390,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher settings should be preserved with Simulcast Off when changed on preview page after the streaming is stopped
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the publisher turns Off the "camera view simulcast" feature
         And the publisher selects "vp9" option from the "camera view codec dropdown"
@@ -405,7 +405,7 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the "camera view resolution dropdown default" text should be "Resolution  - 640x480"
         And the "camera view codec dropdown default" text should be "Codec  - vp9"
