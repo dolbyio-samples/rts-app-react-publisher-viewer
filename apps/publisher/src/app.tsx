@@ -70,10 +70,7 @@ function App() {
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo | undefined>(undefined);
   const [publisherStates, setPublisherStates] = useState<Map<StreamId, PublisherState>>(new Map());
   const [statistics, setStatistics] = useState<Map<StreamId, StreamStats>>(new Map());
-  const [isLocalFile, setIsLocalFile] = useState(false);
   const { register, file: localFile } = useLocalFile();
-  const [remoteFileURL, setRemoteFileURL] = useState<string | undefined>(undefined);
-  const [remoteFileURLs, setRemoteFileURLs] = useState<string[]>([]);
   const [localFilePaths, setLocalFilePaths] = useState<string[]>([]);
   const { showError } = useNotification();
 
@@ -355,18 +352,10 @@ function App() {
 
   const addFileSource = () => {
     onFileSelectModalClose();
-    if (isLocalFile) {
-      if (localFile) {
-        setLocalFilePaths((prev) => {
-          return [...prev, localFile];
-        });
-      }
-    } else {
-      if (remoteFileURL) {
-        setRemoteFileURLs((prev) => {
-          return [...prev, `/cors-proxy/${remoteFileURL}`];
-        });
-      }
+    if (localFile) {
+      setLocalFilePaths((prev) => {
+        return [...prev, localFile];
+      });
     }
   };
 
@@ -417,7 +406,7 @@ function App() {
         <Wrap justify="center" margin="0 auto" maxWidth="1388px" spacing="12px" width="100%">
           {Array.from(streams).map(([streamId, stream]) => {
             const [maxHeight, maxWidth] = (() => {
-              switch (streams.size + remoteFileURLs.length + localFilePaths.length) {
+              switch (streams.size + localFilePaths.length) {
                 case 1:
                   return ['564px', '1035px'];
                 case 2:
@@ -461,7 +450,7 @@ function App() {
           })}
           {localFilePaths.map((path) => {
             const [maxHeight, maxWidth] = (() => {
-              switch (streams.size + remoteFileURLs.length + localFilePaths.length) {
+              switch (streams.size + localFilePaths.length) {
                 case 1:
                   return ['564px', '1035px'];
                 case 2:
@@ -496,43 +485,6 @@ function App() {
               </WrapItem>
             );
           })}
-          {remoteFileURLs.map((url) => {
-            const [maxHeight, maxWidth] = (() => {
-              switch (streams.size + remoteFileURLs.length + localFilePaths.length) {
-                case 1:
-                  return ['564px', '1035px'];
-                case 2:
-                  return ['382px', '688px'];
-                default:
-                  return ['282px', '508px'];
-              }
-            })();
-
-            const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
-
-            return (
-              <WrapItem
-                flexBasis={flexBasis}
-                key={url}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
-                test-id="millicastVideo"
-              >
-                <PublisherVideoView
-                  isActive={false}
-                  videoProps={{
-                    displayFullscreenButton: false,
-                    placeholderNode: (
-                      <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
-                        <IconProfile />
-                      </Box>
-                    ),
-                    src: url,
-                  }}
-                />
-              </WrapItem>
-            );
-          })}
         </Wrap>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
@@ -555,20 +507,11 @@ function App() {
                 icon: <IconStreamLocal />,
                 text: 'Stream local file',
                 onClick: () => {
-                  setIsLocalFile(true);
-                  onFileSelectModalOpen();
-                },
-              },
-              {
-                icon: <IconStreamRemote />,
-                text: 'Stream remote file',
-                onClick: () => {
-                  setIsLocalFile(false);
                   onFileSelectModalOpen();
                 },
               },
             ]}
-            disabled={streams.size + localFilePaths.length + remoteFileURLs.length >= MAX_SOURCES}
+            disabled={streams.size + localFilePaths.length >= MAX_SOURCES}
           />
           <DeviceSelection
             camera={newCamera}
@@ -591,26 +534,11 @@ function App() {
             <ModalBody>
               <VStack>
                 <Heading as="h4" size="md">
-                  {isLocalFile ? 'Add local media file' : 'Stream remote file'}
+                  Add local media file
                 </Heading>
-                <Text fontSize="md">
-                  {isLocalFile ? 'Pick a local file' : 'Add a streaming URL to start streaming'}
-                </Text>
+                <Text fontSize="md">Pick a local file</Text>
                 <Box width="100%" pt="16px" pb="32px">
-                  {isLocalFile ? (
-                    <input id="uploadFile" {...register()} />
-                  ) : (
-                    <Input
-                      label="Stream URL"
-                      placeholder="Add a stream URL"
-                      value={remoteFileURL ?? ''}
-                      inputProps={{ color: 'white' }}
-                      labelProps={{ color: 'white', fontSize: '0.9em' }}
-                      onChange={(value) => {
-                        setRemoteFileURL(value);
-                      }}
-                    />
-                  )}
+                  <input id="uploadFile" {...register()} />
                 </Box>
                 <Button onClick={() => addFileSource()}>ADD STREAMING FILE</Button>
               </VStack>
