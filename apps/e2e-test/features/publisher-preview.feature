@@ -394,7 +394,7 @@ Feature: Publisher Preview - Not Live
 
         When the publisher turns Off the "camera view simulcast" feature
         And the publisher selects "vp9" option from the "camera view codec dropdown"
-        And the publisher selects "854x480" option from the "camera view resolution dropdown"
+        And the publisher selects "640x480" option from the "camera view resolution dropdown"
         And the publisher selects "2 Mbps" option from the "camera view bitrate dropdown"
         And the publisher clicks on the "camera view settings close button"
 
@@ -407,7 +407,7 @@ Feature: Publisher Preview - Not Live
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings drawer" should be displayed
 
-        When the "camera view resolution dropdown default" text should be "Resolution  - 854x480"
+        When the "camera view resolution dropdown default" text should be "Resolution  - 640x480"
         And the "camera view codec dropdown default" text should be "Codec  - vp9"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 2 Mbps"
         And the "camera view simulcast" should not be displayed
