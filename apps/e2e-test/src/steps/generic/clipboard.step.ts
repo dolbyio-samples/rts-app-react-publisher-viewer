@@ -3,9 +3,9 @@ import { Then } from '@cucumber/cucumber';
 import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { verifyText, verifyTextMatch } from '../../playwright-support/generic/element-verification';
 import { replacePlaceholder } from './utils';
 import { getData, saveData } from '../../hooks/utils';
+import { verifyText, verifyTextMatch } from '../../playwright-support/generic/verification';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,

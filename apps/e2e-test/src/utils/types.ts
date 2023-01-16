@@ -38,6 +38,8 @@ export type State =
   | 'invisible'
   | 'editable'
   | 'checked'
-  | 'selected';
+  | 'selected'
+  | 'unselected'
+  | 'unchecked';
 export type Status = 'On' | 'Off';
 export type Screen = 'Full' | 'Normal';

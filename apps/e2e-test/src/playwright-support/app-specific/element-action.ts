@@ -36,23 +36,27 @@ export const toogleSimulcast = async (
   page: Page,
   selector: TargetSelector,
   clickSelector: TargetSelector,
-  status: Status
+  status: Status,
+  raiseErr = true,
+  index?: number
 ): Promise<void> => {
   status === 'On'
-    ? await turnOnSimulcast(page, selector, clickSelector)
-    : await turnOffSimulcast(page, selector, clickSelector);
+    ? await turnOnSimulcast(page, selector, clickSelector, raiseErr, index)
+    : await turnOffSimulcast(page, selector, clickSelector, raiseErr, index);
 };
 
 export const turnOnSimulcast = async (
   page: Page,
   selector: TargetSelector,
-  clickSelector: TargetSelector
+  clickSelector: TargetSelector,
+  raiseErr = true,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Turn On the simulcast`);
-  if ((await getSimulcastStatus(page, selector)) === 'Off') {
-    const locator = getLocator(page, clickSelector);
+  if ((await getSimulcastStatus(page, selector, index)) === 'Off') {
+    const locator = getLocator(page, clickSelector, index);
     await locator.click();
-  } else {
+  } else if (raiseErr) {
     throw new Error(`Simulcast is already turned On`);
   }
 };
@@ -60,13 +64,15 @@ export const turnOnSimulcast = async (
 export const turnOffSimulcast = async (
   page: Page,
   selector: TargetSelector,
-  clickSelector: TargetSelector
+  clickSelector: TargetSelector,
+  raiseErr = true,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Turn Off simulcast`);
-  if ((await getSimulcastStatus(page, selector)) === 'On') {
-    const locator = getLocator(page, clickSelector);
+  if ((await getSimulcastStatus(page, selector, index)) === 'On') {
+    const locator = getLocator(page, clickSelector, index);
     await locator.click();
-  } else {
+  } else if (raiseErr) {
     throw new Error(`Simulcast is already turned Off`);
   }
 };
@@ -75,10 +81,11 @@ export const selectSettingDropdown = async (
   page: Page,
   selector: TargetSelector,
   optionsSelector: TargetSelector,
-  option: string
+  option: string,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Select ${option} from ${selector}`);
-  await getLocator(page, selector).click();
-  const locator = getLocator(page, optionsSelector);
+  await getLocator(page, selector, index).click();
+  const locator = getLocator(page, optionsSelector, index);
   await locator.filter({ hasText: option }).click();
 };

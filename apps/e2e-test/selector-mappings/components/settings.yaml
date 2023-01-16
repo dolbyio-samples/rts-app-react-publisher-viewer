@@ -120,3 +120,5 @@ screen view quality dropdown options:
   - '$ref: screen view container'
   - '$ref: quality dropdown options'
 screen view settings close button:
+  - '$ref: screen view container'
+  - '$ref: settings close button'

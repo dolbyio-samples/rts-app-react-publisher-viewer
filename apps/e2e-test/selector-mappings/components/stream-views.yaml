@@ -4,6 +4,7 @@ microphone button: '[test-id=toggleMicrophoneButton], [test-id=toggleMainStreamA
 camera button: '[test-id=toggleCameraButton], [test-id=toggleMainStreamVideoButton]'
 full screen button: '[test-id=fullScreenButton]'
 setting button: '[test-id=settingsOpenButton]'
+stream info button: '[test-id=streamInfoButton]'
 
 camera view:
   - '$ref: camera view container'
@@ -28,6 +29,9 @@ setting button of camera view: '$ref: camera view setting button'
 camera view setting button:
   - '$ref: camera view container'
   - '$ref: setting button'
+camera view stream info button:
+  - '$ref: camera view container'
+  - '$ref: stream info button'
 
 
 screen view:
@@ -51,3 +55,6 @@ screen view full screen button:
 screen view setting button:
   - '$ref: screen view container'
   - '$ref: setting button'
+screen view stream info button:
+  - '$ref: screen view container'
+  - '$ref: stream info button'

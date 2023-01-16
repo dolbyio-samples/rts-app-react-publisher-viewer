@@ -1,13 +1,24 @@
-stream info button: '[test-id=streamInfoButton]'
 stream info popover: '//*[@test-id="streamInfoPopoverTitle"]/parent::*[@role="dialog"]'
 stream info popover title:
   - '$ref: stream info popover'
   - '[test-id=streamInfoPopoverTitle]'
-
+stream info tabs:
+  - '$ref: stream info popover'
+  - '[role=tablist]'
+stream info tab:
+  - '$ref: stream info popover'
+  - '[role=tablist]'
+  - 'button[role=tab]'
+stream info high tab: 
+  - '$ref: stream info tabs'
+  - '//button[text()="High"]'
+stream info medium tab:
+  - '$ref: stream info tabs'
+  - '//button[text()="Medium"]'
+stream info low tab:
+  - '$ref: stream info tabs'
+  - '//button[text()="Low"]'
 stats info:
   - '$ref: stream info popover'
-  - '[test-id=statisticsInfo]'
-
-stats info rows:
-  - '$ref: stats info'
-  - '[test-id=nameValuePair]'
+  - '//*[@test-id="statisticsInfo"]/parent::*[not(@hidden)]//table'
+stream info close button: '[test-id=popoverCloseButton]'

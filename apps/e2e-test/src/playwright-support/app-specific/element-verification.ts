@@ -11,10 +11,11 @@ export const verifyViewScreenSize = async (
   page: Page,
   selector: TargetSelector,
   screenSize: Screen,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element view size${negate ? ' not' : ''} to be ${screenSize}`);
-  const viewSize = await getViewScreenSize(page, selector);
+  const viewSize = await getViewScreenSize(page, selector, index);
   if (negate) {
     expect(viewSize).not.toEqual(screenSize);
   } else {
@@ -26,10 +27,11 @@ export const verifyDeviceStatus = async (
   page: Page,
   selector: TargetSelector,
   status: Status,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify device status${negate ? ' not' : ''} to be turned ${status}`);
-  const deviceStatus = await getDeviceStatus(page, selector);
+  const deviceStatus = await getDeviceStatus(page, selector, index);
   if (negate) {
     expect(deviceStatus).not.toEqual(status);
   } else {
