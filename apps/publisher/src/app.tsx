@@ -461,7 +461,7 @@ function App() {
                 key={path}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
-                test-id="millicastVideo"
+                test-id="millicastVideoLOCAL"
               >
                 <PublisherVideoView
                   isActive={false}
