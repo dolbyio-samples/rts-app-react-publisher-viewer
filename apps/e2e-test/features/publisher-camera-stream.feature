@@ -3,7 +3,6 @@ Feature: Publisher Camera Streaming
     As a publisher
     I want to do live streaming for an event with Camera
 
-    @only
     Scenario: Publisher should be presented with different streaming control buttons when stream is live
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"

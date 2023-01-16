@@ -3,7 +3,7 @@ import { Given, When } from '@cucumber/cucumber';
 
 import { options } from '../../../test.config';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData, saveData } from '../../hooks/utils';
+import { getData, hasData, saveData } from '../../hooks/utils';
 import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';
 import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 import { click, hover } from '../../playwright-support/generic/element-action';
@@ -33,7 +33,13 @@ Given(/^a viewer is on the "(waiting-room)" page$/, async function (this: Scenar
   this.currentPageName = pageName;
   this.currentPage = getData(this, 'viewerApp');
   saveData(this, 'App', 'viewer');
-  await goToURL(this.currentPage, getData(this, 'ViewerURL') as string);
+  let viewerURL: string;
+  if (hasData(this, 'ViewerURL')) {
+    viewerURL = getData(this, 'ViewerURL');
+  } else {
+    viewerURL = formatURL(options?.viewerURL as string);
+  }
+  await goToURL(this.currentPage, viewerURL);
 });
 
 When(/^the publisher switch to "([^"]*)" page$/, async function (this: ScenarioWorld, pageName: string) {
