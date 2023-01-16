@@ -22,13 +22,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
 import DeviceSelection from '@millicast-react/device-selection';
-import {
-  IconAddCamera,
-  IconPresent,
-  IconProfile,
-  IconStreamLocal,
-  IconStreamRemote,
-} from '@millicast-react/dolbyio-icons';
+import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 import LiveIndicator from '@millicast-react/live-indicator';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -40,7 +34,6 @@ import useNotification from '@millicast-react/use-notification';
 import usePublisher, { SourceState } from '@millicast-react/use-publisher';
 import useLocalFile from '@millicast-react/use-local-file';
 import PublisherVideoView from './components/publisher-video-view';
-import Input from '@millicast-react/input';
 import './styles/font.css';
 
 const MAX_SOURCES = 4;
