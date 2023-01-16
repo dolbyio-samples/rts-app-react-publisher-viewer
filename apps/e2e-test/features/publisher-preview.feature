@@ -79,7 +79,7 @@ Feature: Publisher Preview - Not Live
         When the publisher clicks on the "add source button"
         Then the "share screen button" should be visible
         And the "share screen button" should be enabled
-        And the "add source menu" should contain "Share screen,Add cameras,Stream local file,Stream remote file" options
+        And the "add source menu" should contain "Share screen,Add cameras,Stream local file" options
 
     # Bug/Issue: #200
     Scenario: Publisher should be able to share screen before starting the stream
