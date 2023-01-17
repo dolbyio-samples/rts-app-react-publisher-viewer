@@ -73,20 +73,20 @@ Feature: Publisher Preview - Not Live
         And the publisher turns On the "microphone of camera view"
         Then the "camera of camera view" should be turned On
         And the "microphone of camera view" should be turned On
-  
+
     Scenario: Publisher should be presented with Share screen option under Add Sources
         Given a publisher is on the "preview" page
         When the publisher clicks on the "add source button"
         Then the "share screen button" should be visible
         And the "share screen button" should be enabled
-        And the "add source menu" should contain "Share screen,Add cameras" options
+        And the "add source menu" should contain "Share screen,Add cameras,Stream local file" options
 
     # Bug/Issue: #200
     Scenario: Publisher should be able to share screen before starting the stream
         Given a publisher is on the "preview" page
         When the publisher clicks on the "add source button"
         And the publisher clicks on the "share screen button"
-        
+
         Then the "screen view" should be displayed
         And the "screen view" should be in Normal size
         And the "screen view source name" text should contain "screen"
@@ -108,9 +108,9 @@ Feature: Publisher Preview - Not Live
         And the "camera view source name" text should contain "fake"
         And the "camera view full screen button" should not be displayed
 
-        # TODO: Bug No #200
-        # And the "multi source label" should be displayed
-        # And the "multi source label" text should be "Multisource enabled"
+    # TODO: Bug No #200
+    # And the "multi source label" should be displayed
+    # And the "multi source label" text should be "Multisource enabled"
 
     Scenario: Publisher should be able to stop share screen before starting the stream
         Given a publisher is on the "preview" page
@@ -242,7 +242,7 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "stream" page
         And the "stop button" should be displayed
         And the "camera view" should be displayed
-        
+
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
         Then the "camera view" should be displayed
@@ -418,8 +418,8 @@ Feature: Publisher Preview - Not Live
         And the "camera view codec dropdown default" text should be "Codec  - vp9"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 2 Mbps"
         And the "camera view simulcast" should not be displayed
-        # TODO: Change in implementation
-        # And the "camera view simulcast" feature should be turned Off
+    # TODO: Change in implementation
+    # And the "camera view simulcast" feature should be turned Off
 
     Scenario: Publisher should be able to copy the viewer link before going live for the broadcast
         Given a publisher is on the "preview" page
@@ -447,7 +447,7 @@ Feature: Publisher Preview - Not Live
         And the "tooltip" text should be "Settings"
         When the publisher hovers the mouse over the "go live button"
         Then the "tooltip" should not be displayed
-        
+
         When the publisher hovers the mouse over the "camera view camera button"
         Then the "tooltip" should be displayed
         And the "tooltip" text should be "Toggle camera"
