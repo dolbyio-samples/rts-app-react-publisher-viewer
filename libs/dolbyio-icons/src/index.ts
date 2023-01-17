@@ -10,6 +10,8 @@ export { default as IconInfo } from './Info';
 export { default as IconSpeaker } from './Speaker';
 export { default as IconSpeakerOff } from './SpeakerOff';
 export { default as IconStream } from './Stream';
+export { default as IconStreamLocal } from './StreamLocal';
+export { default as IconStreamRemote } from './StreamRemote';
 export { default as IconPresent } from './Present';
 export { default as IconCopy } from './Copy';
 export { default as IconProfile } from './Profile';

@@ -1,8 +1,8 @@
 import { Meta, Story } from '@storybook/react';
-import { Button, ChakraProvider, Stack, Box, FormLabel } from '@chakra-ui/react';
+import { ChakraProvider, Stack, Box } from '@chakra-ui/react';
 import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import * as React from 'react';
-import useLocalFiles from '@millicast-react/use-local-files';
+import useLocalFile from '@millicast-react/use-local-file';
 import VideoView from '@millicast-react/video-view';
 import { useState } from 'react';
 
@@ -10,7 +10,7 @@ export default {} as Meta;
 
 export const Default: Story = () => {
   const [, setMediaStreams] = useState<MediaStream[]>([]);
-  const { register, files, remove, reset } = useLocalFiles();
+  const { register, file } = useLocalFile();
 
   const setMediaStream = (stream: MediaStream) => {
     setMediaStreams((prev) => [...prev, stream]);
@@ -24,29 +24,22 @@ export const Default: Story = () => {
     <ChakraProvider theme={dolbyioTheme}>
       <Box mb={2}>
         <Box>
-          <FormLabel htmlFor="uploadFile" cursor="pointer" textTransform="uppercase">
-            upload
-          </FormLabel>
-          <input id="uploadFile" hidden {...register()} />
+          <input id="uploadFile" {...register()} />
         </Box>
-        {files.length > 0 && <Button onClick={reset}>reset</Button>}
       </Box>
       <Stack direction="row" flexWrap="wrap">
-        {files.map((file) => (
+        {file ? (
           <Stack key={file}>
             <VideoView
               src={file}
-              width="400px"
+              width="800px"
               height="auto"
               onSrcMediaStreamReady={setMediaStream}
               onSrcMediaStreamClose={removeMediaStream}
               onError={(e) => console.log(e)}
             />
-            <Box>
-              <Button onClick={() => remove(file)}>remove</Button>
-            </Box>
           </Stack>
-        ))}
+        ) : undefined}
       </Stack>
     </ChakraProvider>
   );

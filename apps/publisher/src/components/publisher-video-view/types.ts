@@ -6,7 +6,7 @@ import { VideoSettingsDrawerProps } from './video-settings-drawer';
 
 export interface PublisherVideoViewProps {
   isActive: boolean;
-  settingsProps: Omit<VideoSettingsDrawerProps, 'isOpen' | 'onClose'>;
+  settingsProps?: Omit<VideoSettingsDrawerProps, 'isOpen' | 'onClose'>;
   statistics?: StreamStats;
   videoProps: VideoViewProps;
 }
