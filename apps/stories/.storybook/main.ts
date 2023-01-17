@@ -4,7 +4,7 @@ import { Options } from '@storybook/core-common';
 
 const config: StorybookViteConfig = {
   ...rootMain,
-  stories: [...rootMain.stories, '../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [...(rootMain.addons || [])],
   viteFinal: async (config, { configType }) => {
     // apply any global webpack configs that might have been specified in .storybook/main.ts

@@ -27,6 +27,7 @@ cucumber_report.json*
 
 # Secrets and tokens
 .env.local
+.test.env
 
 # Local Netlify folder
 .netlify
