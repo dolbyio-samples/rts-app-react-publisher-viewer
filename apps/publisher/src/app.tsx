@@ -93,6 +93,13 @@ function App() {
     // toggleVideo,
   } = useMultiMediaDevices();
 
+  useEffect(() => {
+    if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
+      setNewCamera(cameraList[0]);
+      setNewMicrophone(microphoneList[0]);
+    }
+  }, [isDeviceSelectionOpen, cameraList, microphoneList]);
+
   const {
     bitrateList,
     codecList,
@@ -495,6 +502,7 @@ function App() {
                 icon: <IconAddCamera />,
                 text: 'Add cameras',
                 onClick: handleOpenDeviceSelection,
+                isDisabled: cameraList.length === 0 || microphoneList.length === 0,
               },
               {
                 icon: <IconStreamLocal />,
@@ -522,8 +530,8 @@ function App() {
       <Box>
         <Modal onClose={onFileSelectModalClose} isOpen={isFileSelectModalOpen} isCentered>
           <ModalOverlay />
-          <ModalContent bgColor="dolbyNeutral.700">
-            <ModalCloseButton color="white" />
+          <ModalContent>
+            <ModalCloseButton />
             <ModalBody>
               <VStack>
                 <Heading as="h4" size="md">

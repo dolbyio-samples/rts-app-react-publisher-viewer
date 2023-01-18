@@ -4,6 +4,7 @@ import Heading from './styles/Heading';
 import Text from './styles/Text';
 import Tooltip from './styles/Tooltip';
 import Alert from './styles/Alert';
+import Modal from './styles/Modal';
 
 const dolbyioTheme = extendTheme({
   fonts: {
@@ -53,6 +54,7 @@ const dolbyioTheme = extendTheme({
     Text,
     Tooltip,
     Alert,
+    Modal,
   },
 });
 

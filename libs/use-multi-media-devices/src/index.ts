@@ -318,7 +318,7 @@ const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaD
         const constraints = {
           video: { cursor: 'always' },
           audio: true,
-        } as DisplayMediaStreamConstraints;
+        } as MediaStreamConstraints;
         const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
         dispatch({
           type: StreamsActionType.ADD_STREAM,
