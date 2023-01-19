@@ -52,10 +52,10 @@ const DeviceSelection = ({
     <Modal isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay>
         <ModalContent>
-          <ModalCloseButton />
+          <ModalCloseButton test-id="deviceSelectionClose" />
           <ModalBody p="2em">
             <VStack spacing={4}>
-              <Heading as="h4" size="md">
+              <Heading as="h4" size="md" test-id="deviceSelectionTitle">
                 Add Source
               </Heading>
               <Text size="md" color="dolbyNeutral.300">
