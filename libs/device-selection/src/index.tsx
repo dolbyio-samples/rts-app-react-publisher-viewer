@@ -32,8 +32,8 @@ const DeviceSelection = ({
     // TODO: update device selection to design as per Figma
     <Modal isOpen={isOpen} onClose={handleClose}>
       <ModalContent>
-        <ModalHeader>Select source</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader test-id="deviceSelectionTitle">Select source</ModalHeader>
+        <ModalCloseButton test-id="deviceSelectionClose" />
         <ModalBody>
           <Stack direction="column" spacing={4}>
             <Box>
@@ -61,7 +61,7 @@ const DeviceSelection = ({
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={!camera && !microphone} onClick={handleSubmit}>
+          <Button test-id="addDevice" isDisabled={!camera && !microphone} onClick={handleSubmit}>
             Add
           </Button>
         </ModalFooter>

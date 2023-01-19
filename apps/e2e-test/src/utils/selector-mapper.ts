@@ -112,7 +112,7 @@ export class SelectorMapper {
   }
 
   getSelector(pageName: string, selectorName: string): TargetSelector {
-    logger.debug(`Get Selector '${selectorName}' from '${pageName}' page`);
+    logger.info(`Get Selector '${selectorName}' from '${pageName}' page`);
     let targetSelector!: TargetSelector;
 
     if (this.selectorMap.has(pageName)) {

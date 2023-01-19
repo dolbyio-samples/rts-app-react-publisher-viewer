@@ -4,3 +4,4 @@ COMPONENTS:
   - 'add-source'
   - 'settings'
   - 'stream-stats'
+go live button: '[test-id=start-live-indicator]'

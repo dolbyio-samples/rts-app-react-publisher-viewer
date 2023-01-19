@@ -1,5 +1,5 @@
 /* eslint-disable func-names */
-import { When } from '@cucumber/cucumber';
+import { DataTable, When } from '@cucumber/cucumber';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import {
@@ -8,6 +8,9 @@ import {
   toogleSimulcast,
 } from '../../playwright-support/app-specific/element-action';
 import { Status } from '../../utils/types';
+import { arrayContainsAll } from '../generic/utils';
+import { addFileSource, addSource, configureSettings } from './workflow/workflow';
+import { getDefaultSettings } from './workflow/workflow.data';
 
 When(
   /^the publisher turns (Off|On) the "([^"]*)"$/,
@@ -32,5 +35,41 @@ When(
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
     const OptionsSelector = this.selectorMap.getSelector(this.currentPageName, `${selectorName} options`);
     await selectSettingDropdown(this.currentPage, targetSelector, OptionsSelector, option);
+  }
+);
+
+When(
+  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the default values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
+    const expectedData = getDefaultSettings(`publisher ${viewName}`);
+    await configureSettings(this, elementPosition, viewName, expectedData);
+  }
+);
+
+When(
+  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the (following|only) values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
+    const defaultExpectedData = getDefaultSettings(`publisher ${viewName}`);
+    let expectedData = dataTable.rowsHash();
+
+    if (!arrayContainsAll(Object.keys(defaultExpectedData), Object.keys(expectedData))) {
+      throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
+    }
+
+    if (type === 'following') {
+      expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
+    }
+    await configureSettings(this, elementPosition, viewName, expectedData);
+  }
+);
+
+When(/^the publisher adds "(camera|screen)" source$/, async function (this: ScenarioWorld, srcName: string) {
+  await addSource(this, srcName);
+});
+
+When(
+  /^the publisher adds "(local|remote)" file source with file "([^"]*)"$/,
+  async function (this: ScenarioWorld, srcName: string, filePath: string) {
+    await addFileSource(this, srcName, filePath);
   }
 );

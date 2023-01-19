@@ -47,7 +47,7 @@ const Timer = ({ isActive = false }: TimerProps) => {
       <Text fontSize="32px" lineHeight="1">
         {sessionTime}
       </Text>
-      {isActive && <Box w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
+      {isActive && <Box test-id="streamStatus" w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
     </Flex>
   );
 };
