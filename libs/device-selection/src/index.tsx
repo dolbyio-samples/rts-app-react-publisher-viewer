@@ -43,6 +43,8 @@ const DeviceSelection = ({
   useEffect(() => {
     if (camera) {
       updateVideoStream(camera);
+    } else {
+      setMediaStream(undefined);
     }
   }, [camera]);
 
@@ -65,11 +67,7 @@ const DeviceSelection = ({
                   elementResolver={deviceElementResolver}
                   elementsList={cameraList as unknown[]}
                   leftIcon={<IconCameraOn />}
-                  onSelect={(data: unknown) => {
-                    const camera = data as InputDeviceInfo;
-                    updateVideoStream(camera);
-                    handleSelectCamera(camera);
-                  }}
+                  onSelect={handleSelectCamera as (data: unknown) => void}
                   placeholder="Camera"
                   selected={camera?.label ?? ''}
                   testId="camera-select"

@@ -16,6 +16,7 @@ import {
   ModalCloseButton,
   ModalBody,
   Button,
+  Center,
 } from '@chakra-ui/react';
 import { StreamStats, VideoCodec } from '@millicast/sdk';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -538,9 +539,16 @@ function App() {
                   Add local media file
                 </Heading>
                 <Text fontSize="md">Pick a local file</Text>
-                <Box width="100%" pt="16px" pb="32px">
-                  <input id="uploadFile" {...register()} />
-                </Box>
+                <Center
+                  width="100%"
+                  pt="16px"
+                  pb="32px"
+                  sx={{
+                    '#pickFile': { color: 'white' },
+                  }}
+                >
+                  <input id="pickFile" {...register()} />
+                </Center>
                 <Button onClick={() => addFileSource()}>ADD STREAMING FILE</Button>
               </VStack>
             </ModalBody>
