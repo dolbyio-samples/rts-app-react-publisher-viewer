@@ -16,6 +16,10 @@ env:
   PR_TITLE: ${{ github.event.pull_request.title }}
   PR_NUM: ${{ github.event.number }}
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
