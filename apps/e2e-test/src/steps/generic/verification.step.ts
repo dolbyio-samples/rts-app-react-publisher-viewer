@@ -13,11 +13,12 @@ import { waitFor } from '../../playwright-support/generic/element-wait';
 import { State } from '../../utils/types';
 
 Then(
-  /^the "([^"]*)" should( not)? be (displayed|visible|invisible|hidden|enabled|disabled|editable|checked|selected)$/,
-  async function (this: ScenarioWorld, selectorName: string, negate: string, state: string) {
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "([^"]*)" should( not)? be (displayed|visible|invisible|hidden|enabled|disabled|editable|checked|selected)$/,
+  async function (this: ScenarioWorld, elementPosition: string, selectorName: string, negate: string, state: string) {
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+    const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
     const verifyMethod = async () => {
-      await verifyElementState(this.currentPage, targetSelector, state as State, !!negate);
+      await verifyElementState(this.currentPage, targetSelector, state as State, !!negate, elementIndex);
     };
     await waitFor(verifyMethod);
   }

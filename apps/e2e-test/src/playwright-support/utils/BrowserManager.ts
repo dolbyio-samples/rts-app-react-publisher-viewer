@@ -90,7 +90,7 @@ export class BrowserManager {
         break;
       case 'edge':
         launchOptions = this.options.launchOptions?.edge || {};
-        launchOptions.channel = 'edge';
+        launchOptions.channel = 'msedge';
         break;
       default:
         launchOptions = this.options.launchOptions?.chrome || {};

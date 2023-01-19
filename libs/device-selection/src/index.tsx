@@ -49,7 +49,6 @@ const DeviceSelection = ({
   }, [camera]);
 
   return (
-    // TODO: update device selection to design as per Figma
     <Modal isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay>
         <ModalContent>

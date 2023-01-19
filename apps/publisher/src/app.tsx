@@ -426,7 +426,7 @@ function App() {
                 key={streamId}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
-                test-id="millicastVideo"
+                test-id={'millicastVideo' + stream.type}
               >
                 <PublisherVideoView
                   isActive={isStreaming}

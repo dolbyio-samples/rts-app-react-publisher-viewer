@@ -137,28 +137,26 @@ Feature: Publisher Preview - Not Live
         And the "add source button" should be enabled
         And the "multi source label" should not be displayed
 
-
     Scenario: Publisher should be presented with Setting controls under Camera View
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
-        Then the "camera view settings drawer title" text should be "Settings"
+        Then the "camera view settings" should be displayed
+        Then the "camera view settings title" text should be "Settings"
         Then the number of "camera view settings dropdowns" count should be "3"
 
-    # TODO: resolution not implemented in setting yet
-    # Scenario: Publisher should be presented with resolution selection dropdown under settings
-    #     Given a publisher is on the "preview" page
-    #     And the publisher clicks on the "camera view setting button"
-    #     Then the "camera view settings drawer" should be displayed
-    #     And the "camera view resolution dropdown" should be displayed
-    #     And the "camera view resolution dropdown" should be enabled
-    #     And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
-    #     And the "camera view resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
+    Scenario: Publisher should be presented with resolution selection dropdown under settings
+        Given a publisher is on the "preview" page
+        And the publisher clicks on the "camera view setting button"
+        Then the "camera view settings" should be displayed
+        And the "camera view resolution dropdown" should be displayed
+        And the "camera view resolution dropdown" should be enabled
+        And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
+        And the "camera view resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
 
     Scenario: Publisher should be presented with codec selection dropdown under settings
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view codec dropdown" should be displayed
         And the "camera view codec dropdown" should be enabled
         And the "camera view codec dropdown default" text should be "Codec  - h264"
@@ -167,7 +165,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher should be presented with bitrate selection dropdown under settings
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view bitrate dropdown" should be displayed
         And the "camera view bitrate dropdown" should be enabled
         And the "camera view bitrate dropdown default" text should be "Bitrate  - Auto"
@@ -176,7 +174,7 @@ Feature: Publisher Preview - Not Live
     Scenario: Simulcast should be enabled by default with codec as h264
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
         And the "camera view simulcast switch" should be displayed
         And the "camera view simulcast switch" should be enabled
         And the "camera view simulcast label" text should be "Simulcast"
@@ -186,7 +184,7 @@ Feature: Publisher Preview - Not Live
     Scenario: VP9 codec is available for streaming when simulcast is disabled
         Given a publisher is on the "preview" page
         And the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         Then the publisher turns Off the "camera view simulcast" feature
         And the "camera view simulcast" feature should be turned Off
@@ -357,9 +355,8 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
-        # TODO: resolution not implemented in setting yet
-        # And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
+        Then the "camera view settings" should be displayed
+        And the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
         And the "camera view codec dropdown default" text should be "Codec  - h264"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - Auto"
         And the "camera view simulcast" feature should be turned On
@@ -367,11 +364,10 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher settings should be preserved with Simulcast On when changed on preview page after the streaming is stopped
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the publisher selects "vp8" option from the "camera view codec dropdown"
-        # TODO: resolution not implemented in setting yet
-        #And the publisher selects "1280x720" option from the "resolution dropdown"
+        And the publisher selects "1280x720" option from the "resolution dropdown"
         And the publisher selects "1 Mbps" option from the "camera view bitrate dropdown"
         # And the publisher turns On the "camera view simulcast" feature
         And the publisher clicks on the "camera view settings close button"
@@ -384,10 +380,9 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
-        # TODO: resolution not implemented in setting yet
-        # When the "resolution dropdown default" text should be "Resolution  - 1280x720"
+        When the "camera view resolution dropdown default" text should be "Resolution  - 1280x720"
         And the "camera view codec dropdown default" text should be "Codec  - vp8"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 1 Mbps"
         And the "camera view simulcast" feature should be turned On
@@ -395,12 +390,11 @@ Feature: Publisher Preview - Not Live
     Scenario: Publisher settings should be preserved with Simulcast Off when changed on preview page after the streaming is stopped
         Given a publisher is on the "preview" page
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
         When the publisher turns Off the "camera view simulcast" feature
         And the publisher selects "vp9" option from the "camera view codec dropdown"
-        # TODO: resolution not implemented in setting yet
-        # And the publisher selects "854x480" option from the "camera view resolution dropdown"
+        And the publisher selects "640x480" option from the "camera view resolution dropdown"
         And the publisher selects "2 Mbps" option from the "camera view bitrate dropdown"
         And the publisher clicks on the "camera view settings close button"
 
@@ -411,10 +405,9 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings drawer" should be displayed
+        Then the "camera view settings" should be displayed
 
-        # TODO: resolution not implemented in setting yet
-        # When the "camera view resolution dropdown default" text should be "Resolution  - 854x480"
+        When the "camera view resolution dropdown default" text should be "Resolution  - 640x480"
         And the "camera view codec dropdown default" text should be "Codec  - vp9"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 2 Mbps"
         And the "camera view simulcast" should not be displayed

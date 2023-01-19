@@ -6,15 +6,17 @@ import { TargetSelector } from '../../utils/selector-mapper';
 import { State } from '../../utils/types';
 
 import { getLocator } from './element-helper';
+import { getElementValue } from './element-read';
 
 export const verifyElementState = async (
   page: Page,
   selector: TargetSelector,
   state: State,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element state${negate ? ' not' : ''} to be ${state}`);
-  const locator = getLocator(page, selector);
+  const locator = getLocator(page, selector, index);
   const matcher = negate ? expect(locator).not : expect(locator);
 
   switch (state) {
@@ -39,6 +41,10 @@ export const verifyElementState = async (
     case 'checked':
       await matcher.toBeChecked();
       break;
+    case 'unselected':
+    case 'unchecked':
+      await matcher.not.toBeChecked();
+      break;
     default:
       throw Error(`Invalid Element State ${state}`);
   }
@@ -48,10 +54,11 @@ export const verifyElementText = async (
   page: Page,
   selector: TargetSelector,
   text: string,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element text${negate ? ' not' : ''} to be ${text}`);
-  const locator = getLocator(page, selector);
+  const locator = getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveText(text);
   } else {
@@ -59,14 +66,34 @@ export const verifyElementText = async (
   }
 };
 
+export const verifyElementMatchText = async (
+  page: Page,
+  selector: TargetSelector,
+  expPattern: string,
+  negate = false,
+  index?: number
+): Promise<void> => {
+  logger.trace(`Verify element text should${negate ? ' not' : ''} match to be ${expPattern}`);
+  const locator = getLocator(page, selector, index);
+  const actText = await locator.textContent();
+
+  const regExp = new RegExp(expPattern, 'i');
+  if (negate) {
+    await expect(actText).not.toMatch(regExp);
+  } else {
+    await expect(actText).toMatch(regExp);
+  }
+};
+
 export const verifyElementContainsText = async (
   page: Page,
   selector: TargetSelector,
   text: string,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element${negate ? ' does not' : ''} contain text ${text}`);
-  const locator = getLocator(page, selector);
+  const locator = getLocator(page, selector, index);
 
   if (negate) {
     await expect(locator).not.toContainText(text);
@@ -79,10 +106,11 @@ export const verifyElementValue = async (
   page: Page,
   selector: TargetSelector,
   text: string,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element text${negate ? ' not' : ''} to be ${text}`);
-  const locator = getLocator(page, selector);
+  const locator = getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveValue(text);
   } else {
@@ -90,36 +118,34 @@ export const verifyElementValue = async (
   }
 };
 
+export const verifyElementContainsValue = async (
+  page: Page,
+  selector: TargetSelector,
+  value: string,
+  negate = false,
+  index?: number
+): Promise<void> => {
+  logger.trace(`Verify element ${negate ? ' does not' : ''} contain value ${value}`);
+  const actValue = await getElementValue(page, selector, index);
+  if (negate) {
+    await expect(actValue).not.toMatch(value);
+  } else {
+    await expect(actValue).toMatch(value);
+  }
+};
+
 export const verifyElementCount = async (
   page: Page,
   selector: TargetSelector,
   count: number,
-  negate = false
+  negate = false,
+  index?: number
 ): Promise<void> => {
   logger.trace(`Verify element count${negate ? ' not' : ''} to be ${count}`);
-  const locator = getLocator(page, selector);
+  const locator = getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveCount(count);
   } else {
     await expect(locator).toHaveCount(count);
-  }
-};
-
-export const verifyTextMatch = (actText: string, expPattern: string, negate = false): void => {
-  logger.trace(`Verify text should ${negate ? ' not' : ''} match to ${expPattern}`);
-  const regExp = new RegExp(expPattern, 'i');
-  if (negate) {
-    expect(actText).not.toMatch(regExp);
-  } else {
-    expect(actText).toMatch(regExp);
-  }
-};
-
-export const verifyText = (actText: string, expText: string, negate = false): void => {
-  logger.trace(`Verify text should ${negate ? ' not' : ''} be equal to ${expText}`);
-  if (negate) {
-    expect(actText).not.toEqual(expText);
-  } else {
-    expect(actText).toEqual(expText);
   }
 };
