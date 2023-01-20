@@ -107,7 +107,8 @@ export const verifyView = async (
     keyCount++;
   }
 
-  verifyEqualTo(keyCount, keys.length, { message: 'Some stream view parameters are not verified' });
+  const message = 'Some stream view parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [key: string]: string }) => {
@@ -248,7 +249,8 @@ export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [
     keyCount++;
   }
 
-  verifyEqualTo(keyCount, keys.length, { message: 'Some header data parameters are not verified' });
+  const message = 'Some header data parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifySettings = async (
@@ -315,7 +317,8 @@ export const verifySettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
-  verifyEqualTo(keyCount, keys.length, { message: 'Some settings parameters are not verified' });
+  const message = 'Some settings parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifyStats = async (
@@ -344,22 +347,28 @@ export const verifyStats = async (
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
   const streamStatsKeys = Object.keys(streamStats);
+  let message;
   if (qualityTabs && appName === 'publisher') {
     logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-    verifyArrayContains(streamStatsKeys, ['High', 'Low'], {
-      message: 'Stream Info stats does not have High/Low quality tabs',
-    });
-    verifyLessThan(streamStatsKeys.length, 4, { message: 'Stream Info stats have more than 3 quality tabs' });
+    message = 'Stream Info stats does not have High/Low quality tabs';
+    verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
+
+    message = 'Stream Info stats have more than 3 quality tabs';
+    verifyLessThan(streamStatsKeys.length, 4, message);
 
     for (const quality of streamStatsKeys) {
       logger.info(`Verify ${viewName} stats with ${quality} quality`);
-      verifyArrayContains(['High', 'Medium', 'Low'], quality, { message: 'Unknown Stream Info quality' });
+      message = 'Unknown Stream Info quality';
+      verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
       validateStatsInfo(streamStats[quality], expectedData);
     }
   } else {
     logger.info(`Verify ${appName} ${viewName} stats`);
-    verifyArrayContains(streamStatsKeys, 'Standard', { message: 'Stream Info stats have quality tabs' });
-    verifyEqualTo(streamStatsKeys.length, 1, { message: 'Stream Info quality has less or more than 1 quality' });
+    message = 'Stream Info stats have quality tabs';
+    verifyArrayContains(streamStatsKeys, 'Standard', message);
+
+    message = 'Stream Info quality has less or more than 1 quality';
+    verifyEqualTo(streamStatsKeys.length, 1, message);
     validateStatsInfo(streamStats['Standard'], expectedData);
   }
 
@@ -464,7 +473,8 @@ export const configureSettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
-  verifyEqualTo(keyCount, keys.length, { message: 'Setting is not configured as expected' });
+  const message = 'Setting is not configured as expected';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {

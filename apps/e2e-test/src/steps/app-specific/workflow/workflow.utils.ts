@@ -100,14 +100,16 @@ export const validateValue = async (
 export const validateStatsInfo = (actStats: { [key: string]: string }, expStats: { [key: string]: string }) => {
   const keys = Object.keys(actStats);
 
-  verifyGreaterThanEqualTo(keys.length, 5, { message: 'Stream Info has less than 5 parameters in stats' });
+  let message = 'Stream Info has less than 5 parameters in stats';
+  verifyGreaterThanEqualTo(keys.length, 5, message);
 
   keys.forEach((key) => {
+    message = `Stats '${key}' not matched`;
     if (expStats[key].startsWith('regex: ')) {
       const pattern = expStats[key].split('regex: ')[1];
-      verifyMatch(actStats[key], pattern, { message: `Stats '${key}' not matched` });
+      verifyMatch(actStats[key], pattern, message);
     } else {
-      verifyEqualTo(actStats[key], expStats[key], { message: `Stats '${key}' not matched` });
+      verifyEqualTo(actStats[key], expStats[key], message);
     }
   });
 };
