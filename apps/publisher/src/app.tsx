@@ -16,6 +16,7 @@ import {
   ModalCloseButton,
   ModalBody,
   Button,
+  Center,
 } from '@chakra-ui/react';
 import { StreamStats, VideoCodec } from '@millicast/sdk';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -92,6 +93,13 @@ function App() {
     // toggleAudio,
     // toggleVideo,
   } = useMultiMediaDevices();
+
+  useEffect(() => {
+    if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
+      setNewCamera(cameraList[0]);
+      setNewMicrophone(microphoneList[0]);
+    }
+  }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   const {
     bitrateList,
@@ -495,6 +503,7 @@ function App() {
                 icon: <IconAddCamera />,
                 text: 'Add cameras',
                 onClick: handleOpenDeviceSelection,
+                isDisabled: cameraList.length === 0 || microphoneList.length === 0,
               },
               {
                 icon: <IconStreamLocal />,
@@ -522,17 +531,24 @@ function App() {
       <Box>
         <Modal onClose={onFileSelectModalClose} isOpen={isFileSelectModalOpen} isCentered>
           <ModalOverlay />
-          <ModalContent bgColor="dolbyNeutral.700">
-            <ModalCloseButton color="white" />
+          <ModalContent>
+            <ModalCloseButton />
             <ModalBody>
               <VStack>
                 <Heading as="h4" size="md">
                   Add local media file
                 </Heading>
                 <Text fontSize="md">Pick a local file</Text>
-                <Box width="100%" pt="16px" pb="32px">
-                  <input id="uploadFile" {...register()} />
-                </Box>
+                <Center
+                  width="100%"
+                  pt="16px"
+                  pb="32px"
+                  sx={{
+                    '#pickFile': { color: 'white' },
+                  }}
+                >
+                  <input id="pickFile" {...register()} />
+                </Center>
                 <Button onClick={() => addFileSource()}>ADD STREAMING FILE</Button>
               </VStack>
             </ModalBody>
