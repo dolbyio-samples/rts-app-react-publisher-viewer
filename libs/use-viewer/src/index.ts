@@ -1,85 +1,35 @@
-import { useCallback, useEffect, useRef, useMemo, useReducer } from 'react';
-import useState from 'react-usestateref';
 import {
+  BroadcastEvent,
   Director,
-  LayerInfo,
-  MediaLayer,
   MediaStreamLayers,
-  MediaTrackInfo,
-  StreamAudioInboundsStats,
-  StreamVideoInboundsStats,
+  MediaStreamSource,
+  StreamStats,
   View,
   ViewerCount,
+  ViewProjectSourceMapping,
 } from '@millicast/sdk';
-import { MediaStreamSource, ViewOptions, BroadcastEvent, ViewProjectSourceMapping } from '@millicast/sdk';
+import { useReducer, useRef, useState } from 'react';
 
-import type { StreamStats } from '@millicast/sdk';
-import { RemoteTrackSources, ViewerAction, ViewerActionType, ViewerProps, Viewer } from './types';
-import { addRemoteTrackAndProject, buildQualityOptions, unprojectAndRemoveRemoteTrack } from './utils';
+import reducer from './reducer';
+import { RemoteTrackSources, SimulcastQuality, SourceId, Viewer, ViewerActionType, ViewerProps } from './types';
+import {
+  addRemoteTrackAndProject,
+  reprojectToMapping,
+  reprojectToOriginalMapping,
+  unprojectRemoteTrackSource,
+} from './utils';
 
-const missedSourceId = new Date().valueOf().toString();
-const initialRemoteSources = new Map() as RemoteTrackSources;
+const defaultSourceId = new Date().valueOf().toString();
+const initialRemoteTrackSources = new Map() as RemoteTrackSources;
 
-const reducer = (sources: RemoteTrackSources, action: ViewerAction): RemoteTrackSources => {
-  switch (action.type) {
-    case ViewerActionType.ADD_SOURCE: {
-      console.log('add source', action.source.sourceId, 'old sources', sources);
-      if (sources.get(action.source.sourceId)) return sources;
-      const newSources = new Map(sources) as RemoteTrackSources;
-      newSources.set(action.source.sourceId, action.source);
-      console.log('newSources', newSources);
-      return newSources;
-    }
-    case ViewerActionType.REMOVE_SOURCE: {
-      console.log('remove source', action.sourceId);
-      const source = sources.get(action.sourceId);
-      if (!source) return sources;
-      unprojectAndRemoveRemoteTrack(source, action.viewer);
-      const newSources = new Map(sources) as RemoteTrackSources;
-      newSources.delete(action.sourceId);
-      return newSources;
-    }
-    case ViewerActionType.UPDATE_SOURCES_STATISTICS: {
-      const { audio, video } = action.statistics;
-      const newSources = new Map() as RemoteTrackSources;
-      for (const [id, source] of sources) {
-        const audioIn = audio.inbounds?.filter(({ mid }) => mid === source.audioMediaId) ?? [];
-        const videoIn = video.inbounds?.filter(({ mid }) => mid === source.videoMediaId) ?? [];
-        const newSource = {
-          ...source,
-          statistics: {
-            ...action.statistics,
-            audio: { inbounds: audioIn },
-            video: { inbounds: videoIn },
-          },
-        };
-        newSources.set(id, newSource);
-      }
-      return newSources;
-    }
-    case ViewerActionType.UPDATE_SOURCES_QUALITIES: {
-      const newSources = new Map(sources) as RemoteTrackSources;
-      Object.entries(action.medias).forEach(([mid, { active }]) => {
-        const [id, source] = Array.from(sources).find(([, { videoMediaId }]) => videoMediaId === mid) ?? [];
-        if (id && source) {
-          const newSource = {
-            ...source,
-            streamQualityOptions: buildQualityOptions(active),
-          };
-          newSources.set(id, newSource);
-        }
-      });
-      return newSources;
-    }
-    default:
-      return sources;
-  }
-};
+const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
+  const viewerRef = useRef<View>();
 
-const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }: ViewerProps): Viewer => {
-  const viewer = useRef<View>();
+  const [remoteTrackSources, dispatch] = useReducer(reducer, initialRemoteTrackSources);
+
   const [viewerCount, setViewerCount] = useState<number>(0);
-  const [remoteTrackSources, dispatch] = useReducer(reducer, initialRemoteSources);
+  const [mainStreamAudioMapping, setMainStreamAudioMapping] = useState<ViewProjectSourceMapping>();
+  const [mainStreamVideoMapping, setMainStreamVideoMapping] = useState<ViewProjectSourceMapping>();
 
   const handleInternalError = (error: unknown) => {
     if (error instanceof Error) {
@@ -89,127 +39,186 @@ const useViewer = ({ streamName, streamAccountId, subscriberToken, handleError }
     }
   };
 
-  // useEffect(() => {
-  //   switch (viewerState) {
-  //     case 'liveOff':
-  //       viewer.current?.webRTCPeer?.stopStats();
-  //       viewer.current?.webRTCPeer?.removeListener('stats', statisticsEventHandler);
-  //       break;
-  //     case 'liveOn':
-  //       {
-  //         viewer.current?.webRTCPeer?.initStats();
-  //         viewer.current?.webRTCPeer?.addListener('stats', statisticsEventHandler);
-  //       }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }, [viewerState]);
+  const connect = async () => {
+    const { current: viewer } = viewerRef;
 
-  // const updateSourceQuality = (sourceId: SourceId, quality: StreamQuality) => {
-  //   if (!viewer.current) return;
-  //   const option = streamQualityOptions.find((option) => option.streamQuality === selectedQuality);
-  //   if (!option) return;
-  //   streamQuality.current = selectedQuality;
-  //   if (selectedQuality === 'Auto') {
-  //     viewer.current.select({});
-  //   } else {
-  //     viewer.current.select(option.simulcastLayer);
-  //   }
-  // };
+    if (!viewer) {
+      return;
+    }
 
-  const broadcastEventHandler = useCallback(async (event: BroadcastEvent) => {
-    console.log('got event');
-    if (!viewer.current) return;
-    console.log('broadcast event', event);
+    try {
+      await viewer.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
+    } catch (error) {
+      console.error(error);
+
+      viewer.reconnect();
+    } finally {
+      viewer.webRTCPeer?.initStats();
+      viewer.webRTCPeer?.on('stats', handleStats);
+    }
+  };
+
+  const handleBroadcastEvent = async (event: BroadcastEvent) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    const { sourceId = defaultSourceId, tracks } = event.data as MediaStreamSource;
+
     switch (event.name) {
       case 'active':
-        {
-          console.log('active event');
-          const source = event.data as MediaStreamSource;
-          if (!source.sourceId) source.sourceId = missedSourceId;
-          try {
-            const trackSource = await addRemoteTrackAndProject(source.sourceId, source.tracks, viewer.current);
-            setTimeout(() => {
-              dispatch({ type: ViewerActionType.ADD_SOURCE, source: trackSource });
-            }, 1000);
-          } catch (error) {
-            handleInternalError(error);
-          }
+        try {
+          const newRemoteTrackSource = await addRemoteTrackAndProject(viewer, sourceId, tracks);
+
+          setTimeout(() => {
+            dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
+          }, 1000);
+        } catch (error) {
+          handleInternalError(error);
         }
         break;
-      case 'inactive':
-        {
-          const source = event.data as MediaStreamSource;
-          if (!source.sourceId) source.sourceId = missedSourceId;
-          dispatch({ type: ViewerActionType.REMOVE_SOURCE, sourceId: source.sourceId, viewer: viewer.current });
+
+      case 'inactive': {
+        const remoteTrackSource = remoteTrackSources.get(sourceId);
+
+        if (remoteTrackSource) {
+          unprojectRemoteTrackSource(viewer, remoteTrackSource);
+
+          dispatch({ type: ViewerActionType.REMOVE_SOURCE, sourceId });
         }
+
         break;
+      }
+
       case 'viewercount':
         setViewerCount((event.data as ViewerCount).viewercount);
         break;
+
       case 'layers': {
         dispatch({
           medias: (event.data as MediaStreamLayers).medias,
-          type: ViewerActionType.UPDATE_SOURCES_QUALITIES,
-          viewer: viewer.current as View,
+          type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS,
         });
         break;
       }
     }
-  }, []);
+    return;
+  };
 
-  const connect = async () => {
-    if (!viewer.current) return;
-    console.log('connecting');
-    try {
-      await viewer.current.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-    } catch (error) {
-      console.error(error);
-      viewer.current?.reconnect();
-    } finally {
-      console.log('register broadcastEvent');
-      viewer.current?.webRTCPeer?.initStats();
-      viewer.current?.webRTCPeer?.on('stats', (statistics: StreamStats) => {
-        dispatch({
-          statistics,
-          type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
-          viewer: viewer.current as View,
-        });
-      });
+  const handleStats = (statistics: StreamStats) => {
+    dispatch({
+      statistics,
+      type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
+    });
+  };
+
+  // Get the audio/video media IDs for the main stream from the track event
+  // and use them to create the main stream mapping
+  const handleTrack = (event: RTCTrackEvent) => {
+    const {
+      streams,
+      track: { kind },
+      transceiver: { mid },
+    } = event;
+
+    if (streams.length && mid !== null) {
+      const newMapping = { media: kind, mediaId: mid, trackId: kind };
+
+      if (kind === 'audio') {
+        setMainStreamAudioMapping(newMapping);
+      } else if (kind === 'video') {
+        setMainStreamVideoMapping(newMapping);
+      }
     }
   };
 
+  const projectToMainStream = async (sourceId: SourceId, prevSourceId?: SourceId) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    if (prevSourceId) {
+      const prevRemoteTrackSource = remoteTrackSources.get(prevSourceId);
+
+      if (prevRemoteTrackSource) {
+        await reprojectToOriginalMapping(viewer, prevRemoteTrackSource);
+      }
+    }
+
+    const currRemoteTrackSource = remoteTrackSources.get(sourceId);
+
+    if (currRemoteTrackSource) {
+      await reprojectToMapping(viewer, currRemoteTrackSource, mainStreamAudioMapping, mainStreamVideoMapping);
+    }
+  };
+
+  const setSourceQuality = (sourceId: SourceId, quality: SimulcastQuality) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    const { streamQuality, simulcastLayer } = quality;
+
+    if (streamQuality === 'Auto') {
+      viewer.select({});
+    } else {
+      viewer.select(simulcastLayer ?? {});
+    }
+
+    dispatch({
+      quality: streamQuality,
+      sourceId,
+      type: ViewerActionType.UPDATE_SOURCE_QUALITY,
+    });
+  };
+
   const startViewer = async () => {
-    console.log('start viewer', streamName, streamAccountId);
-    if (viewer.current?.isActive()) return;
-    try {
-      const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
-      viewer.current = new View(streamName, tokenGenerator);
-      viewer.current.on('broadcastEvent', broadcastEventHandler);
-      connect();
-    } catch (error) {
-      handleInternalError(error);
+    if (!viewerRef.current?.isActive()) {
+      try {
+        const newViewer = new View(streamName, tokenGenerator);
+
+        newViewer.on('broadcastEvent', handleBroadcastEvent);
+        newViewer.on('track', handleTrack);
+
+        viewerRef.current = newViewer;
+
+        connect();
+      } catch (error) {
+        handleInternalError(error);
+      }
     }
   };
 
   const stopViewer = () => {
-    if (!viewer.current) return;
-    console.log('stop viewer');
-    const curViewer = viewer.current;
-    viewer.current = undefined;
-    curViewer.removeAllListeners('broadcastEvent');
-    curViewer.webRTCPeer?.removeAllListeners('stats');
-    curViewer.webRTCPeer?.stopStats();
-    curViewer.stop();
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    viewer.removeAllListeners('broadcastEvent');
+    viewer.webRTCPeer?.removeAllListeners('stats');
+    viewer.webRTCPeer?.stopStats();
+    viewer.stop();
+
+    viewerRef.current = undefined;
   };
 
+  const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
+
   return {
+    projectToMainStream,
+    remoteTrackSources,
+    setSourceQuality,
     startViewer,
     stopViewer,
-    remoteTrackSources,
     viewerCount,
-    // updateSourceQuality,
   };
 };
 

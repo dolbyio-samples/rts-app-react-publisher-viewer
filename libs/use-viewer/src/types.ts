@@ -1,20 +1,22 @@
-import { LayerInfo, Media, StreamStats, View } from '@millicast/sdk';
+import { LayerInfo, Media, StreamStats } from '@millicast/sdk';
 
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
   REMOVE_SOURCE = 'REMOVE_SOURCE',
   UPDATE_SOURCES_STATISTICS = 'UPDATE_SOURCES_STATISTICS',
-  UPDATE_SOURCES_QUALITIES = 'UPDATE_SOURCES_QUALITIES',
+  UPDATE_SOURCE_QUALITY = 'UPDATE_SOURCE_QUALITY',
+  UPDATE_SOURCES_QUALITY_OPTIONS = 'UPDATE_SOURCES_QUALITY_OPTIONS',
 }
 
-export type RemoteTrackSource = {
+export interface RemoteTrackSource {
   audioMediaId?: string;
+  quality?: StreamQuality;
   mediaStream: MediaStream;
   sourceId: SourceId;
   statistics?: StreamStats;
   streamQualityOptions: SimulcastQuality[];
   videoMediaId?: string;
-};
+}
 
 export type RemoteTrackSources = Map<SourceId, RemoteTrackSource>;
 
@@ -27,23 +29,29 @@ export type SourceId = string;
 
 export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
-export type Viewer = {
+export interface Viewer {
+  projectToMainStream: (sourceId: SourceId, prevSourceId?: SourceId) => void;
+  remoteTrackSources: RemoteTrackSources;
+  setSourceQuality: (sourceId: SourceId, quality: SimulcastQuality) => void;
   startViewer: () => void;
   stopViewer: () => void;
-  remoteTrackSources: RemoteTrackSources;
-  // updateSourceQuality: (sourceId: SourceId, quality: StreamQuality) => void;
   viewerCount: number;
-};
+}
 
 export type ViewerAction =
-  | { source: RemoteTrackSource; type: ViewerActionType.ADD_SOURCE }
-  | { sourceId: SourceId; type: ViewerActionType.REMOVE_SOURCE; viewer: View }
-  | { statistics: StreamStats; type: ViewerActionType.UPDATE_SOURCES_STATISTICS; viewer: View }
-  | { medias: Media[]; type: ViewerActionType.UPDATE_SOURCES_QUALITIES; viewer: View };
+  | {
+      remoteTrackSource: RemoteTrackSource;
+      sourceId: SourceId;
+      type: ViewerActionType.ADD_SOURCE;
+    }
+  | { sourceId: SourceId; type: ViewerActionType.REMOVE_SOURCE }
+  | { statistics: StreamStats; type: ViewerActionType.UPDATE_SOURCES_STATISTICS }
+  | { quality: StreamQuality; sourceId: SourceId; type: ViewerActionType.UPDATE_SOURCE_QUALITY }
+  | { medias: Media[]; type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS };
 
-export type ViewerProps = {
+export interface ViewerProps {
   handleError?: (error: string) => void;
   streamAccountId: string;
   streamName: string;
   subscriberToken?: string;
-};
+}

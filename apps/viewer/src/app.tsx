@@ -1,29 +1,34 @@
-import { Box, Flex, HStack, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
-import ControlBar from '@millicast-react/control-bar';
-import { IconCameraOff, IconCameraOn, IconSpeaker, IconSpeakerOff } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
 import useNotification from '@millicast-react/use-notification';
-import useViewer from '@millicast-react/use-viewer';
+import useViewer, { SimulcastQuality, SourceId } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
 
 import './styles/font.css';
 
-type TrackSourceState = {
-  muteAudio: boolean;
-  hideVideo: boolean;
-};
-
-type TrackSourcesStates = Map<string, TrackSourceState>;
+const MAX_SOURCES = 3;
 
 function App() {
-  const [trackSourcesStates, setTrackSourcesStates] = useState<TrackSourcesStates>(new Map());
+  const href = new URL(window.location.href);
+  const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
+  const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
+
+  const { showError } = useNotification();
+
+  const { projectToMainStream, remoteTrackSources, setSourceQuality, startViewer, stopViewer, viewerCount } = useViewer(
+    { streamName, streamAccountId, handleError: showError }
+  );
+
+  const hasInitialisedMainStreamRef = useRef<boolean>(false);
+
+  const [mainSourceId, setMainSourceId] = useState<SourceId>();
 
   useEffect(() => {
     // prevent closing the page
@@ -38,32 +43,6 @@ function App() {
     };
   }, []);
 
-  const { showError } = useNotification();
-  const href = new URL(window.location.href);
-  const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
-  const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
-  const {
-    startViewer,
-    stopViewer,
-    remoteTrackSources,
-    viewerCount,
-    // updateSourceQuality: updateStreamQuality,
-  } = useViewer({
-    streamName,
-    streamAccountId,
-    handleError: showError,
-  });
-
-  // const [selectedQuality, setSelectedQuality] = useState(streamQualityOptions[0]?.streamQuality);
-  // const [mainStreamMuted, setMainStreamMuted] = useState(true);
-  // const [mainStreamDisplayVideo, setMainStreamDisplayVideo] = useState(true);
-  // TODO: map to remote track sources
-  // const [displayStreamMuted, setDisplayStreamMuted] = useState(true);
-  // const [displayStreamDisplayVideo, setDisplayStreamDisplayVideo] = useState(true);
-
-  const isStreaming = remoteTrackSources.size > 0;
-  const hasMultiStream = remoteTrackSources.size > 1;
-
   useEffect(() => {
     startViewer();
     return () => {
@@ -72,17 +51,48 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const newTrackSourcesStates = new Map(trackSourcesStates);
-    remoteTrackSources.forEach((source) => {
-      if (!newTrackSourcesStates.get(source.sourceId)) newTrackSourcesStates.delete(source.sourceId);
-    });
-    if (newTrackSourcesStates.size !== trackSourcesStates.size) {
-      setTrackSourcesStates(newTrackSourcesStates);
+    if (remoteTrackSources.size && !hasInitialisedMainStreamRef.current) {
+      const [[firstSourceId]] = remoteTrackSources;
+
+      setMainSourceId(firstSourceId);
+
+      projectToMainStream(firstSourceId);
+
+      hasInitialisedMainStreamRef.current = true;
     }
-  }, [remoteTrackSources]);
+  }, [remoteTrackSources.size]);
+
+  const handleClickVideo = (sourceId: SourceId) => {
+    projectToMainStream(sourceId, mainSourceId);
+
+    setMainSourceId(sourceId);
+  };
+
+  const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
+
+  const mainSourceSettings = () => {
+    if (!mainSource) {
+      return {};
+    }
+
+    const { quality, sourceId, streamQualityOptions } = mainSource;
+
+    return {
+      quality: {
+        handleSelect: (data: unknown) => {
+          setSourceQuality(sourceId, data as SimulcastQuality);
+        },
+        options: streamQualityOptions,
+        value: quality ?? '',
+      },
+    };
+  };
+
+  const hasMultiStream = remoteTrackSources.size > 1;
+  const isStreaming = remoteTrackSources.size > 0;
 
   return (
-    <Flex direction="column" minH="100vh" w="100vw" bg="background" p="6">
+    <Flex bg="background" direction="column" height="100vh" maxHeight="100vh" p={6} width="100vw">
       <Box w="100%" h="94px">
         <ActionBar title="Company name" />
         <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
@@ -114,72 +124,44 @@ function App() {
             <Text test-id="pageDesc">Please wait for livestream to begin.</Text>
           </VStack>
         ) : (
-          <HStack justifyContent="center" alignItems="center" w="100%" spacing="6">
-            {Array.from(remoteTrackSources).map(([id, source]) => {
-              const muteAudio = trackSourcesStates.get(id)?.muteAudio ?? true;
-              const hideVideo = trackSourcesStates.get(id)?.hideVideo ?? false;
-              const settings = {
-                quality: {
-                  // TODO: set quality
-                  handleSelect: () => null,
-                  options: source.streamQualityOptions,
-                  // TODO: current quality
-                  value: '',
-                },
-              };
-              return (
-                <VStack key={id} test-id="millicastVideo">
+          <HStack height="573px" maxHeight="573px">
+            <Box height="100%" test-id="millicastVideo">
+              <ViewerVideoView
+                isActive={isStreaming}
+                settingsProps={mainSourceSettings()}
+                statistics={mainSource?.statistics as StreamStats}
+                videoProps={{
+                  // TODO: hide video
+                  // displayVideo: !hideVideo,
+                  displayVideo: true,
+                  mediaStream: mainSource?.mediaStream,
+                  // TODO: mute audio
+                  // muted: muteAudio,
+                }}
+              />
+            </Box>
+            <VStack height="100%">
+              {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
+                <Box
+                  cursor="pointer"
+                  height={`calc(100% / ${MAX_SOURCES})`}
+                  key={sourceId}
+                  onClick={() => {
+                    handleClickVideo(sourceId);
+                  }}
+                  test-id="millicastVideo"
+                >
                   <ViewerVideoView
                     isActive={isStreaming}
-                    settingsProps={settings}
-                    statistics={source.statistics as StreamStats}
                     videoProps={{
-                      displayVideo: !hideVideo,
-                      height: '382px',
-                      mediaStream: source.mediaStream,
-                      muted: muteAudio,
-                      width: '688px',
+                      displayVideo: true,
+                      mediaStream,
+                      muted: true,
                     }}
                   />
-                  <ControlBar
-                    controls={[
-                      {
-                        isActive: muteAudio,
-                        icon: muteAudio ? <IconSpeakerOff /> : <IconSpeaker />,
-                        key: `toggle${id}AudioButton`,
-                        onClick: () => {
-                          const state = trackSourcesStates.get(id);
-                          if (!state) return;
-                          const newState = { ...state };
-                          newState.muteAudio = !newState.muteAudio;
-                          const newStates = new Map(trackSourcesStates);
-                          newStates.set(id, newState);
-                          setTrackSourcesStates(newStates);
-                        },
-                        testId: `toggle${id}AudioButton`,
-                        tooltipProps: { label: 'Toggle Audio', placement: 'top' },
-                      },
-                      {
-                        isActive: hideVideo,
-                        icon: hideVideo ? <IconCameraOff /> : <IconCameraOn />,
-                        key: `toggle${id}VideoButton`,
-                        onClick: () => {
-                          const state = trackSourcesStates.get(id);
-                          if (!state) return;
-                          const newState = { ...state };
-                          newState.hideVideo = !newState.hideVideo;
-                          const newStates = new Map(trackSourcesStates);
-                          newStates.set(id, newState);
-                          setTrackSourcesStates(newStates);
-                        },
-                        testId: `toggle${id}VideoButton`,
-                        tooltipProps: { label: 'Toggle Video', placement: 'top' },
-                      },
-                    ]}
-                  />
-                </VStack>
-              );
-            })}
+                </Box>
+              ))}
+            </VStack>
           </HStack>
         )}
       </Flex>
