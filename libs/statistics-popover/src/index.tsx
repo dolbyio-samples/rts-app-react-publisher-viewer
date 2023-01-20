@@ -73,10 +73,18 @@ const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
         </PopoverTrigger>
         <Portal>
           <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-            <PopoverHeader border="none" color="white" fontSize="16px" fontWeight="600" mb="16px" p={0}>
+            <PopoverHeader
+              test-id="streamInfoPopoverTitle"
+              border="none"
+              color="white"
+              fontSize="16px"
+              fontWeight="600"
+              mb="16px"
+              p={0}
+            >
               Stream information
             </PopoverHeader>
-            <PopoverCloseButton color="white" />
+            <PopoverCloseButton test-id="popoverCloseButton" color="white" />
             <PopoverBody p={0}>
               {tabs.length ? (
                 <Tabs tabs={tabs} />

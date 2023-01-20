@@ -5,12 +5,13 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Stack,
+  Heading,
+  ModalOverlay,
+  VStack,
+  Text,
 } from '@chakra-ui/react';
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import VideoView from '@millicast-react/video-view';
 import Dropdown from '@millicast-react/dropdown';
 import { IconCameraOn, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
 
@@ -28,44 +29,72 @@ const DeviceSelection = ({
   onSelectMicrophone: handleSelectMicrophone,
   onSubmit: handleSubmit,
 }: DeviceSelectionProps) => {
+  const [mediaStream, setMediaStream] = useState<MediaStream | undefined>();
+  const updateVideoStream = async (camera: InputDeviceInfo) => {
+    const constraints = {
+      video: {
+        deviceId: { exact: camera.deviceId },
+      },
+    };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    setMediaStream(stream);
+  };
+
+  useEffect(() => {
+    if (camera) {
+      updateVideoStream(camera);
+    } else {
+      setMediaStream(undefined);
+    }
+  }, [camera]);
+
   return (
-    // TODO: update device selection to design as per Figma
     <Modal isOpen={isOpen} onClose={handleClose}>
-      <ModalContent>
-        <ModalHeader>Select source</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Stack direction="column" spacing={4}>
-            <Box>
-              <Dropdown
-                elementResolver={deviceElementResolver}
-                elementsList={cameraList}
-                leftIcon={<IconCameraOn />}
-                onSelect={handleSelectCamera}
-                placeholder="Camera"
-                selected={camera?.label}
-                testId="camera-select"
-              />
-            </Box>
-            <Box>
-              <Dropdown
-                elementResolver={deviceElementResolver}
-                elementsList={microphoneList}
-                leftIcon={<IconMicrophoneOn />}
-                onSelect={handleSelectMicrophone}
-                placeholder="Microphone"
-                selected={microphone?.label}
-                testId="microphone-select"
-              />
-            </Box>
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <Button isDisabled={!camera && !microphone} onClick={handleSubmit}>
-            Add
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+      <ModalOverlay>
+        <ModalContent>
+          <ModalCloseButton test-id="deviceSelectionClose" />
+          <ModalBody p="2em">
+            <VStack spacing={4}>
+              <Heading as="h4" size="md" test-id="deviceSelectionTitle">
+                Add Source
+              </Heading>
+              <Text size="md" color="dolbyNeutral.300">
+                Select a camera and a microphone
+              </Text>
+              <Box width="100%">
+                <Dropdown
+                  elementResolver={deviceElementResolver}
+                  elementsList={cameraList as unknown[]}
+                  leftIcon={<IconCameraOn />}
+                  onSelect={handleSelectCamera as (data: unknown) => void}
+                  placeholder="Camera"
+                  selected={camera?.label ?? ''}
+                  testId="camera-select"
+                />
+              </Box>
+              {mediaStream ? (
+                <Box>
+                  <VideoView mediaStream={mediaStream} />{' '}
+                </Box>
+              ) : undefined}
+              <Box width="100%">
+                <Dropdown
+                  elementResolver={deviceElementResolver}
+                  elementsList={microphoneList as unknown[]}
+                  leftIcon={<IconMicrophoneOn />}
+                  onSelect={handleSelectMicrophone as (data: unknown) => void}
+                  placeholder="Microphone"
+                  selected={microphone?.label ?? ''}
+                  testId="microphone-select"
+                />
+              </Box>
+              <Button isDisabled={!camera || !microphone} onClick={handleSubmit}>
+                ADD TO STREAM
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </ModalOverlay>
     </Modal>
   );
 };

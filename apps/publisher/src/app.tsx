@@ -10,13 +10,20 @@ import {
   VStack,
   Wrap,
   WrapItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  Button,
+  Center,
 } from '@chakra-ui/react';
 import { StreamStats, VideoCodec } from '@millicast/sdk';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
 import DeviceSelection from '@millicast-react/device-selection';
-import { IconAddCamera, IconPresent, IconProfile } from '@millicast-react/dolbyio-icons';
+import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 import LiveIndicator from '@millicast-react/live-indicator';
 import ParticipantCount from '@millicast-react/participant-count';
@@ -26,7 +33,7 @@ import Timer from '@millicast-react/timer';
 import useMultiMediaDevices, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-devices';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher, { SourceState } from '@millicast-react/use-publisher';
-
+import useLocalFile from '@millicast-react/use-local-file';
 import PublisherVideoView from './components/publisher-video-view';
 import './styles/font.css';
 
@@ -43,6 +50,12 @@ function App() {
     onClose: handleCloseDeviceSelection,
   } = useDisclosure();
 
+  const {
+    isOpen: isFileSelectModalOpen,
+    onOpen: onFileSelectModalOpen,
+    onClose: onFileSelectModalClose,
+  } = useDisclosure();
+
   const [bitrates, setBitrates] = useState<Map<StreamId, number>>(new Map());
   const [codecs, setCodecs] = useState<Map<StreamId, VideoCodec>>(new Map());
   const [isSimulcastEnabled, setIsSimulcastEnabled] = useState(true);
@@ -51,7 +64,8 @@ function App() {
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo | undefined>(undefined);
   const [publisherStates, setPublisherStates] = useState<Map<StreamId, PublisherState>>(new Map());
   const [statistics, setStatistics] = useState<Map<StreamId, StreamStats>>(new Map());
-
+  const { register, file: localFile } = useLocalFile();
+  const [localFilePaths, setLocalFilePaths] = useState<string[]>([]);
   const { showError } = useNotification();
 
   useEffect(() => {
@@ -79,6 +93,13 @@ function App() {
     // toggleAudio,
     // toggleVideo,
   } = useMultiMediaDevices();
+
+  useEffect(() => {
+    if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
+      setNewCamera(cameraList[0]);
+      setNewMicrophone(microphoneList[0]);
+    }
+  }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   const {
     bitrateList,
@@ -278,7 +299,7 @@ function App() {
     const codec = codecs.get(streamId);
     const isStreaming = publisherStates.get(streamId) === 'streaming';
     const stream = streams.get(streamId);
-    const { type } = stream;
+    const streamType = stream?.type;
 
     const { height, width } = stream?.settings?.camera ?? {};
     const resolution = `${width}x${height}`;
@@ -314,8 +335,8 @@ function App() {
         handleSelect: (data: unknown) => {
           handleSelectVideoResolution(streamId, data as Resolution);
         },
-        isDisabled: type === StreamTypes.DISPLAY || isConnecting,
-        isHidden: type === StreamTypes.DISPLAY,
+        isDisabled: streamType === StreamTypes.DISPLAY || isConnecting,
+        isHidden: streamType === StreamTypes.DISPLAY,
         options: stream?.resolutions ?? [],
         value: resolution,
       },
@@ -328,6 +349,15 @@ function App() {
         value: isSimulcastEnabled,
       },
     };
+  };
+
+  const addFileSource = () => {
+    onFileSelectModalClose();
+    if (localFile) {
+      setLocalFilePaths((prev) => {
+        return [...prev, localFile];
+      });
+    }
   };
 
   return (
@@ -377,7 +407,7 @@ function App() {
         <Wrap justify="center" margin="0 auto" maxWidth="1388px" spacing="12px" width="100%">
           {Array.from(streams).map(([streamId, stream]) => {
             const [maxHeight, maxWidth] = (() => {
-              switch (streams.size) {
+              switch (streams.size + localFilePaths.length) {
                 case 1:
                   return ['564px', '1035px'];
                 case 2:
@@ -396,7 +426,7 @@ function App() {
                 key={streamId}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
-                test-id="millicastVideo"
+                test-id={'millicastVideo' + stream.type}
               >
                 <PublisherVideoView
                   isActive={isStreaming}
@@ -419,6 +449,43 @@ function App() {
               </WrapItem>
             );
           })}
+          {localFilePaths.map((path) => {
+            const [maxHeight, maxWidth] = (() => {
+              switch (streams.size + localFilePaths.length) {
+                case 1:
+                  return ['564px', '1035px'];
+                case 2:
+                  return ['382px', '688px'];
+                default:
+                  return ['282px', '508px'];
+              }
+            })();
+
+            const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
+
+            return (
+              <WrapItem
+                flexBasis={flexBasis}
+                key={path}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
+                test-id="millicastVideoLOCAL"
+              >
+                <PublisherVideoView
+                  isActive={false}
+                  videoProps={{
+                    displayFullscreenButton: false,
+                    placeholderNode: (
+                      <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
+                        <IconProfile />
+                      </Box>
+                    ),
+                    src: path,
+                  }}
+                />
+              </WrapItem>
+            );
+          })}
         </Wrap>
       </Flex>
       <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
@@ -436,15 +503,17 @@ function App() {
                 icon: <IconAddCamera />,
                 text: 'Add cameras',
                 onClick: handleOpenDeviceSelection,
+                isDisabled: cameraList.length === 0 || microphoneList.length === 0,
               },
-              // {
-              //   icon: <IconStream />,
-              //   text: 'Stream local file',
-              //   onClick: () => console.log('stream'),
-              //   isDisabled: true,
-              // },
+              {
+                icon: <IconStreamLocal />,
+                text: 'Stream local file',
+                onClick: () => {
+                  onFileSelectModalOpen();
+                },
+              },
             ]}
-            disabled={streams.size >= MAX_SOURCES}
+            disabled={streams.size + localFilePaths.length >= MAX_SOURCES}
           />
           <DeviceSelection
             camera={newCamera}
@@ -459,6 +528,33 @@ function App() {
           />
         </Flex>
       </HStack>
+      <Box>
+        <Modal onClose={onFileSelectModalClose} isOpen={isFileSelectModalOpen} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalCloseButton />
+            <ModalBody>
+              <VStack>
+                <Heading as="h4" size="md">
+                  Add local media file
+                </Heading>
+                <Text fontSize="md">Pick a local file</Text>
+                <Center
+                  width="100%"
+                  pt="16px"
+                  pb="32px"
+                  sx={{
+                    '#pickFile': { color: 'white' },
+                  }}
+                >
+                  <input id="pickFile" {...register()} />
+                </Center>
+                <Button onClick={() => addFileSource()}>ADD STREAMING FILE</Button>
+              </VStack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </Box>
       <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
