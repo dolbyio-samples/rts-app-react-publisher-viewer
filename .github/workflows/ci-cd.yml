@@ -16,6 +16,11 @@ env:
   PR_TITLE: ${{ github.event.pull_request.title }}
   PR_NUM: ${{ github.event.number }}
 
+# cancel previous run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
