@@ -6,11 +6,7 @@ import { verifyViewScreenSize } from '../../../playwright-support/app-specific/e
 import { clearText, click, enterText } from '../../../playwright-support/generic/element-action';
 
 import { waitFor } from '../../../playwright-support/generic/element-wait';
-import {
-  verifyArrayContains,
-  verifyCount,
-  verifyGreaterThanEqualTo,
-} from '../../../playwright-support/generic/verification';
+import { verifyArrayContains, verifyEqualTo, verifyLessThan } from '../../../playwright-support/generic/verification';
 import { delay } from '../../../utils/helper';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
@@ -111,7 +107,8 @@ export const verifyView = async (
     keyCount++;
   }
 
-  verifyCount(keyCount, keys.length, false);
+  const message = 'Some stream view parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [key: string]: string }) => {
@@ -252,7 +249,8 @@ export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [
     keyCount++;
   }
 
-  verifyCount(keyCount, keys.length, false);
+  const message = 'Some header data parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifySettings = async (
@@ -319,7 +317,8 @@ export const verifySettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
-  verifyCount(keyCount, keys.length, false);
+  const message = 'Some settings parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const verifyStats = async (
@@ -327,6 +326,7 @@ export const verifyStats = async (
   elementPosition: string,
   appName: string,
   viewName: string,
+  qualityTabs: boolean,
   expectedData: { [key: string]: string }
 ) => {
   const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
@@ -347,19 +347,28 @@ export const verifyStats = async (
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
   const streamStatsKeys = Object.keys(streamStats);
-  if (streamStatsKeys.includes('High') && appName === 'publisher') {
+  let message;
+  if (qualityTabs && appName === 'publisher') {
     logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-    verifyArrayContains(streamStatsKeys, 'High');
-    verifyGreaterThanEqualTo(streamStatsKeys.length, 2);
+    message = 'Stream Info stats does not have High/Low quality tabs';
+    verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
+
+    message = 'Stream Info stats have more than 3 quality tabs';
+    verifyLessThan(streamStatsKeys.length, 4, message);
 
     for (const quality of streamStatsKeys) {
       logger.info(`Verify ${viewName} stats with ${quality} quality`);
+      message = 'Unknown Stream Info quality';
+      verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
       validateStatsInfo(streamStats[quality], expectedData);
     }
   } else {
     logger.info(`Verify ${appName} ${viewName} stats`);
-    verifyArrayContains(streamStatsKeys, 'Standard');
-    verifyCount(streamStatsKeys.length, 1);
+    message = 'Stream Info stats have quality tabs';
+    verifyArrayContains(streamStatsKeys, 'Standard', message);
+
+    message = 'Stream Info quality has less or more than 1 quality';
+    verifyEqualTo(streamStatsKeys.length, 1, message);
     validateStatsInfo(streamStats['Standard'], expectedData);
   }
 
@@ -464,7 +473,8 @@ export const configureSettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
-  verifyCount(keyCount, keys.length, false);
+  const message = 'Setting is not configured as expected';
+  verifyEqualTo(keyCount, keys.length, message);
 };
 
 export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {

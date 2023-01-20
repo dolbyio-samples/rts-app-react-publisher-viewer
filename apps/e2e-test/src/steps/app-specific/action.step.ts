@@ -47,7 +47,7 @@ When(
 );
 
 When(
-  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the (following|only) values$/,
+  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const defaultExpectedData = getDefaultSettings(`publisher ${viewName}`);
     let expectedData = dataTable.rowsHash();
@@ -56,7 +56,7 @@ When(
       throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
     }
 
-    if (type === 'following') {
+    if (!type) {
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
     await configureSettings(this, elementPosition, viewName, expectedData);

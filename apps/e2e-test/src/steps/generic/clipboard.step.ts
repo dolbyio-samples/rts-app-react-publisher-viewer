@@ -5,7 +5,12 @@ import { readClipboardText } from '../../playwright-support/generic/clipboard-ac
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { replacePlaceholder } from './utils';
 import { getData, saveData } from '../../hooks/utils';
-import { verifyText, verifyTextMatch } from '../../playwright-support/generic/verification';
+import {
+  verifyEqualTo,
+  verifyMatch,
+  verifyNotEqualTo,
+  verifyNotMatch,
+} from '../../playwright-support/generic/verification';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,
@@ -19,7 +24,12 @@ Then(
   async function (this: ScenarioWorld, negate: string, expRegex: string) {
     const clipboardText = readClipboardText();
     const expPattern = replacePlaceholder(expRegex, this);
-    await verifyTextMatch(clipboardText, expPattern, !!negate);
+    const message = 'Clipboard text verification failed';
+    if (!negate) {
+      await verifyMatch(clipboardText, expPattern, message);
+    } else {
+      await verifyNotMatch(clipboardText, expPattern, message);
+    }
   }
 );
 
@@ -28,6 +38,11 @@ Then(
   async function (this: ScenarioWorld, negate: string, variableName: string) {
     const clipboardText = readClipboardText();
     const expText = getData(this, variableName);
-    await verifyText(clipboardText, expText, !!negate);
+    const message = 'Clipboard text verification failed';
+    if (!negate) {
+      await verifyEqualTo(clipboardText, expText, message);
+    } else {
+      await verifyNotEqualTo(clipboardText, expText, message);
+    }
   }
 );
