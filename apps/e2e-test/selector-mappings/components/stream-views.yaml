@@ -58,3 +58,29 @@ screen view setting button:
 screen view stream info button:
   - '$ref: screen view container'
   - '$ref: stream info button'
+
+
+local file view:
+  - '$ref: local file view container'
+  - '$ref: video frame'
+local file view source name:
+  - '$ref: local file view container'
+  - '$ref: source name'
+local file view microphone:
+  - '$ref: local file view container'
+  - '$ref: microphone button'
+local file view camera:
+  - '$ref: local file view container'
+  - '$ref: camera button'
+local file view stop share button:
+  - '$ref: local file view container'
+  - '[test-id=stopScreenShare]'
+local file view full screen button:
+  - '$ref: local file view container'
+  - '$ref: full screen button'
+local file view setting button:
+  - '$ref: local file view container'
+  - '$ref: setting button'
+local file view stream info button:
+  - '$ref: local file view container'
+  - '$ref: stream info button'

@@ -5,7 +5,7 @@ import { readClipboardText } from '../../playwright-support/generic/clipboard-ac
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { replacePlaceholder } from './utils';
 import { getData, saveData } from '../../hooks/utils';
-import { verifyText, verifyTextMatch } from '../../playwright-support/generic/verification';
+import { verifyEqualTo, verifyMatch } from '../../playwright-support/generic/verification';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,
@@ -19,7 +19,8 @@ Then(
   async function (this: ScenarioWorld, negate: string, expRegex: string) {
     const clipboardText = readClipboardText();
     const expPattern = replacePlaceholder(expRegex, this);
-    await verifyTextMatch(clipboardText, expPattern, !!negate);
+    const options = { negate: !!negate, message: 'Clipboard text verification failed' };
+    await verifyMatch(clipboardText, expPattern, options);
   }
 );
 
@@ -28,6 +29,7 @@ Then(
   async function (this: ScenarioWorld, negate: string, variableName: string) {
     const clipboardText = readClipboardText();
     const expText = getData(this, variableName);
-    await verifyText(clipboardText, expText, !!negate);
+    const options = { negate: !!negate, message: 'Clipboard text verification failed' };
+    await verifyEqualTo(clipboardText, expText, options);
   }
 );
