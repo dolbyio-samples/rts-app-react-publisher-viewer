@@ -13,7 +13,7 @@ import ViewerVideoView from './components/viewer-video-view';
 
 import './styles/font.css';
 
-const MAX_SOURCES = 3;
+const MAX_SOURCES = 4;
 
 function App() {
   const href = new URL(window.location.href);
