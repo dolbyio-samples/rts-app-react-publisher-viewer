@@ -6,7 +6,7 @@ const reducer = (remoteTrackSources: RemoteTrackSources, action: ViewerAction): 
     case ViewerActionType.ADD_SOURCE: {
       const { sourceId, remoteTrackSource } = action;
 
-      const newRemoteTrackSources = new Map([...remoteTrackSources, [sourceId, remoteTrackSource]]);
+      const newRemoteTrackSources = new Map([[sourceId, remoteTrackSource], ...remoteTrackSources]);
 
       return newRemoteTrackSources;
     }

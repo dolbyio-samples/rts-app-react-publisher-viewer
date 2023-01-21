@@ -76,7 +76,7 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
   return [{ streamQuality: 'Auto' } as SimulcastQuality, ...qualityOptions];
 };
 
-export const reprojectToMapping = async (
+export const projectRemoteTrackSource = async (
   viewer: View,
   source: RemoteTrackSource,
   audioMapping?: ViewProjectSourceMapping,
@@ -94,37 +94,7 @@ export const reprojectToMapping = async (
     mapping.push(videoMapping);
   }
 
-  // await unprojectRemoteTrackSource(viewer, source);
-
-  try {
-    console.log('Reproject remote track to main stream', source);
-    await viewer.project(sourceId, mapping);
-  } catch (error: unknown) {
-    console.error(`Failed to reproject remote track to main stream mapping: ${error}`);
-  }
-};
-
-export const reprojectToOriginalMapping = async (viewer: View, source: RemoteTrackSource) => {
-  const { audioMediaId, sourceId, videoMediaId } = source;
-
-  const mapping: ViewProjectSourceMapping[] = [];
-
-  if (audioMediaId) {
-    mapping.push({ media: 'audio', mediaId: audioMediaId, trackId: 'audio' });
-  }
-
-  if (videoMediaId) {
-    mapping.push({ media: 'video', mediaId: videoMediaId, trackId: 'video' });
-  }
-
-  // await unprojectRemoteTrackSource(viewer, source);
-
-  try {
-    console.log('reproject remote track to original mapping', source);
-    await viewer.project(sourceId, mapping);
-  } catch (error: unknown) {
-    console.error(`Failed to reproject remote track to original mapping: ${error}`);
-  }
+  await viewer.project(sourceId, mapping);
 };
 
 export const unprojectRemoteTrackSource = async (viewer: View, source: RemoteTrackSource) => {
@@ -134,9 +104,5 @@ export const unprojectRemoteTrackSource = async (viewer: View, source: RemoteTra
     return;
   }
 
-  try {
-    await viewer.unproject(mediaIds);
-  } catch (error: unknown) {
-    console.error(`Failed to unproject remote track: ${error}`);
-  }
+  await viewer.unproject(mediaIds);
 };

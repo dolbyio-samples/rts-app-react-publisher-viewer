@@ -30,6 +30,7 @@ export type SourceId = string;
 export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export interface Viewer {
+  mainMediaStream?: MediaStream;
   projectToMainStream: (sourceId: SourceId, prevSourceId?: SourceId) => void;
   remoteTrackSources: RemoteTrackSources;
   setSourceQuality: (sourceId: SourceId, quality: SimulcastQuality) => void;

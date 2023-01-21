@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
 import InfoLabel from '@millicast-react/info-label';
@@ -17,21 +17,26 @@ const MAX_SOURCES = 4;
 
 function App() {
   const href = new URL(window.location.href);
+
   const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
   const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_MILLICAST_STREAM_ID;
 
   const { showError } = useNotification();
 
-  const { projectToMainStream, remoteTrackSources, setSourceQuality, startViewer, stopViewer, viewerCount } = useViewer(
-    { streamName, streamAccountId, handleError: showError }
-  );
-
-  const hasInitialisedMainStreamRef = useRef<boolean>(false);
+  const {
+    mainMediaStream,
+    projectToMainStream,
+    remoteTrackSources,
+    setSourceQuality,
+    startViewer,
+    stopViewer,
+    viewerCount,
+  } = useViewer({ streamName, streamAccountId, handleError: showError });
 
   const [mainSourceId, setMainSourceId] = useState<SourceId>();
 
+  // Prevent closing the page
   useEffect(() => {
-    // prevent closing the page
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
       event.returnValue = '';
     };
@@ -50,27 +55,28 @@ function App() {
     };
   }, []);
 
+  // Assign the first source as the initial main stream
   useEffect(() => {
-    if (remoteTrackSources.size && !hasInitialisedMainStreamRef.current) {
+    if (remoteTrackSources.size && mainMediaStream) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
-
-      projectToMainStream(firstSourceId);
-
-      hasInitialisedMainStreamRef.current = true;
     }
   }, [remoteTrackSources.size]);
 
-  const handleClickVideo = (sourceId: SourceId) => {
-    projectToMainStream(sourceId, mainSourceId);
+  useEffect(() => {
+    if (mainSourceId) {
+      projectToMainStream(mainSourceId);
+    }
+  }, [mainSourceId]);
 
+  const handleClickVideo = (sourceId: SourceId) => {
     setMainSourceId(sourceId);
   };
 
   const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
 
-  const mainSourceSettings = () => {
+  const mainSourceSettings = useCallback(() => {
     if (!mainSource) {
       return {};
     }
@@ -86,7 +92,7 @@ function App() {
         value: quality ?? '',
       },
     };
-  };
+  }, [mainSource]);
 
   const hasMultiStream = remoteTrackSources.size > 1;
   const isStreaming = remoteTrackSources.size > 0;
@@ -134,7 +140,7 @@ function App() {
                   // TODO: hide video
                   // displayVideo: !hideVideo,
                   displayVideo: true,
-                  mediaStream: mainSource?.mediaStream,
+                  mediaStream: mainMediaStream,
                   // TODO: mute audio
                   // muted: muteAudio,
                 }}
