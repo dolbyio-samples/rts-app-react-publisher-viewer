@@ -57,7 +57,7 @@ function App() {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (remoteTrackSources.size && mainMediaStream) {
+    if (remoteTrackSources.size && !mainSourceId) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
@@ -156,6 +156,7 @@ function App() {
                     handleClickVideo(sourceId);
                   }}
                   test-id="millicastVideo"
+                  width="100%"
                 >
                   <ViewerVideoView
                     isActive={isStreaming}

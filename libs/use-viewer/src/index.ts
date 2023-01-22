@@ -54,6 +54,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       while (true) {
         try {
           await viewer.reconnect();
+
+          break;
         } catch (reconnectError) {
           if (numReconnectionAttempts++ >= MAX_RECONNECTION_ATTEMPTS) {
             handleInternalError(reconnectError);

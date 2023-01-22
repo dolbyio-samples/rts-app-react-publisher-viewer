@@ -29,16 +29,18 @@ const reducer = (remoteTrackSources: RemoteTrackSources, action: ViewerAction): 
         const audioIn = audio.inbounds?.filter(({ mid }) => mid === audioMediaId) ?? [];
         const videoIn = video.inbounds?.filter(({ mid }) => mid === videoMediaId) ?? [];
 
-        const newRemoteTrackSource = {
-          ...remoteTrackSource,
-          statistics: {
-            ...action.statistics,
-            audio: { inbounds: audioIn },
-            video: { inbounds: videoIn },
-          },
-        };
+        if (audioIn.length && videoIn.length) {
+          const newRemoteTrackSource = {
+            ...remoteTrackSource,
+            statistics: {
+              ...action.statistics,
+              audio: { inbounds: audioIn },
+              video: { inbounds: videoIn },
+            },
+          };
 
-        newRemoteTrackSources.set(sourceId, newRemoteTrackSource);
+          newRemoteTrackSources.set(sourceId, newRemoteTrackSource);
+        }
       });
 
       return newRemoteTrackSources;
