@@ -12,15 +12,16 @@ import { useReducer, useRef, useState } from 'react';
 
 import reducer from './reducer';
 import { RemoteTrackSources, SimulcastQuality, SourceId, Viewer, ViewerActionType, ViewerProps } from './types';
-import { addRemoteTrackAndProject, projectRemoteTrackSource, unprojectRemoteTrackSource } from './utils';
+import { addRemoteTrackAndProject, unprojectFromStream, projectToStream } from './utils';
 
-const defaultSourceId = new Date().valueOf().toString();
-const initialRemoteTrackSources = new Map() as RemoteTrackSources;
+const DEFAULT_SOURCE_ID = new Date().valueOf().toString();
+const INITIAL_REMOTE_TRACK_SOURCES = new Map() as RemoteTrackSources;
+const MAX_RECONNECTION_ATTEMPTS = 3;
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const viewerRef = useRef<View>();
 
-  const [remoteTrackSources, dispatch] = useReducer(reducer, initialRemoteTrackSources);
+  const [remoteTrackSources, dispatch] = useReducer(reducer, INITIAL_REMOTE_TRACK_SOURCES);
 
   const [mainAudioMapping, setMainAudioMapping] = useState<ViewProjectSourceMapping>();
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
@@ -42,16 +43,29 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
+    let numReconnectionAttempts = 0;
+
     try {
       await viewer.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-    } catch (error) {
-      handleInternalError(error);
+    } catch (connectError) {
+      handleInternalError(connectError);
 
-      await viewer.reconnect();
-    } finally {
-      viewer.webRTCPeer?.initStats();
-      viewer.webRTCPeer?.on('stats', handleStats);
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        try {
+          await viewer.reconnect();
+        } catch (reconnectError) {
+          if (numReconnectionAttempts++ >= MAX_RECONNECTION_ATTEMPTS) {
+            handleInternalError(reconnectError);
+
+            return;
+          }
+        }
+      }
     }
+
+    viewer.webRTCPeer?.initStats();
+    viewer.webRTCPeer?.on('stats', handleStats);
   };
 
   const handleBroadcastEvent = async (event: BroadcastEvent) => {
@@ -61,7 +75,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    const { sourceId = defaultSourceId, tracks } = event.data as MediaStreamSource;
+    const { sourceId = DEFAULT_SOURCE_ID, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
       case 'active':
@@ -81,7 +95,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
         if (remoteTrackSource) {
           try {
-            await unprojectRemoteTrackSource(viewer, remoteTrackSource);
+            await unprojectFromStream(viewer, remoteTrackSource);
           } catch (error) {
             handleInternalError(error);
           }
@@ -147,7 +161,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
-        await projectRemoteTrackSource(viewer, remoteTrackSource, mainAudioMapping, mainVideoMapping);
+        await projectToStream(viewer, remoteTrackSource, mainAudioMapping, mainVideoMapping);
       } catch (error) {
         handleInternalError(error);
       }

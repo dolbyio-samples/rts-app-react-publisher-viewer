@@ -76,7 +76,17 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
   return [{ streamQuality: 'Auto' } as SimulcastQuality, ...qualityOptions];
 };
 
-export const projectRemoteTrackSource = async (
+export const unprojectFromStream = async (viewer: View, source: RemoteTrackSource) => {
+  const mediaIds = [...(source.audioMediaId ?? []), ...(source.videoMediaId ?? [])];
+
+  if (!mediaIds.length) {
+    return;
+  }
+
+  await viewer.unproject(mediaIds);
+};
+
+export const projectToStream = async (
   viewer: View,
   source: RemoteTrackSource,
   audioMapping?: ViewProjectSourceMapping,
@@ -95,14 +105,4 @@ export const projectRemoteTrackSource = async (
   }
 
   await viewer.project(sourceId, mapping);
-};
-
-export const unprojectRemoteTrackSource = async (viewer: View, source: RemoteTrackSource) => {
-  const mediaIds = [...(source.audioMediaId ?? []), ...(source.videoMediaId ?? [])];
-
-  if (!mediaIds.length) {
-    return;
-  }
-
-  await viewer.unproject(mediaIds);
 };
