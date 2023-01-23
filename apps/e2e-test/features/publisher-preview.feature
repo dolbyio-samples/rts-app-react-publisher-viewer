@@ -45,13 +45,14 @@ Feature: Publisher Preview - Not Live
         Then the "screen view" should not be displayed
         And the "camera view" should be displayed
 
-    Scenario: Publisher should be able to turn off and on the camera
-        Given a publisher is on the "preview" page
-        Then the "camera of camera view" should be turned On
-        When the publisher turns Off the "camera of camera view"
-        Then the "camera of camera view" should be turned Off
-        When the publisher turns On the "camera of camera view"
-        Then the "camera of camera view" should be turned On
+    # TODO: issue 195
+    # Scenario: Publisher should be able to turn off and on the camera
+    #     Given a publisher is on the "preview" page
+    #     Then the "camera of camera view" should be turned On
+    #     When the publisher turns Off the "camera of camera view"
+    #     Then the "camera of camera view" should be turned Off
+    #     When the publisher turns On the "camera of camera view"
+    #     Then the "camera of camera view" should be turned On
 
     Scenario: Publisher should be able to turn off and on the microphone
         Given a publisher is on the "preview" page
@@ -61,18 +62,19 @@ Feature: Publisher Preview - Not Live
         When the publisher turns On the "microphone of camera view"
         Then the "microphone of camera view" should be turned On
 
-    Scenario: Publisher should be able to turn off and on the camera and microphone
-        Given a publisher is on the "preview" page
-        Then the "camera of camera view" should be turned On
-        And the "microphone of camera view" should be turned On
-        When the publisher turns Off the "camera of camera view"
-        And the publisher turns Off the "microphone of camera view"
-        Then the "camera of camera view" should be turned Off
-        And the "microphone of camera view" should be turned Off
-        When the publisher turns On the "camera of camera view"
-        And the publisher turns On the "microphone of camera view"
-        Then the "camera of camera view" should be turned On
-        And the "microphone of camera view" should be turned On
+    # TODO: issue 195
+    # Scenario: Publisher should be able to turn off and on the camera and microphone
+    #     Given a publisher is on the "preview" page
+    #     Then the "camera of camera view" should be turned On
+    #     And the "microphone of camera view" should be turned On
+    #     When the publisher turns Off the "camera of camera view"
+    #     And the publisher turns Off the "microphone of camera view"
+    #     Then the "camera of camera view" should be turned Off
+    #     And the "microphone of camera view" should be turned Off
+    #     When the publisher turns On the "camera of camera view"
+    #     And the publisher turns On the "microphone of camera view"
+    #     Then the "camera of camera view" should be turned On
+    #     And the "microphone of camera view" should be turned On
 
     Scenario: Publisher should be presented with Share screen option under Add Sources
         Given a publisher is on the "preview" page

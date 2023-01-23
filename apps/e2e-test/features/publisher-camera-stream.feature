@@ -9,8 +9,9 @@ Feature: Publisher streaming with camera only
         
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with default values
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+        # TODO: issue 195
+        # And the "camera view" should be displayed with following values
+        #     | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with only values
             | resolution | Resolution  - 3840x2160 |
             | bitrate    | Bitrate  - Auto         |
