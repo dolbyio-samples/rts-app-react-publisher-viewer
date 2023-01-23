@@ -12,7 +12,7 @@ import {
   verifyElementValue,
 } from '../../../playwright-support/generic/element-verification';
 import { waitFor } from '../../../playwright-support/generic/element-wait';
-import { verifyTextMatch, verifyText as verifyTextEqual } from '../../../playwright-support/generic/verification';
+import { verifyGreaterThanEqualTo, verifyMatch, verifyEqualTo } from '../../../playwright-support/generic/verification';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status } from '../../../utils/types';
 
@@ -98,14 +98,18 @@ export const validateValue = async (
 };
 
 export const validateStatsInfo = (actStats: { [key: string]: string }, expStats: { [key: string]: string }) => {
-  const keys = Object.keys(expStats);
+  const keys = Object.keys(actStats);
+
+  let message = 'Stream Info has less than 5 parameters in stats';
+  verifyGreaterThanEqualTo(keys.length, 5, message);
 
   keys.forEach((key) => {
+    message = `Stats '${key}' not matched`;
     if (expStats[key].startsWith('regex: ')) {
       const pattern = expStats[key].split('regex: ')[1];
-      verifyTextMatch(actStats[key], pattern);
+      verifyMatch(actStats[key], pattern, message);
     } else {
-      verifyTextEqual(actStats[key], expStats[key]);
+      verifyEqualTo(actStats[key], expStats[key], message);
     }
   });
 };

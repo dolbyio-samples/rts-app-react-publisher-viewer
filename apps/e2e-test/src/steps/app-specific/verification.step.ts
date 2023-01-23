@@ -76,7 +76,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" should be displayed with (following|only) values$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" should be displayed with following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultViewData(`${appName} ${viewName}`);
@@ -86,7 +86,7 @@ Then(
       throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
     }
 
-    if (type === 'following') {
+    if (!type) {
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
 
@@ -104,7 +104,7 @@ Then(
 );
 
 Then(
-  /^the "(preview header|waiting room header|streaming header)" should be displayed with (following|only) values$/,
+  /^the "(preview header|waiting room header|streaming header)" should be displayed with following values( only)?$/,
   async function (this: ScenarioWorld, headerName: string, type: string, dataTable: DataTable) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultHeaderData(`${appName} ${headerName}`);
@@ -114,7 +114,7 @@ Then(
       throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
     }
 
-    if (type === 'following') {
+    if (!type) {
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
 
@@ -132,7 +132,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" setting should be displayed with (following|only) values$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" setting should be displayed with following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultSettingsData(`${appName} ${viewName}`);
@@ -142,7 +142,7 @@ Then(
       throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
     }
 
-    if (type === 'following') {
+    if (!type) {
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
 
@@ -151,17 +151,24 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats should be displayed with default values$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs)? should be displayed with default values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string, qualityTabs: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultStatsData(`${appName} ${viewName}`);
-    await verifyStats(this, elementPosition, appName, viewName, expectedData);
+    await verifyStats(this, elementPosition, appName, viewName, !!qualityTabs, expectedData);
   }
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats should be displayed with (following|only) values$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs)? should be displayed with following values( only)?$/,
+  async function (
+    this: ScenarioWorld,
+    elementPosition: string,
+    viewName: string,
+    qualityTabs: string,
+    type: string,
+    dataTable: DataTable
+  ) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultStatsData(`${appName} ${viewName}`);
     let expectedData = dataTable.rowsHash();
@@ -170,10 +177,10 @@ Then(
       throw Error(`Invalid parameter/key name - ${Object.keys(expectedData)}`);
     }
 
-    if (type === 'following') {
+    if (!type) {
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
 
-    await verifyStats(this, elementPosition, appName, viewName, expectedData);
+    await verifyStats(this, elementPosition, appName, viewName, !!qualityTabs, expectedData);
   }
 );

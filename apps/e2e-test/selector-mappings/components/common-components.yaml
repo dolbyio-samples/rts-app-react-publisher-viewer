@@ -1,6 +1,6 @@
 # Source view containers
 camera view container: '[test-id="millicastVideoMEDIA"]'
 screen view container: '[test-id="millicastVideoDISPLAY"]'
-
+local file view container: '[test-id="millicastVideoLOCAL"]'
 #camera view container: '//*[@test-id="sourceName" and contains(text(), "fake")]/ancestor::*[@test-id="millicastVideo"]'
 #screen view container: '//*[@test-id="sourceName" and contains(text(), "screen")]/ancestor::*[@test-id="millicastVideo"]'
