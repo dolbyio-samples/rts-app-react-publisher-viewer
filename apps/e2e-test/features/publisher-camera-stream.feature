@@ -8,9 +8,8 @@ Feature: Publisher streaming with camera only
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with default values
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - 3840x2160 |
             | bitrate    | Bitrate  - Auto         |
@@ -43,96 +42,88 @@ Feature: Publisher streaming with camera only
         And the "streaming header" should be displayed with following values only
             | timer text | regex: ^00:00:[0][4-9]$ |
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to toggle camera and microphone when streaming
-    #     Given a publisher is on the "preview" page
-    #     And the publisher clicks on the "go live button"
-    #     Then the publisher should be navigated to "stream" page
-    #     And the "streaming header" should be displayed with following values only
-    #         | stop button | displayed\|enabled |
+    Scenario: Publisher should be able to toggle camera and microphone when streaming
+        Given a publisher is on the "preview" page
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "stream" page
+        And the "streaming header" should be displayed with following values only
+            | stop button | displayed\|enabled |
 
-    # TODO: issue 195
-    #     When the publisher turns Off the "camera of camera view"
-    #     And the publisher turns Off the "microphone of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | Off                |
-    #         | microphone button status | Off                |
+        When the publisher turns Off the "camera of camera view"
+        And the publisher turns Off the "microphone of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | Off                |
+            | microphone button status | Off                |
 
-    # TODO: issue 195
-    #     When the publisher turns On the "camera of camera view"
-    #     And the publisher turns On the "microphone of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | On                |
-    #         | microphone button status | On                |
+        When the publisher turns On the "camera of camera view"
+        And the publisher turns On the "microphone of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | On                |
+            | microphone button status | On                |
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming
-    #     Given a publisher is on the "preview" page
-    #     When the publisher turns Off the "camera of camera view"
-    #     And the publisher clicks on the "go live button"
-    #     Then the publisher should be navigated to "stream" page
-    #     And the "streaming header" should be displayed with following values only
-    #         | stop button | displayed\|enabled |
-    #     And the "camera view" should be displayed with following values
-    #         | camera button status     | Off                |
-    #         | microphone button status | On                 |
-    #         | stream info button       | displayed\|enabled |
+    Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming
+        Given a publisher is on the "preview" page
 
-    # TODO: issue 195
-    #     When the publisher turns On the "camera of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | On                 |
-    #         | microphone button status | On                 |
+        When the publisher turns Off the "camera of camera view"
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "stream" page
+        And the "streaming header" should be displayed with following values only
+            | stop button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | camera button status     | Off                |
+            | microphone button status | On                 |
+            | stream info button       | displayed\|enabled |
 
-    # TODO: issue 195
-    #     When the publisher turns Off the "camera of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | Off                |
-    #         | microphone button status | On                 |
+        When the publisher turns On the "camera of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | On                 |
+            | microphone button status | On                 |
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming
-    #     Given a publisher is on the "preview" page
-    #     When the publisher turns Off the "microphone of camera view"
-    #     And the publisher clicks on the "go live button"
-    #     Then the publisher should be navigated to "stream" page
-    #     And the "streaming header" should be displayed with following values only
-    #         | stop button | displayed\|enabled |
-    #     And the "camera view" should be displayed with following values
-    #         | camera button status     | On                 |
-    #         | microphone button status | Off                |
-    #         | stream info button       | displayed\|enabled |
+        When the publisher turns Off the "camera of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | Off                |
+            | microphone button status | On                 |
 
-    # TODO: issue 195
-    #     When the publisher turns On the "microphone of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | On                 |
-    #         | microphone button status | On                 |
+    Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming
+        Given a publisher is on the "preview" page
 
-    # TODO: issue 195
-    #     When the publisher turns Off the "microphone of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | On                 |
-    #         | microphone button status | Off                |
+        When the publisher turns Off the "microphone of camera view"
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "stream" page
+        And the "streaming header" should be displayed with following values only
+            | stop button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | camera button status     | On                 |
+            | microphone button status | Off                |
+            | stream info button       | displayed\|enabled |
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
-    #     Given a publisher is on the "preview" page
-    #     And the publisher turns Off the "camera of camera view"
-    #     And the publisher turns Off the "microphone of camera view"
-    #     When the publisher clicks on the "go live button"
-    #     Then the publisher should be navigated to "stream" page
-    #     And the "streaming header" should be displayed with following values only
-    #         | stop button | displayed\|enabled |
-    #     And the "camera view" should be displayed with following values only
-    #         | camera button status     | Off    #         #     |
-    #         | microphone button status | Off    #         #     |
+        When the publisher turns On the "microphone of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | On                 |
+            | microphone button status | On                 |
 
-    #     When the publisher turns On the "camera of camera view"
-    #     And the publisher turns On the "microphone of camera view"
-    #     Then the "camera view" should be displayed with following values only
-    #         | camera button status     | On    #         #      |
-    #         | microphone button status | On                 |
+        When the publisher turns Off the "microphone of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | On                 |
+            | microphone button status | Off                |
+
+    Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
+        Given a publisher is on the "preview" page
+        And the publisher turns Off the "camera of camera view"
+        And the publisher turns Off the "microphone of camera view"
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "stream" page
+        And the "streaming header" should be displayed with following values only
+            | stop button | displayed\|enabled |
+        And the "camera view" should be displayed with following values only
+            | camera button status     | Off                |
+            | microphone button status | Off                |
+
+        When the publisher turns On the "camera of camera view"
+        And the publisher turns On the "microphone of camera view"
+        Then the "camera view" should be displayed with following values only
+            | camera button status     | On                 |
+            | microphone button status | On                 |
 
     Scenario: Publisher should be presented with Resolution and Bitrate Setting controls when streaming with camera
         Given a publisher is on the "preview" page
@@ -181,9 +172,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | source name text | BuiltIn Camera |
+        And the "camera view" should be displayed with following values
+            | source name text | BuiltIn Camera |
 
     Scenario: Publisher should be able to stream with <codec> codec and simulcast off when streaming with camera
         Given a publisher is on the "preview" page
@@ -194,9 +184,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" stream stats should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
     Examples:
@@ -214,9 +203,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" stream stats with quality tabs should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
     Examples:
@@ -233,9 +221,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - Auto            |
@@ -253,9 +240,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | bitrate    | Bitrate  - <bitrate>       |
         And the "camera view" stream stats with quality tabs should be displayed with default values
@@ -277,9 +263,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - <bitrate>       |
@@ -301,9 +286,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - <bitrate>       |
@@ -322,9 +306,8 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "stream" page
         And the "streaming header" should be displayed with following values only
             | stop button | displayed\|enabled |
-        # TODO: issue 195
-        # And the "camera view" should be displayed with following values
-        #     | stream info button | displayed\|enabled |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
         
         When the publisher configures "camera view" setting with the following values only
             | bitrate      | <bitrate>    |

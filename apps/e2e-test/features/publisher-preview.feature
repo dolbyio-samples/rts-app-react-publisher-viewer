@@ -33,11 +33,10 @@ Feature: Publisher Preview - Not Live
         And the "camera view" should be in Normal size
         And the "camera view setting button" should be displayed
         And the "camera view setting button" should be enabled
-        # TODO: issue 195
-        # And the "camera view microphone button" should be displayed
-        # And the "camera view microphone button" should be enabled
-        # And the "camera view camera button" should be displayed
-        # And the "camera view camera button" should be enabled
+        And the "camera view microphone button" should be displayed
+        And the "camera view microphone button" should be enabled
+        And the "camera view camera button" should be displayed
+        And the "camera view camera button" should be enabled
         And the "camera view source name" text should contain "fake"
         And the "camera view full screen button" should not be displayed
 
@@ -46,37 +45,34 @@ Feature: Publisher Preview - Not Live
         Then the "screen view" should not be displayed
         And the "camera view" should be displayed
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to turn off and on the camera
-    #     Given a publisher is on the "preview" page
-    #     Then the "camera of camera view" should be turned On
-    #     When the publisher turns Off the "camera of camera view"
-    #     Then the "camera of camera view" should be turned Off
-    #     When the publisher turns On the "camera of camera view"
-    #     Then the "camera of camera view" should be turned On
+    Scenario: Publisher should be able to turn off and on the camera
+        Given a publisher is on the "preview" page
+        Then the "camera of camera view" should be turned On
+        When the publisher turns Off the "camera of camera view"
+        Then the "camera of camera view" should be turned Off
+        When the publisher turns On the "camera of camera view"
+        Then the "camera of camera view" should be turned On
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to turn off and on the microphone
-    #     Given a publisher is on the "preview" page
-    #     Then the "microphone of camera view" should be turned On
-    #     When the publisher turns Off the "microphone of camera view"
-    #     Then the "microphone of camera view" should be turned Off
-    #     When the publisher turns On the "microphone of camera view"
-    #     Then the "microphone of camera view" should be turned On
+    Scenario: Publisher should be able to turn off and on the microphone
+        Given a publisher is on the "preview" page
+        Then the "microphone of camera view" should be turned On
+        When the publisher turns Off the "microphone of camera view"
+        Then the "microphone of camera view" should be turned Off
+        When the publisher turns On the "microphone of camera view"
+        Then the "microphone of camera view" should be turned On
 
-    # TODO: issue 195
-    # Scenario: Publisher should be able to turn off and on the camera and microphone
-    #     Given a publisher is on the "preview" page
-    #     Then the "camera of camera view" should be turned On
-    #     And the "microphone of camera view" should be turned On
-    #     When the publisher turns Off the "camera of camera view"
-    #     And the publisher turns Off the "microphone of camera view"
-    #     Then the "camera of camera view" should be turned Off
-    #     And the "microphone of camera view" should be turned Off
-    #     When the publisher turns On the "camera of camera view"
-    #     And the publisher turns On the "microphone of camera view"
-    #     Then the "camera of camera view" should be turned On
-    #     And the "microphone of camera view" should be turned On
+    Scenario: Publisher should be able to turn off and on the camera and microphone
+        Given a publisher is on the "preview" page
+        Then the "camera of camera view" should be turned On
+        And the "microphone of camera view" should be turned On
+        When the publisher turns Off the "camera of camera view"
+        And the publisher turns Off the "microphone of camera view"
+        Then the "camera of camera view" should be turned Off
+        And the "microphone of camera view" should be turned Off
+        When the publisher turns On the "camera of camera view"
+        And the publisher turns On the "microphone of camera view"
+        Then the "camera of camera view" should be turned On
+        And the "microphone of camera view" should be turned On
 
     Scenario: Publisher should be presented with Share screen option under Add Sources
         Given a publisher is on the "preview" page
@@ -105,11 +101,10 @@ Feature: Publisher Preview - Not Live
         And the "camera view" should be in Normal size
         And the "camera view setting button" should be displayed
         And the "camera view setting button" should be enabled
-        # TODO: issue 195
-        # And the "camera view microphone button" should be displayed
-        # And the "camera view microphone button" should be enabled
-        # And the "camera view camera button" should be displayed
-        # And the "camera view camera button" should be enabled
+        And the "camera view microphone button" should be displayed
+        And the "camera view microphone button" should be enabled
+        And the "camera view camera button" should be displayed
+        And the "camera view camera button" should be enabled
         And the "camera view source name" text should contain "fake"
         And the "camera view full screen button" should not be displayed
 
@@ -129,11 +124,10 @@ Feature: Publisher Preview - Not Live
 
         Then the "camera view" should be displayed
         And the "camera view" should be in Normal size
-        # TODO: issue 195
-        # And the "camera view microphone button" should be displayed
-        # And the "camera view microphone button" should be enabled
-        # And the "camera view camera button" should be displayed
-        # And the "camera view camera button" should be enabled
+        And the "camera view microphone button" should be displayed
+        And the "camera view microphone button" should be enabled
+        And the "camera view camera button" should be displayed
+        And the "camera view camera button" should be enabled
         And the "camera view setting button" should be displayed
         And the "camera view setting button" should be enabled
         And the "camera view source name" text should contain "fake"
@@ -251,11 +245,10 @@ Feature: Publisher Preview - Not Live
         Then the publisher should be navigated to "preview" page
         Then the "camera view" should be displayed
         And the "camera view" should be in Normal size
-        # TODO: issue 195
-        # And the "camera view microphone button" should be displayed
-        # And the "camera view microphone button" should be enabled
-        # And the "camera view camera button" should be displayed
-        # And the "camera view camera button" should be enabled
+        And the "camera view microphone button" should be displayed
+        And the "camera view microphone button" should be enabled
+        And the "camera view camera button" should be displayed
+        And the "camera view camera button" should be enabled
         And the "camera view setting button" should be displayed
         And the "camera view setting button" should be enabled
         And the "camera view source name" text should contain "fake"
@@ -330,11 +323,10 @@ Feature: Publisher Preview - Not Live
 
         And the "camera view" should be displayed
         And the "camera view" should be in Normal size
-        # TODO: issue 195
-        # And the "camera view microphone button" should be displayed
-        # And the "camera view microphone button" should be enabled
-        # And the "camera view camera button" should be displayed
-        # And the "camera view camera button" should be enabled
+        And the "camera view microphone button" should be displayed
+        And the "camera view microphone button" should be enabled
+        And the "camera view camera button" should be displayed
+        And the "camera view camera button" should be enabled
         And the "camera view setting button" should be displayed
         And the "camera view setting button" should be enabled
         And the "camera view source name" text should contain "fake"
@@ -449,19 +441,17 @@ Feature: Publisher Preview - Not Live
         When the publisher hovers the mouse over the "go live button"
         Then the "tooltip" should not be displayed
 
-        # TODO: issue 195
-        # When the publisher hovers the mouse over the "camera view camera button"
-        # Then the "tooltip" should be displayed
-        # And the "tooltip" text should be "Toggle camera"
-        # When the publisher hovers the mouse over the "timer"
-        # Then the "tooltip" should not be displayed
+        When the publisher hovers the mouse over the "camera view camera button"
+        Then the "tooltip" should be displayed
+        And the "tooltip" text should be "Toggle camera"
+        When the publisher hovers the mouse over the "timer"
+        Then the "tooltip" should not be displayed
 
-        # TODO: issue 195
-        # When the publisher hovers the mouse over the "camera view microphone button"
-        # Then the "tooltip" should be displayed
-        # And the "tooltip" text should be "Toggle microphone"
-        # When the publisher hovers the mouse over the "company name"
-        # Then the "tooltip" should not be displayed
+        When the publisher hovers the mouse over the "camera view microphone button"
+        Then the "tooltip" should be displayed
+        And the "tooltip" text should be "Toggle microphone"
+        When the publisher hovers the mouse over the "company name"
+        Then the "tooltip" should not be displayed
 
         When the publisher hovers the mouse over the "invite button"
         Then the "tooltip" should be displayed
