@@ -12,7 +12,7 @@ export const addRemoteTrackAndProject = async (
   const trackAudio = trackInfo.find(({ media }) => media == 'audio');
   const trackVideo = trackInfo.find(({ media }) => media == 'video');
 
-  let audioMediaId, videoMediaId;
+  let audioMediaId: string | undefined, videoMediaId: string | undefined;
 
   if (trackAudio) {
     const audioTransceiver = await viewer.addRemoteTrack('audio', [mediaStream]);

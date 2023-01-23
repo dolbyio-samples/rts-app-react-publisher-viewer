@@ -16,7 +16,6 @@ import { addRemoteTrackAndProject, unprojectFromStream, projectToStream } from '
 
 const DEFAULT_SOURCE_ID = new Date().valueOf().toString();
 const INITIAL_REMOTE_TRACK_SOURCES = new Map() as RemoteTrackSources;
-const MAX_RECONNECTION_ATTEMPTS = 3;
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const viewerRef = useRef<View>();
@@ -43,31 +42,17 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    let numReconnectionAttempts = 0;
-
     try {
       await viewer.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
     } catch (connectError) {
       handleInternalError(connectError);
 
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        try {
-          await viewer.reconnect();
-
-          break;
-        } catch (reconnectError) {
-          if (numReconnectionAttempts++ >= MAX_RECONNECTION_ATTEMPTS) {
-            handleInternalError(reconnectError);
-
-            return;
-          }
-        }
+      try {
+        await viewer.reconnect();
+      } catch (reconnectError) {
+        handleInternalError(reconnectError);
       }
     }
-
-    viewer.webRTCPeer?.initStats();
-    viewer.webRTCPeer?.on('stats', handleStats);
   };
 
   const handleBroadcastEvent = async (event: BroadcastEvent) => {
@@ -121,6 +106,24 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       }
     }
     return;
+  };
+
+  const handleConnectionStateChange = (event: string) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    if (event === 'closed') {
+      viewer.webRTCPeer?.removeAllListeners('stats');
+      viewer.webRTCPeer?.stopStats();
+    }
+
+    if (event === 'connected') {
+      viewer.webRTCPeer?.initStats();
+      viewer.webRTCPeer?.on('stats', handleStats);
+    }
   };
 
   const handleStats = (statistics: StreamStats) => {
@@ -198,6 +201,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         const newViewer = new View(streamName, tokenGenerator);
 
         newViewer.on('broadcastEvent', handleBroadcastEvent);
+        newViewer.on('connectionStateChange', handleConnectionStateChange);
         newViewer.on('track', handleTrack);
 
         viewerRef.current = newViewer;
