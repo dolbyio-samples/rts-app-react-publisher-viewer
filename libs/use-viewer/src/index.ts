@@ -44,13 +44,11 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     try {
       await viewer.connect({ events: ['active', 'inactive', 'layers', 'viewercount'] });
-    } catch (connectError) {
-      handleInternalError(connectError);
-
+    } catch {
       try {
         await viewer.reconnect();
-      } catch (reconnectError) {
-        handleInternalError(reconnectError);
+      } catch (error) {
+        handleInternalError(error);
       }
     }
   };
