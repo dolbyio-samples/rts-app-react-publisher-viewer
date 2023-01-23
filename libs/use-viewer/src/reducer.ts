@@ -1,29 +1,29 @@
 import { RemoteTrackSources, ViewerAction, ViewerActionType } from './types';
 import { buildQualityOptions } from './utils';
 
-const reducer = (remoteTrackSources: RemoteTrackSources, action: ViewerAction): RemoteTrackSources => {
+const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSources => {
   switch (action.type) {
     case ViewerActionType.ADD_SOURCE: {
       const { sourceId, remoteTrackSource } = action;
 
-      const newRemoteTrackSources = new Map([[sourceId, remoteTrackSource], ...remoteTrackSources]);
+      const newState = new Map([[sourceId, remoteTrackSource], ...state]);
 
-      return newRemoteTrackSources;
+      return newState;
     }
 
     case ViewerActionType.REMOVE_SOURCE: {
-      const newRemoteTrackSources = new Map(remoteTrackSources) as RemoteTrackSources;
-      newRemoteTrackSources.delete(action.sourceId);
+      const newState = new Map(state) as RemoteTrackSources;
+      newState.delete(action.sourceId);
 
-      return newRemoteTrackSources;
+      return newState;
     }
 
     case ViewerActionType.UPDATE_SOURCES_STATISTICS: {
       const { audio, video } = action.statistics;
 
-      const newRemoteTrackSources = new Map(remoteTrackSources);
+      const newState = new Map(state);
 
-      Array.from(remoteTrackSources).forEach(([sourceId, remoteTrackSource]) => {
+      Array.from(state).forEach(([sourceId, remoteTrackSource]) => {
         const { audioMediaId, videoMediaId } = remoteTrackSource;
 
         const audioIn = audio.inbounds?.filter(({ mid }) => mid === audioMediaId) ?? [];
@@ -39,32 +39,32 @@ const reducer = (remoteTrackSources: RemoteTrackSources, action: ViewerAction): 
             },
           };
 
-          newRemoteTrackSources.set(sourceId, newRemoteTrackSource);
+          newState.set(sourceId, newRemoteTrackSource);
         }
       });
 
-      return newRemoteTrackSources;
+      return newState;
     }
 
     case ViewerActionType.UPDATE_SOURCE_QUALITY: {
       const { quality, sourceId } = action;
 
-      const newRemoteTrackSources = new Map(remoteTrackSources);
-      const prevRamoteTrackSource = remoteTrackSources.get(sourceId);
+      const newState = new Map(state);
+      const prevRamoteTrackSource = state.get(sourceId);
 
       if (prevRamoteTrackSource) {
-        newRemoteTrackSources.set(sourceId, { ...prevRamoteTrackSource, quality });
+        newState.set(sourceId, { ...prevRamoteTrackSource, quality });
       }
 
-      return newRemoteTrackSources;
+      return newState;
     }
 
     case ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS: {
-      const newRemoteTrackSources = new Map(remoteTrackSources);
+      const newState = new Map(state);
 
       Object.entries(action.medias).forEach(([mid, { active }]) => {
         const [sourceId, remoteTrackSource] =
-          Array.from(remoteTrackSources).find(([, { videoMediaId }]) => videoMediaId === mid) ?? [];
+          Array.from(state).find(([, { videoMediaId }]) => videoMediaId === mid) ?? [];
 
         if (sourceId && remoteTrackSource) {
           const newRemoteTrackSource = {
@@ -72,15 +72,15 @@ const reducer = (remoteTrackSources: RemoteTrackSources, action: ViewerAction): 
             streamQualityOptions: buildQualityOptions(active),
           };
 
-          newRemoteTrackSources.set(sourceId, newRemoteTrackSource);
+          newState.set(sourceId, newRemoteTrackSource);
         }
       });
 
-      return newRemoteTrackSources;
+      return newState;
     }
 
     default:
-      return remoteTrackSources;
+      return state;
   }
 };
 
