@@ -2,44 +2,48 @@ import { MediaLayer, MediaTrackInfo, View, ViewProjectSourceMapping } from '@mil
 import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
 export const addRemoteTrackAndProject = async (
+  viewer: View,
   sourceId: string,
-  trackInfos: MediaTrackInfo[],
-  viewer: View
+  trackInfo: MediaTrackInfo[]
 ): Promise<RemoteTrackSource> => {
-  let videoTransceiver: RTCRtpTransceiver | undefined;
-  let audioTransceiver: RTCRtpTransceiver | undefined;
-  const mediaStream = new MediaStream();
   const mapping: ViewProjectSourceMapping[] = [];
-  const trackSource: RemoteTrackSource = {
-    mediaStream,
-    sourceId,
-    statistics: { audio: { inbounds: [], outbounds: [] }, video: { inbounds: [], outbounds: [] } },
-    streamQualityOptions: [{ streamQuality: 'Auto' }],
-  };
-  let trackInfo = trackInfos.find((info) => info.media == 'video');
-  if (trackInfo) {
-    videoTransceiver = await viewer.addRemoteTrack('video', [mediaStream]);
-    const videoMid = videoTransceiver?.mid ?? undefined;
-    if (videoMid) {
-      mapping.push({ trackId: trackInfo.trackId, mediaId: videoMid, media: trackInfo.media });
-      trackSource.videoMediaId = videoMid;
+  const mediaStream = new MediaStream();
+
+  const trackAudio = trackInfo.find(({ media }) => media == 'audio');
+  const trackVideo = trackInfo.find(({ media }) => media == 'video');
+
+  let audioMediaId: string | undefined, videoMediaId: string | undefined;
+
+  if (trackAudio) {
+    const audioTransceiver = await viewer.addRemoteTrack('audio', [mediaStream]);
+    audioMediaId = audioTransceiver?.mid ?? undefined;
+
+    if (audioMediaId) {
+      mapping.push({ media: 'audio', mediaId: audioMediaId, trackId: 'audio' });
     }
   }
-  trackInfo = trackInfos.find((info) => info.media == 'audio');
-  if (trackInfo) {
-    audioTransceiver = await viewer.addRemoteTrack('audio', [mediaStream]);
-    const audioMid = audioTransceiver?.mid ?? undefined;
-    if (audioMid) {
-      mapping.push({ trackId: trackInfo.trackId, mediaId: audioMid, media: trackInfo.media });
-      trackSource.audioMediaId = audioMid;
+
+  if (trackVideo) {
+    const videoTransceiver = await viewer.addRemoteTrack('video', [mediaStream]);
+    videoMediaId = videoTransceiver?.mid ?? undefined;
+
+    if (videoMediaId) {
+      mapping.push({ media: 'video', mediaId: videoMediaId, trackId: 'video' });
     }
   }
-  if (mapping.length === 0) {
-    return Promise.reject('No valid video or audio track');
-  }
+
   try {
     await viewer.project(sourceId, mapping);
-    return Promise.resolve(trackSource);
+
+    return Promise.resolve({
+      audioMediaId,
+      quality: 'Auto',
+      mediaStream,
+      sourceId,
+      statistics: { audio: { inbounds: [], outbounds: [] }, video: { inbounds: [], outbounds: [] } },
+      streamQualityOptions: [{ streamQuality: 'Auto' }],
+      videoMediaId,
+    });
   } catch (error: unknown) {
     return Promise.reject(error);
   }
@@ -47,16 +51,17 @@ export const addRemoteTrackAndProject = async (
 
 export const buildQualityOptions = (layers: MediaLayer[]) => {
   const qualities: StreamQuality[] = [];
+
   switch (layers.length) {
     case 2:
       qualities.push('High', 'Low');
       break;
+
     case 3:
       qualities.push('High', 'Medium', 'Low');
       break;
-    default:
-      return [{ streamQuality: 'Auto' } as SimulcastQuality];
   }
+
   const qualityOptions: SimulcastQuality[] = layers.map((layer, idx) => ({
     simulcastLayer: {
       bitrate: layer.bitrate,
@@ -67,18 +72,37 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
     },
     streamQuality: qualities[idx],
   }));
-  return qualityOptions;
+
+  return [{ streamQuality: 'Auto' } as SimulcastQuality, ...qualityOptions];
 };
 
-export const unprojectAndRemoveRemoteTrack = async (source: RemoteTrackSource, viewer: View) => {
-  const mids = [];
-  if (source.videoMediaId) mids.push(source.videoMediaId);
-  if (source.audioMediaId) mids.push(source.audioMediaId);
-  if (mids.length === 0) return;
-  try {
-    console.log('unproject remote track', source);
-    await viewer.unproject(mids);
-  } catch (error: unknown) {
-    console.error(`Failed to unproject remote track: ${error}`);
+export const unprojectFromStream = async (viewer: View, source: RemoteTrackSource) => {
+  const mediaIds = [...(source.audioMediaId ?? []), ...(source.videoMediaId ?? [])];
+
+  if (!mediaIds.length) {
+    return;
   }
+
+  await viewer.unproject(mediaIds);
+};
+
+export const projectToStream = async (
+  viewer: View,
+  source: RemoteTrackSource,
+  audioMapping?: ViewProjectSourceMapping,
+  videoMapping?: ViewProjectSourceMapping
+) => {
+  const { audioMediaId, sourceId, videoMediaId } = source;
+
+  const mapping: ViewProjectSourceMapping[] = [];
+
+  if (audioMediaId && audioMapping) {
+    mapping.push(audioMapping);
+  }
+
+  if (videoMediaId && videoMapping) {
+    mapping.push(videoMapping);
+  }
+
+  await viewer.project(sourceId, mapping);
 };

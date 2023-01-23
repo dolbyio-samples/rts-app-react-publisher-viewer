@@ -9,41 +9,37 @@ import VideoView from '@millicast-react/video-view';
 import { ViewerVideoViewProps } from './types';
 import VideoSettingsDrawer from './video-settings-drawer';
 
-const ViewerVideoView = ({
-  isActive,
-  disableSettings,
-  settingsProps,
-  statistics,
-  videoProps,
-}: ViewerVideoViewProps) => {
+const ViewerVideoView = ({ isActive, settingsProps, statistics, videoProps }: ViewerVideoViewProps) => {
   const { isOpen: isSettingsOpen, onClose: handleSettingsClose, onOpen: handleSettingsOpen } = useDisclosure();
 
   const { mediaStream } = videoProps;
 
   return (
-    <Box height="fit-content" overflow="hidden" margin="0 auto" position="relative" width="fit-content">
+    <Box height="100%" overflow="hidden" margin="0 auto" position="relative" width="100%">
       <VideoView {...videoProps} />
       {isActive && statistics ? (
         <Box bottom="12px" left="18px" position="absolute">
           <StatisticsPopover statistics={statistics} />
         </Box>
       ) : undefined}
-      <IconButton
-        background="transparent"
-        bottom="12px"
-        icon={<IconSettings />}
-        isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-        isRound
-        onClick={handleSettingsOpen}
-        position="absolute"
-        right="18px"
-        reversed
-        size="sm"
-        testId="settingsOpenButton"
-        tooltipProps={{ label: 'Settings' }}
-      />
-      {!disableSettings ? (
-        <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
+      {settingsProps ? (
+        <>
+          <IconButton
+            background="transparent"
+            bottom="12px"
+            icon={<IconSettings />}
+            isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
+            isRound
+            onClick={handleSettingsOpen}
+            position="absolute"
+            right="18px"
+            reversed
+            size="sm"
+            testId="settingsOpenButton"
+            tooltipProps={{ label: 'Settings' }}
+          />
+          <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
+        </>
       ) : undefined}
     </Box>
   );

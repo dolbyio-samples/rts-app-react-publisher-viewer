@@ -196,9 +196,9 @@ declare namespace millicast {
   }
 
   interface ViewProjectSourceMapping {
-    trackId?: string;
-    mediaId?: string;
     media?: string;
+    mediaId?: string;
+    trackId?: string;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

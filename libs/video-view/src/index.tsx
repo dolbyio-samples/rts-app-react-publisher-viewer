@@ -12,6 +12,8 @@ const VideoView = ({
   displayVideo = true,
   height,
   label,
+  maxHeight,
+  maxWidth,
   mediaStream,
   mirrored = false,
   muted = true, // Has to be true for AutoPlay in chromium
@@ -95,6 +97,8 @@ const VideoView = ({
       justifyContent="center"
       left="0"
       margin="0 auto"
+      maxHeight={maxHeight}
+      maxWidth={maxWidth}
       onClick={onClick}
       overflow="hidden"
       pos={isFullScreen ? 'fixed' : 'relative'}
