@@ -30,7 +30,7 @@ import ParticipantCount from '@millicast-react/participant-count';
 import PopupMenu from '@millicast-react/popup-menu';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import Timer from '@millicast-react/timer';
-import useMultiMediaDevices, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-devices';
+import useMultiMediaStreams, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-streams';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher, { SourceState } from '@millicast-react/use-publisher';
 import useLocalFile from '@millicast-react/use-local-file';
@@ -92,7 +92,7 @@ function App() {
     // TODO: per-stream audio/video toggling
     // toggleAudio,
     // toggleVideo,
-  } = useMultiMediaDevices();
+  } = useMultiMediaStreams();
 
   useEffect(() => {
     if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
