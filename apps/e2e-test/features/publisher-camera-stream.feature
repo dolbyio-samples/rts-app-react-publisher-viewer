@@ -231,7 +231,7 @@ Feature: Publisher streaming with camera only
     Examples:
         |  resolution  |
         |  3840x2160      |
-        # This is probably an issue with the resolution input field being broken. Disabled this for now, there's a probably fix in #271
+        # This is probably an issue with the resolution input field being broken. Disabled this for now, there's a probable fix in #241
         # |  640x480      |
 
     Scenario: Publisher should be able to stream with <bitrate> bitrate and simulcast ON when streaming with camera
