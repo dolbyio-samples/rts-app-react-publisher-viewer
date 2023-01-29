@@ -30,7 +30,7 @@ import ParticipantCount from '@millicast-react/participant-count';
 import PopupMenu from '@millicast-react/popup-menu';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import Timer from '@millicast-react/timer';
-import useMultiMediaDevices, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-devices';
+import useMultiMediaStreams, { Resolution, StreamId, StreamTypes } from '@millicast-react/use-multi-media-streams';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher, { SourceState } from '@millicast-react/use-publisher';
 import useLocalFile from '@millicast-react/use-local-file';
@@ -64,8 +64,8 @@ function App() {
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo | undefined>(undefined);
   const [publisherStates, setPublisherStates] = useState<Map<StreamId, PublisherState>>(new Map());
   const [statistics, setStatistics] = useState<Map<StreamId, StreamStats>>(new Map());
-  const { register, file: localFile } = useLocalFile();
-  const [localFilePaths, setLocalFilePaths] = useState<string[]>([]);
+
+  const { localFile, register } = useLocalFile();
   const { showError } = useNotification();
 
   useEffect(() => {
@@ -92,7 +92,7 @@ function App() {
     // TODO: per-stream audio/video toggling
     // toggleAudio,
     // toggleVideo,
-  } = useMultiMediaDevices();
+  } = useMultiMediaStreams();
 
   useEffect(() => {
     if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
@@ -354,30 +354,28 @@ function App() {
   const addFileSource = () => {
     onFileSelectModalClose();
     if (localFile) {
-      setLocalFilePaths((prev) => {
-        return [...prev, localFile];
-      });
+      addStream({ localFile, type: StreamTypes.LOCAL });
     }
   };
 
   return (
-    <VStack minH="100vh" w="100vw" bg="background" p="6">
-      <Box w="100%" h="146px">
+    <VStack bg="background" minH="100vh" p="6" w="100vw">
+      <Box h="146px" w="100%">
         <ActionBar title="Company name" />
-        <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
-          <Stack direction="column" spacing="4" alignItems="flex-start">
+        <Flex justifyContent="space-between" mt="4" position="relative" w="100%" zIndex={1}>
+          <Stack alignItems="flex-start" direction="column" spacing="4">
             <Flex alignItems="center">
               <Timer isActive={hasStartedStreaming} />
               {sources.size > 1 && (
                 <InfoLabel
+                  bgColor="dolbyNeutral.300"
+                  color="white"
+                  fontWeight="600"
+                  h="auto"
+                  ml="2.5"
+                  py="5px"
                   test-id="multiSource"
                   text="Multisource enabled"
-                  ml="2.5"
-                  color="white"
-                  bgColor="dolbyNeutral.300"
-                  py="5px"
-                  h="auto"
-                  fontWeight="600"
                 />
               )}
             </Flex>
@@ -389,16 +387,16 @@ function App() {
               stop={handleStopLive}
             />
           </Stack>
-          <Stack direction="column" spacing="4" alignItems="flex-end">
-            {shareUrl && <ShareLinkButton tooltip={{ placement: 'top' }} linkText={shareUrl} />}
+          <Stack alignItems="flex-end" direction="column" spacing="4">
+            {shareUrl && <ShareLinkButton linkText={shareUrl} tooltip={{ placement: 'top' }} />}
             {hasStartedStreaming && <ParticipantCount count={viewerCount} />}
           </Stack>
         </Flex>
       </Box>
       <Flex alignItems="center" position="relative" pt="20px" width="100%">
         {!hasStartedStreaming && (
-          <VStack position="absolute" top="0" left="50%" transform="translate(-50%, -110%)">
-            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
+          <VStack left="50%" position="absolute" top="0" transform="translate(-50%, -110%)">
+            <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Get started
             </Heading>
             <Text test-id="pageDesc">Setup your audio and video before going live.</Text>
@@ -407,7 +405,7 @@ function App() {
         <Wrap justify="center" margin="0 auto" maxWidth="1388px" spacing="12px" width="100%">
           {Array.from(streams).map(([streamId, stream]) => {
             const [maxHeight, maxWidth] = (() => {
-              switch (streams.size + localFilePaths.length) {
+              switch (streams.size) {
                 case 1:
                   return ['564px', '1035px'];
                 case 2:
@@ -419,15 +417,10 @@ function App() {
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
             const isStreaming = publisherStates.get(streamId) === 'streaming';
+            const testId = `millicastVideo${stream.type.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
 
             return (
-              <WrapItem
-                flexBasis={flexBasis}
-                key={streamId}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
-                test-id={'millicastVideo' + stream.type}
-              >
+              <WrapItem flexBasis={flexBasis} key={streamId} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
                   isActive={isStreaming}
                   settingsProps={settings(streamId)}
@@ -439,7 +432,7 @@ function App() {
                     mediaStream: stream.mediaStream,
                     mirrored: stream.type === StreamTypes.MEDIA,
                     placeholderNode: (
-                      <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
+                      <Box color="dolbyNeutral.700" height="174px" position="absolute" width="174px">
                         <IconProfile />
                       </Box>
                     ),
@@ -449,71 +442,34 @@ function App() {
               </WrapItem>
             );
           })}
-          {localFilePaths.map((path) => {
-            const [maxHeight, maxWidth] = (() => {
-              switch (streams.size + localFilePaths.length) {
-                case 1:
-                  return ['564px', '1035px'];
-                case 2:
-                  return ['382px', '688px'];
-                default:
-                  return ['282px', '508px'];
-              }
-            })();
-
-            const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
-
-            return (
-              <WrapItem
-                flexBasis={flexBasis}
-                key={path}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
-                test-id="millicastVideoLOCAL"
-              >
-                <PublisherVideoView
-                  isActive={false}
-                  videoProps={{
-                    displayFullscreenButton: false,
-                    placeholderNode: (
-                      <Box color="dolbyNeutral.700" position="absolute" width="174px" height="174px">
-                        <IconProfile />
-                      </Box>
-                    ),
-                    src: path,
-                  }}
-                />
-              </WrapItem>
-            );
-          })}
         </Wrap>
       </Flex>
-      <HStack alignItems="center" w="96%" h="48px" pos="fixed" bottom="32px">
+      <HStack alignItems="center" bottom="32px" h="48px" pos="fixed" w="96%">
         <Spacer />
-        <Flex direction="row" gap={2} justifyContent="flex-end" alignItems="center">
+        <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end">
           <PopupMenu
             buttonTitle="Add Source"
+            disabled={streams.size >= MAX_SOURCES}
             items={[
               {
                 icon: <IconPresent />,
-                text: 'Share screen',
                 onClick: handleStartDisplayCapture,
+                text: 'Share screen',
               },
               {
                 icon: <IconAddCamera />,
-                text: 'Add cameras',
-                onClick: handleOpenDeviceSelection,
                 isDisabled: cameraList.length === 0 || microphoneList.length === 0,
+                onClick: handleOpenDeviceSelection,
+                text: 'Add cameras',
               },
               {
                 icon: <IconStreamLocal />,
-                text: 'Stream local file',
                 onClick: () => {
                   onFileSelectModalOpen();
                 },
+                text: 'Stream local file',
               },
             ]}
-            disabled={streams.size + localFilePaths.length >= MAX_SOURCES}
           />
           <DeviceSelection
             camera={newCamera}
@@ -529,7 +485,7 @@ function App() {
         </Flex>
       </HStack>
       <Box>
-        <Modal onClose={onFileSelectModalClose} isOpen={isFileSelectModalOpen} isCentered>
+        <Modal isCentered isOpen={isFileSelectModalOpen} onClose={onFileSelectModalClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalCloseButton />
@@ -540,22 +496,22 @@ function App() {
                 </Heading>
                 <Text fontSize="md">Pick a local file</Text>
                 <Center
-                  width="100%"
-                  pt="16px"
                   pb="32px"
+                  pt="16px"
                   sx={{
                     '#pickFile': { color: 'white' },
                   }}
+                  width="100%"
                 >
                   <input id="pickFile" {...register()} />
                 </Center>
-                <Button onClick={() => addFileSource()}>ADD STREAMING FILE</Button>
+                <Button onClick={addFileSource}>ADD STREAMING FILE</Button>
               </VStack>
             </ModalBody>
           </ModalContent>
         </Modal>
       </Box>
-      <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
+      <Box bottom="5px" left="5px" position="fixed" test-id="appVersion">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
     </VStack>

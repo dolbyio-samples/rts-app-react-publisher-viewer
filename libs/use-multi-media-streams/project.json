@@ -1,7 +1,7 @@
 {
-  "name": "use-multi-media-devices",
+  "name": "use-multi-media-streams",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/use-multi-media-devices/src",
+  "sourceRoot": "libs/use-multi-media-streams/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,7 +9,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/use-multi-media-devices/**/*.{ts,js}"]
+        "lintFilePatterns": ["libs/use-multi-media-streams/**/*.{ts,js}"]
       }
     }
   }

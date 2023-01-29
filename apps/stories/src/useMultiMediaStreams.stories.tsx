@@ -13,12 +13,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import VideoView from '@millicast-react/video-view';
-import useMultiMediaDevices, {
+import useMultiMediaStreams, {
   Stream,
   StreamId,
   StreamTypes,
   Resolution,
-} from '@millicast-react/use-multi-media-devices';
+} from '@millicast-react/use-multi-media-streams';
 import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import ControlBar from '@millicast-react/control-bar';
 import Dropdown from '@millicast-react/dropdown';
@@ -118,7 +118,7 @@ const Content = () => {
     cameraList,
     microphoneList,
     applyConstraints,
-  } = useMultiMediaDevices();
+  } = useMultiMediaStreams();
 
   const addCustomStream = async () => {
     await addStream({ type: StreamTypes.MEDIA, microphone, camera });
