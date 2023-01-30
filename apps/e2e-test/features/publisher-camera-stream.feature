@@ -11,7 +11,6 @@ Feature: Publisher streaming with camera only
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
-            | simulcast  | On                      |
             | resolution | Resolution  - 3840x2160 |
             | bitrate    | Bitrate  - Auto         |
         And the "camera view" stream stats with quality tabs should be displayed with default values

@@ -29,6 +29,7 @@ export const createStream = async ({
           // TODO: better display screen label
           label: label ?? mediaStream.getVideoTracks()[0].label ?? mediaStream.id,
           mediaStream,
+          simulcast: codec === 'h264',
           state: initialStreamState,
           type,
         },
@@ -56,6 +57,7 @@ export const createStream = async ({
           codec,
           label: label ?? mediaStream.id,
           mediaStream,
+          simulcast: codec === 'h264',
           state: initialStreamState,
           type,
         },
@@ -110,6 +112,7 @@ export const createStream = async ({
           camera: videoTracks.getSettings(),
           microphone: audioTracks.getSettings(),
         },
+        simulcast: codec === 'h264',
         state: initialStreamState,
         type,
       };
