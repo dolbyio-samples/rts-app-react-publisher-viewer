@@ -87,13 +87,13 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
       return;
     }
 
-    const { mediaStream, settings } = prevStream;
+    const { mediaStream } = prevStream;
 
     const [audioTrack] = mediaStream.getAudioTracks();
     const [videoTrack] = mediaStream.getVideoTracks();
 
-    const applyAudioConstraints = audioTrack.applyConstraints({ ...settings?.microphone, ...audioConstraints });
-    const applyVideoConstraints = videoTrack.applyConstraints({ ...settings?.camera, ...videoConstraints });
+    const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
+    const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
 
     await Promise.all([applyAudioConstraints, applyVideoConstraints]);
 
