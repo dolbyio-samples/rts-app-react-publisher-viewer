@@ -12,28 +12,26 @@ export interface RemoteTrackSource {
   audioMediaId?: string;
   quality?: StreamQuality;
   mediaStream: MediaStream;
-  sourceId: SourceId;
+  sourceId: string;
   statistics?: StreamStats;
   streamQualityOptions: SimulcastQuality[];
   videoMediaId?: string;
 }
 
-export type RemoteTrackSources = Map<SourceId, RemoteTrackSource>;
+export type RemoteTrackSources = Map<string, RemoteTrackSource>;
 
 export type SimulcastQuality = {
   simulcastLayer?: LayerInfo; // Auto has an idx of null
   streamQuality: StreamQuality;
 };
 
-export type SourceId = string;
-
 export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export interface Viewer {
   mainMediaStream?: MediaStream;
-  projectToMainStream: (sourceId: SourceId, prevSourceId?: SourceId) => void;
+  projectToMainStream: (sourceId: string, prevSourceId?: string) => void;
   remoteTrackSources: RemoteTrackSources;
-  setSourceQuality: (sourceId: SourceId, quality: SimulcastQuality) => void;
+  setSourceQuality: (sourceId: string, quality: SimulcastQuality) => void;
   startViewer: () => void;
   stopViewer: () => void;
   viewerCount: number;
@@ -42,12 +40,12 @@ export interface Viewer {
 export type ViewerAction =
   | {
       remoteTrackSource: RemoteTrackSource;
-      sourceId: SourceId;
+      sourceId: string;
       type: ViewerActionType.ADD_SOURCE;
     }
-  | { sourceId: SourceId; type: ViewerActionType.REMOVE_SOURCE }
+  | { sourceId: string; type: ViewerActionType.REMOVE_SOURCE }
   | { statistics: StreamStats; type: ViewerActionType.UPDATE_SOURCES_STATISTICS }
-  | { quality: StreamQuality; sourceId: SourceId; type: ViewerActionType.UPDATE_SOURCE_QUALITY }
+  | { quality: StreamQuality; sourceId: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY }
   | { medias: Media[]; type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS };
 
 export interface ViewerProps {

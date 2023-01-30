@@ -1,15 +1,27 @@
-import { LocalFile } from '@millicast-react/use-local-file';
+import { VideoCodec } from '@millicast/sdk';
 
 export interface ApplyConstraintsOptions {
   audioConstraints?: MediaTrackConstraints;
-  id: StreamId;
   videoConstraints?: MediaTrackConstraints;
+}
+
+export interface Bitrate {
+  name: string;
+  value: number;
+}
+
+export interface AddStreamOptions extends Omit<CreateStreamOptions, 'bitrate' | 'codec'> {
+  bitrate?: number;
+  codec?: VideoCodec;
 }
 
 export interface CreateStreamOptions {
   audioConstraints?: MediaTrackConstraints;
+  bitrate: number;
   camera?: InputDeviceInfo;
-  localFile?: LocalFile;
+  codec: VideoCodec;
+  label?: string;
+  objectUrl?: string;
   microphone?: InputDeviceInfo;
   type: StreamTypes;
   videoConstraints?: MediaTrackConstraints;
@@ -20,16 +32,18 @@ export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
 }
 
 export interface MediaDevices {
-  addStream: (options: CreateStreamOptions) => Promise<void>;
-  applyConstraints: (options: ApplyConstraintsOptions) => Promise<void>;
+  addStream: (options: AddStreamOptions) => Promise<void>;
+  applyConstraints: (id: string, options: ApplyConstraintsOptions) => Promise<void>;
   cameraList: InputDeviceInfo[];
+  codecList: VideoCodec[];
   initDefaultStream: () => void;
   microphoneList: InputDeviceInfo[];
-  removeStream: (id: StreamId) => void;
+  removeStream: (id: string) => void;
   reset: () => void;
   streams: StreamsMap;
-  toggleAudio: (id: StreamId) => void;
-  toggleVideo: (id: StreamId) => void;
+  toggleAudio: (id: string) => void;
+  toggleVideo: (id: string) => void;
+  updateStream: (id: string, stream: Partial<Stream>) => void;
 }
 
 export interface MediaDevicesLists {
@@ -44,6 +58,8 @@ export interface Resolution {
 }
 
 export interface Stream {
+  bitrate: number;
+  codec: VideoCodec;
   device?: {
     camera: InputDeviceInfo;
     microphone: InputDeviceInfo;
@@ -52,12 +68,14 @@ export interface Stream {
     camera: MediaTrackCapabilities;
     microphone: MediaTrackCapabilities;
   };
+  label: string;
   mediaStream: MediaStream;
   resolutions?: Resolution[];
   settings?: {
     camera: MediaTrackSettings;
     microphone: MediaTrackSettings;
   };
+  simulcast?: boolean;
   state: {
     muteAudio: boolean;
     displayVideo: boolean;
@@ -65,44 +83,42 @@ export interface Stream {
   type: StreamTypes;
 }
 
-export type StreamId = string;
-
 export type StreamsAction =
   | {
-      id: StreamId;
+      id: string;
       stream: Stream;
       type: StreamsActionType.ADD_STREAM;
     }
   | {
-      id: StreamId;
-      mediaStream: MediaStream;
-      type: StreamsActionType.APPLY_CONSTRAINTS;
-    }
-  | {
       type: StreamsActionType.REMOVE_STREAM;
-      id: StreamId;
+      id: string;
     }
   | {
       type: StreamsActionType.RESET;
     }
   | {
       type: StreamsActionType.TOGGLE_AUDIO;
-      id: StreamId;
+      id: string;
     }
   | {
       type: StreamsActionType.TOGGLE_VIDEO;
-      id: StreamId;
+      id: string;
+    }
+  | {
+      stream: Partial<Stream>;
+      type: StreamsActionType.UPDATE_STREAM;
+      id: string;
     };
 
-export type StreamsMap = Map<StreamId, Stream>;
+export type StreamsMap = Map<string, Stream>;
 
 export enum StreamsActionType {
   ADD_STREAM = 'ADD_STREAM',
-  APPLY_CONSTRAINTS = 'APPLY_CONSTRAINTS',
   REMOVE_STREAM = 'REMOVE_STREAM',
   RESET = 'RESET',
   TOGGLE_AUDIO = 'TOGGLE_AUDIO',
   TOGGLE_VIDEO = 'TOGGLE_VIDEO',
+  UPDATE_STREAM = 'UPDATE_STREAM',
 }
 
 export enum StreamTypes {
@@ -111,7 +127,7 @@ export enum StreamTypes {
   MEDIA = 'MEDIA',
 }
 
-export interface UseMediaDevicesArguments {
+export interface UseMediaDevicesProps {
   filterOutUsedDevices?: boolean;
   handleError?: (error: string) => void;
 }

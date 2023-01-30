@@ -1,7 +1,6 @@
 import { VideoCodec } from '@millicast/sdk';
 
-import { Resolution } from '@millicast-react/use-multi-media-streams';
-import { Bitrate } from '@millicast-react/use-publisher';
+import { Bitrate, Resolution } from '@millicast-react/use-multi-media-streams';
 
 export interface VideoSettingsDrawerProps {
   bitrate?: {

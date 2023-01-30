@@ -1,4 +1,4 @@
-import { Stream, StreamId, StreamsAction, StreamsActionType, StreamsMap } from './types';
+import { Stream, StreamsAction, StreamsActionType, StreamsMap } from './types';
 import { stopTracks } from './utils';
 
 const reducer = (state: StreamsMap, action: StreamsAction) => {
@@ -14,36 +14,6 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
       newState.set(action.id, action.stream);
 
       return newState;
-    }
-
-    case StreamsActionType.APPLY_CONSTRAINTS: {
-      const { mediaStream, id } = action;
-
-      const newState = new Map(state);
-      const prevStream = state.get(action.id);
-
-      if (prevStream) {
-        const audioTracks = mediaStream.getAudioTracks()[0];
-        const videoTracks = mediaStream.getVideoTracks()[0];
-
-        audioTracks.enabled = !prevStream.state.muteAudio;
-        videoTracks.enabled = prevStream.state.displayVideo;
-
-        newState.set(id, {
-          ...prevStream,
-          capabilities: {
-            camera: videoTracks.getCapabilities(),
-            microphone: audioTracks.getCapabilities(),
-          },
-          mediaStream,
-          settings: {
-            camera: videoTracks.getSettings(),
-            microphone: audioTracks.getSettings(),
-          },
-        });
-      }
-
-      return state;
     }
 
     case StreamsActionType.REMOVE_STREAM: {
@@ -64,7 +34,7 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
         stopTracks(stream.mediaStream);
       });
 
-      return new Map<StreamId, Stream>();
+      return new Map<string, Stream>();
     }
 
     case StreamsActionType.TOGGLE_AUDIO: {
@@ -86,6 +56,7 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
           });
         }
       }
+
       return newState;
     }
 
@@ -108,6 +79,21 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
           });
         }
       }
+
+      return newState;
+    }
+
+    case StreamsActionType.UPDATE_STREAM: {
+      const newState = new Map(state);
+      const prevStream = state.get(action.id);
+
+      if (prevStream) {
+        newState.set(action.id, {
+          ...prevStream,
+          ...action.stream,
+        });
+      }
+
       return newState;
     }
 
