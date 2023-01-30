@@ -19,7 +19,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { Event, VideoCodec } from '@millicast/sdk';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
 import DeviceSelection from '@millicast-react/device-selection';
@@ -33,7 +33,6 @@ import Timer from '@millicast-react/timer';
 import useMultiMediaStreams, { bitrateList, Resolution, StreamTypes } from '@millicast-react/use-multi-media-streams';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher from '@millicast-react/use-publisher';
-import useLocalFile from '@millicast-react/use-local-file';
 import PublisherVideoView from './components/publisher-video-view';
 import './styles/font.css';
 
@@ -62,7 +61,6 @@ const App = () => {
   const [newCamera, setNewCamera] = useState<InputDeviceInfo>();
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo>();
 
-  const { localFile, register } = useLocalFile();
   const { showError } = useNotification();
 
   const {
@@ -123,14 +121,6 @@ const App = () => {
       setNewMicrophone(microphoneList[0]);
     }
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
-
-  const addFileSource = () => {
-    if (localFile) {
-      addStream({ type: StreamTypes.LOCAL, ...localFile });
-    }
-
-    onFileSelectModalClose();
-  };
 
   const addNewDevice = async () => {
     if (!newCamera || newMicrophone) {
@@ -251,6 +241,22 @@ const App = () => {
     for (const sourceId of sources.keys()) {
       stopStreamingToSource(sourceId);
     }
+  };
+
+  const handleSubmitLocalFile = (event: FormEvent) => {
+    event.preventDefault();
+
+    const data = new FormData(event.target as HTMLFormElement);
+
+    const { file } = Object.fromEntries(data.entries());
+
+    if (file && file instanceof File) {
+      const objectUrl = URL.createObjectURL(file);
+
+      addStream({ label: file.name, objectUrl, type: StreamTypes.LOCAL });
+    }
+
+    onFileSelectModalClose();
   };
 
   const settings = (streamId: string) => {
@@ -453,21 +459,23 @@ const App = () => {
             <ModalCloseButton />
             <ModalBody>
               <VStack>
-                <Heading as="h4" size="md">
-                  Add local media file
-                </Heading>
-                <Text fontSize="md">Pick a local file</Text>
-                <Center
-                  pb="32px"
-                  pt="16px"
-                  sx={{
-                    '#pickFile': { color: 'white' },
-                  }}
-                  width="100%"
-                >
-                  <input id="pickFile" {...register()} />
-                </Center>
-                <Button onClick={addFileSource}>ADD STREAMING FILE</Button>
+                <form onSubmit={handleSubmitLocalFile}>
+                  <Heading as="h4" size="md">
+                    Add local media file
+                  </Heading>
+                  <Text fontSize="md">Pick a local file</Text>
+                  <Center
+                    pb="32px"
+                    pt="16px"
+                    sx={{
+                      '#pickFile': { color: 'white' },
+                    }}
+                    width="100%"
+                  >
+                    <input accept="video/*" id="pickFile" multiple={false} name="file" type="file" />
+                  </Center>
+                  <Button type="submit">ADD STREAMING FILE</Button>
+                </form>
               </VStack>
             </ModalBody>
           </ModalContent>
