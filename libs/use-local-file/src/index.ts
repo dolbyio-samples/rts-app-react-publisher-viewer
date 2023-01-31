@@ -12,7 +12,7 @@ const useLocalFile = () => {
       if (file) {
         const objectUrl = URL.createObjectURL(file);
 
-        setLocalFile({ label: file.name, objectUrl });
+        setLocalFile({ name: file.name, objectUrl });
       }
     };
 

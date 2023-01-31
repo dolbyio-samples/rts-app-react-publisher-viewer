@@ -1,62 +1,56 @@
 import { BroadcastOptions, Publish, StreamStats, VideoCodec } from '@millicast/sdk';
 
-export interface Bitrate {
-  name: string;
-  value: number;
-}
-
 export enum PublisherActionType {
   ADD_SOURCE = 'ADD_SOURCE',
   REMOVE_SOURCE = 'REMOVE_SOURCE',
-  UPDATE_SOURCE_BROADCAST_OPTIONS = 'UPDATE_SOURCE_BROADCAST_OPTIONS',
+  UPDATE_SOURCE_BITRATE = 'UPDATE_SOURCE_BITRATE',
   UPDATE_SOURCE_STATE = 'UPDATE_SOURCE_STATE',
   UPDATE_SOURCE_STATISTICS = 'UPDATE_SOURCE_STATISTICS',
 }
 
-export interface Publisher {
+export type Bitrate = {
+  name: string;
+  value: number;
+};
+
+export type Publisher = {
+  bitrateList: Bitrate[];
   codecList: VideoCodec[];
   shareUrl?: string;
   sources: PublisherSources;
-  // startStreamingToSource will add a new stream to publisher
-  startStreamingToSource: (sourceId: string) => Promise<void>;
-  // stopStreamingToSource will remove an existing stream from publisher
-  stopStreamingToSource: (sourceId: string) => void;
-  updateSourceBroadcastOptions: (id: string, broadcastOptions: Partial<BroadcastOptions>) => void;
+  // startStreaming will add a new source to publisher
+  startStreamingSource: (options: BroadcastOptions) => void;
+  // stopStreaming will remove an exsiting source from publisher
+  stopStreamingSource: (sourceId: string) => void;
+  updateSourceMediaStream: (sourceId: string, mediaStream: MediaStream) => void;
+  updateSourceBitrate: (sourceId: string, bitrate: number) => void;
   viewerCount: number;
-}
+};
 
 export type PublisherAction =
-  | { source: PublisherSource; id: string; type: PublisherActionType.ADD_SOURCE }
-  | { id: string; type: PublisherActionType.REMOVE_SOURCE }
-  | {
-      broadcastOptions: Partial<BroadcastOptions>;
-      id: string;
-      type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS;
-    }
-  | { id: string; state: SourceState; type: PublisherActionType.UPDATE_SOURCE_STATE }
-  | { id: string; statistics: StreamStats; type: PublisherActionType.UPDATE_SOURCE_STATISTICS };
+  | { type: PublisherActionType.ADD_SOURCE; source: PublisherSource }
+  | { type: PublisherActionType.REMOVE_SOURCE; sourceId: SourceId }
+  | { type: PublisherActionType.UPDATE_SOURCE_BITRATE; sourceId: SourceId; bitrate: number }
+  | { type: PublisherActionType.UPDATE_SOURCE_STATE; sourceId: SourceId; state: SourceState }
+  | { type: PublisherActionType.UPDATE_SOURCE_STATISTICS; sourceId: SourceId; statistics: StreamStats };
 
-export interface PublisherProps {
+export type PublisherProps = {
   handleError?: (error: string) => void;
-  streamNameId: string;
-  streams: Map<string, { label?: string; mediaStream: MediaStream }>;
+  streamId: string;
   streamName: string;
   token: string;
   viewerAppBaseUrl?: string;
-}
+};
 
-export interface PublisherSource {
+export type PublisherSource = {
   broadcastOptions: BroadcastOptions;
   publish: Publish;
   state: SourceState;
   statistics?: StreamStats;
-}
+};
 
-export type PublisherSources = Map<string, PublisherSource>;
+export type PublisherSources = Map<SourceId, PublisherSource>;
 
-export interface PublisherStream {
-  label: string;
-  mediaStream: MediaStream;
-}
+export type SourceId = string;
 
 export type SourceState = 'ready' | 'connecting' | 'streaming';

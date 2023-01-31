@@ -11,13 +11,16 @@ import {
 import { useReducer, useRef, useState } from 'react';
 
 import reducer from './reducer';
-import { RemoteTrackSources, SimulcastQuality, Viewer, ViewerActionType, ViewerProps } from './types';
+import { RemoteTrackSources, SimulcastQuality, SourceId, Viewer, ViewerActionType, ViewerProps } from './types';
 import { addRemoteTrackAndProject, unprojectFromStream, projectToStream } from './utils';
+
+const DEFAULT_SOURCE_ID = new Date().valueOf().toString();
+const INITIAL_REMOTE_TRACK_SOURCES = new Map() as RemoteTrackSources;
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const viewerRef = useRef<View>();
 
-  const [remoteTrackSources, dispatch] = useReducer(reducer, new Map() as RemoteTrackSources);
+  const [remoteTrackSources, dispatch] = useReducer(reducer, INITIAL_REMOTE_TRACK_SOURCES);
 
   const [mainAudioMapping, setMainAudioMapping] = useState<ViewProjectSourceMapping>();
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
@@ -57,7 +60,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    const { sourceId = new Date().valueOf().toString(), tracks } = event.data as MediaStreamSource;
+    const { sourceId = DEFAULT_SOURCE_ID, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
       case 'active':
@@ -150,7 +153,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const projectToMainStream = async (sourceId: string) => {
+  const projectToMainStream = async (sourceId: SourceId) => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
@@ -168,7 +171,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const setSourceQuality = (sourceId: string, quality: SimulcastQuality) => {
+  const setSourceQuality = (sourceId: SourceId, quality: SimulcastQuality) => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
@@ -223,7 +226,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     viewerRef.current = undefined;
   };
 
-  const tokenGenerator = () => Director.getSubscriber({ streamAccountId, streamName, subscriberToken });
+  const tokenGenerator = () => Director.getSubscriber({ streamName, streamAccountId, subscriberToken });
 
   return {
     mainMediaStream,

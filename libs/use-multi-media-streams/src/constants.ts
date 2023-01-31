@@ -1,6 +1,6 @@
-import { Resolution } from './types';
+import { Resolution, Stream } from './types';
 
-export const resolutionList: Resolution[] = [
+export const allResolutions: Resolution[] = [
   {
     height: 2160,
     name: '4K',
@@ -38,4 +38,7 @@ export const resolutionList: Resolution[] = [
   },
 ];
 
-export const idealCameraConfig = { aspectRatio: 7680 / 4320, height: { ideal: 4320 }, width: { ideal: 7680 } };
+export const initialStreamState: Stream['state'] = {
+  displayVideo: true,
+  muteAudio: true,
+};

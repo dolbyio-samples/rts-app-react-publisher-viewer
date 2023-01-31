@@ -6,7 +6,7 @@ export interface Resolution {
   height: number;
 }
 
-const resolutionList: Resolution[] = [
+const allResolutions: Resolution[] = [
   {
     name: '4K',
     width: 3840,
@@ -47,7 +47,7 @@ const resolutionList: Resolution[] = [
 // TODO: add more helper functions to this hook
 const useCameraCapabilities: (cameraCapabilities?: MediaTrackCapabilities) => Resolution[] = (cameraCapabilities) => {
   const supportedResolutions = useMemo<Resolution[]>(() => {
-    return resolutionList.filter((resolution) => {
+    return allResolutions.filter((resolution) => {
       return (
         resolution.width <= (cameraCapabilities?.width?.max ?? 0) &&
         resolution.height <= (cameraCapabilities?.height?.max ?? 0)
