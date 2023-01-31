@@ -38,7 +38,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags @only"
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@only and not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
