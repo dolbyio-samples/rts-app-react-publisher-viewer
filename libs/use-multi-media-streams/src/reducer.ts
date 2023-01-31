@@ -4,10 +4,10 @@ import { stopTracks } from './utils';
 const reducer = (state: StreamsMap, action: StreamsAction) => {
   switch (action.type) {
     case StreamsActionType.ADD_STREAM: {
-      const prevStream = state.get(action.id);
+      const prevMediaStream = state.get(action.id);
 
-      if (prevStream) {
-        stopTracks(prevStream.mediaStream);
+      if (prevMediaStream) {
+        stopTracks(prevMediaStream.mediaStream);
       }
 
       const newState = new Map(state);
@@ -17,10 +17,10 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
     }
 
     case StreamsActionType.REMOVE_STREAM: {
-      const prevStream = state.get(action.id);
+      const prevMediaStream = state.get(action.id);
 
-      if (prevStream) {
-        stopTracks(prevStream.mediaStream);
+      if (prevMediaStream) {
+        stopTracks(prevMediaStream.mediaStream);
       }
 
       const newState = new Map(state);
@@ -37,59 +37,13 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
       return new Map<string, Stream>();
     }
 
-    case StreamsActionType.TOGGLE_AUDIO: {
-      const newState = new Map(state);
-      const prevStream = state.get(action.id);
-
-      if (prevStream) {
-        const audioTracks = prevStream.mediaStream.getAudioTracks();
-
-        if (audioTracks.length) {
-          audioTracks[0].enabled = !audioTracks[0].enabled;
-
-          newState.set(action.id, {
-            ...prevStream,
-            state: {
-              ...prevStream.state,
-              muteAudio: !prevStream.state.muteAudio,
-            },
-          });
-        }
-      }
-
-      return newState;
-    }
-
-    case StreamsActionType.TOGGLE_VIDEO: {
-      const prevStream = state.get(action.id);
-      const newState = new Map(state);
-
-      if (prevStream) {
-        const videoTracks = prevStream.mediaStream.getVideoTracks();
-
-        if (videoTracks.length) {
-          videoTracks[0].enabled = !videoTracks[0].enabled;
-
-          newState.set(action.id, {
-            ...prevStream,
-            state: {
-              ...prevStream.state,
-              displayVideo: !prevStream.state.displayVideo,
-            },
-          });
-        }
-      }
-
-      return newState;
-    }
-
     case StreamsActionType.UPDATE_STREAM: {
       const newState = new Map(state);
-      const prevStream = state.get(action.id);
+      const prevMediaStream = state.get(action.id);
 
-      if (prevStream) {
+      if (prevMediaStream) {
         newState.set(action.id, {
-          ...prevStream,
+          ...prevMediaStream,
           ...action.stream,
         });
       }

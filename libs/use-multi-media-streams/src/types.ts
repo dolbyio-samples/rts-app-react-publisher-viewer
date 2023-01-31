@@ -1,28 +1,14 @@
-import { VideoCodec } from '@millicast/sdk';
-
 export interface ApplyConstraintsOptions {
   audioConstraints?: MediaTrackConstraints;
   videoConstraints?: MediaTrackConstraints;
 }
 
-export interface Bitrate {
-  name: string;
-  value: number;
-}
-
-export interface AddStreamOptions extends Omit<CreateStreamOptions, 'bitrate' | 'codec'> {
-  bitrate?: number;
-  codec?: VideoCodec;
-}
-
 export interface CreateStreamOptions {
   audioConstraints?: MediaTrackConstraints;
-  bitrate: number;
   camera?: InputDeviceInfo;
-  codec: VideoCodec;
   label?: string;
-  objectUrl?: string;
   microphone?: InputDeviceInfo;
+  objectUrl?: string;
   type: StreamTypes;
   videoConstraints?: MediaTrackConstraints;
 }
@@ -32,17 +18,14 @@ export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
 }
 
 export interface MediaDevices {
-  addStream: (options: AddStreamOptions) => Promise<void>;
+  addStream: (options: CreateStreamOptions) => Promise<void>;
   applyConstraints: (id: string, options: ApplyConstraintsOptions) => Promise<void>;
   cameraList: InputDeviceInfo[];
-  codecList: VideoCodec[];
   initDefaultStream: () => void;
+  streams: StreamsMap;
   microphoneList: InputDeviceInfo[];
   removeStream: (id: string) => void;
   reset: () => void;
-  streams: StreamsMap;
-  toggleAudio: (id: string) => void;
-  toggleVideo: (id: string) => void;
   updateStream: (id: string, stream: Partial<Stream>) => void;
 }
 
@@ -58,28 +41,9 @@ export interface Resolution {
 }
 
 export interface Stream {
-  bitrate: number;
-  codec: VideoCodec;
-  device?: {
-    camera: InputDeviceInfo;
-    microphone: InputDeviceInfo;
-  };
-  capabilities?: {
-    camera: MediaTrackCapabilities;
-    microphone: MediaTrackCapabilities;
-  };
-  label: string;
+  label?: string;
   mediaStream: MediaStream;
   resolutions?: Resolution[];
-  settings?: {
-    camera: MediaTrackSettings;
-    microphone: MediaTrackSettings;
-  };
-  simulcast?: boolean;
-  state: {
-    muteAudio: boolean;
-    displayVideo: boolean;
-  };
   type: StreamTypes;
 }
 
@@ -97,29 +61,19 @@ export type StreamsAction =
       type: StreamsActionType.RESET;
     }
   | {
-      type: StreamsActionType.TOGGLE_AUDIO;
-      id: string;
-    }
-  | {
-      type: StreamsActionType.TOGGLE_VIDEO;
-      id: string;
-    }
-  | {
       stream: Partial<Stream>;
       type: StreamsActionType.UPDATE_STREAM;
       id: string;
     };
 
-export type StreamsMap = Map<string, Stream>;
-
 export enum StreamsActionType {
   ADD_STREAM = 'ADD_STREAM',
   REMOVE_STREAM = 'REMOVE_STREAM',
   RESET = 'RESET',
-  TOGGLE_AUDIO = 'TOGGLE_AUDIO',
-  TOGGLE_VIDEO = 'TOGGLE_VIDEO',
   UPDATE_STREAM = 'UPDATE_STREAM',
 }
+
+export type StreamsMap = Map<string, Stream>;
 
 export enum StreamTypes {
   DISPLAY = 'DISPLAY',

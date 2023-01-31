@@ -1,30 +1,28 @@
-import { PeerConnection, VideoCodec } from '@millicast/sdk';
 import { useState, useEffect, useReducer } from 'react';
 
-import { bitrateList } from './constants';
+import { idealCameraConfig } from './constants';
 import reducer from './reducer';
 import {
   ApplyConstraintsOptions,
-  AddStreamOptions,
+  CreateStreamOptions,
   MediaDevices,
   MediaDevicesLists,
+  Stream,
   StreamTypes,
   StreamsActionType,
   UseMediaDevicesProps,
-  Stream,
 } from './types';
-import { createStream, idealCameraConfig, isUniqueDevice, stopTracks } from './utils';
+import { createStream, isUniqueDevice, stopTracks } from './utils';
 
 const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaDevicesProps = {}): MediaDevices => {
   const [streams, dispatch] = useReducer(reducer, new Map());
 
-  const [codecList, setCodecList] = useState<VideoCodec[]>([] as VideoCodec[]);
   const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
   const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
   const [rootCameraList, setRootCameraList] = useState<InputDeviceInfo[]>([]);
   const [rootMicrophoneList, setRootMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
-  // handle internal list of devices
+  // Handle internal list of devices
   useEffect(() => {
     getDevicesList();
 
@@ -37,25 +35,21 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     };
   }, []);
 
-  // handle internal list of codecs
-  useEffect(() => {
-    const capabilities = PeerConnection.getCapabilities('video');
-
-    const supportedCodecs = capabilities.codecs
-      .filter(({ codec }) => codec !== 'av1')
-      .sort(({ codec }) => (codec === 'h264' ? -1 : 1))
-      .map(({ codec }) => codec);
-
-    setCodecList(supportedCodecs);
-  }, []);
-
   useEffect(() => {
     if (filterOutUsedDevices && (rootCameraList.length || rootMicrophoneList.length)) {
       const usedDevices = new Set();
 
-      streams.forEach((stream) => {
-        usedDevices.add(stream.device?.camera.deviceId);
-        usedDevices.add(stream.device?.microphone.deviceId);
+      streams.forEach(({ mediaStream, type }) => {
+        if (type === StreamTypes.MEDIA) {
+          const [audioTrack] = mediaStream.getAudioTracks();
+          const [videoTrack] = mediaStream.getVideoTracks();
+
+          const { deviceId: audioDeviceId } = audioTrack.getCapabilities();
+          const { deviceId: videoDeviceId } = videoTrack.getCapabilities();
+
+          usedDevices.add(audioDeviceId);
+          usedDevices.add(videoDeviceId);
+        }
       });
 
       setCameraList(rootCameraList.filter((device) => !usedDevices.has(device.deviceId)));
@@ -66,8 +60,8 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     }
   }, [filterOutUsedDevices, streams, rootCameraList, rootMicrophoneList]);
 
-  const addStream = async (args: AddStreamOptions) => {
-    const newStream = await createStream({ bitrate: bitrateList[0].value, codec: codecList[0], ...args });
+  const addStream = async (options: CreateStreamOptions) => {
+    const newStream = await createStream(options);
 
     if (newStream) {
       dispatch({
@@ -97,17 +91,7 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
 
     await Promise.all([applyAudioConstraints, applyVideoConstraints]);
 
-    updateStream(id, {
-      capabilities: {
-        camera: videoTrack.getCapabilities(),
-        microphone: audioTrack.getCapabilities(),
-      },
-      mediaStream,
-      settings: {
-        camera: videoTrack.getSettings(),
-        microphone: audioTrack.getSettings(),
-      },
-    });
+    updateStream(id, { mediaStream });
   };
 
   const getDevicesList = async () => {
@@ -157,10 +141,7 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   const initDefaultStream = () => {
     if (microphoneList.length && cameraList.length) {
       addStream({
-        bitrate: bitrateList[0].value,
         camera: cameraList[0],
-        codec: codecList[0],
-        label: cameraList[0].label,
         microphone: microphoneList[0],
         type: StreamTypes.MEDIA,
       });
@@ -175,14 +156,6 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     dispatch({ type: StreamsActionType.RESET });
   };
 
-  const toggleAudio = (id: string) => {
-    dispatch({ id, type: StreamsActionType.TOGGLE_AUDIO });
-  };
-
-  const toggleVideo = (id: string) => {
-    dispatch({ id, type: StreamsActionType.TOGGLE_VIDEO });
-  };
-
   const updateStream = (id: string, stream: Partial<Stream>) => {
     dispatch({ id, stream, type: StreamsActionType.UPDATE_STREAM });
   };
@@ -191,14 +164,11 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     addStream,
     applyConstraints,
     cameraList,
-    codecList,
     initDefaultStream,
     microphoneList,
     removeStream,
-    reset,
     streams,
-    toggleAudio,
-    toggleVideo,
+    reset,
     updateStream,
   };
 };

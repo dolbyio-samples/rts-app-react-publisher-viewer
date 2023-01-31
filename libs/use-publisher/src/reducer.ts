@@ -3,22 +3,21 @@ import { PublisherAction, PublisherActionType, PublisherSource, PublisherSources
 const reducer = (state: PublisherSources, action: PublisherAction): PublisherSources => {
   switch (action.type) {
     case PublisherActionType.ADD_SOURCE: {
-      const { sourceId } = action.source.broadcastOptions;
-
-      const newState = new Map([...state, [sourceId, action.source]]);
+      const newState = new Map([...state, [action.id, action.source]]);
 
       return newState;
     }
 
     case PublisherActionType.REMOVE_SOURCE: {
       const newState = new Map(state);
-      newState.delete(action.sourceId);
+
+      newState.delete(action.id);
 
       return newState;
     }
 
     case PublisherActionType.UPDATE_SOURCE_STATE: {
-      const prevSource = state.get(action.sourceId);
+      const prevSource = state.get(action.id);
 
       if (!prevSource) {
         return state;
@@ -29,13 +28,13 @@ const reducer = (state: PublisherSources, action: PublisherAction): PublisherSou
         state: action.state,
       };
 
-      const newState = new Map([...state, [action.sourceId, newSource]]);
+      const newState = new Map([...state, [action.id, newSource]]);
 
       return newState;
     }
 
-    case PublisherActionType.UPDATE_SOURCE_BITRATE: {
-      const prevSource = state.get(action.sourceId);
+    case PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS: {
+      const prevSource = state.get(action.id);
 
       if (!prevSource) {
         return state;
@@ -45,17 +44,17 @@ const reducer = (state: PublisherSources, action: PublisherAction): PublisherSou
         ...prevSource,
         broadcastOptions: {
           ...prevSource.broadcastOptions,
-          bandwidth: action.bitrate,
+          ...action.broadcastOptions,
         },
       };
 
-      const newState = new Map([...state, [action.sourceId, newSource]]);
+      const newState = new Map([...state, [action.id, newSource]]);
 
       return newState;
     }
 
     case PublisherActionType.UPDATE_SOURCE_STATISTICS: {
-      const prevSource = state.get(action.sourceId);
+      const prevSource = state.get(action.id);
 
       if (!prevSource) {
         return state;
@@ -66,7 +65,7 @@ const reducer = (state: PublisherSources, action: PublisherAction): PublisherSou
         statistics: action.statistics,
       } as PublisherSource;
 
-      const newState = new Map([...state, [action.sourceId, newSource]]);
+      const newState = new Map([...state, [action.id, newSource]]);
 
       return newState;
     }

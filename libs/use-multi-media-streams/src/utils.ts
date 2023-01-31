@@ -1,11 +1,9 @@
-import { initialStreamState, resolutionList } from './constants';
+import { idealCameraConfig, resolutionList } from './constants';
 import { CreateStreamOptions, HTMLVideoElementWithCaptureStream, Stream, StreamTypes } from './types';
 
 export const createStream = async ({
   audioConstraints = {},
-  bitrate,
   camera,
-  codec,
   label,
   microphone,
   objectUrl,
@@ -24,15 +22,10 @@ export const createStream = async ({
       return {
         id: mediaStream.id,
         stream: {
-          bitrate,
-          codec,
-          // TODO: better display screen label
-          label: label ?? mediaStream.getVideoTracks()[0].label ?? mediaStream.id,
+          label: mediaStream.getVideoTracks()[0].label,
           mediaStream,
-          simulcast: codec === 'h264',
-          state: initialStreamState,
           type,
-        },
+        } as Stream,
       };
     }
 
@@ -53,14 +46,10 @@ export const createStream = async ({
       return {
         id: mediaStream.id,
         stream: {
-          bitrate,
-          codec,
-          label: label ?? mediaStream.id,
+          label,
           mediaStream,
-          simulcast: codec === 'h264',
-          state: initialStreamState,
           type,
-        },
+        } as Stream,
       };
     }
 
@@ -83,10 +72,9 @@ export const createStream = async ({
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
 
-      const audioTracks = mediaStream.getAudioTracks()[0];
-      const videoTracks = mediaStream.getVideoTracks()[0];
+      const [videoTrack] = mediaStream.getVideoTracks();
 
-      const cameraCapabilities = videoTracks.getCapabilities();
+      const cameraCapabilities = videoTrack.getCapabilities();
 
       const resolutions = resolutionList.filter(
         (resolution) =>
@@ -94,38 +82,18 @@ export const createStream = async ({
           resolution.width <= (cameraCapabilities?.width?.max ?? 0)
       );
 
-      const stream = {
-        bitrate,
-        capabilities: {
-          camera: videoTracks.getCapabilities(),
-          microphone: audioTracks.getCapabilities(),
-        },
-        codec,
-        device: {
-          camera,
-          microphone,
-        },
-        label: label ?? mediaStream.id,
-        mediaStream,
-        resolutions,
-        settings: {
-          camera: videoTracks.getSettings(),
-          microphone: audioTracks.getSettings(),
-        },
-        simulcast: codec === 'h264',
-        state: initialStreamState,
-        type,
-      };
-
       return {
         id: mediaStream.id,
-        stream,
+        stream: {
+          label: videoTrack.label,
+          mediaStream,
+          resolutions,
+          type,
+        } as Stream,
       };
     }
   }
 };
-
-export const idealCameraConfig = { aspectRatio: 7680 / 4320, height: { ideal: 4320 }, width: { ideal: 7680 } };
 
 export const isUniqueDevice = (deviceList: InputDeviceInfo[], device: InputDeviceInfo) => {
   return !(device.deviceId === 'default' || deviceList.some((item) => item.deviceId === device.deviceId));

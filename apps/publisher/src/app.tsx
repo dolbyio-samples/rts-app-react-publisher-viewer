@@ -18,7 +18,7 @@ import {
   Button,
   Center,
 } from '@chakra-ui/react';
-import { Event, VideoCodec } from '@millicast/sdk';
+import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
@@ -30,13 +30,16 @@ import ParticipantCount from '@millicast-react/participant-count';
 import PopupMenu from '@millicast-react/popup-menu';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import Timer from '@millicast-react/timer';
-import useMultiMediaStreams, { bitrateList, Resolution, StreamTypes } from '@millicast-react/use-multi-media-streams';
+import useMultiMediaStreams, { Resolution, StreamTypes } from '@millicast-react/use-multi-media-streams';
 import useNotification from '@millicast-react/use-notification';
-import usePublisher from '@millicast-react/use-publisher';
+import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
+
 import PublisherVideoView from './components/publisher-video-view';
+
 import './styles/font.css';
 
 const MAX_SOURCES = 4;
+const TIMESTAMP_STREAM_NAME = new Date().valueOf().toString();
 
 const {
   VITE_MILLICAST_VIEWER_BASE_URL,
@@ -67,7 +70,6 @@ const App = () => {
     addStream,
     applyConstraints,
     cameraList,
-    codecList,
     initDefaultStream,
     microphoneList,
     // TODO: remove and reset streams
@@ -75,19 +77,24 @@ const App = () => {
     // reset,
     streams,
     // TODO: per-stream audio/video toggling
-    // toggleAudio,
-    // toggleVideo,
-    updateStream,
   } = useMultiMediaStreams();
 
-  const { shareUrl, sources, startStreamingToSource, stopStreamingToSource, updateSourceBitrate, viewerCount } =
-    usePublisher({
-      handleError: showError,
-      streamId: VITE_MILLICAST_STREAM_ID,
-      streamName: VITE_MILLICAST_STREAM_NAME || new Date().valueOf().toString(),
-      token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-      viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
-    });
+  const {
+    codecList,
+    shareUrl,
+    sources,
+    startStreamingToSource,
+    stopStreamingToSource,
+    updateSourceBroadcastOptions,
+    viewerCount,
+  } = usePublisher({
+    handleError: showError,
+    streamNameId: VITE_MILLICAST_STREAM_ID,
+    streams,
+    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
+    token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+    viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
+  });
 
   // Prevent closing the page
   useEffect(() => {
@@ -135,18 +142,14 @@ const App = () => {
     }
   };
 
-  const handleChangeLabel = (streamId: string, newLabel: string) => {
-    const stream = streams.get(streamId);
+  const handleChangeLabel = (id: string, newLabel: string) => {
+    const stream = streams.get(id);
 
     if (!stream) {
       return;
     }
 
-    const allLabels = Array.from(streams)
-      .filter(([id]) => id !== streamId)
-      .map(([, { label }]) => label);
-
-    console.log({ allLabels });
+    const allLabels = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
 
     let dedupedLabel = newLabel;
 
@@ -160,45 +163,41 @@ const App = () => {
       });
     }
 
-    updateStream(streamId, { label: dedupedLabel });
+    updateSourceBroadcastOptions(id, { sourceId: dedupedLabel });
   };
 
-  const handleSelectBitrate = (streamId: string, newBitrate: number) => {
-    const stream = streams.get(streamId);
+  const handleSelectBitrate = (id: string, bitrate: number) => {
+    const source = sources.get(id);
 
-    if (!stream) {
+    if (!source) {
       return;
     }
 
-    if (sources.get(stream.label)) {
-      updateSourceBitrate(stream.label, newBitrate);
-    }
-
-    updateStream(streamId, { bitrate: newBitrate });
+    updateSourceBroadcastOptions(id, { bandwidth: bitrate });
   };
 
-  const handleSelectCodec = (streamId: string, newCodec: VideoCodec) => {
-    const stream = streams.get(streamId);
+  const handleSelectCodec = (id: string, codec: VideoCodec) => {
+    const source = sources.get(id);
 
-    if (!stream || sources.get(stream.label)) {
+    if (!source) {
       return;
     }
 
-    updateStream(streamId, { codec: newCodec });
+    updateSourceBroadcastOptions(id, { codec });
   };
 
   const handleSelectVideoResolution = async (id: string, resolution: Resolution) => {
     await applyConstraints(id, { videoConstraints: { height: resolution.height, width: resolution.width } });
   };
 
-  const handleSetSimulcast = (streamId: string, newSimulcast: boolean) => {
-    const stream = streams.get(streamId);
+  const handleSetSimulcast = (id: string, simulcast: boolean) => {
+    const source = sources.get(id);
 
-    if (!stream || sources.get(stream.label)) {
+    if (!source) {
       return;
     }
 
-    updateStream(streamId, { simulcast: newSimulcast });
+    updateSourceBroadcastOptions(id, { simulcast });
   };
 
   const handleStartDisplayCapture = async () => {
@@ -209,18 +208,9 @@ const App = () => {
 
   const handleStartLive = () => {
     if (streams.size) {
-      streams.forEach((stream) => {
-        const { bitrate, codec, label, mediaStream, simulcast } = stream;
-
+      streams.forEach((_, streamId) => {
         try {
-          startStreamingToSource({
-            bandwidth: bitrate,
-            codec,
-            events: ['viewercount'] as Event[],
-            mediaStream,
-            simulcast,
-            sourceId: label,
-          });
+          startStreamingToSource(streamId);
         } catch (error) {
           showError(`Failed to start streaming: ${error}`);
         }
@@ -252,25 +242,33 @@ const App = () => {
     onFileSelectModalClose();
   };
 
-  const settings = (streamId: string) => {
-    const stream = streams.get(streamId);
+  const settings = (id: string) => {
+    const stream = streams.get(id);
+    const source = sources.get(id);
 
-    if (!stream) {
+    if (!stream || !source) {
       return {};
     }
 
-    const { bitrate, codec, label, resolutions, simulcast, settings, type } = stream;
-    const { height, width } = settings?.camera ?? {};
-    const source = sources.get(label);
+    const { resolutions, type } = stream;
+    const {
+      broadcastOptions: { bandwidth: bitrate, codec, mediaStream, simulcast, sourceId: label },
+      state,
+    } = source;
 
     const codecListSimulcast = simulcast ? codecList.filter((item) => item !== 'vp9') : codecList;
-    const isConnecting = source?.state === 'connecting';
+
+    const isConnecting = state === 'connecting';
+    const isReady = state === 'ready';
+    const isStreaming = state === 'streaming';
+
+    const { height, width } = mediaStream.getVideoTracks()[0].getSettings();
     const resolution = `${width}x${height}`;
 
     return {
       bitrate: {
         handleSelect: (data: unknown) => {
-          handleSelectBitrate(streamId, data as number);
+          handleSelectBitrate(id, data as number);
         },
         isDisabled: isConnecting,
         isHidden: !bitrateList.length,
@@ -279,25 +277,24 @@ const App = () => {
       },
       codec: {
         handleSelect: (data: unknown) => {
-          handleSelectCodec(streamId, data as VideoCodec);
+          handleSelectCodec(id, data as VideoCodec);
         },
-        isDisabled: !!source,
-        isHidden: !!source || !codecList.length,
+        isDisabled: !isReady,
+        isHidden: isStreaming || !codecList.length,
         options: codecListSimulcast,
         value: codec ?? codecList[0],
       },
       name: {
         handleChange: (data: unknown) => {
-          // TODO: debounce this
-          handleChangeLabel(streamId, data as string);
+          handleChangeLabel(id, data as string);
         },
-        isDisabled: !!source,
-        isHidden: !!source,
+        isDisabled: !isReady,
+        isHidden: isStreaming,
         value: label,
       },
       resolution: {
         handleSelect: (data: unknown) => {
-          handleSelectVideoResolution(streamId, data as Resolution);
+          handleSelectVideoResolution(id, data as Resolution);
         },
         isDisabled: type === StreamTypes.DISPLAY || isPublisherConnecting,
         isHidden: type === StreamTypes.DISPLAY,
@@ -306,10 +303,10 @@ const App = () => {
       },
       simulcast: {
         handleToggle: () => {
-          handleSetSimulcast(streamId, !simulcast);
+          handleSetSimulcast(id, !simulcast);
         },
-        isDisabled: !!source,
-        isHidden: !!source || codec === 'vp9',
+        isDisabled: !isReady,
+        isHidden: isStreaming || codec === 'vp9',
         value: !!simulcast,
       },
     };
@@ -374,19 +371,23 @@ const App = () => {
           </VStack>
         )}
         <Wrap justify="center" margin="0 auto" maxWidth="1388px" spacing="12px" width="100%">
-          {Array.from(streams).map(([streamId, stream]) => {
-            const { label, mediaStream, type } = stream;
-            const { state, statistics } = sources.get(label) ?? {};
+          {Array.from(sources).map(([id, source]) => {
+            const {
+              broadcastOptions: { sourceId: label, mediaStream },
+              state,
+              statistics,
+            } = source;
+            const { type } = streams.get(id) ?? {};
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
             const isStreaming = state === 'streaming';
-            const testId = `millicastVideo${type.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
+            const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
 
             return (
-              <WrapItem flexBasis={flexBasis} key={streamId} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
+              <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
                   isActive={isStreaming}
-                  settingsProps={settings(streamId)}
+                  settingsProps={settings(id)}
                   statistics={statistics}
                   videoProps={{
                     displayFullscreenButton: false,
