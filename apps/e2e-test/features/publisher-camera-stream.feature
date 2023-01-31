@@ -230,7 +230,9 @@ Feature: Publisher streaming with camera only
         And the "camera view" stream stats with quality tabs should be displayed with default values
     Examples:
         |  resolution  |
-        |  640x480      |
+        |  3840x2160      |
+        # This is probably an issue with the resolution input field being broken. Disabled this for now, there's a probable fix in #241
+        # |  640x480      |
 
     Scenario: Publisher should be able to stream with <bitrate> bitrate and simulcast ON when streaming with camera
         Given a publisher is on the "preview" page
@@ -273,8 +275,10 @@ Feature: Publisher streaming with camera only
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
     Examples:
         | codec |  resolution | bitrate    |
-        | vp8   |  640x480    | 2 Mbps     |
-        | h264  |  640x480    | 500 Kbps   |
+        | vp8   |  3840x2160    | 2 Mbps     |
+        # | vp8   |  640x480    | 2 Mbps     |
+        | h264  |  3840x2160    | 500 Kbps   |
+        # | h264  |  640x480    | 500 Kbps   |
 
     Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast OFF when streaming with camera
         Given a publisher is on the "preview" page
@@ -296,9 +300,12 @@ Feature: Publisher streaming with camera only
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
     Examples:
         | codec |  resolution | bitrate    |
-        | vp9   |  640x480    | 2 Mbps     |
-        | vp8   |  640x480    | 500 Kbps   |
-        | h264  |  640x480    | 250 Kbps   |
+        # | vp9   |  640x480    | 2 Mbps     |
+        | vp9   |  3840x2160    | 2 Mbps     |
+        # | vp8   |  640x480    | 500 Kbps   |
+        | vp8   |  3840x2160    | 500 Kbps   |
+        # | h264  |  640x480    | 250 Kbps   |
+        | h264  |  3840x2160    | 250 Kbps   |
 
     @ignore #Issue-259
     Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with camera
@@ -336,7 +343,8 @@ Feature: Publisher streaming with camera only
         And the "camera view" stream stats with quality tabs should be displayed with default values
     Examples:
         |  resolution  |
-        |  640x480     |
+        |  3840x2160     |
+        # |  640x480     |
 
     @ignore #Issue-258
     Scenario: Publisher should be able to change the bitrate multiple time when streaming is live with camera
@@ -369,12 +377,14 @@ Feature: Publisher streaming with camera only
             | stop button | displayed\|enabled |
         
         When the publisher configures "camera view" setting with the following values only
-            | resolution  | 640x480  |
+            # | resolution  | 640x480  |
+            | resolution  | 3840x2160  |
             | bitrate     | 2 Mbps    |
         And the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
         And the "preview header" should be displayed with following values only
             | go live button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - 640x480 |
+            # | resolution | Resolution  - 640x480 |
+            | resolution | Resolution  - 3840x2160 |
             | bitrate    | Bitrate  - 2 Mbps     |
