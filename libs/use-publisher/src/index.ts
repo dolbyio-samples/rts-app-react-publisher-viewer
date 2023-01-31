@@ -135,32 +135,12 @@ const usePublisher = ({ handleError, streamId, streamName, token, viewerAppBaseU
     }
   };
 
-  const updateSourceMediaStream = (sourceId: string, mediaStream: MediaStream) => {
-    const source = sources.get(sourceId);
-
-    if (!source?.publish.isActive()) {
-      return;
-    }
-
-    const [audioTrack] = mediaStream.getAudioTracks();
-    const [videoTrack] = mediaStream.getVideoTracks();
-
-    if (audioTrack) {
-      source.publish.webRTCPeer?.replaceTrack(audioTrack);
-    }
-
-    if (videoTrack) {
-      source.publish.webRTCPeer?.replaceTrack(videoTrack);
-    }
-  };
-
   return {
     shareUrl,
     sources,
     startStreamingToSource,
     stopStreamingToSource,
     updateSourceBitrate,
-    updateSourceMediaStream,
     viewerCount,
   };
 };

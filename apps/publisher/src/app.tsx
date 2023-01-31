@@ -80,21 +80,14 @@ const App = () => {
     updateStream,
   } = useMultiMediaStreams();
 
-  const {
-    shareUrl,
-    sources,
-    startStreamingToSource,
-    stopStreamingToSource,
-    updateSourceBitrate,
-    updateSourceMediaStream,
-    viewerCount,
-  } = usePublisher({
-    handleError: showError,
-    streamId: VITE_MILLICAST_STREAM_ID,
-    streamName: VITE_MILLICAST_STREAM_NAME || new Date().valueOf().toString(),
-    token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-    viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
-  });
+  const { shareUrl, sources, startStreamingToSource, stopStreamingToSource, updateSourceBitrate, viewerCount } =
+    usePublisher({
+      handleError: showError,
+      streamId: VITE_MILLICAST_STREAM_ID,
+      streamName: VITE_MILLICAST_STREAM_NAME || new Date().valueOf().toString(),
+      token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+      viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
+    });
 
   // Prevent closing the page
   useEffect(() => {
@@ -123,7 +116,7 @@ const App = () => {
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   const addNewDevice = async () => {
-    if (!newCamera || newMicrophone) {
+    if (!newCamera || !newMicrophone) {
       return;
     }
 

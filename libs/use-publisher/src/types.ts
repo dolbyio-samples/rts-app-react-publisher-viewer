@@ -16,7 +16,6 @@ export type Publisher = {
   // stopStreamingToSource will remove an existing stream from publisher
   stopStreamingToSource: (sourceId: string) => void;
   updateSourceBitrate: (sourceId: string, bitrate: number) => void;
-  updateSourceMediaStream: (sourceId: string, mediaStream: MediaStream) => void;
   viewerCount: number;
 };
 
