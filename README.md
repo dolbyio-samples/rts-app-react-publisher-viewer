@@ -16,14 +16,14 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 - [x] Microphone and camera device selection
 - [x] Resolution, bandwidth, codec, and bitrate selection
 - [x] Observing stream statistics
-- [ ] Ability to stream from two or more sources
+- [x] Ability to stream from two or more sources
+- [x] Grid layout for video sources
 - [ ] Ability to have multiple publishers
-- [ ] Grid layout for video sources
 - [ ] Recording your streams
 - [ ] Chromecast support
 - [ ] Picture in picture support
-- [ ] Ability to see stats for each individual source
-- [ ] Improved simulcast stats for the publisher
+- [x] Ability to see stats for each individual source
+- [x] Improved simulcast stats for the publisher
 
 ## Project structure
 
