@@ -258,9 +258,12 @@ const App = () => {
 
     const codecListSimulcast = simulcast ? codecList.filter((item) => item !== 'vp9') : codecList;
 
-    const isConnecting = state === 'connecting';
+    // TODO: reenable this for granular connecting/streaming states in #195
+    // const isConnecting = state === 'connecting';
+    const isConnecting = isPublisherConnecting;
     const isReady = state === 'ready';
-    const isStreaming = state === 'streaming';
+    // const isStreaming = state === 'streaming';
+    const isStreaming = isPublisherStreaming;
 
     const { height, width } = mediaStream.getVideoTracks()[0].getSettings();
     const resolution = `${width}x${height}`;
