@@ -13,7 +13,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import VideoView from '@millicast-react/video-view';
-import useMultiMediaStreams, { Stream, StreamTypes, Resolution } from '@millicast-react/use-multi-media-streams';
+import useMultiMediaStreams, {
+  Stream,
+  StreamId,
+  StreamTypes,
+  Resolution,
+} from '@millicast-react/use-multi-media-streams';
 import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import ControlBar from '@millicast-react/control-bar';
 import Dropdown from '@millicast-react/dropdown';
@@ -122,8 +127,8 @@ const Content = () => {
     setMicrophone(null);
   };
 
-  const updateResolution = async (id: string, resolution: Resolution) => {
-    await applyConstraints(id, { videoConstraints: { height: resolution.height, width: resolution.width } });
+  const updateResolution = async (id: StreamId, resolution: Resolution) => {
+    await applyConstraints({ id, videoConstraints: { width: resolution.width, height: resolution.height } });
   };
 
   useEffect(() => {

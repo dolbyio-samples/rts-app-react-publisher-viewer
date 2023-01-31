@@ -1,37 +1,38 @@
 import { useState, useEffect, useReducer } from 'react';
 
-import { idealCameraConfig } from './constants';
 import reducer from './reducer';
 import {
   ApplyConstraintsOptions,
   CreateStreamOptions,
   MediaDevices,
   MediaDevicesLists,
-  Stream,
+  StreamId,
   StreamTypes,
   StreamsActionType,
-  UseMediaDevicesProps,
+  UseMediaDevicesArguments,
 } from './types';
-import { createStream, isUniqueDevice, stopTracks } from './utils';
+import { createStream, idealCameraConfig, isUniqueDevice, stopTracks } from './utils';
 
-const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaDevicesProps = {}): MediaDevices => {
+const useMediaDevices = ({ handleError, filterOutUsedDevices = true }: UseMediaDevicesArguments = {}): MediaDevices => {
   const [streams, dispatch] = useReducer(reducer, new Map());
 
-  const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
-  const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
   const [rootCameraList, setRootCameraList] = useState<InputDeviceInfo[]>([]);
   const [rootMicrophoneList, setRootMicrophoneList] = useState<InputDeviceInfo[]>([]);
+  const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
+  const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
 
-  // Handle internal list of devices
   useEffect(() => {
     getDevicesList();
 
-    navigator.mediaDevices.addEventListener('devicechange', getDevicesList);
+    return () => {
+      dispatch({ type: StreamsActionType.RESET });
+    };
+  }, []);
 
+  useEffect(() => {
+    navigator.mediaDevices.addEventListener('devicechange', getDevicesList);
     return () => {
       navigator.mediaDevices.removeEventListener('devicechange', getDevicesList);
-
-      dispatch({ type: StreamsActionType.RESET });
     };
   }, []);
 
@@ -39,17 +40,9 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     if (filterOutUsedDevices && (rootCameraList.length || rootMicrophoneList.length)) {
       const usedDevices = new Set();
 
-      streams.forEach(({ mediaStream, type }) => {
-        if (type === StreamTypes.MEDIA) {
-          const [audioTrack] = mediaStream.getAudioTracks();
-          const [videoTrack] = mediaStream.getVideoTracks();
-
-          const { deviceId: audioDeviceId } = audioTrack.getCapabilities();
-          const { deviceId: videoDeviceId } = videoTrack.getCapabilities();
-
-          usedDevices.add(audioDeviceId);
-          usedDevices.add(videoDeviceId);
-        }
+      streams.forEach((stream) => {
+        usedDevices.add(stream.device?.camera.deviceId);
+        usedDevices.add(stream.device?.microphone.deviceId);
       });
 
       setCameraList(rootCameraList.filter((device) => !usedDevices.has(device.deviceId)));
@@ -60,8 +53,8 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     }
   }, [filterOutUsedDevices, streams, rootCameraList, rootMicrophoneList]);
 
-  const addStream = async (options: CreateStreamOptions) => {
-    const newStream = await createStream(options);
+  const addStream = async (args: CreateStreamOptions) => {
+    const newStream = await createStream(args);
 
     if (newStream) {
       dispatch({
@@ -71,27 +64,25 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     }
   };
 
-  const applyConstraints = async (
-    id: string,
-    { audioConstraints = {}, videoConstraints = {} }: ApplyConstraintsOptions
-  ) => {
+  const applyConstraints = async ({ audioConstraints = {}, id, videoConstraints = {} }: ApplyConstraintsOptions) => {
     const prevStream = streams.get(id);
 
-    if (!prevStream) {
-      return;
+    if (prevStream) {
+      const newConstraints = {
+        audio: {
+          ...prevStream.settings?.microphone,
+          ...audioConstraints,
+        },
+        video: {
+          ...prevStream.settings?.camera,
+          ...videoConstraints,
+        },
+      };
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia(newConstraints);
+
+      dispatch({ id, mediaStream, type: StreamsActionType.APPLY_CONSTRAINTS });
     }
-
-    const { mediaStream } = prevStream;
-
-    const [audioTrack] = mediaStream.getAudioTracks();
-    const [videoTrack] = mediaStream.getVideoTracks();
-
-    const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
-    const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
-
-    await Promise.all([applyAudioConstraints, applyVideoConstraints]);
-
-    updateStream(id, { mediaStream });
   };
 
   const getDevicesList = async () => {
@@ -139,16 +130,12 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   };
 
   const initDefaultStream = () => {
-    if (microphoneList.length && cameraList.length) {
-      addStream({
-        camera: cameraList[0],
-        microphone: microphoneList[0],
-        type: StreamTypes.MEDIA,
-      });
+    if (microphoneList.length > 0 && cameraList.length > 0) {
+      addStream({ camera: cameraList[0], microphone: microphoneList[0], type: StreamTypes.MEDIA });
     }
   };
 
-  const removeStream = (id: string) => {
+  const removeStream = (id: StreamId) => {
     dispatch({ id, type: StreamsActionType.REMOVE_STREAM });
   };
 
@@ -156,8 +143,12 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     dispatch({ type: StreamsActionType.RESET });
   };
 
-  const updateStream = (id: string, stream: Partial<Stream>) => {
-    dispatch({ id, stream, type: StreamsActionType.UPDATE_STREAM });
+  const toggleAudio = (id: StreamId) => {
+    dispatch({ id, type: StreamsActionType.TOGGLE_AUDIO });
+  };
+
+  const toggleVideo = (id: StreamId) => {
+    dispatch({ id, type: StreamsActionType.TOGGLE_VIDEO });
   };
 
   return {
@@ -167,12 +158,12 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     initDefaultStream,
     microphoneList,
     removeStream,
-    streams,
     reset,
-    updateStream,
+    streams,
+    toggleAudio,
+    toggleVideo,
   };
 };
 
-export * from './constants';
 export * from './types';
 export default useMediaDevices;
