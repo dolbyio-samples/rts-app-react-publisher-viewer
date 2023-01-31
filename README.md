@@ -8,22 +8,30 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 
 ## Features and roadmap
 
-- [x] Publish and view streams
-- [x] Invite viewers to watch your stream
-- [x] Mute audio and video both as publisher and viewer
-- [x] Screen sharing
+### RTS Publisher
+
+- [x] Publish streams
 - [x] Publish with simulcast (only on Chrome)
 - [x] Microphone and camera device selection
+- [x] Invite viewers to watch your stream
+- [x] Screen sharing
+- [x] Mute audio and video
 - [x] Resolution, bandwidth, codec, and bitrate selection
-- [x] Observing stream statistics
 - [x] Ability to stream from two or more sources
-- [x] Grid layout for video sources
+- [x] Observing stream statistics for each simulcast layer
 - [ ] Ability to have multiple publishers
 - [ ] Recording your streams
+
+### RTS Viewer
+
+- [x] View streams
+- [x] Mute audio and video
+- [x] Observing stream statistics
+- [x] Select incoming stream quality with simulcast
+- [x] Grid layout for video sources
+- [x] Ability to see stats for each individual source
 - [ ] Chromecast support
 - [ ] Picture in picture support
-- [x] Ability to see stats for each individual source
-- [x] Improved simulcast stats for the publisher
 
 ## Project structure
 
