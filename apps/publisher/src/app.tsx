@@ -315,6 +315,8 @@ const App = () => {
   const isPublisherConnecting = Array.from(sources).some(([, { state }]) => state === 'connecting');
   const isPublisherStreaming = Array.from(sources).some(([, { state }]) => state === 'streaming');
 
+  const isMultiSourceStreaming = Array.from(sources).filter(([, { publish }]) => publish.isActive()).length > 1;
+
   const [maxHeight, maxWidth] = useMemo(() => {
     switch (streams.size) {
       case 1:
@@ -334,7 +336,7 @@ const App = () => {
           <Stack alignItems="flex-start" direction="column" spacing="4">
             <Flex alignItems="center">
               <Timer isActive={isPublisherStreaming} />
-              {sources.size > 1 && (
+              {isMultiSourceStreaming && (
                 <InfoLabel
                   bgColor="dolbyNeutral.300"
                   color="white"
