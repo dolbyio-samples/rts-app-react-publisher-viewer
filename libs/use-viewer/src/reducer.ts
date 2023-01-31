@@ -6,13 +6,13 @@ const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSo
     case ViewerActionType.ADD_SOURCE: {
       const { sourceId, remoteTrackSource } = action;
 
-      const newState = new Map([[sourceId, remoteTrackSource], ...state]);
+      const newState = new Map([...state, [sourceId, remoteTrackSource]]);
 
       return newState;
     }
 
     case ViewerActionType.REMOVE_SOURCE: {
-      const newState = new Map(state) as RemoteTrackSources;
+      const newState = new Map(state);
       newState.delete(action.sourceId);
 
       return newState;

@@ -7,7 +7,7 @@ import InfoLabel from '@millicast-react/info-label';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
 import useNotification from '@millicast-react/use-notification';
-import useViewer, { SimulcastQuality, SourceId } from '@millicast-react/use-viewer';
+import useViewer, { SimulcastQuality } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
 
@@ -33,7 +33,7 @@ function App() {
     viewerCount,
   } = useViewer({ streamName, streamAccountId, handleError: showError });
 
-  const [mainSourceId, setMainSourceId] = useState<SourceId>();
+  const [mainSourceId, setMainSourceId] = useState<string>();
 
   // Prevent closing the page
   useEffect(() => {
@@ -70,7 +70,7 @@ function App() {
     }
   }, [mainSourceId]);
 
-  const handleClickVideo = (sourceId: SourceId) => {
+  const handleClickVideo = (sourceId: string) => {
     setMainSourceId(sourceId);
   };
 

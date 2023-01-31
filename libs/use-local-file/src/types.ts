@@ -1,4 +1,4 @@
 export interface LocalFile {
-  name: string;
+  label: string;
   objectUrl: string;
 }
