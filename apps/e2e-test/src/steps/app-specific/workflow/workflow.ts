@@ -346,30 +346,36 @@ export const verifyStats = async (
   logger.info(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
-  const streamStatsKeys = Object.keys(streamStats);
-  let message;
-  if (qualityTabs && appName === 'publisher') {
-    logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-    message = 'Stream Info stats does not have High/Low quality tabs';
-    verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
+  try {
+    const streamStatsKeys = Object.keys(streamStats);
+    let message;
+    if (qualityTabs && appName === 'publisher') {
+      logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
+      message = 'Stream Info stats does not have High/Low quality tabs';
+      verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
 
-    message = 'Stream Info stats have more than 3 quality tabs';
-    verifyLessThan(streamStatsKeys.length, 4, message);
+      message = 'Stream Info stats have more than 3 quality tabs';
+      verifyLessThan(streamStatsKeys.length, 4, message);
 
-    for (const quality of streamStatsKeys) {
-      logger.info(`Verify ${viewName} stats with ${quality} quality`);
-      message = 'Unknown Stream Info quality';
-      verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
-      validateStatsInfo(streamStats[quality], expectedData);
+      for (const quality of streamStatsKeys) {
+        logger.info(`Verify ${viewName} stats with ${quality} quality`);
+        message = 'Unknown Stream Info quality';
+        verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
+        validateStatsInfo(streamStats[quality], expectedData);
+      }
+    } else {
+      logger.info(`Verify ${appName} ${viewName} stats`);
+      message = 'Stream Info stats have quality tabs';
+      verifyArrayContains(streamStatsKeys, 'Standard', message);
+
+      message = 'Stream Info quality has less or more than 1 quality';
+      verifyEqualTo(streamStatsKeys.length, 1, message);
+      validateStatsInfo(streamStats['Standard'], expectedData);
     }
-  } else {
-    logger.info(`Verify ${appName} ${viewName} stats`);
-    message = 'Stream Info stats have quality tabs';
-    verifyArrayContains(streamStatsKeys, 'Standard', message);
-
-    message = 'Stream Info quality has less or more than 1 quality';
-    verifyEqualTo(streamStatsKeys.length, 1, message);
-    validateStatsInfo(streamStats['Standard'], expectedData);
+  } catch (exception) {
+    logger.error(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
+    logger.error(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
+    throw exception;
   }
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info close button`);
