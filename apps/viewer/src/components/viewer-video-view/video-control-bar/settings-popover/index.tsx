@@ -1,26 +1,21 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconCameraOn } from '@millicast-react/dolbyio-icons';
-import Drawer from '@millicast-react/drawer';
+import { IconCameraOn, IconSettings } from '@millicast-react/dolbyio-icons';
 import Dropdown from '@millicast-react/dropdown';
+import Popover from '@millicast-react/popover';
 
-import { VideoSettingsDrawerProps } from './types';
+import { SettingsPopoverProps } from './types';
 import { qualityElementResolver } from './utils';
 
-const VideoSettingsDrawer = ({ isOpen, onClose: handleClose, quality }: VideoSettingsDrawerProps) => (
-  <Drawer
-    heading="Settings"
-    headingProps={{ 'test-id': 'streamSettingsPopoverHeading' }}
-    isOpen={isOpen}
-    onClose={handleClose}
-  >
+const SettingsPopover = ({ iconProps, quality }: SettingsPopoverProps = {}) => (
+  <Popover heading="Stream settings" icon={<IconSettings fill="white" />} iconProps={iconProps} label="Stream settings">
     {quality && !quality.isHidden ? (
       <Box>
         <Dropdown
           disabled={quality.isDisabled}
-          elementsList={quality.options}
           elementResolver={qualityElementResolver}
+          elementsList={quality.options}
           leftIcon={<IconCameraOn />}
           onSelect={quality.handleSelect}
           placeholder="Quality"
@@ -29,8 +24,8 @@ const VideoSettingsDrawer = ({ isOpen, onClose: handleClose, quality }: VideoSet
         />
       </Box>
     ) : undefined}
-  </Drawer>
+  </Popover>
 );
 
 export * from './types';
-export default VideoSettingsDrawer;
+export default SettingsPopover;

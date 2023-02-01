@@ -31,7 +31,7 @@ function App() {
     startViewer,
     stopViewer,
     viewerCount,
-  } = useViewer({ streamName, streamAccountId, handleError: showError });
+  } = useViewer({ handleError: showError, streamAccountId, streamName });
 
   const [mainSourceId, setMainSourceId] = useState<string>();
 
@@ -99,21 +99,21 @@ function App() {
 
   return (
     <Flex bg="background" direction="column" height="100vh" maxHeight="100vh" p={6} width="100vw">
-      <Box w="100%" h="94px">
+      <Box height="94px" width="100%">
         <ActionBar title="Company name" />
-        <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
-          <VStack spacing="4" alignItems="flex-start">
+        <Flex justifyContent="space-between" mt="4" position="relative" w="100%" zIndex={1}>
+          <VStack alignItems="flex-start" spacing="4">
             <Flex alignItems="center">
               <Timer isActive={isStreaming} />
               {hasMultiStream && (
                 <InfoLabel
-                  text="Multi–stream view"
-                  ml="2.5"
-                  color="white"
                   bgColor="dolbyNeutral.300"
-                  py="5px"
-                  h="auto"
+                  color="white"
                   fontWeight="600"
+                  h="auto"
+                  ml="2.5"
+                  py="5px"
+                  text="Multi–stream view"
                 />
               )}
             </Flex>
@@ -121,10 +121,10 @@ function App() {
           </VStack>
         </Flex>
       </Box>
-      <Flex flex={1} width="100%" alignItems="center" justifyContent="center">
+      <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
         {!isStreaming ? (
           <VStack>
-            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
+            <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Stream is not live
             </Heading>
             <Text test-id="pageDesc">Please wait for livestream to begin.</Text>
@@ -134,12 +134,14 @@ function App() {
             <Box height="100%" test-id="millicastVideo">
               <ViewerVideoView
                 isActive={isStreaming}
-                settingsProps={mainSourceSettings()}
+                settings={mainSourceSettings()}
+                showControlBar
                 statistics={mainSource?.statistics as StreamStats}
                 videoProps={{
                   // TODO: hide video
                   // displayVideo: !hideVideo,
                   displayVideo: true,
+                  label: mainSourceId,
                   mediaStream: mainMediaStream,
                   // TODO: mute audio
                   // muted: muteAudio,
@@ -162,6 +164,7 @@ function App() {
                     isActive={isStreaming}
                     videoProps={{
                       displayVideo: true,
+                      label: sourceId,
                       mediaStream,
                       muted: true,
                     }}
@@ -172,7 +175,7 @@ function App() {
           </HStack>
         )}
       </Flex>
-      <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
+      <Box bottom="5px" left="5px" position="fixed" test-id="appVersion">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
     </Flex>
