@@ -157,9 +157,12 @@ export const addRemoteFile = async (scWorld: ScenarioWorld, filePath: string) =>
 };
 
 export const getQualityTabName = (qualityTab: string) => {
-  let qualityTabName = 'none';
-  if (qualityTab.includes('with quality tabs')) {
-    qualityTabName = 'all';
+  let qualityTabName = 'None';
+
+  if (qualityTab === null) {
+    qualityTabName = 'None';
+  } else if (qualityTab.includes('with quality tabs')) {
+    qualityTabName = 'All';
   } else if (qualityTab.includes('with high quality tab')) {
     qualityTabName = 'High';
   } else if (qualityTab.includes('with medium quality tab')) {

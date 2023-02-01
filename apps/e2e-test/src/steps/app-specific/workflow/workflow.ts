@@ -351,7 +351,7 @@ export const verifyStats = async (
   try {
     let streamStatsKeys = Object.keys(streamStats);
     let message;
-    if (qualityTabName != 'none' && appName === 'publisher') {
+    if (qualityTabName != 'None' && appName === 'publisher') {
       logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
       message = 'Stream Info stats does not have High/Low quality tabs';
       verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
@@ -359,7 +359,7 @@ export const verifyStats = async (
       message = 'Stream Info stats have more than 3 quality tabs';
       verifyLessThan(streamStatsKeys.length, 4, message);
 
-      if (qualityTabName !== 'all') {
+      if (qualityTabName !== 'All') {
         streamStatsKeys = [qualityTabName];
       }
 

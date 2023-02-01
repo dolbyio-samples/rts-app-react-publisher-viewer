@@ -7,7 +7,6 @@ Feature: Publisher streaming with Screen share
         Given a publisher is on the "preview" page
         When the publisher adds "screen" source
 
-    @only
     Scenario: Verify the header information, settings options, camera view, stream stats when streaming with screen share
         Then the "screen view" should be displayed with default values
         And the "camera view" should be displayed with default values 
