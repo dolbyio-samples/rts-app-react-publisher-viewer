@@ -318,8 +318,8 @@ const App = () => {
         handleSelect: (data: unknown) => {
           handleSelectVideoResolution(id, data as Resolution);
         },
-        isDisabled: type === StreamTypes.DISPLAY || isPublisherConnecting,
-        isHidden: type === StreamTypes.DISPLAY,
+        isDisabled: type !== StreamTypes.MEDIA || isPublisherConnecting,
+        isHidden: type !== StreamTypes.MEDIA,
         options: resolutions ?? [],
         value: resolution,
       },
