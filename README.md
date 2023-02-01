@@ -43,7 +43,7 @@ This project is setup as a yarn based nx-managed monorepo, and contains the foll
 - Shared components/hooks (under `libs/*`)
 - Storybook stories (under `.apps/stories/*`)
 
-The Millicast solution is broken down into 2 parts - the publisher (or the broadcaster) and the subscriber (or the viewer). This repository contains sample code for both parts.
+The RTS solution is broken down into 2 parts - the publisher (or the broadcaster) and the subscriber (or the viewer). This repository contains sample code for both parts.
 
 ## Installation and setup
 
@@ -53,7 +53,7 @@ To install the libraries necessary, run the following command:
 yarn
 ```
 
-### Millicast Tokens
+### Millicast (RTS) Tokens
 
 In order for this application to work, you need three sets of tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the streaming tab for a given token.
 
