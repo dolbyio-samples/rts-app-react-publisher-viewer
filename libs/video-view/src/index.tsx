@@ -73,7 +73,6 @@ const VideoView = ({
       width: 'min-content',
     },
     '.video': {
-      display: `${displayVideo ? 'block' : 'none'}`,
       height: '100%',
       objectFit: 'contain',
       overflow: 'hidden',
@@ -85,7 +84,7 @@ const VideoView = ({
   return (
     <Flex
       alignItems="center"
-      bg="dolbyNeutral.800"
+      background="dolbyNeutral.800"
       borderRadius="8px"
       bottom="0"
       color="white"
@@ -110,7 +109,6 @@ const VideoView = ({
           <Spinner size="lg" />
         </Center>
       )}
-      {!displayVideo && placeholderNode}
       <video
         autoPlay
         className="video"
@@ -134,7 +132,8 @@ const VideoView = ({
         // eslint-disable-next-line react/no-unknown-property
         test-id="videoView"
       />
-      {label && (
+      {!displayVideo ? placeholderNode : undefined}
+      {label ? (
         <InfoLabel
           bg="dolbyNeutral.700"
           color="dolbySecondary.200"
@@ -146,10 +145,10 @@ const VideoView = ({
           textTransform="capitalize"
           top="4"
         />
-      )}
-      {showDotIndicator && (
+      ) : undefined}
+      {showDotIndicator ? (
         <Box bg="dolbyRed.500" borderRadius="50%" h="8px" position="absolute" right={4} top={5} w="8px" />
-      )}
+      ) : undefined}
     </Flex>
   );
 };

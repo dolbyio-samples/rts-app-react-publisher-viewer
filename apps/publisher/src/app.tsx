@@ -1,22 +1,22 @@
 import {
   Box,
+  Button,
+  Center,
   Flex,
   HStack,
   Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   Spacer,
   Stack,
   Text,
-  useDisclosure,
   VStack,
   Wrap,
   WrapItem,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  Button,
-  Center,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
@@ -425,9 +425,15 @@ const App = () => {
                     mediaStream: mediaStream,
                     mirrored: type === StreamTypes.MEDIA,
                     placeholderNode: (
-                      <Box color="dolbyNeutral.700" height="174px" position="absolute" width="174px">
-                        <IconProfile />
-                      </Box>
+                      <Center
+                        background="dolbyNeutral.800"
+                        color="dolbyNeutral.700"
+                        height="100%"
+                        position="absolute"
+                        width="100%"
+                      >
+                        <IconProfile height="174px" width="174px" />
+                      </Center>
                     ),
                     showDotIndicator: state === 'streaming',
                   }}
