@@ -11,6 +11,7 @@ import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { addFileSource, addSource, configureSettings } from './workflow/workflow';
 import { getDefaultSettings } from './workflow/workflow.data';
+import fs from 'fs';
 
 When(
   /^the publisher turns (Off|On) the "([^"]*)"$/,
@@ -68,8 +69,17 @@ When(/^the publisher adds "(camera|screen)" source$/, async function (this: Scen
 });
 
 When(
+  /^the publisher adds "(local|remote)" file source$/,
+  async function (this: ScenarioWorld, srcName: string) {
+    const filePath = 'apps/e2e-test/resources/local-file.mp4';
+    await addFileSource(this, srcName, filePath);
+  }
+);
+
+When(
   /^the publisher adds "(local|remote)" file source with file "([^"]*)"$/,
-  async function (this: ScenarioWorld, srcName: string, filePath: string) {
+  async function (this: ScenarioWorld, srcName: string, fileName: string) {
+    const filePath = `apps/e2e-test/resources/${fileName}`;
     await addFileSource(this, srcName, filePath);
   }
 );
