@@ -68,21 +68,23 @@ local file view:
 local file view source name:
   - '$ref: local file view container'
   - '$ref: source name'
-local file view microphone:
+microphone of local file view: '$ref: local file view microphone button'
+local file view microphone button:
   - '$ref: local file view container'
   - '$ref: microphone button'
-local file view camera:
+camera of local file view: '$ref: local file view camera button'
+local file view camera button:
   - '$ref: local file view container'
   - '$ref: camera button'
-local file view stop share button:
-  - '$ref: local file view container'
-  - '[test-id=stopScreenShare]'
+full screen of local file view: '$ref: local file view full screen button'
 local file view full screen button:
   - '$ref: local file view container'
   - '$ref: full screen button'
+setting button of local file view: '$ref: local file view setting button'
 local file view setting button:
   - '$ref: local file view container'
   - '$ref: setting button'
+stream info button of local file view: '$ref: local file view stream info button'
 local file view stream info button:
   - '$ref: local file view container'
   - '$ref: stream info button'

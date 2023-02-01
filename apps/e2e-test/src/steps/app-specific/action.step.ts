@@ -39,7 +39,7 @@ When(
 );
 
 When(
-  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the default values$/,
+  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view)" setting with the default values$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
     const expectedData = getDefaultSettings(`publisher ${viewName}`);
     await configureSettings(this, elementPosition, viewName, expectedData);
@@ -47,7 +47,7 @@ When(
 );
 
 When(
-  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the following values( only)?$/,
+  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view)" setting with the following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const defaultExpectedData = getDefaultSettings(`publisher ${viewName}`);
     let expectedData = dataTable.rowsHash();
@@ -67,13 +67,10 @@ When(/^the publisher adds "(camera|screen)" source$/, async function (this: Scen
   await addSource(this, srcName);
 });
 
-When(
-  /^the publisher adds "(local|remote)" file source$/,
-  async function (this: ScenarioWorld, srcName: string) {
-    const filePath = 'apps/e2e-test/resources/local-file.mp4';
-    await addFileSource(this, srcName, filePath);
-  }
-);
+When(/^the publisher adds "(local|remote)" file source$/, async function (this: ScenarioWorld, srcName: string) {
+  const filePath = 'apps/e2e-test/resources/local-file.mp4';
+  await addFileSource(this, srcName, filePath);
+});
 
 When(
   /^the publisher adds "(local|remote)" file source with file "([^"]*)"$/,

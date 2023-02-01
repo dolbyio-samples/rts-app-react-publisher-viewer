@@ -506,7 +506,6 @@ export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {
 };
 
 export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, filePath: string) => {
-
   if (!fs.existsSync(filePath)) {
     throw new Error(`File ${filePath} does not exists`);
   }

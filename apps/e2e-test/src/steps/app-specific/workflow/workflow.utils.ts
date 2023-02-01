@@ -148,7 +148,7 @@ export const addScreen = async (scWorld: ScenarioWorld) => {
 
 export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => {
   logger.info(`Add local file source - ${filePath}`);
- 
+
   let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'local file button');
   await click(scWorld.currentPage, targetSelector);
 

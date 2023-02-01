@@ -41,7 +41,12 @@ export const clearText = async (page: Page, selector: TargetSelector, index?: nu
   await locator.clear();
 };
 
-export const fileUploadInput = async (page: Page, selector: TargetSelector, filePath: string, index?: number): Promise<void> => {
+export const fileUploadInput = async (
+  page: Page,
+  selector: TargetSelector,
+  filePath: string,
+  index?: number
+): Promise<void> => {
   logger.trace(`File upload from selector: ${selector}`);
   const locator = getLocator(page, selector, index);
   await locator.setInputFiles(filePath);

@@ -122,3 +122,56 @@ screen view quality dropdown options:
 screen view settings close button:
   - '$ref: screen view container'
   - '$ref: settings close button'
+
+
+
+local file view settings:
+  - '$ref: local file view container'
+  - '$ref: settings'
+local file view settings title:
+  - '$ref: local file view container'
+  - '$ref: settings title'
+local file view settings dropdowns:
+  - '$ref: local file view container'
+  - '$ref: settings dropdowns'
+local file view source name input:
+  - '$ref: local file view container'
+  - '$ref: source name input'
+local file view codec dropdown:
+  - '$ref: local file view container'
+  - '$ref: codec dropdown'
+local file view codec dropdown default: '$ref: local file view codec dropdown'
+local file view codec dropdown options:
+  - '$ref: local file view container'
+  - '$ref: codec dropdown options'
+local file view resolution dropdown:
+  - '$ref: local file view container'
+  - '$ref: resolution dropdown'
+local file view resolution dropdown default: '$ref: local file view resolution dropdown'
+local file view resolution dropdown options:
+  - '$ref: local file view container'
+  - '$ref: resolution dropdown options'
+local file view bitrate dropdown:
+  - '$ref: local file view container'
+  - '$ref: bitrate dropdown'
+local file view bitrate dropdown default: '$ref: local file view bitrate dropdown'
+local file view bitrate dropdown options:
+  - '$ref: local file view container'
+  - '$ref: bitrate dropdown options'
+local file view simulcast label:
+  - '$ref: local file view container'
+  - '$ref: simulcast label'
+local file view simulcast switch:
+  - '$ref: local file view container'
+  - '$ref: simulcast switch'
+local file view simulcast: '$ref: local file view simulcast switch'
+local file view quality dropdown:
+  - '$ref: local file view container'
+  - '$ref: quality dropdown'
+local file view quality dropdown default: '$ref: local file view quality dropdown'
+local file view quality dropdown options:
+  - '$ref: local file view container'
+  - '$ref: quality dropdown options'
+local file view settings close button:
+  - '$ref: local file view container'
+  - '$ref: settings close button'

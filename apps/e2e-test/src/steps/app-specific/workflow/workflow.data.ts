@@ -26,6 +26,19 @@ const publisherScreenViewDefaultData: ViewData = {
   'full screen button': 'hidden',
 };
 
+const publisherLocalFileViewDefaultData: ViewData = {
+  size: 'Normal',
+  'source name': 'displayed',
+  'source name text': 'contains: local-file.mp4',
+  'setting button': 'displayed|enabled',
+  'microphone button': 'displayed|enabled',
+  'microphone button status': 'On',
+  'camera button': 'displayed|enabled',
+  'camera button status': 'On',
+  'stream info button': 'hidden',
+  'full screen button': 'hidden',
+};
+
 const publisherPreviewHeaderData: ViewData = {
   'company name': 'displayed',
   'company name text': 'Company name',
@@ -78,6 +91,13 @@ const publisherScreenViewSettings: ViewData = {
   codec: 'h264',
 };
 
+const publisherLocalFileViewSettings: ViewData = {
+  'source name': 'ignore: ',
+  bitrate: 'Auto',
+  simulcast: 'On',
+  codec: 'h264',
+};
+
 const publisherCameraViewSettingsData: ViewData = {
   'source name': 'contains: fake',
   resolution: 'Resolution  - 3840x2160',
@@ -88,6 +108,13 @@ const publisherCameraViewSettingsData: ViewData = {
 
 const publisherScreenViewSettingsData: ViewData = {
   'source name': 'contains: screen',
+  bitrate: 'Bitrate  - Auto',
+  simulcast: 'On',
+  codec: 'Codec  - h264',
+};
+
+const publisherLocalFileViewSettingsData: ViewData = {
+  'source name': 'contains: local-file.mp4',
   bitrate: 'Bitrate  - Auto',
   simulcast: 'On',
   codec: 'Codec  - h264',
@@ -127,12 +154,31 @@ const publisherScreenViewStatsData: ViewData = {
     'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} ([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
 };
 
+const publisherLocalFileViewStatsData: ViewData = {
+  Name: 'Value',
+  'Current RTT:': 'regex: \\d{1,3} ms',
+  'Outgoing bitrate:': 'regex: ([0-9]*[.])?[0-9]+ (kbps|mbps)',
+  'Candidate type:': 'regex: [s|p]rflx',
+  'Video resolution:': 'regex: \\d{3,4}x\\d{3,4}',
+  'Quality limitation reason:': 'regex: (bandwidth|cpu|none)',
+  'Frames per second:': 'regex: \\d{1,2}',
+  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
+  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
+  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Codecs:': 'video/H264, audio/opus',
+  'Timestamp:':
+    'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} ([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
+};
+
 export const getDefaultViewData = (viewName: string) => {
   switch (viewName) {
     case 'publisher camera view':
       return publisherCameraViewDefaultData;
     case 'publisher screen view':
       return publisherScreenViewDefaultData;
+    case 'publisher local file view':
+      return publisherLocalFileViewDefaultData;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }
@@ -155,6 +201,8 @@ export const getDefaultSettings = (viewName: string) => {
       return publisherCameraViewSettings;
     case 'publisher screen view':
       return publisherScreenViewSettings;
+    case 'publisher local file view':
+      return publisherLocalFileViewSettings;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }
@@ -166,6 +214,8 @@ export const getDefaultSettingsData = (viewName: string) => {
       return publisherCameraViewSettingsData;
     case 'publisher screen view':
       return publisherScreenViewSettingsData;
+    case 'publisher local file view':
+      return publisherLocalFileViewSettingsData;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }
@@ -177,6 +227,8 @@ export const getDefaultStatsData = (viewName: string) => {
       return publisherCameraViewStatsData;
     case 'publisher screen view':
       return publisherScreenViewStatsData;
+    case 'publisher local file view':
+      return publisherLocalFileViewStatsData;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }
