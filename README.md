@@ -18,6 +18,7 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 - [x] Mute audio and video
 - [x] Resolution, bandwidth, codec, and bitrate selection
 - [x] Ability to stream from two or more sources
+- [x] Ability to stream a local video file
 - [x] Observing stream statistics for each simulcast layer
 - [ ] Ability to have multiple publishers
 - [ ] Recording your streams
