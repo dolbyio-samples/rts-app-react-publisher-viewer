@@ -412,6 +412,7 @@ const App = () => {
             return (
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
+                  canTogglePlayback={type === StreamTypes.LOCAL}
                   onStartLive={() => startStreamingToSource(id)}
                   onStopLive={() => handleStopLive(id)}
                   settings={settings(id)}

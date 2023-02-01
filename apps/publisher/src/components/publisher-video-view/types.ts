@@ -6,6 +6,7 @@ import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 import { SourceState } from '@millicast-react/use-publisher';
 
 export interface PublisherVideoViewProps {
+  canTogglePlayback?: boolean;
   onStartLive: () => void;
   onStopLive: () => void;
   settings?: SettingsPopoverProps;

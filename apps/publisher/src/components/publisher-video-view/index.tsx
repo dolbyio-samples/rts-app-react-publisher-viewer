@@ -7,6 +7,7 @@ import { PublisherVideoViewProps } from './types';
 import VideoControlBar from './video-control-bar';
 
 const PublisherVideoView = ({
+  canTogglePlayback,
   onStartLive: handleStartLive,
   onStopLive: handleStopLive,
   settings,
@@ -35,7 +36,7 @@ const PublisherVideoView = ({
       <VideoView {...videoProps} />
       <VideoControlBar
         audioTrack={audioTrack}
-        canTogglePlayback={true}
+        canTogglePlayback={canTogglePlayback}
         onStartLive={handleStartLive}
         onStopLive={handleStopLive}
         opacity={0}
