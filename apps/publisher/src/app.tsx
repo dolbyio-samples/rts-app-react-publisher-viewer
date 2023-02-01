@@ -77,6 +77,7 @@ const App = () => {
     startStreamingToSource,
     stopStreamingToSource,
     updateSourceBroadcastOptions,
+    updateSourceMediaStream,
     viewerCount,
   } = usePublisher({
     handleError: showError,
@@ -212,6 +213,10 @@ const App = () => {
     updateSourceBroadcastOptions(id, { simulcast });
   };
 
+  const handleSrcMediaStreamReady = (id: string) => (mediaStream: MediaStream) => {
+    updateSourceMediaStream(id, mediaStream);
+  };
+
   const handleStartDisplayCapture = async () => {
     if (sources.size < MAX_SOURCES) {
       await addStream({ type: StreamTypes.DISPLAY });
@@ -282,8 +287,8 @@ const App = () => {
     const isReady = state === 'ready';
     const isStreaming = state === 'streaming';
 
-    const { height, width } = mediaStream.getVideoTracks()[0].getSettings();
-    const resolution = `${width}x${height}`;
+    const { height, width } = mediaStream?.getVideoTracks()[0].getSettings() ?? {};
+    const resolution = height && width ? `${width}x${height}` : '';
 
     return {
       bitrate: {
@@ -316,7 +321,7 @@ const App = () => {
         handleSelect: (data: unknown) => {
           handleSelectVideoResolution(id, data as Resolution);
         },
-        isDisabled: type !== StreamTypes.MEDIA || isPublisherConnecting,
+        isDisabled: type !== StreamTypes.MEDIA || isConnecting,
         isHidden: type !== StreamTypes.MEDIA,
         options: resolutions ?? [],
         value: resolution,
@@ -332,10 +337,9 @@ const App = () => {
     };
   };
 
+  const isMultiSourceStreaming = Array.from(sources).filter(([, { publish }]) => publish.isActive()).length > 1;
   const isPublisherConnecting = Array.from(sources).some(([, { state }]) => state === 'connecting');
   const isPublisherStreaming = Array.from(sources).some(([, { state }]) => state === 'streaming');
-
-  const isMultiSourceStreaming = Array.from(sources).filter(([, { publish }]) => publish.isActive()).length > 1;
 
   const [maxHeight, maxWidth] = useMemo(() => {
     switch (streams.size) {
@@ -399,7 +403,7 @@ const App = () => {
               state,
               statistics,
             } = source;
-            const { type } = streams.get(id) ?? {};
+            const { objectUrl, type } = streams.get(id) ?? {};
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
             const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
@@ -408,6 +412,7 @@ const App = () => {
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
                   canTogglePlayback={type === StreamTypes.LOCAL}
+                  isConnecting={state === 'connecting'}
                   isStreaming={state === 'streaming'}
                   onRemove={() => handleRemove(id)}
                   onStartLive={() => startStreamingToSource(id)}
@@ -416,8 +421,9 @@ const App = () => {
                   statistics={statistics}
                   videoProps={{
                     label,
-                    mediaStream: mediaStream,
+                    mediaStream,
                     mirrored: type === StreamTypes.MEDIA,
+                    onSrcMediaStreamReady: objectUrl ? handleSrcMediaStreamReady(id) : undefined,
                     placeholderNode: (
                       <Center
                         background="dolbyNeutral.800"
@@ -430,6 +436,7 @@ const App = () => {
                       </Center>
                     ),
                     showDotIndicator: state === 'streaming',
+                    src: objectUrl,
                   }}
                 />
               </WrapItem>

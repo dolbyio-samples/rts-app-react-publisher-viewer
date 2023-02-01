@@ -40,7 +40,7 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
       const usedDevices = new Set();
 
       streams.forEach(({ mediaStream, type }) => {
-        if (type === StreamTypes.MEDIA) {
+        if (mediaStream && type === StreamTypes.MEDIA) {
           const [audioTrack] = mediaStream.getAudioTracks();
           const [videoTrack] = mediaStream.getVideoTracks();
 
@@ -77,7 +77,7 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   ) => {
     const prevStream = streams.get(id);
 
-    if (!prevStream) {
+    if (!prevStream?.mediaStream) {
       return;
     }
 
@@ -167,8 +167,8 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     initDefaultStream,
     microphoneList,
     removeStream,
-    streams,
     reset,
+    streams,
     updateStream,
   };
 };

@@ -3,7 +3,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 
 import InfoLabel from '@millicast-react/info-label';
 
-import { VideoViewProps } from './types';
+import { HTMLVideoElementWithCaptureStream, VideoViewProps } from './types';
 
 const VideoView = ({
   displayVideo = true,
@@ -41,7 +41,7 @@ const VideoView = ({
         videoRef.current.srcObject = mediaStream;
       }
     }
-  }, [mediaStream, src]);
+  }, [src]);
 
   // Toggle mute
   useEffect(() => {
@@ -80,11 +80,13 @@ const VideoView = ({
   }, [streamId]);
 
   const onCanPlay = () => {
-    //@ts-expect-error property exists but it isn't in the built-in type
-    const stream = videoRef.current?.captureStream() as MediaStream;
+    if (videoRef.current) {
+      // Custom type as captureStream is not defined in HTMLVideoElement by default
+      const capturedMediaStream = (videoRef.current as HTMLVideoElementWithCaptureStream).captureStream();
 
-    onSrcMediaStreamReady?.(stream);
-    setStreamId(stream.id);
+      onSrcMediaStreamReady?.(capturedMediaStream);
+      setStreamId(capturedMediaStream.id);
+    }
   };
 
   const componentElementsStyle = {

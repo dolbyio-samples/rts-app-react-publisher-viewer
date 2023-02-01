@@ -8,6 +8,7 @@ import VideoControlBar from './video-control-bar';
 
 const PublisherVideoView = ({
   canTogglePlayback,
+  isConnecting,
   isStreaming,
   onRemove: handleRemove,
   onStartLive: handleStartLive,
@@ -69,6 +70,7 @@ const PublisherVideoView = ({
         canTogglePlayback={canTogglePlayback}
         hasAudioTrack={!!audioTrack}
         hasVideoTrack={!!videoTrack}
+        isConnecting={isConnecting}
         isStreaming={isStreaming}
         onStartLive={handleStartLive}
         onStopLive={handleStopLive}

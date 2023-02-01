@@ -6,6 +6,7 @@ import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 
 export interface PublisherVideoViewProps {
   canTogglePlayback?: boolean;
+  isConnecting?: boolean;
   isStreaming?: boolean;
   onRemove: () => void;
   onStartLive: () => void;
