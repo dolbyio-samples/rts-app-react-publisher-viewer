@@ -9,7 +9,7 @@ import {
 } from '../../playwright-support/app-specific/element-action';
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
-import { addFileSource, addSource, configureSettings } from './workflow/workflow';
+import { addSource, configureSettings } from './workflow/workflow';
 import { getDefaultSettings } from './workflow/workflow.data';
 
 When(
@@ -62,3 +62,7 @@ When(
     await configureSettings(this, elementPosition, viewName, expectedData);
   }
 );
+
+When(/^the publisher adds "(camera|screen)" source$/, async function (this: ScenarioWorld, srcName: string) {
+  await addSource(this, srcName);
+});

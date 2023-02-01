@@ -11,8 +11,6 @@ import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
 import {
   addCamera,
-  addLocalFile,
-  addRemoteFile,
   addScreen,
   getQualityTabName,
   validateState,
