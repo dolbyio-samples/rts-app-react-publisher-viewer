@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, CloseButton } from '@chakra-ui/react';
 import React from 'react';
 
 import VideoView from '@millicast-react/video-view';
@@ -8,6 +8,7 @@ import VideoControlBar from './video-control-bar';
 
 const PublisherVideoView = ({
   canTogglePlayback,
+  onRemove: handleRemove,
   onStartLive: handleStartLive,
   onStopLive: handleStopLive,
   settings,
@@ -34,6 +35,7 @@ const PublisherVideoView = ({
       width="100%"
     >
       <VideoView {...videoProps} />
+      <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
       <VideoControlBar
         audioTrack={audioTrack}
         canTogglePlayback={canTogglePlayback}

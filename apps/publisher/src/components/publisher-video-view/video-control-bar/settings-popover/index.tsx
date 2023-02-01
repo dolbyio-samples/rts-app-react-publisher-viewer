@@ -11,12 +11,7 @@ import { SettingsPopoverProps } from './types';
 import { bitrateElementResolver, codecElementResolver, resolutionElementResolver } from './utils';
 
 const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcast }: SettingsPopoverProps = {}) => (
-  <Popover
-    heading="Stream information"
-    icon={<IconSettings fill="white" />}
-    iconProps={iconProps}
-    label="Stream settings"
-  >
+  <Popover heading="Stream settings" icon={<IconSettings fill="white" />} iconProps={iconProps} label="Stream settings">
     {name && !name.isHidden ? (
       <Box>
         <Input

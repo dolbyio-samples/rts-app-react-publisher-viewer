@@ -7,6 +7,7 @@ import { SourceState } from '@millicast-react/use-publisher';
 
 export interface PublisherVideoViewProps {
   canTogglePlayback?: boolean;
+  onRemove: () => void;
   onStartLive: () => void;
   onStopLive: () => void;
   settings?: SettingsPopoverProps;

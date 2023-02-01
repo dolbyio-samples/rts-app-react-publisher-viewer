@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Spinner } from '@chakra-ui/react';
+import { Box, Center, Flex, HStack, Spinner } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import InfoLabel from '@millicast-react/info-label';
@@ -133,22 +133,25 @@ const VideoView = ({
         test-id="videoView"
       />
       {!displayVideo ? placeholderNode : undefined}
-      {label ? (
-        <InfoLabel
-          bg="dolbyNeutral.700"
-          color="dolbySecondary.200"
-          fontWeight="600"
-          left="4"
-          position="absolute"
-          test-id="sourceName"
-          text={label}
-          textTransform="capitalize"
-          top="4"
-        />
-      ) : undefined}
-      {showDotIndicator ? (
-        <Box bg="dolbyRed.500" borderRadius="50%" h="8px" position="absolute" right={4} top={5} w="8px" />
-      ) : undefined}
+      <HStack left="16px" maxWidth="100%" position="absolute" top="16px" width="100%">
+        {label ? (
+          <InfoLabel
+            background="dolbyNeutral.700"
+            color="dolbySecondary.200"
+            fontWeight="600"
+            maxWidth="90%"
+            overflow="hidden"
+            test-id="sourceName"
+            text={label}
+            textOverflow="ellipsis"
+            textTransform="capitalize"
+            whiteSpace="nowrap"
+          />
+        ) : undefined}
+        {showDotIndicator ? (
+          <Box background="dolbyRed.500" borderRadius="50%" height="8px" marginLeft="8px" width="8px" />
+        ) : undefined}
+      </HStack>
     </Flex>
   );
 };

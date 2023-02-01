@@ -67,18 +67,8 @@ const App = () => {
 
   const { showError } = useNotification();
 
-  const {
-    addStream,
-    applyConstraints,
-    cameraList,
-    initDefaultStream,
-    microphoneList,
-    // TODO: remove and reset streams
-    // removeStream,
-    // reset,
-    streams,
-    // TODO: per-stream audio/video toggling
-  } = useMultiMediaStreams();
+  const { addStream, applyConstraints, cameraList, initDefaultStream, microphoneList, removeStream, streams } =
+    useMultiMediaStreams();
 
   const {
     codecList,
@@ -181,6 +171,11 @@ const App = () => {
     }
 
     updateSourceBroadcastOptions(id, { sourceId: dedupedLabel });
+  };
+
+  const handleRemove = (id: string) => {
+    stopStreamingToSource(id);
+    removeStream(id);
   };
 
   const handleSelectBitrate = (id: string, bitrate: number) => {
@@ -413,6 +408,7 @@ const App = () => {
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
                   canTogglePlayback={type === StreamTypes.LOCAL}
+                  onRemove={() => handleRemove(id)}
                   onStartLive={() => startStreamingToSource(id)}
                   onStopLive={() => handleStopLive(id)}
                   settings={settings(id)}
