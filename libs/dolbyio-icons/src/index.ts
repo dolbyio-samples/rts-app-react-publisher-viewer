@@ -7,6 +7,7 @@ export { default as IconChevronDown } from './ChevronDown';
 export { default as IconClose } from './Close';
 export { default as IconCodec } from './Codec';
 export { default as IconCopy } from './Copy';
+export { default as IconExpand } from './Expand';
 export { default as IconEye } from './Eye';
 export { default as IconFullScreen } from './FullScreen';
 export { default as IconFullScreenExit } from './FullScreenExit';

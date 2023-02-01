@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import {
   IconCameraOff,
   IconCameraOn,
+  IconExpand,
   IconMicrophoneOff,
   IconMicrophoneOn,
   IconPause,
@@ -35,6 +36,10 @@ const VideoControlBar = ({
 
     audioTrack.enabled = isAudioEnabled;
   }, [isAudioEnabled]);
+
+  const handleFullscreen = () => {
+    video?.requestFullscreen();
+  };
 
   const handleToggleAudio = () => {
     if (!video) {
@@ -102,7 +107,7 @@ const VideoControlBar = ({
           isDisabled={!audioTrack}
           onClick={handleToggleAudio}
           testId="toggleAudioButton"
-          tooltipProps={{ label: 'Toggle microphone', placement: 'top' }}
+          tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
         />
         <IconButton
           icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
@@ -110,7 +115,7 @@ const VideoControlBar = ({
           isDisabled={!videoTrack}
           onClick={handleToggleVideo}
           testId="toggleVideoButton"
-          tooltipProps={{ label: 'Toggle camera', placement: 'top' }}
+          tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
         />
         <IconButton
           icon={isPlaybackActive ? <IconPlay /> : <IconPause />}
@@ -118,10 +123,18 @@ const VideoControlBar = ({
           isDisabled={!audioTrack && !videoTrack}
           onClick={handleTogglePlayback}
           testId="togglePlaybackButton"
-          tooltipProps={{ label: 'Toggle playback', placement: 'top' }}
+          tooltipProps={{ label: 'Toggle playback', placement: 'bottom' }}
         />
       </HStack>
       <HStack>
+        <IconButton
+          background="none"
+          icon={<IconExpand fill="white" />}
+          isDisabled={!audioTrack && !videoTrack}
+          onClick={handleFullscreen}
+          testId="toggleFullscreenButton"
+          tooltipProps={{ label: 'Toggle fullscreen', placement: 'bottom' }}
+        />
         <SettingsPopover
           iconProps={{ disabled: !settings, visibility: settings ? 'visible' : 'hidden' }}
           {...settings}
