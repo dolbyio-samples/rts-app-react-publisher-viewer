@@ -504,19 +504,3 @@ export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {
       throw Error(`Invalid source name - ${srcName}`);
   }
 };
-
-export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, filePath: string) => {
-  const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
-  await click(scWorld.currentPage, targetSelector);
-
-  switch (srcName) {
-    case 'local':
-      await addLocalFile(scWorld, filePath);
-      break;
-    case 'remote':
-      await addRemoteFile(scWorld, filePath);
-      break;
-    default:
-      throw Error(`Invalid source name - ${srcName}`);
-  }
-};

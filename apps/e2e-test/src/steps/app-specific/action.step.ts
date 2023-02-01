@@ -62,14 +62,3 @@ When(
     await configureSettings(this, elementPosition, viewName, expectedData);
   }
 );
-
-When(/^the publisher adds "(camera|screen)" source$/, async function (this: ScenarioWorld, srcName: string) {
-  await addSource(this, srcName);
-});
-
-When(
-  /^the publisher adds "(local|remote)" file source with file "([^"]*)"$/,
-  async function (this: ScenarioWorld, srcName: string, filePath: string) {
-    await addFileSource(this, srcName, filePath);
-  }
-);

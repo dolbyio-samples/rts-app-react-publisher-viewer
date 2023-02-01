@@ -146,16 +146,6 @@ export const addScreen = async (scWorld: ScenarioWorld) => {
   await click(scWorld.currentPage, targetSelector);
 };
 
-export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add local file source`);
-  // TODO: Add local file
-};
-
-export const addRemoteFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add remote file source`);
-  // TODO: Add remote file
-};
-
 export const getQualityTabName = (qualityTab: string) => {
   let qualityTabName = 'None';
 
