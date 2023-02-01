@@ -176,7 +176,7 @@ export const getDefaultStatsData = (viewName: string) => {
     case 'publisher camera view':
       return publisherCameraViewStatsData;
     case 'publisher screen view':
-      return publisherCameraViewStatsData;
+      return publisherScreenViewStatsData;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }
