@@ -137,18 +137,14 @@ const App = () => {
           <HStack height="573px" maxHeight="573px">
             <Box height="100%" test-id="millicastVideo">
               <ViewerVideoView
-                isActive={isStreaming}
+                isStreaming={isStreaming}
                 settings={mainSourceSettings()}
                 showControlBar
                 statistics={mainSource?.statistics as StreamStats}
                 videoProps={{
-                  // TODO: hide video
-                  // displayVideo: !hideVideo,
                   displayVideo: true,
                   label: mainSourceId,
                   mediaStream: mainMediaStream,
-                  // TODO: mute audio
-                  // muted: muteAudio,
                 }}
               />
             </Box>
@@ -165,12 +161,13 @@ const App = () => {
                   width="100%"
                 >
                   <ViewerVideoView
-                    isActive={isStreaming}
+                    isStreaming={isStreaming}
                     videoProps={{
                       displayVideo: true,
                       label: sourceId,
                       mediaStream,
                       muted: true,
+                      playing: false,
                     }}
                   />
                 </Box>

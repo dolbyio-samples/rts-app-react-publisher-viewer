@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import {
   IconCameraOff,
@@ -17,69 +17,22 @@ import { VideoControlBarProps } from './types';
 import SettingsPopover from './settings-popover';
 
 const VideoControlBar = ({
-  audioTrack,
-  isActive,
+  activeAudio,
+  activePlayback,
+  activeVideo,
+  canTogglePlayback,
+  hasAudioTrack,
+  hasVideoTrack,
+  isStreaming,
+  onFullScreen: handleFullScreen,
   settings,
   statistics,
-  video,
-  videoTrack,
+  toggleAudio,
+  togglePlayback,
+  toggleVideo,
   ...rest
 }: VideoControlBarProps) => {
-  const [isAudioEnabled, setIsAudioEnabled] = useState(!video?.muted);
-  const [isPlaybackActive, setIsPlaybackActive] = useState(!video?.paused);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(audioTrack?.enabled);
-
-  useEffect(() => {
-    if (!audioTrack) {
-      return;
-    }
-
-    audioTrack.enabled = isAudioEnabled;
-  }, [isAudioEnabled]);
-
-  const handleFullscreen = () => {
-    video?.requestFullscreen();
-  };
-
-  const handleToggleAudio = () => {
-    if (!video) {
-      return;
-    }
-
-    video.muted = !video.muted;
-
-    setIsAudioEnabled(!video.muted);
-  };
-
-  const handleTogglePlayback = () => {
-    if (!video) {
-      return;
-    }
-
-    setIsPlaybackActive((prevIsPlaybackActive) => {
-      if (prevIsPlaybackActive) {
-        video.pause();
-      } else {
-        video.play();
-      }
-
-      return !video.paused;
-    });
-  };
-
-  const handleToggleVideo = () => {
-    if (!videoTrack) {
-      return;
-    }
-
-    setIsVideoEnabled((prevIsVideoEnabled) => {
-      videoTrack.enabled = !prevIsVideoEnabled;
-
-      return videoTrack.enabled;
-    });
-  };
-
-  const showStatistics = isActive && !!statistics;
+  const showStatistics = isStreaming && !!statistics;
 
   return (
     <HStack
@@ -102,26 +55,26 @@ const VideoControlBar = ({
       </HStack>
       <HStack>
         <IconButton
-          icon={isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
-          isActive={!isAudioEnabled}
-          isDisabled={!audioTrack}
-          onClick={handleToggleAudio}
+          icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+          isActive={!activeAudio}
+          isDisabled={!hasAudioTrack}
+          onClick={toggleAudio}
           testId="toggleAudioButton"
           tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
         />
         <IconButton
-          icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
-          isActive={!isVideoEnabled}
-          isDisabled={!videoTrack}
-          onClick={handleToggleVideo}
+          icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
+          isActive={!activeVideo}
+          isDisabled={!hasVideoTrack}
+          onClick={toggleVideo}
           testId="toggleVideoButton"
           tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
         />
         <IconButton
-          icon={isPlaybackActive ? <IconPlay /> : <IconPause />}
-          isActive={!isPlaybackActive}
-          isDisabled={!audioTrack && !videoTrack}
-          onClick={handleTogglePlayback}
+          icon={activePlayback ? <IconPlay /> : <IconPause />}
+          isActive={!activePlayback}
+          isDisabled={!hasAudioTrack && !hasVideoTrack}
+          onClick={togglePlayback}
           testId="togglePlaybackButton"
           tooltipProps={{ label: 'Toggle playback', placement: 'bottom' }}
         />
@@ -130,10 +83,10 @@ const VideoControlBar = ({
         <IconButton
           background="none"
           icon={<IconExpand fill="white" />}
-          isDisabled={!audioTrack && !videoTrack}
-          onClick={handleFullscreen}
-          testId="toggleFullscreenButton"
-          tooltipProps={{ label: 'Toggle fullscreen', placement: 'bottom' }}
+          isDisabled={!hasAudioTrack && !hasVideoTrack}
+          onClick={handleFullScreen}
+          testId="toggleFullScreenButton"
+          tooltipProps={{ label: 'Toggle full screen', placement: 'bottom' }}
         />
         <SettingsPopover
           iconProps={{ disabled: !settings, visibility: settings ? 'visible' : 'hidden' }}

@@ -1,18 +1,65 @@
 import { Box } from '@chakra-ui/react';
-import React, { useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
 import { ViewerVideoViewProps } from './types';
 import VideoControlBar from './video-control-bar';
 
-const ViewerVideoView = ({ isActive, settings, showControlBar, statistics, videoProps }: ViewerVideoViewProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
+const ViewerVideoView = ({
+  isStreaming,
+  settings,
+  showControlBar,
+  statistics,
+  videoProps = {},
+}: ViewerVideoViewProps) => {
   const { mediaStream } = videoProps;
 
   const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
   const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+
+  useEffect(() => {
+    if (!audioTrack) {
+      return;
+    }
+
+    audioTrack.enabled = isAudioEnabled;
+  }, [isAudioEnabled]);
+
+  const enterFullScreen = () => {
+    setIsFullScreen(true);
+
+    document.addEventListener('keydown', exitFullScreen);
+  };
+
+  const exitFullScreen = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsFullScreen(false);
+    }
+  };
+
+  const toggleAudio = () => {
+    setIsAudioEnabled((prevIsAudioEnabled) => !prevIsAudioEnabled);
+  };
+
+  const togglePlayback = () => {
+    setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
+  };
+
+  const toggleVideo = () => {
+    if (videoTrack) {
+      setIsVideoEnabled((prevIsVideoEnabled) => {
+        videoTrack.enabled = !prevIsVideoEnabled;
+
+        return videoTrack.enabled;
+      });
+    }
+  };
 
   return (
     <Box
@@ -27,17 +74,29 @@ const ViewerVideoView = ({ isActive, settings, showControlBar, statistics, video
       }}
       width="100%"
     >
-      <VideoView {...videoProps} ref={videoRef} />
+      <VideoView
+        displayVideo={isVideoEnabled}
+        isFullScreen={isFullScreen}
+        muted={!isAudioEnabled}
+        playing={isPlaybackActive}
+        {...videoProps}
+      />
       {showControlBar ? (
         <VideoControlBar
-          audioTrack={audioTrack}
-          isActive={isActive}
+          activeAudio={isAudioEnabled}
+          activePlayback={isPlaybackActive}
+          activeVideo={isVideoEnabled}
+          hasAudioTrack={!!audioTrack}
+          hasVideoTrack={!!videoTrack}
+          isStreaming={isStreaming}
+          onFullScreen={enterFullScreen}
           opacity={0}
           settings={settings}
           statistics={statistics}
           test-id="videoControlBar"
-          video={videoRef?.current}
-          videoTrack={videoTrack}
+          toggleAudio={toggleAudio}
+          togglePlayback={togglePlayback}
+          toggleVideo={toggleVideo}
         />
       ) : undefined}
     </Box>

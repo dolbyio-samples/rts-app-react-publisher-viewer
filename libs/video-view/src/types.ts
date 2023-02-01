@@ -7,6 +7,7 @@ export interface VideoViewProps {
   displayMuteButton?: boolean;
   displayVideo?: boolean;
   height?: string;
+  isFullScreen?: boolean;
   label?: string;
   maxHeight?: string;
   maxWidth?: string;
@@ -18,6 +19,7 @@ export interface VideoViewProps {
   onSrcMediaStreamClose?: (id: string) => void;
   onSrcMediaStreamReady?: (value: MediaStream) => void;
   placeholderNode?: ReactNode;
+  playing?: boolean;
   showDotIndicator?: boolean;
   src?: string;
   statistics?: StreamStats;
