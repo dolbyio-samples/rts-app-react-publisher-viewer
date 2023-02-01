@@ -27,18 +27,9 @@ const DeviceSelection = ({
   onClose: handleClose,
   onSelectCamera: handleSelectCamera,
   onSelectMicrophone: handleSelectMicrophone,
-  onSubmit: handleSubmit,
+  onSubmit,
 }: DeviceSelectionProps) => {
   const [mediaStream, setMediaStream] = useState<MediaStream | undefined>();
-  const updateVideoStream = async (camera: InputDeviceInfo) => {
-    const constraints = {
-      video: {
-        deviceId: { exact: camera.deviceId },
-      },
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    setMediaStream(stream);
-  };
 
   useEffect(() => {
     if (camera) {
@@ -47,6 +38,26 @@ const DeviceSelection = ({
       setMediaStream(undefined);
     }
   }, [camera]);
+
+  const handleSubmit = () => {
+    onSubmit();
+
+    mediaStream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+  };
+
+  const updateVideoStream = async (camera: InputDeviceInfo) => {
+    const constraints = {
+      video: {
+        deviceId: { exact: camera.deviceId },
+      },
+    };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    setMediaStream(stream);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
