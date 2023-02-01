@@ -335,7 +335,6 @@ export const verifyStats = async (
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info popover`);
   await validateState(scWorld, targetSelector, 'displayed' as State);
-  // await delay(3000);
 
   const qualityTabName = getQualityTabName(qualityTab);
 
