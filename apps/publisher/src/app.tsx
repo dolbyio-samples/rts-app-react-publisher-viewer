@@ -61,6 +61,7 @@ const App = () => {
     onClose: onFileSelectModalClose,
   } = useDisclosure();
 
+  const [allLive, setAllLive] = useState(false);
   const [newCamera, setNewCamera] = useState<InputDeviceInfo>();
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo>();
 
@@ -121,6 +122,22 @@ const App = () => {
       setNewMicrophone(microphoneList[0]);
     }
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
+
+  useEffect(() => {
+    if (!allLive) {
+      return;
+    }
+
+    sources.forEach((source, id) => {
+      try {
+        if (!source.publish.isActive()) {
+          startStreamingToSource(id);
+        }
+      } catch (error) {
+        showError(`Failed to start streaming: ${error}`);
+      }
+    });
+  }, [sources.size]);
 
   const addNewDevice = async () => {
     if (!newCamera || !newMicrophone) {
@@ -206,24 +223,26 @@ const App = () => {
     }
   };
 
-  const handleStartLive = () => {
-    if (streams.size) {
-      streams.forEach((_, streamId) => {
-        try {
-          startStreamingToSource(streamId);
-        } catch (error) {
-          showError(`Failed to start streaming: ${error}`);
-        }
-      });
+  const handleStartAllLive = () => {
+    for (const id of sources.keys()) {
+      try {
+        startStreamingToSource(id);
+      } catch (error) {
+        showError(`Failed to start streaming: ${error}`);
+      }
     }
+
+    setAllLive(true);
   };
 
   // TODO: const handleStopDisplayCapture = () => {}
 
-  const handleStopLive = () => {
-    for (const sourceId of sources.keys()) {
-      stopStreamingToSource(sourceId);
+  const handleStopAllLive = () => {
+    for (const id of sources.keys()) {
+      stopStreamingToSource(id);
     }
+
+    setAllLive(false);
   };
 
   const handleSubmitLocalFile = (event: FormEvent) => {
@@ -356,8 +375,8 @@ const App = () => {
               disabled={!streams.size}
               isActive={isPublisherStreaming}
               isLoading={isPublisherConnecting}
-              start={handleStartLive}
-              stop={handleStopLive}
+              start={handleStartAllLive}
+              stop={handleStopAllLive}
             />
           </Stack>
           <Stack alignItems="flex-end" direction="column" spacing="4">
