@@ -35,15 +35,22 @@ const DeviceSelection = ({
     if (camera) {
       updateVideoStream(camera);
     } else {
-      setMediaStream(undefined);
+      resetMediaStream();
     }
   }, [camera]);
 
   const handleSubmit = () => {
     onSubmit();
+    resetMediaStream();
+  };
 
-    mediaStream?.getTracks().forEach((track) => {
-      track.stop();
+  const resetMediaStream = () => {
+    setMediaStream((prevMediaStream) => {
+      prevMediaStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+
+      return undefined;
     });
   };
 
