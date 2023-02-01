@@ -1,8 +1,6 @@
-import { Box, Center, Flex, Spinner, Stack } from '@chakra-ui/react';
+import { Box, Center, Flex, Spinner } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import ControlBar from '@millicast-react/control-bar';
-import { IconCameraOff, IconCameraOn, IconMicrophoneOff, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 
 import { VideoViewProps } from './types';
@@ -29,9 +27,7 @@ const VideoView = ({
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [loadingVideo, setLoadingVideo] = useState(true);
   const [streamId, setStreamId] = useState<string | null>(null);
 
@@ -114,10 +110,6 @@ const VideoView = ({
           <Spinner size="lg" />
         </Center>
       )}
-      {showDotIndicator && (
-        <Box bg="dolbyRed.500" borderRadius="50%" h="8px" position="absolute" right={4} top={5} w="8px" />
-      )}
-
       {!displayVideo && placeholderNode}
       <video
         autoPlay
@@ -154,6 +146,9 @@ const VideoView = ({
           textTransform="capitalize"
           top="4"
         />
+      )}
+      {showDotIndicator && (
+        <Box bg="dolbyRed.500" borderRadius="50%" h="8px" position="absolute" right={4} top={5} w="8px" />
       )}
     </Flex>
   );

@@ -245,7 +245,7 @@ const App = () => {
     setAllLive(false);
   };
 
-  const handleStopLive = (id) => {
+  const handleStopLive = (id: string) => {
     stopStreamingToSource(id);
 
     setAllLive(false);
