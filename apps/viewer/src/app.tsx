@@ -15,7 +15,7 @@ import './styles/font.css';
 
 const MAX_SOURCES = 4;
 
-function App() {
+const App = () => {
   const href = new URL(window.location.href);
 
   const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_MILLICAST_STREAM_NAME;
@@ -57,7 +57,11 @@ function App() {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (remoteTrackSources.size && !mainSourceId) {
+    if (!remoteTrackSources.size) {
+      return;
+    }
+
+    if (!mainSourceId || !remoteTrackSources.get(mainSourceId)) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
@@ -180,6 +184,6 @@ function App() {
       </Box>
     </Flex>
   );
-}
+};
 
 export default App;

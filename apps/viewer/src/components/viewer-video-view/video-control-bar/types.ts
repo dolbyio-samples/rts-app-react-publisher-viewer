@@ -8,5 +8,6 @@ export interface VideoControlBarProps extends StackProps {
   isActive?: boolean;
   settings?: SettingsPopoverProps;
   statistics?: StreamStats;
+  video?: HTMLVideoElement | null;
   videoTrack?: MediaStreamTrack;
 }

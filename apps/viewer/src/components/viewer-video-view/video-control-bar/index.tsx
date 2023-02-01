@@ -1,26 +1,64 @@
 import { HStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { IconCameraOff, IconCameraOn, IconMicrophoneOff, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
+import {
+  IconCameraOff,
+  IconCameraOn,
+  IconMicrophoneOff,
+  IconMicrophoneOn,
+  IconPause,
+  IconPlay,
+} from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
 
 import { VideoControlBarProps } from './types';
 import SettingsPopover from './settings-popover';
 
-const VideoControlBar = ({ audioTrack, isActive, settings, statistics, videoTrack, ...rest }: VideoControlBarProps) => {
-  const [isAudioEnabled, setIsAudioEnabled] = useState(audioTrack?.enabled);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(videoTrack?.enabled);
+const VideoControlBar = ({
+  audioTrack,
+  isActive,
+  settings,
+  statistics,
+  video,
+  videoTrack,
+  ...rest
+}: VideoControlBarProps) => {
+  const [isAudioEnabled, setIsAudioEnabled] = useState(!video?.muted);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(!video?.paused);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(audioTrack?.enabled);
 
-  const handleToggleAudio = () => {
+  useEffect(() => {
     if (!audioTrack) {
       return;
     }
 
-    setIsAudioEnabled((prevIsAudioEnabled) => {
-      audioTrack.enabled = !prevIsAudioEnabled;
+    audioTrack.enabled = isAudioEnabled;
+  }, [isAudioEnabled]);
 
-      return audioTrack.enabled;
+  const handleToggleAudio = () => {
+    if (!video) {
+      return;
+    }
+
+    video.muted = !video.muted;
+
+    setIsAudioEnabled(!video.muted);
+  };
+
+  const handleTogglePlayback = () => {
+    if (!video) {
+      return;
+    }
+
+    setIsPlaybackActive((prevIsPlaybackActive) => {
+      if (prevIsPlaybackActive) {
+        video.pause();
+      } else {
+        video.play();
+      }
+
+      return !video.paused;
     });
   };
 
@@ -73,6 +111,14 @@ const VideoControlBar = ({ audioTrack, isActive, settings, statistics, videoTrac
           onClick={handleToggleVideo}
           testId="toggleVideoButton"
           tooltipProps={{ label: 'Toggle camera', placement: 'top' }}
+        />
+        <IconButton
+          icon={isPlaybackActive ? <IconPlay /> : <IconPause />}
+          isActive={!isPlaybackActive}
+          isDisabled={!audioTrack && !videoTrack}
+          onClick={handleTogglePlayback}
+          testId="togglePlaybackButton"
+          tooltipProps={{ label: 'Toggle playback', placement: 'top' }}
         />
       </HStack>
       <HStack>

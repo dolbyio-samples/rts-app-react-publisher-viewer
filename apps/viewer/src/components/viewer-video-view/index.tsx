@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
@@ -7,6 +7,8 @@ import { ViewerVideoViewProps } from './types';
 import VideoControlBar from './video-control-bar';
 
 const ViewerVideoView = ({ isActive, settings, showControlBar, statistics, videoProps }: ViewerVideoViewProps) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   const { mediaStream } = videoProps;
 
   const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
@@ -25,7 +27,7 @@ const ViewerVideoView = ({ isActive, settings, showControlBar, statistics, video
       }}
       width="100%"
     >
-      <VideoView {...videoProps} />
+      <VideoView {...videoProps} ref={videoRef} />
       {showControlBar ? (
         <VideoControlBar
           audioTrack={audioTrack}
@@ -34,6 +36,7 @@ const ViewerVideoView = ({ isActive, settings, showControlBar, statistics, video
           settings={settings}
           statistics={statistics}
           test-id="videoControlBar"
+          video={videoRef?.current}
           videoTrack={videoTrack}
         />
       ) : undefined}
