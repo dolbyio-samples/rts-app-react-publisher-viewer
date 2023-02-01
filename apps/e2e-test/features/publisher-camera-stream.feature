@@ -155,7 +155,8 @@ Feature: Publisher streaming with camera only
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "stream" page
         And the "camera view" should be displayed with following values
-            | source name text | BuiltIn Camera |
+            | source name text   | BuiltIn Camera     |
+            | stream info button | displayed\|enabled |
 
     Scenario: Publisher should be able to stream with <codec> codec and simulcast off when streaming with camera
         Given a publisher is on the "preview" page

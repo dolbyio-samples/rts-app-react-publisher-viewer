@@ -339,14 +339,14 @@ export const verifyStats = async (
   await validateState(scWorld, targetSelector, 'displayed' as State);
   // await delay(3000);
 
+  const qualityTabName = getQualityTabName(qualityTab);
+
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info tab`);
   const tableSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stats info`);
-  const streamStats = await getStreamStats(scWorld.currentPage, targetSelector, tableSelector);
+  const streamStats = await getStreamStats(scWorld.currentPage, targetSelector, tableSelector, qualityTabName);
 
   logger.info(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
-
-  const qualityTabName = getQualityTabName(qualityTab);
 
   try {
     let streamStatsKeys = Object.keys(streamStats);
