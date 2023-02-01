@@ -28,7 +28,7 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 - [x] Mute audio and video
 - [x] Observing stream statistics
 - [x] Select incoming stream quality with simulcast
-- [x] Grid layout for video sources
+- [x] List layout for video sources
 - [x] Ability to see stats for each individual source
 - [ ] Chromecast support
 - [ ] Picture in picture support
