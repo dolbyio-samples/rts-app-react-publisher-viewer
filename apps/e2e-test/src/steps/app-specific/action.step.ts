@@ -11,7 +11,6 @@ import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { addFileSource, addSource, configureSettings } from './workflow/workflow';
 import { getDefaultSettings } from './workflow/workflow.data';
-import fs from 'fs';
 
 When(
   /^the publisher turns (Off|On) the "([^"]*)"$/,

@@ -2,7 +2,7 @@ import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
 import { logger } from '../../../logger';
 import { selectSettingDropdown } from '../../../playwright-support/app-specific/element-action';
 import { verifyDeviceStatus } from '../../../playwright-support/app-specific/element-verification';
-import { click } from '../../../playwright-support/generic/element-action';
+import { click, fileUploadInput } from '../../../playwright-support/generic/element-action';
 import {
   verifyElementContainsText,
   verifyElementContainsValue,
@@ -147,13 +147,19 @@ export const addScreen = async (scWorld: ScenarioWorld) => {
 };
 
 export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add local file source`);
-  // TODO: Add local file
-};
+  logger.info(`Add local file source - ${filePath}`);
+ 
+  let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'local file button');
+  await click(scWorld.currentPage, targetSelector);
 
-export const addRemoteFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add remote file source`);
-  // TODO: Add remote file
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `local file popup`);
+  await validateState(scWorld, targetSelector, 'displayed' as State);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `local file input`);
+  await fileUploadInput(scWorld.currentPage, targetSelector, filePath);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'local file add streaming button');
+  await click(scWorld.currentPage, targetSelector);
 };
 
 export const getQualityTabName = (qualityTab: string) => {

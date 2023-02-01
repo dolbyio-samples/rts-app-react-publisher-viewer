@@ -12,7 +12,6 @@ import { State, Status, Screen } from '../../../utils/types';
 import {
   addCamera,
   addLocalFile,
-  addRemoteFile,
   addScreen,
   getQualityTabName,
   validateState,
@@ -21,6 +20,7 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
+import fs from 'fs';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,
@@ -506,6 +506,11 @@ export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {
 };
 
 export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, filePath: string) => {
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File ${filePath} does not exists`);
+  }
+
   const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
   await click(scWorld.currentPage, targetSelector);
 
@@ -514,7 +519,7 @@ export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, fil
       await addLocalFile(scWorld, filePath);
       break;
     case 'remote':
-      await addRemoteFile(scWorld, filePath);
+      // await addRemoteFile(scWorld, filePath);
       break;
     default:
       throw Error(`Invalid source name - ${srcName}`);
