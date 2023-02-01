@@ -17,7 +17,7 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 - [x] Screen sharing
 - [x] Mute audio and video
 - [x] Resolution, bandwidth, codec, and bitrate selection
-- [x] Ability to stream from two or more sources
+- [x] Ability to stream from up to 4 sources. See [here](https://docs.dolby.io/streaming-apis/docs/create-multi-view-web-app) for bandwidth limitations.
 - [x] Ability to stream a local video file
 - [x] Observing stream statistics for each simulcast layer
 - [ ] Ability to have multiple publishers
@@ -29,7 +29,6 @@ In order to run this demo, you will need a Dolby.io account. If you don't alread
 - [x] Mute audio and video
 - [x] Observing stream statistics
 - [x] Select incoming stream quality with simulcast
-- [x] List layout for video sources
 - [x] Ability to see stats for each individual source
 - [ ] Chromecast support
 - [ ] Picture in picture support
