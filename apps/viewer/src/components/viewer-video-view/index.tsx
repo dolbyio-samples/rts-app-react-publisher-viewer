@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
@@ -23,14 +23,6 @@ const ViewerVideoView = ({
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
-  useEffect(() => {
-    if (!audioTrack) {
-      return;
-    }
-
-    audioTrack.enabled = isAudioEnabled;
-  }, [isAudioEnabled]);
-
   const enterFullScreen = () => {
     setIsFullScreen(true);
 
@@ -44,7 +36,11 @@ const ViewerVideoView = ({
   };
 
   const toggleAudio = () => {
-    setIsAudioEnabled((prevIsAudioEnabled) => !prevIsAudioEnabled);
+    setIsAudioEnabled((prevIsAudioEnabled) => {
+      audioTrack.enabled = !prevIsAudioEnabled;
+
+      return audioTrack.enabled;
+    });
   };
 
   const togglePlayback = () => {

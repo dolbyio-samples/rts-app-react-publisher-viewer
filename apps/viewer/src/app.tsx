@@ -1,8 +1,9 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
+import { IconProfile } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
@@ -145,6 +146,17 @@ const App = () => {
                   displayVideo: true,
                   label: mainSourceId,
                   mediaStream: mainMediaStream,
+                  placeholderNode: (
+                    <Center
+                      background="dolbyNeutral.800"
+                      color="dolbyNeutral.700"
+                      height="100%"
+                      position="absolute"
+                      width="100%"
+                    >
+                      <IconProfile height="174px" width="174px" />
+                    </Center>
+                  ),
                 }}
               />
             </Box>

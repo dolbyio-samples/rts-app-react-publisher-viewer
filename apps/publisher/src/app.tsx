@@ -408,15 +408,13 @@ const App = () => {
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
                   canTogglePlayback={type === StreamTypes.LOCAL}
+                  isStreaming={state === 'streaming'}
                   onRemove={() => handleRemove(id)}
                   onStartLive={() => startStreamingToSource(id)}
                   onStopLive={() => handleStopLive(id)}
                   settings={settings(id)}
-                  state={state}
                   statistics={statistics}
                   videoProps={{
-                    displayFullscreenButton: false,
-                    displayVideo: mediaStream.getVideoTracks()[0].enabled,
                     label,
                     mediaStream: mediaStream,
                     mirrored: type === StreamTypes.MEDIA,

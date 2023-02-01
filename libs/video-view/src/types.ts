@@ -3,8 +3,6 @@ import { StreamStats } from '@millicast/sdk';
 import { ReactNode } from 'react';
 
 export interface VideoViewProps {
-  displayFullscreenButton?: boolean;
-  displayMuteButton?: boolean;
   displayVideo?: boolean;
   height?: string;
   isFullScreen?: boolean;

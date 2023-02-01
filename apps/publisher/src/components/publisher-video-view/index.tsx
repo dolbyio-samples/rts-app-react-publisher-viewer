@@ -1,5 +1,5 @@
 import { Box, CloseButton } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
@@ -8,11 +8,11 @@ import VideoControlBar from './video-control-bar';
 
 const PublisherVideoView = ({
   canTogglePlayback,
+  isStreaming,
   onRemove: handleRemove,
   onStartLive: handleStartLive,
   onStopLive: handleStopLive,
   settings,
-  state,
   statistics,
   videoProps,
 }: PublisherVideoViewProps) => {
@@ -20,6 +20,32 @@ const PublisherVideoView = ({
 
   const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
   const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+
+  const toggleAudio = () => {
+    setIsAudioEnabled((prevIsAudioEnabled) => {
+      audioTrack.enabled = !prevIsAudioEnabled;
+
+      return audioTrack.enabled;
+    });
+  };
+
+  const togglePlayback = () => {
+    setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
+  };
+
+  const toggleVideo = () => {
+    if (videoTrack) {
+      setIsVideoEnabled((prevIsVideoEnabled) => {
+        videoTrack.enabled = !prevIsVideoEnabled;
+
+        return videoTrack.enabled;
+      });
+    }
+  };
 
   return (
     <Box
@@ -34,19 +60,25 @@ const PublisherVideoView = ({
       }}
       width="100%"
     >
-      <VideoView {...videoProps} />
+      <VideoView displayVideo={isVideoEnabled} muted={!isAudioEnabled} playing={isPlaybackActive} {...videoProps} />
       <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
       <VideoControlBar
-        audioTrack={audioTrack}
+        activeAudio={isAudioEnabled}
+        activePlayback={isPlaybackActive}
+        activeVideo={isVideoEnabled}
         canTogglePlayback={canTogglePlayback}
+        hasAudioTrack={!!audioTrack}
+        hasVideoTrack={!!videoTrack}
+        isStreaming={isStreaming}
         onStartLive={handleStartLive}
         onStopLive={handleStopLive}
         opacity={0}
         settings={settings}
-        state={state}
         statistics={statistics}
         test-id="videoControlBar"
-        videoTrack={videoTrack}
+        toggleAudio={toggleAudio}
+        togglePlayback={togglePlayback}
+        toggleVideo={toggleVideo}
       />
     </Box>
   );

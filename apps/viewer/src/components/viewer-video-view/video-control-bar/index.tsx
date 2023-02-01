@@ -20,7 +20,6 @@ const VideoControlBar = ({
   activeAudio,
   activePlayback,
   activeVideo,
-  canTogglePlayback,
   hasAudioTrack,
   hasVideoTrack,
   isStreaming,

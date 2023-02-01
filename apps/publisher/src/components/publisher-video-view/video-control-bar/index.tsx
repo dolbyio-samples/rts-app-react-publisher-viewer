@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   IconCameraOff,
@@ -17,59 +17,23 @@ import SettingsPopover from './settings-popover';
 import LiveIndicator from '@millicast-react/live-indicator';
 
 const VideoControlBar = ({
-  audioTrack,
+  activeAudio,
+  activePlayback,
+  activeVideo,
   canTogglePlayback,
+  hasAudioTrack,
+  hasVideoTrack,
+  isConnecting = false,
+  isStreaming = false,
   onStartLive: handleStartLive,
   onStopLive: handleStopLive,
   settings,
-  state,
   statistics,
-  videoTrack,
+  toggleAudio,
+  togglePlayback,
+  toggleVideo,
   ...rest
 }: VideoControlBarProps) => {
-  const [isAudioEnabled, setIsAudioEnabled] = useState(audioTrack?.enabled);
-  // TODO: local file playback
-  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(videoTrack?.enabled);
-
-  const handleToggleAudio = () => {
-    if (!audioTrack) {
-      return;
-    }
-
-    setIsAudioEnabled((prevIsAudioEnabled) => {
-      audioTrack.enabled = !prevIsAudioEnabled;
-
-      return audioTrack.enabled;
-    });
-  };
-
-  const handleTogglePlayback = () => {
-    if (!canTogglePlayback) {
-      return;
-    }
-
-    setIsPlaybackActive((prevIsPlaybackActive) => {
-      // TODO: local file playback
-
-      return !prevIsPlaybackActive;
-    });
-  };
-
-  const handleToggleVideo = () => {
-    if (!videoTrack) {
-      return;
-    }
-
-    setIsVideoEnabled((prevIsVideoEnabled) => {
-      videoTrack.enabled = !prevIsVideoEnabled;
-
-      return videoTrack.enabled;
-    });
-  };
-
-  const isStreaming = state === 'streaming';
-
   return (
     <HStack
       background="backgroundTranslucent"
@@ -91,27 +55,27 @@ const VideoControlBar = ({
       </HStack>
       <HStack>
         <IconButton
-          icon={isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
-          isActive={!isAudioEnabled}
-          isDisabled={!audioTrack}
-          onClick={handleToggleAudio}
+          icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+          isActive={!activeAudio}
+          isDisabled={!hasAudioTrack}
+          onClick={toggleAudio}
           testId="toggleAudioButton"
           tooltipProps={{ label: 'Toggle microphone', placement: 'top' }}
         />
         <IconButton
-          icon={isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />}
-          isActive={!isVideoEnabled}
-          isDisabled={!videoTrack}
-          onClick={handleToggleVideo}
+          icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
+          isActive={!activeVideo}
+          isDisabled={!hasVideoTrack}
+          onClick={toggleVideo}
           testId="toggleVideoButton"
           tooltipProps={{ label: 'Toggle camera', placement: 'top' }}
         />
         {canTogglePlayback ? (
           <IconButton
-            icon={isPlaybackActive ? <IconPlay /> : <IconPause />}
-            isActive={!isPlaybackActive}
-            isDisabled={!audioTrack && !videoTrack}
-            onClick={handleTogglePlayback}
+            icon={activePlayback ? <IconPlay /> : <IconPause />}
+            isActive={!activePlayback}
+            isDisabled={!hasAudioTrack && !hasVideoTrack}
+            onClick={togglePlayback}
             testId="togglePlaybackButton"
             tooltipProps={{ label: 'Toggle playback', placement: 'top' }}
           />
@@ -119,9 +83,9 @@ const VideoControlBar = ({
       </HStack>
       <HStack>
         <LiveIndicator
-          disabled={!audioTrack && !videoTrack}
+          disabled={!hasAudioTrack && !hasVideoTrack}
           isActive={isStreaming}
-          isLoading={state === 'connecting'}
+          isLoading={isConnecting}
           start={handleStartLive}
           stop={handleStopLive}
         />
