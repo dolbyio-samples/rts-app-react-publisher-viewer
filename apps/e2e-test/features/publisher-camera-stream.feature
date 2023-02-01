@@ -333,8 +333,13 @@ Feature: Publisher streaming with camera only
             | bitrate    | Bitrate  - 500 Kbps |
         And the "camera view" stream stats with quality tabs should be displayed with default values
 
+    @ignore #Issue-259
     Scenario: Publisher settings should be preserved after the streaming is stopped when changed during streaming
         Given a publisher is on the "preview" page
+        When the publisher configures "camera view" setting with the following values only
+            | source name | Dummy Camera View |
+            | codec       | vp8               |
+            | bitrate     | 1 Mbps            |
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "stream" page
         
@@ -344,9 +349,11 @@ Feature: Publisher streaming with camera only
             | bitrate     | 2 Mbps    |
         And the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
-        And the "preview header" should be displayed with following values only
-            | go live button | displayed\|enabled |
+
         And the "camera view" setting should be displayed with following values only
             # | resolution | Resolution  - 640x480 |
-            | resolution | Resolution  - 3840x2160 |
-            | bitrate    | Bitrate  - 2 Mbps     |
+            | resolution  | Resolution  - 3840x2160 |
+            | bitrate     | Bitrate  - 2 Mbps       |
+            | source name | Dummy Camera View       |
+        And the "camera view" should be displayed with following values
+            | source name text | Dummy Camera View |

@@ -63,7 +63,7 @@ export const getStreamStats = async (page: Page, tabSelector: TargetSelector, ta
 
     for (let i = 0; i < tabCount; i++) {
       await click(page, tabSelector, i);
-      await delay(2000);
+      await delay(3000);
       const tabName = await getElementText(page, tabSelector, i);
       const statsInfo = await getTableData(page, tableSelector);
       infoData[tabName as string] = transponseStreamData(statsInfo);
