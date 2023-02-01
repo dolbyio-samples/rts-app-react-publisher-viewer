@@ -1,5 +1,4 @@
 @publisher
-@only
 Feature: Publisher streaming with Screen share
     As a publisher
     I want to do live streaming for an event with screen share
@@ -8,6 +7,7 @@ Feature: Publisher streaming with Screen share
         Given a publisher is on the "preview" page
         When the publisher adds "screen" source
 
+    @only
     Scenario: Verify the header information, settings options, camera view, stream stats when streaming with screen share
         Then the "screen view" should be displayed with default values
         And the "camera view" should be displayed with default values 
@@ -170,7 +170,7 @@ Feature: Publisher streaming with Screen share
         And the "screen view" stream stats should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
 
-        And the "camera view" stream stats with quality tabs should be displayed with following values
+        And the "camera view" stream stats with high quality tab should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
     Examples:
         |  codec  |
@@ -189,9 +189,9 @@ Feature: Publisher streaming with Screen share
             | stream info button | displayed\|enabled |
         And the "screen view" setting should be displayed with following values only
             | bitrate    | Bitrate  - Auto         |
-        And the "screen view" stream stats with quality tabs should be displayed with following values
+        And the "screen view" stream stats with high quality tab should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
-        And the "camera view" stream stats with quality tabs should be displayed with following values
+        And the "camera view" stream stats with high quality tab should be displayed with following values
             | Codecs:  | regex: ^video/H264, audio/opus$ |
     Examples:
         |  codec  |
@@ -209,10 +209,10 @@ Feature: Publisher streaming with Screen share
         Then the publisher should be navigated to "stream" page
         And the "screen view" setting should be displayed with following values only
             | bitrate    | Bitrate  - <bitrate>       |
-        And the "screen view" stream stats with quality tabs should be displayed with default values
+        And the "screen view" stream stats with high quality tab should be displayed with default values
         And the "camera view" setting should be displayed with following values only
             | bitrate    | Bitrate  - 1 Mbps          |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
+        And the "camera view" stream stats with high quality tab should be displayed with default values
     Examples:
         |  bitrate    |
         |  2 Mbps     |
@@ -235,7 +235,7 @@ Feature: Publisher streaming with Screen share
         And the "screen view" stream stats should be displayed with default values
         And the "camera view" setting should be displayed with following values only
             | bitrate    | Bitrate  - 1 Mbps          |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
+        And the "camera view" stream stats with high quality tab should be displayed with default values
     Examples:
         |  bitrate    |
         |  2 Mbps     |
@@ -257,13 +257,13 @@ Feature: Publisher streaming with Screen share
         Then the publisher should be navigated to "stream" page
         And the "screen view" setting should be displayed with following values only
             | bitrate    | Bitrate  - <bitrate>       |
-        And the "screen view" stream stats with quality tabs should be displayed with following values
+        And the "screen view" stream stats with high quality tab should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
 
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - 640x480 |
             | bitrate    | Bitrate  - 500 Kbps   |
-        And the "camera view" stream stats with quality tabs should be displayed with following values
+        And the "camera view" stream stats with high quality tab should be displayed with following values
             | Codecs:  | regex: ^video/vp8, audio/opus$ |
     Examples:
         | codec | bitrate    |

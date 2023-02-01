@@ -69,6 +69,7 @@ export const getStreamStats = async (page: Page, tabSelector: TargetSelector, ta
       infoData[tabName as string] = transponseStreamData(statsInfo);
     }
   } else {
+    await delay(3000);
     const statsInfo = await getTableData(page, tableSelector);
     infoData['Standard'] = transponseStreamData(statsInfo);
   }

@@ -1,4 +1,3 @@
-import { delay } from '../../../utils/helper';
 import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
 import { logger } from '../../../logger';
 import { selectSettingDropdown } from '../../../playwright-support/app-specific/element-action';
@@ -155,4 +154,19 @@ export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => 
 export const addRemoteFile = async (scWorld: ScenarioWorld, filePath: string) => {
   logger.info(`Add remote file source`);
   // TODO: Add remote file
+};
+
+export const getQualityTabName = (qualityTab: string) => {
+  let qualityTabName = 'none';
+  if (qualityTab.includes('with quality tabs')) {
+    qualityTabName = 'all';
+  } else if (qualityTab.includes('with high quality tab')) {
+    qualityTabName = 'High';
+  } else if (qualityTab.includes('with medium quality tab')) {
+    qualityTabName = 'Medium';
+  } else if (qualityTab.includes('with low quality tab')) {
+    qualityTabName = 'Low';
+  }
+
+  return qualityTabName;
 };

@@ -7,7 +7,6 @@ import { clearText, click, enterText } from '../../../playwright-support/generic
 
 import { waitFor } from '../../../playwright-support/generic/element-wait';
 import { verifyArrayContains, verifyEqualTo, verifyLessThan } from '../../../playwright-support/generic/verification';
-import { delay } from '../../../utils/helper';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
 import {
@@ -15,6 +14,7 @@ import {
   addLocalFile,
   addRemoteFile,
   addScreen,
+  getQualityTabName,
   validateState,
   validateStatsInfo,
   validateStatus,
@@ -326,7 +326,7 @@ export const verifyStats = async (
   elementPosition: string,
   appName: string,
   viewName: string,
-  qualityTabs: boolean,
+  qualityTab: string,
   expectedData: { [key: string]: string }
 ) => {
   const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
@@ -346,16 +346,22 @@ export const verifyStats = async (
   logger.info(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
+  const qualityTabName = getQualityTabName(qualityTab);
+
   try {
-    const streamStatsKeys = Object.keys(streamStats);
+    let streamStatsKeys = Object.keys(streamStats);
     let message;
-    if (qualityTabs && appName === 'publisher') {
+    if (qualityTabName != 'none' && appName === 'publisher') {
       logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
       message = 'Stream Info stats does not have High/Low quality tabs';
       verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
 
       message = 'Stream Info stats have more than 3 quality tabs';
       verifyLessThan(streamStatsKeys.length, 4, message);
+
+      if (qualityTabName !== 'all') {
+        streamStatsKeys = [qualityTabName];
+      }
 
       for (const quality of streamStatsKeys) {
         logger.info(`Verify ${viewName} stats with ${quality} quality`);
