@@ -19,6 +19,9 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   const [remoteTrackSources, dispatch] = useReducer(reducer, new Map() as RemoteTrackSources);
 
+  const remoteTrackSourcesRef = useRef<RemoteTrackSources>();
+  remoteTrackSourcesRef.current = remoteTrackSources;
+
   const [mainAudioMapping, setMainAudioMapping] = useState<ViewProjectSourceMapping>();
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
   const [mainVideoMapping, setMainVideoMapping] = useState<ViewProjectSourceMapping>();
@@ -73,16 +76,16 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         break;
 
       case 'inactive': {
-        const remoteTrackSource = remoteTrackSources.get(sourceId);
+        const remoteTrackSource = remoteTrackSourcesRef.current?.get(sourceId);
 
         if (remoteTrackSource) {
           try {
             await unprojectFromStream(viewer, remoteTrackSource);
+
+            dispatch({ type: ViewerActionType.REMOVE_SOURCE, sourceId });
           } catch (error) {
             handleInternalError(error);
           }
-
-          dispatch({ type: ViewerActionType.REMOVE_SOURCE, sourceId });
         }
 
         break;
