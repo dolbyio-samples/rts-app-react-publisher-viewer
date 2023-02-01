@@ -1,7 +1,7 @@
-stream info popover: '//*[@test-id="streamInfoPopoverTitle"]/parent::*[@role="dialog"]'
+stream info popover: '//*[@test-id="streamInformationPopoverHeading"]/parent::*[@role="dialog"]'
 stream info popover title:
   - '$ref: stream info popover'
-  - '[test-id=streamInfoPopoverTitle]'
+  - '[test-id=streamInformationPopoverHeading]'
 stream info tabs:
   - '$ref: stream info popover'
   - '[role=tablist]'
@@ -21,4 +21,4 @@ stream info low tab:
 stats info:
   - '$ref: stream info popover'
   - '//*[@test-id="statisticsInfo"]/parent::*[not(@hidden)]//table'
-stream info close button: '[test-id=popoverCloseButton]'
+stream info close button: '[test-id=streamInformationPopoverCloseButton]'

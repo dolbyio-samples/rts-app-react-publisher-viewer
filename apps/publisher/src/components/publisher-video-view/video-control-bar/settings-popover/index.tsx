@@ -1,30 +1,21 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconBitrate, IconCodec, IconResolution, IconSimulcast } from '@millicast-react/dolbyio-icons';
-import Drawer from '@millicast-react/drawer';
+import { IconBitrate, IconCodec, IconResolution, IconSettings, IconSimulcast } from '@millicast-react/dolbyio-icons';
 import Dropdown from '@millicast-react/dropdown';
 import Input from '@millicast-react/input';
+import Popover from '@millicast-react/popover';
 import ToggleButton from '@millicast-react/toggle-button';
 
-import { VideoSettingsDrawerProps } from './types';
+import { SettingsPopoverProps } from './types';
 import { bitrateElementResolver, codecElementResolver, resolutionElementResolver } from './utils';
 
-const VideoSettingsDrawer = ({
-  bitrate,
-  codec,
-  isOpen,
-  name,
-  onClose: handleClose,
-  resolution,
-  simulcast,
-}: VideoSettingsDrawerProps) => (
-  <Drawer
-    fullHeight
-    heading="Settings"
-    headingProps={{ 'test-id': 'settingTitle' }}
-    isOpen={isOpen}
-    onClose={handleClose}
+const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcast }: SettingsPopoverProps = {}) => (
+  <Popover
+    heading="Stream information"
+    icon={<IconSettings fill="white" />}
+    iconProps={iconProps}
+    label="Stream settings"
   >
     {name && !name.isHidden ? (
       <Box>
@@ -41,8 +32,8 @@ const VideoSettingsDrawer = ({
       <Box>
         <Dropdown
           disabled={resolution.isDisabled}
-          elementsList={resolution.options}
           elementResolver={resolutionElementResolver}
+          elementsList={resolution.options}
           leftIcon={<IconResolution />}
           onSelect={resolution.handleSelect}
           placeholder="Resolution"
@@ -55,8 +46,8 @@ const VideoSettingsDrawer = ({
       <Box>
         <Dropdown
           disabled={bitrate.isDisabled}
-          elementsList={bitrate.options}
           elementResolver={bitrateElementResolver}
+          elementsList={bitrate.options}
           leftIcon={<IconBitrate />}
           onSelect={bitrate.handleSelect}
           placeholder="Bitrate"
@@ -69,8 +60,8 @@ const VideoSettingsDrawer = ({
       <Box>
         <Dropdown
           disabled={codec.isDisabled}
-          elementsList={codec.options}
           elementResolver={codecElementResolver}
+          elementsList={codec.options}
           leftIcon={<IconCodec />}
           onSelect={codec.handleSelect}
           placeholder="Codec"
@@ -90,8 +81,8 @@ const VideoSettingsDrawer = ({
         test-id="simulcastToggle"
       />
     ) : undefined}
-  </Drawer>
+  </Popover>
 );
 
 export * from './types';
-export default VideoSettingsDrawer;
+export default SettingsPopover;

@@ -68,21 +68,21 @@ const VideoView = ({
   };
 
   const componentElementsStyle = {
+    '.icon-button, .icon-button: hover': {
+      background: 'rgba(0,0,0,0.6)',
+      border: '1px solid transparent',
+      borderRadius: '0',
+      boxShadow: 'unset',
+      padding: '10px',
+      width: 'min-content',
+    },
     '.video': {
-      transform: `${mirrored ? 'scaleX(-1)' : ''}`,
       display: `${displayVideo ? 'block' : 'none'}`,
-      overflow: 'hidden',
-      width: '100%',
       height: '100%',
       objectFit: 'contain',
-    },
-    '.icon-button, .icon-button: hover': {
-      padding: '10px',
-      background: 'rgba(0,0,0,0.6)',
-      borderRadius: '0',
-      border: '1px solid transparent',
-      width: 'min-content',
-      boxShadow: 'unset',
+      overflow: 'hidden',
+      transform: `${mirrored ? 'scaleX(-1)' : ''}`,
+      width: '100%',
     },
   };
 
@@ -110,104 +110,51 @@ const VideoView = ({
       zIndex={isFullScreen ? '1' : '0'}
     >
       {loadingVideo && displayVideo && (
-        <Center w="100%" h="100%" position="absolute">
+        <Center h="100%" position="absolute" w="100%">
           <Spinner size="lg" />
         </Center>
       )}
       {showDotIndicator && (
-        <Box position="absolute" top={5} right={4} w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" />
+        <Box bg="dolbyRed.500" borderRadius="50%" h="8px" position="absolute" right={4} top={5} w="8px" />
       )}
 
       {!displayVideo && placeholderNode}
       <video
-        crossOrigin="anonymous"
-        className="video"
         autoPlay
-        playsInline
+        className="video"
+        crossOrigin="anonymous"
         loop={src ? true : false}
-        ref={videoRef}
         muted={muted}
         onCanPlay={onCanPlay}
-        onWaiting={() => setLoadingVideo(true)}
-        onLoadStart={() => setLoadingVideo(true)}
-        onPlaying={() => setLoadingVideo(false)}
-        onStalled={() => {
-          console.error('video is on stalled');
-        }}
         onError={() => {
           onError && videoRef.current?.error
             ? onError(videoRef.current.error)
             : console.error(`video player error: ${videoRef.current?.error}`);
         }}
+        onLoadStart={() => setLoadingVideo(true)}
+        onPlaying={() => setLoadingVideo(false)}
+        onStalled={() => {
+          console.error('video is on stalled');
+        }}
+        onWaiting={() => setLoadingVideo(true)}
+        playsInline
+        ref={videoRef}
         // eslint-disable-next-line react/no-unknown-property
         test-id="videoView"
       />
       {label && (
         <InfoLabel
+          bg="dolbyNeutral.700"
+          color="dolbySecondary.200"
+          fontWeight="600"
+          left="4"
+          position="absolute"
           test-id="sourceName"
           text={label}
-          color="dolbySecondary.200"
-          bg="dolbyNeutral.700"
-          position="absolute"
-          top="4"
-          left="4"
-          fontWeight="600"
           textTransform="capitalize"
+          top="4"
         />
       )}
-      <Stack
-        bottom={isFullScreen ? ['120px', '120px', 0] : 0}
-        direction="row"
-        margin="0 8px 12px"
-        position="absolute"
-        right="0"
-        spacing="0"
-        width="100%"
-      >
-        <ControlBar
-          bottom="0"
-          controls={[
-            {
-              icon: isAudioEnabled ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
-              isActive: !isAudioEnabled,
-              isDisabled: !mediaStream?.getAudioTracks().length,
-              key: 'toggleMicrophoneButton',
-              onClick: () => {
-                setIsAudioEnabled((prevIsAudioEnabled) => !prevIsAudioEnabled);
-              },
-              testId: 'toggleMicrophoneButton',
-              tooltipProps: { label: 'Toggle microphone', placement: 'top' },
-            },
-            {
-              icon: isVideoEnabled ? <IconCameraOn /> : <IconCameraOff />,
-              isActive: !isVideoEnabled,
-              isDisabled: !mediaStream?.getVideoTracks().length,
-              key: 'toggleCameraButton',
-              onClick: () => {
-                setIsVideoEnabled((prevIsVideoEnabled) => !prevIsVideoEnabled);
-              },
-              testId: 'toggleCameraButton',
-              tooltipProps: { label: 'Toggle camera', placement: 'top' },
-            },
-          ]}
-          left="50%"
-          position="absolute"
-          transform="translateX(-50%)"
-        />
-        {/* {displayFullscreenButton && (
-          <IconButton
-            test-id="fullScreenButton"
-            aria-label="Full screen"
-            size="md"
-            className="icon-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFullScreen(!isFullScreen);
-            }}
-            icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
-          />
-        )} */}
-      </Stack>
     </Flex>
   );
 };

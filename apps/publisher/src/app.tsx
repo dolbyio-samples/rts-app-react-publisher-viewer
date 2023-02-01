@@ -90,9 +90,9 @@ const App = () => {
     viewerCount,
   } = usePublisher({
     handleError: showError,
+    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     streamNameId: VITE_MILLICAST_STREAM_ID,
     streams,
-    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
   });
@@ -245,6 +245,12 @@ const App = () => {
     setAllLive(false);
   };
 
+  const handleStopLive = (id) => {
+    stopStreamingToSource(id);
+
+    setAllLive(false);
+  };
+
   const handleSubmitLocalFile = (event: FormEvent) => {
     event.preventDefault();
 
@@ -277,12 +283,9 @@ const App = () => {
 
     const codecListSimulcast = simulcast ? codecList.filter((item) => item !== 'vp9') : codecList;
 
-    // TODO: reenable this for granular connecting/streaming states in #195
-    // const isConnecting = state === 'connecting';
-    const isConnecting = isPublisherConnecting;
+    const isConnecting = state === 'connecting';
     const isReady = state === 'ready';
-    // const isStreaming = state === 'streaming';
-    const isStreaming = isPublisherStreaming;
+    const isStreaming = state === 'streaming';
 
     const { height, width } = mediaStream.getVideoTracks()[0].getSettings();
     const resolution = `${width}x${height}`;
@@ -404,14 +407,15 @@ const App = () => {
             const { type } = streams.get(id) ?? {};
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
-            const isStreaming = state === 'streaming';
             const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
 
             return (
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
-                  isActive={isStreaming}
-                  settingsProps={settings(id)}
+                  onStartLive={() => startStreamingToSource(id)}
+                  onStopLive={() => handleStopLive(id)}
+                  settings={settings(id)}
+                  state={state}
                   statistics={statistics}
                   videoProps={{
                     displayFullscreenButton: false,
@@ -424,7 +428,7 @@ const App = () => {
                         <IconProfile />
                       </Box>
                     ),
-                    showDotIndicator: isStreaming,
+                    showDotIndicator: state === 'streaming',
                   }}
                 />
               </WrapItem>

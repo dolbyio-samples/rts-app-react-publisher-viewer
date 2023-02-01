@@ -11,17 +11,17 @@ type GoLiveProps = ButtonProps & {
 const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
   return (
     <Button
-      test-id={isActive ? 'stop-live-indicator' : 'start-live-indicator'}
-      px="4"
-      fontSize="12px"
-      size="sm"
-      textTransform="uppercase"
-      isLoading={isLoading}
-      bg={isActive ? 'dolbyRed.500' : 'dolbyEmerald.600'}
       _hover={{
         bg: isActive ? 'dolbyRed.500' : 'dolbyEmerald.600',
       }}
+      bg={isActive ? 'dolbyRed.500' : 'dolbyEmerald.600'}
+      fontSize="12px"
+      isLoading={isLoading}
       onClick={isActive ? stop : start}
+      px="4"
+      size="sm"
+      test-id={isActive ? 'stop-live-indicator' : 'start-live-indicator'}
+      textTransform="uppercase"
       {...rest}
     >
       {isActive ? 'STOP' : 'GO LIVE'}

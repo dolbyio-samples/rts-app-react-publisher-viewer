@@ -1,10 +1,10 @@
 video frame: '[test-id=videoView]'
 source name: '[test-id=sourceName]'
-microphone button: '[test-id=toggleMicrophoneButton], [test-id=toggleMainStreamAudioButton]'
-camera button: '[test-id=toggleCameraButton], [test-id=toggleMainStreamVideoButton]'
+microphone button: '[test-id=toggleAudioButton], [test-id=toggleMainStreamAudioButton]'
+camera button: '[test-id=toggleVideoButton], [test-id=toggleMainStreamVideoButton]'
 full screen button: '[test-id=fullScreenButton]'
 setting button: '[test-id=settingsOpenButton]'
-stream info button: '[test-id=streamInfoButton]'
+stream info button: '[test-id=streamInformationPopoverTrigger]'
 
 camera view:
   - '$ref: camera view container'

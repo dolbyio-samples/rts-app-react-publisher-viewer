@@ -1,44 +1,50 @@
-import { Box, useDisclosure } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconSettings } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
-import StatisticsPopover from '@millicast-react/statistics-popover';
 import VideoView from '@millicast-react/video-view';
 
 import { PublisherVideoViewProps } from './types';
-import VideoSettingsDrawer from './video-settings-drawer';
+import VideoControlBar from './video-control-bar';
 
-const PublisherVideoView = ({ isActive, settingsProps, statistics, videoProps }: PublisherVideoViewProps) => {
-  const { onClose: handleSettingsClose, onOpen: handleSettingsOpen, isOpen: isSettingsOpen } = useDisclosure();
-
+const PublisherVideoView = ({
+  onStartLive: handleStartLive,
+  onStopLive: handleStopLive,
+  settings,
+  state,
+  statistics,
+  videoProps,
+}: PublisherVideoViewProps) => {
   const { mediaStream } = videoProps;
 
+  const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
+  const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
   return (
-    <Box height="100%" overflow="hidden" margin="0 auto" position="relative" width="100%">
+    <Box
+      height="100%"
+      margin="0 auto"
+      overflow="hidden"
+      position="relative"
+      sx={{
+        ':hover': {
+          '&>*': { opacity: 1 },
+        },
+      }}
+      width="100%"
+    >
       <VideoView {...videoProps} />
-      {isActive && statistics ? (
-        <Box bottom="12px" left="18px" position="absolute">
-          <StatisticsPopover statistics={statistics} />
-        </Box>
-      ) : undefined}
-      <IconButton
-        background="transparent"
-        bottom="12px"
-        icon={<IconSettings />}
-        isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-        isRound
-        onClick={handleSettingsOpen}
-        position="absolute"
-        right="18px"
-        reversed
-        size="sm"
-        testId="settingsOpenButton"
-        tooltipProps={{ label: 'Settings' }}
+      <VideoControlBar
+        audioTrack={audioTrack}
+        canTogglePlayback={true}
+        onStartLive={handleStartLive}
+        onStopLive={handleStopLive}
+        opacity={0}
+        settings={settings}
+        state={state}
+        statistics={statistics}
+        test-id="videoControlBar"
+        videoTrack={videoTrack}
       />
-      {settingsProps ? (
-        <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
-      ) : undefined}
     </Box>
   );
 };

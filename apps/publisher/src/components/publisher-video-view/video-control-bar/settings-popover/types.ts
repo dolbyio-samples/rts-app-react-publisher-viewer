@@ -1,9 +1,10 @@
+import { IconButtonProps } from '@chakra-ui/react';
 import { VideoCodec } from '@millicast/sdk';
 
 import { Resolution } from '@millicast-react/use-multi-media-streams';
 import { Bitrate } from '@millicast-react/use-publisher';
 
-export interface VideoSettingsDrawerProps {
+export interface SettingsPopoverProps {
   bitrate?: {
     handleSelect: (data: unknown) => void;
     isDisabled?: boolean;
@@ -18,14 +19,13 @@ export interface VideoSettingsDrawerProps {
     options: VideoCodec[];
     value: VideoCodec;
   };
-  isOpen: boolean;
+  iconProps?: Omit<IconButtonProps, 'aria-label'>;
   name?: {
     handleChange: (data: unknown) => void;
     isDisabled?: boolean;
     isHidden?: boolean;
     value: string;
   };
-  onClose: () => void;
   resolution?: {
     handleSelect: (data: unknown) => void;
     isDisabled?: boolean;
