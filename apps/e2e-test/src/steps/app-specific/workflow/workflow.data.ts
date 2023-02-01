@@ -107,7 +107,7 @@ const publisherCameraViewStatsData: ViewData = {
   'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
   'Codecs:': 'video/H264, audio/opus',
   'Timestamp:':
-    'regex: ([1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M',
+    'regex: (0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M',
 };
 
 export const getDefaultViewData = (viewName: string) => {

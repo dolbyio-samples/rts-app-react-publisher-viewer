@@ -382,8 +382,7 @@ Feature: Publisher Preview - Not Live
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings" should be displayed
 
-        # When the "camera view resolution dropdown default" text should be "Resolution  - 1280x720"
-        When the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
+        When the "camera view resolution dropdown default" text should be "Resolution  - 1280x720"
         And the "camera view codec dropdown default" text should be "Codec  - vp8"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 1 Mbps"
         And the "camera view simulcast" feature should be turned On
@@ -408,8 +407,7 @@ Feature: Publisher Preview - Not Live
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings" should be displayed
 
-        # When the "camera view resolution dropdown default" text should be "Resolution  - 640x480"
-        When the "camera view resolution dropdown default" text should be "Resolution  - 3840x2160"
+        When the "camera view resolution dropdown default" text should be "Resolution  - 640x480"
         And the "camera view codec dropdown default" text should be "Codec  - vp9"
         And the "camera view bitrate dropdown default" text should be "Bitrate  - 2 Mbps"
         And the "camera view simulcast" should not be displayed
