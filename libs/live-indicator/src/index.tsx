@@ -15,7 +15,7 @@ const LiveIndicator = ({ isActive, isLoading, start, stop, testId, ...rest }: Li
       onClick={isActive ? stop : start}
       px="4"
       size="sm"
-      test-id={testId ?? isActive ? 'stop-live-indicator' : 'start-live-indicator'}
+      test-id={testId ?? (isActive ? 'stop-live-indicator' : 'start-live-indicator')}
       textTransform="uppercase"
       {...rest}
     >
