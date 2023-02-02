@@ -213,6 +213,14 @@ const App = () => {
 
   const handleSrcMediaStreamReady = (id: string) => (mediaStream: MediaStream) => {
     updateSourceMediaStream(id, mediaStream);
+
+    if (allLive) {
+      try {
+        startStreamingToSource(id);
+      } catch (error) {
+        showError(`Failed to start streaming: ${error}`);
+      }
+    }
   };
 
   const handleStartDisplayCapture = async () => {
