@@ -4,3 +4,4 @@ COMPONENTS:
   - 'add-source'
   - 'settings'
   - 'stream-stats'
+validation: 'streaming status dot:displayed'
