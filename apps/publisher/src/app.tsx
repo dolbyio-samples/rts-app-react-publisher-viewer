@@ -452,7 +452,7 @@ const App = () => {
       </Flex>
       <HStack alignItems="center" bottom="32px" h="48px" pointerEvents="none" position="fixed" width="96%">
         <Spacer />
-        <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end">
+        <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end" pointerEvents="all">
           <PopupMenu
             buttonTitle="Add Source"
             disabled={streams.size >= MAX_SOURCES}
