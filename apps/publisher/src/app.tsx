@@ -409,6 +409,13 @@ const App = () => {
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
             const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
 
+            // Kill if device is disconnected, screenshare has stopped, etc
+            mediaStream?.getTracks().forEach((track) => {
+              track.addEventListener('ended', () => {
+                handleRemove(id);
+              });
+            });
+
             return (
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
