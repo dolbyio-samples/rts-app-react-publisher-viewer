@@ -146,12 +146,20 @@ export const addScreen = async (scWorld: ScenarioWorld) => {
   await click(scWorld.currentPage, targetSelector);
 };
 
-export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add local file source`);
-  // TODO: Add local file
-};
+export const getQualityTabName = (qualityTab: string) => {
+  let qualityTabName = 'None';
 
-export const addRemoteFile = async (scWorld: ScenarioWorld, filePath: string) => {
-  logger.info(`Add remote file source`);
-  // TODO: Add remote file
+  if (qualityTab === null) {
+    qualityTabName = 'None';
+  } else if (qualityTab.includes('with quality tabs')) {
+    qualityTabName = 'All';
+  } else if (qualityTab.includes('with high quality tab')) {
+    qualityTabName = 'High';
+  } else if (qualityTab.includes('with medium quality tab')) {
+    qualityTabName = 'Medium';
+  } else if (qualityTab.includes('with low quality tab')) {
+    qualityTabName = 'Low';
+  }
+
+  return qualityTabName;
 };

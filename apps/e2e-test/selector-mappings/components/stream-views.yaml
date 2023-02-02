@@ -40,21 +40,23 @@ screen view:
 screen view source name:
   - '$ref: screen view container'
   - '$ref: source name'
-screen view microphone:
+microphone of screen view: '$ref: screen view microphone button'
+screen view microphone button:
   - '$ref: screen view container'
   - '$ref: microphone button'
-screen view camera:
+camera of screen view: '$ref: screen view camera button'
+screen view camera button:
   - '$ref: screen view container'
   - '$ref: camera button'
-screen view stop share button:
-  - '$ref: screen view container'
-  - '[test-id=stopScreenShare]'
+full screen of screen view: '$ref: screen view full screen button'
 screen view full screen button:
   - '$ref: screen view container'
   - '$ref: full screen button'
+setting button of screen view: '$ref: screen view setting button'
 screen view setting button:
   - '$ref: screen view container'
   - '$ref: setting button'
+stream info button of screen view: '$ref: screen view stream info button'
 screen view stream info button:
   - '$ref: screen view container'
   - '$ref: stream info button'

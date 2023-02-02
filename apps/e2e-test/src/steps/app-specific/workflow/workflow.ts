@@ -7,14 +7,12 @@ import { clearText, click, enterText } from '../../../playwright-support/generic
 
 import { waitFor } from '../../../playwright-support/generic/element-wait';
 import { verifyArrayContains, verifyEqualTo, verifyLessThan } from '../../../playwright-support/generic/verification';
-import { delay } from '../../../utils/helper';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
 import {
   addCamera,
-  addLocalFile,
-  addRemoteFile,
   addScreen,
+  getQualityTabName,
   validateState,
   validateStatsInfo,
   validateStatus,
@@ -326,7 +324,7 @@ export const verifyStats = async (
   elementPosition: string,
   appName: string,
   viewName: string,
-  qualityTabs: boolean,
+  qualityTab: string,
   expectedData: { [key: string]: string }
 ) => {
   const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
@@ -337,39 +335,50 @@ export const verifyStats = async (
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info popover`);
   await validateState(scWorld, targetSelector, 'displayed' as State);
-  await delay(3000);
+
+  const qualityTabName = getQualityTabName(qualityTab);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info tab`);
   const tableSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stats info`);
-  const streamStats = await getStreamStats(scWorld.currentPage, targetSelector, tableSelector);
+  const streamStats = await getStreamStats(scWorld.currentPage, targetSelector, tableSelector, qualityTabName);
 
   logger.info(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
   logger.info(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
 
-  const streamStatsKeys = Object.keys(streamStats);
-  let message;
-  if (qualityTabs && appName === 'publisher') {
-    logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-    message = 'Stream Info stats does not have High/Low quality tabs';
-    verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
+  try {
+    let streamStatsKeys = Object.keys(streamStats);
+    let message;
+    if (qualityTabName != 'None' && appName === 'publisher') {
+      logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
+      message = 'Stream Info stats does not have High/Low quality tabs';
+      verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
 
-    message = 'Stream Info stats have more than 3 quality tabs';
-    verifyLessThan(streamStatsKeys.length, 4, message);
+      message = 'Stream Info stats have more than 3 quality tabs';
+      verifyLessThan(streamStatsKeys.length, 4, message);
 
-    for (const quality of streamStatsKeys) {
-      logger.info(`Verify ${viewName} stats with ${quality} quality`);
-      message = 'Unknown Stream Info quality';
-      verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
-      validateStatsInfo(streamStats[quality], expectedData);
+      if (qualityTabName !== 'All') {
+        streamStatsKeys = [qualityTabName];
+      }
+
+      for (const quality of streamStatsKeys) {
+        logger.info(`Verify ${viewName} stats with ${quality} quality`);
+        message = 'Unknown Stream Info quality';
+        verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
+        validateStatsInfo(streamStats[quality], expectedData);
+      }
+    } else {
+      logger.info(`Verify ${appName} ${viewName} stats`);
+      message = 'Stream Info stats have quality tabs';
+      verifyArrayContains(streamStatsKeys, 'Standard', message);
+
+      message = 'Stream Info quality has less or more than 1 quality';
+      verifyEqualTo(streamStatsKeys.length, 1, message);
+      validateStatsInfo(streamStats['Standard'], expectedData);
     }
-  } else {
-    logger.info(`Verify ${appName} ${viewName} stats`);
-    message = 'Stream Info stats have quality tabs';
-    verifyArrayContains(streamStatsKeys, 'Standard', message);
-
-    message = 'Stream Info quality has less or more than 1 quality';
-    verifyEqualTo(streamStatsKeys.length, 1, message);
-    validateStatsInfo(streamStats['Standard'], expectedData);
+  } catch (exception) {
+    logger.error(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
+    logger.error(`Expected stream stats: ${JSON.stringify(expectedData, null, 2)}`);
+    throw exception;
   }
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info close button`);
@@ -487,22 +496,6 @@ export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {
       break;
     case 'screen':
       await addScreen(scWorld);
-      break;
-    default:
-      throw Error(`Invalid source name - ${srcName}`);
-  }
-};
-
-export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, filePath: string) => {
-  const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
-  await click(scWorld.currentPage, targetSelector);
-
-  switch (srcName) {
-    case 'local':
-      await addLocalFile(scWorld, filePath);
-      break;
-    case 'remote':
-      await addRemoteFile(scWorld, filePath);
       break;
     default:
       throw Error(`Invalid source name - ${srcName}`);
