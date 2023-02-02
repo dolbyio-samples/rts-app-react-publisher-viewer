@@ -115,19 +115,17 @@ const App = () => {
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   useEffect(() => {
-    if (!allLive) {
-      return;
-    }
-
-    sources.forEach((source, id) => {
-      try {
-        if (!source.publish.isActive()) {
-          startStreamingToSource(id);
+    if (allLive) {
+      sources.forEach((source, id) => {
+        try {
+          if (!source.publish.isActive()) {
+            startStreamingToSource(id);
+          }
+        } catch (error) {
+          showError(`Failed to start streaming: ${error}`);
         }
-      } catch (error) {
-        showError(`Failed to start streaming: ${error}`);
-      }
-    });
+      });
+    }
   }, [sources.size]);
 
   const addNewDevice = async () => {
@@ -452,7 +450,7 @@ const App = () => {
           })}
         </Wrap>
       </Flex>
-      <HStack alignItems="center" bottom="32px" h="48px" pos="fixed" w="96%">
+      <HStack alignItems="center" bottom="32px" h="48px" pointerEvents="none" position="fixed" width="96%">
         <Spacer />
         <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end">
           <PopupMenu
