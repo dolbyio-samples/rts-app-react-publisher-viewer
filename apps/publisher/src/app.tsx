@@ -379,6 +379,7 @@ const App = () => {
               isLoading={isPublisherConnecting}
               start={handleStartAllLive}
               stop={handleStopAllLive}
+              testId={isPublisherStreaming ? 'stop-all-live-indicator' : 'start-all-live-indicator'}
             />
           </Stack>
           <Stack alignItems="flex-end" direction="column" spacing="4">

@@ -5,4 +5,4 @@ COMPONENTS:
   - 'settings'
   - 'stream-stats'
 validation: 'stop button:displayed'
-stop button: '//button[@test-id="stop-live-indicator" and not(@data-loading)]'
+stop button: '//button[@test-id="stop-all-live-indicator" and not(@data-loading)]'

@@ -1,14 +1,9 @@
-import { Button, ButtonProps } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 
-type GoLiveProps = ButtonProps & {
-  isActive: boolean;
-  isLoading?: boolean;
-  start?: () => void;
-  stop?: () => void;
-};
+import { LiveIndicatorProps } from './types';
 
-const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProps) => {
+const LiveIndicator = ({ isActive, isLoading, start, stop, testId, ...rest }: LiveIndicatorProps) => {
   return (
     <Button
       _hover={{
@@ -20,7 +15,7 @@ const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProp
       onClick={isActive ? stop : start}
       px="4"
       size="sm"
-      test-id={isActive ? 'stop-live-indicator' : 'start-live-indicator'}
+      test-id={testId ?? isActive ? 'stop-live-indicator' : 'start-live-indicator'}
       textTransform="uppercase"
       {...rest}
     >
@@ -29,4 +24,5 @@ const LiveIndicator = ({ isActive, isLoading, start, stop, ...rest }: GoLiveProp
   );
 };
 
+export * from './types';
 export default LiveIndicator;
