@@ -40,12 +40,11 @@ const Input = ({
     <FormControl bg="inherit" isDisabled={disabled} isInvalid={!!error} isRequired={required} test-id={testId}>
       <FormLabel
         _disabled={{ opacity: 1 }}
-        bg="inherit"
         fontSize="12px"
         fontWeight="500"
         left="12px"
-        m="0"
-        p="0 4px"
+        margin="0"
+        padding="0 4px"
         pointerEvents="none"
         position="absolute"
         top={0}
@@ -60,7 +59,6 @@ const Input = ({
           _focus={{ borderColor: 'dolbyPurple.400', boxShadow: 'none' }}
           _hover={{ borderColor: 'dolbyNeutral.500', boxShadow: 'none' }}
           _placeholder={{ color: 'dolbySecondary.200' }}
-          bg="inherit"
           border="2px solid"
           borderColor="dolbyNeutral.500"
           borderRadius="8px"
@@ -70,11 +68,10 @@ const Input = ({
           maxWidth="400px"
           onChange={handleChange}
           placeholder={placeholder}
-          px={3}
-          py={5}
+          padding="20px 12px"
           textAlign="left"
           value={value}
-          w="100%"
+          width="100%"
           {...inputProps}
         />
         {value ? (

@@ -16,7 +16,9 @@ const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcas
       <Box>
         <Input
           disabled={name.isDisabled}
+          inputProps={{ color: 'white' }}
           label="Source name"
+          labelProps={{ background: 'dolbyNeutral.800', color: 'white' }}
           onChange={name.handleChange}
           testId="sourceName"
           value={name.value}
