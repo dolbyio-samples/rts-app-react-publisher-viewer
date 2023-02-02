@@ -24,7 +24,7 @@ const VideoControlBar = ({
   hasVideoTrack,
   isStreaming,
   onChangeVolume: handleChangeVolume,
-  onFullScreen: handleFullScreen,
+  onToggleFullScreen: handleFullScreen,
   onToggleAudio: handleToggleAudio,
   onTogglePlayback: handleTogglePlayback,
   onToggleVideo: handleToggleVideo,

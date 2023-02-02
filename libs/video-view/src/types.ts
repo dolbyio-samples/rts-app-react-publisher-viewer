@@ -9,7 +9,6 @@ export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
 export interface VideoViewProps {
   displayVideo?: boolean;
   height?: string;
-  isFullScreen?: boolean;
   label?: string;
   maxHeight?: string;
   maxWidth?: string;

@@ -1,10 +1,12 @@
 import { Box } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
 import { ViewerVideoViewProps } from './types';
 import VideoControlBar from './video-control-bar';
+
+const SHOW_CONTROL_BAR_DURATION = 2000;
 
 const ViewerVideoView = ({
   isStreaming,
@@ -13,10 +15,8 @@ const ViewerVideoView = ({
   statistics,
   videoProps = {},
 }: ViewerVideoViewProps) => {
-  const { mediaStream } = videoProps;
-
-  const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
-  const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+  const videoViewRef = useRef<HTMLDivElement>(null);
+  const isControlBarVisibleRef = useRef<boolean>();
 
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -24,16 +24,34 @@ const ViewerVideoView = ({
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [volume, setVolume] = useState(0);
 
-  const enterFullScreen = () => {
-    setIsFullScreen(true);
+  // @ts-expect-error Not all code paths return a value.
+  useEffect(() => {
+    if (videoViewRef.current) {
+      const handleMouseMove = (event: MouseEvent) => {
+        event.preventDefault();
 
-    document.addEventListener('keydown', exitFullScreen);
-  };
+        isControlBarVisibleRef.current = true;
 
-  const exitFullScreen = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setIsFullScreen(false);
+        new Promise((resolve) => setTimeout(resolve, SHOW_CONTROL_BAR_DURATION)).then(() => {
+          isControlBarVisibleRef.current = false;
+        });
+      };
+
+      videoViewRef.current.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        videoViewRef.current?.removeEventListener('mousemove', handleMouseMove);
+      };
     }
+  }, [videoViewRef.current]);
+
+  const { mediaStream } = videoProps;
+
+  const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
+  const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
+  const handleToggleFullScreen = () => {
+    setIsFullScreen((prevIsFullScreen) => !prevIsFullScreen);
   };
 
   const handleChangeVolume = (newVolume: number) => {
@@ -74,20 +92,20 @@ const ViewerVideoView = ({
 
   return (
     <Box
-      height="100%"
+      bottom={0}
+      height={isFullScreen ? '100vh' : '100%'}
+      left={0}
       margin="0 auto"
       overflow="hidden"
-      position="relative"
-      sx={{
-        ':hover': {
-          '&>*': { opacity: 1 },
-        },
-      }}
-      width="100%"
+      position={isFullScreen ? 'fixed' : 'relative'}
+      ref={videoViewRef}
+      right={0}
+      top={0}
+      width={isFullScreen ? '100vw' : '100%'}
+      zIndex={isFullScreen ? '1' : '0'}
     >
       <VideoView
         displayVideo={isVideoEnabled}
-        isFullScreen={isFullScreen}
         muted={!isAudioEnabled}
         playing={isPlaybackActive}
         volume={volume}
@@ -102,13 +120,16 @@ const ViewerVideoView = ({
           hasVideoTrack={!!videoTrack}
           isStreaming={isStreaming}
           onChangeVolume={handleChangeVolume}
-          onFullScreen={enterFullScreen}
+          onToggleFullScreen={handleToggleFullScreen}
           onToggleAudio={handleToggleAudio}
           onTogglePlayback={handleTogglePlayback}
           onToggleVideo={handleToggleVideo}
-          opacity={0}
+          opacity={isControlBarVisibleRef.current ? 1 : 0}
           settings={settings}
           statistics={statistics}
+          sx={{
+            ':hover': { opacity: 1 },
+          }}
           test-id="videoControlBar"
         />
       ) : undefined}

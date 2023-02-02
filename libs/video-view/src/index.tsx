@@ -8,7 +8,6 @@ import { HTMLVideoElementWithCaptureStream, VideoViewProps } from './types';
 const VideoView = ({
   displayVideo = true,
   height,
-  isFullScreen,
   label,
   maxHeight,
   maxWidth,
@@ -100,7 +99,7 @@ const VideoView = ({
       borderRadius="8px"
       bottom="0"
       color="white"
-      height={isFullScreen ? '100vh' : height ?? '100%'}
+      height={height ?? '100%'}
       justifyContent="center"
       left="0"
       margin="0 auto"
@@ -108,12 +107,11 @@ const VideoView = ({
       maxWidth={maxWidth}
       onClick={onClick}
       overflow="hidden"
-      pos={isFullScreen ? 'fixed' : 'relative'}
+      position="relative"
       right="0"
       test-id="videoViewWrapper"
       top="0"
-      width={isFullScreen ? '100vw' : width ?? '100%'}
-      zIndex={isFullScreen ? '1' : '0'}
+      width={width ?? '100%'}
     >
       {loadingVideo && displayVideo && (
         <Center h="100%" position="absolute" w="100%">
