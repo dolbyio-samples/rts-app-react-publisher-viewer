@@ -179,7 +179,6 @@ const App = () => {
                       label: sourceId,
                       mediaStream,
                       muted: true,
-                      playing: false,
                     }}
                   />
                 </Box>

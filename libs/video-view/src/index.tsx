@@ -93,24 +93,6 @@ const VideoView = ({
     }
   };
 
-  const componentElementsStyle = {
-    '.icon-button, .icon-button: hover': {
-      background: 'rgba(0,0,0,0.6)',
-      border: '1px solid transparent',
-      borderRadius: '0',
-      boxShadow: 'unset',
-      padding: '10px',
-      width: 'min-content',
-    },
-    '.video': {
-      height: '100%',
-      objectFit: 'contain',
-      overflow: 'hidden',
-      transform: `${mirrored ? 'scaleX(-1)' : ''}`,
-      width: '100%',
-    },
-  };
-
   return (
     <Flex
       alignItems="center"
@@ -128,7 +110,6 @@ const VideoView = ({
       overflow="hidden"
       pos={isFullScreen ? 'fixed' : 'relative'}
       right="0"
-      sx={componentElementsStyle}
       test-id="videoViewWrapper"
       top="0"
       width={isFullScreen ? '100vw' : width ?? '100%'}
@@ -149,16 +130,23 @@ const VideoView = ({
         onError={() => {
           onError && videoRef.current?.error
             ? onError(videoRef.current.error)
-            : console.error(`video player error: ${videoRef.current?.error}`);
+            : console.error(`Video player error: ${videoRef.current?.error}`);
         }}
         onLoadStart={() => setLoadingVideo(true)}
         onPlaying={() => setLoadingVideo(false)}
         onStalled={() => {
-          console.error('video is on stalled');
+          console.error('Video is on stalled');
         }}
         onWaiting={() => setLoadingVideo(true)}
         playsInline
         ref={videoRef}
+        style={{
+          height: '100%',
+          objectFit: 'contain',
+          overflow: 'hidden',
+          transform: mirrored ? 'scaleX(-1)' : '',
+          width: '100%',
+        }}
         // eslint-disable-next-line react/no-unknown-property
         test-id="videoView"
       />

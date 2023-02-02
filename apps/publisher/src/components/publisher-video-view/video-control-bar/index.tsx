@@ -60,7 +60,7 @@ const VideoControlBar = ({
           isDisabled={!hasAudioTrack}
           onClick={handleToggleAudio}
           testId="toggleAudioButton"
-          tooltipProps={{ label: 'Toggle microphone', placement: 'top' }}
+          tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
         />
         <IconButton
           icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
@@ -68,7 +68,7 @@ const VideoControlBar = ({
           isDisabled={!hasVideoTrack}
           onClick={handleToggleVideo}
           testId="toggleVideoButton"
-          tooltipProps={{ label: 'Toggle camera', placement: 'top' }}
+          tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
         />
         {canTogglePlayback ? (
           <IconButton
@@ -77,7 +77,7 @@ const VideoControlBar = ({
             isDisabled={!hasAudioTrack && !hasVideoTrack}
             onClick={handleTogglePlayback}
             testId="togglePlaybackButton"
-            tooltipProps={{ label: 'Toggle playback', placement: 'top' }}
+            tooltipProps={{ label: 'Toggle playback', placement: 'bottom' }}
           />
         ) : undefined}
       </HStack>
