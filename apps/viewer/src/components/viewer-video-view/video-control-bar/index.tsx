@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/react';
+import { Box, Center, HStack, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
 import React from 'react';
 
 import {
@@ -23,12 +23,14 @@ const VideoControlBar = ({
   hasAudioTrack,
   hasVideoTrack,
   isStreaming,
+  onChangeVolume: handleChangeVolume,
   onFullScreen: handleFullScreen,
+  onToggleAudio: handleToggleAudio,
+  onTogglePlayback: handleTogglePlayback,
+  onToggleVideo: handleToggleVideo,
   settings,
   statistics,
-  toggleAudio,
-  togglePlayback,
-  toggleVideo,
+  volume,
   ...rest
 }: VideoControlBarProps) => {
   const showStatistics = isStreaming && !!statistics;
@@ -53,19 +55,48 @@ const VideoControlBar = ({
         />
       </HStack>
       <HStack>
-        <IconButton
-          icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
-          isActive={!activeAudio}
-          isDisabled={!hasAudioTrack}
-          onClick={toggleAudio}
-          testId="toggleAudioButton"
-          tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
-        />
+        <Box position="relative">
+          <IconButton
+            icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+            isActive={!activeAudio}
+            isDisabled={!hasAudioTrack}
+            onClick={handleToggleAudio}
+            testId="toggleAudioButton"
+            tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
+          />
+          <Center
+            background="white"
+            borderRadius="4px"
+            left="50%"
+            padding="12px 0"
+            position="absolute"
+            top="-16px"
+            transform="translate(-50%, -100%)"
+            width="100%"
+          >
+            <Slider
+              aria-label="volumeSlider"
+              defaultValue={activeAudio ? 100 : 0}
+              height="100px"
+              max={1}
+              min={0}
+              onChange={handleChangeVolume}
+              orientation="vertical"
+              step={0.01}
+              value={volume}
+            >
+              <SliderTrack background="dolbyNeutral.300">
+                <SliderFilledTrack background="dolbyPurple.400" />
+              </SliderTrack>
+              <SliderThumb background="dolbyNeutral.800" />
+            </Slider>
+          </Center>
+        </Box>
         <IconButton
           icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
           isActive={!activeVideo}
           isDisabled={!hasVideoTrack}
-          onClick={toggleVideo}
+          onClick={handleToggleVideo}
           testId="toggleVideoButton"
           tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
         />
@@ -73,7 +104,7 @@ const VideoControlBar = ({
           icon={activePlayback ? <IconPlay /> : <IconPause />}
           isActive={!activePlayback}
           isDisabled={!hasAudioTrack && !hasVideoTrack}
-          onClick={togglePlayback}
+          onClick={handleTogglePlayback}
           testId="togglePlaybackButton"
           tooltipProps={{ label: 'Toggle playback', placement: 'bottom' }}
         />

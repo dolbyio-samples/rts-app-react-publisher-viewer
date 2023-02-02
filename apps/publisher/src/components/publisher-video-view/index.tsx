@@ -26,7 +26,7 @@ const PublisherVideoView = ({
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
-  const toggleAudio = () => {
+  const handleToggleAudio = () => {
     setIsAudioEnabled((prevIsAudioEnabled) => {
       audioTrack.enabled = !prevIsAudioEnabled;
 
@@ -34,11 +34,11 @@ const PublisherVideoView = ({
     });
   };
 
-  const togglePlayback = () => {
+  const handleTogglePlayback = () => {
     setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
   };
 
-  const toggleVideo = () => {
+  const handleToggleVideo = () => {
     if (videoTrack) {
       setIsVideoEnabled((prevIsVideoEnabled) => {
         videoTrack.enabled = !prevIsVideoEnabled;
@@ -74,13 +74,13 @@ const PublisherVideoView = ({
         isStreaming={isStreaming}
         onStartLive={handleStartLive}
         onStopLive={handleStopLive}
+        onToggleAudio={handleToggleAudio}
+        onTogglePlayback={handleTogglePlayback}
+        onToggleVideo={handleToggleVideo}
         opacity={0}
         settings={settings}
         statistics={statistics}
         test-id="videoControlBar"
-        toggleAudio={toggleAudio}
-        togglePlayback={togglePlayback}
-        toggleVideo={toggleVideo}
       />
     </Box>
   );

@@ -27,11 +27,11 @@ const VideoControlBar = ({
   isStreaming = false,
   onStartLive: handleStartLive,
   onStopLive: handleStopLive,
+  onToggleAudio: handleToggleAudio,
+  onTogglePlayback: handleTogglePlayback,
+  onToggleVideo: handleToggleVideo,
   settings,
   statistics,
-  toggleAudio,
-  togglePlayback,
-  toggleVideo,
   ...rest
 }: VideoControlBarProps) => {
   return (
@@ -58,7 +58,7 @@ const VideoControlBar = ({
           icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
           isActive={!activeAudio}
           isDisabled={!hasAudioTrack}
-          onClick={toggleAudio}
+          onClick={handleToggleAudio}
           testId="toggleAudioButton"
           tooltipProps={{ label: 'Toggle microphone', placement: 'top' }}
         />
@@ -66,7 +66,7 @@ const VideoControlBar = ({
           icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
           isActive={!activeVideo}
           isDisabled={!hasVideoTrack}
-          onClick={toggleVideo}
+          onClick={handleToggleVideo}
           testId="toggleVideoButton"
           tooltipProps={{ label: 'Toggle camera', placement: 'top' }}
         />
@@ -75,7 +75,7 @@ const VideoControlBar = ({
             icon={activePlayback ? <IconPlay /> : <IconPause />}
             isActive={!activePlayback}
             isDisabled={!hasAudioTrack && !hasVideoTrack}
-            onClick={togglePlayback}
+            onClick={handleTogglePlayback}
             testId="togglePlaybackButton"
             tooltipProps={{ label: 'Toggle playback', placement: 'top' }}
           />

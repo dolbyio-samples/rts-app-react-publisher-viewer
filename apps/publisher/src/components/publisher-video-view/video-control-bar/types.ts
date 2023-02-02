@@ -14,9 +14,9 @@ export interface VideoControlBarProps extends StackProps {
   isStreaming?: boolean;
   onStartLive: () => void;
   onStopLive: () => void;
+  onToggleAudio?: () => void;
+  onTogglePlayback?: () => void;
+  onToggleVideo?: () => void;
   settings?: SettingsPopoverProps;
   statistics?: StreamStats;
-  toggleAudio?: () => void;
-  togglePlayback?: () => void;
-  toggleVideo?: () => void;
 }

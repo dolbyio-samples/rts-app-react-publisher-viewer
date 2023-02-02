@@ -10,10 +10,12 @@ export interface VideoControlBarProps extends StackProps {
   hasAudioTrack?: boolean;
   hasVideoTrack?: boolean;
   isStreaming?: boolean;
+  onChangeVolume?: (volume: number) => void;
   onFullScreen?: () => void;
+  onToggleAudio?: () => void;
+  onTogglePlayback?: () => void;
+  onToggleVideo?: () => void;
   settings?: SettingsPopoverProps;
   statistics?: StreamStats;
-  toggleAudio?: () => void;
-  togglePlayback?: () => void;
-  toggleVideo?: () => void;
+  volume?: number;
 }

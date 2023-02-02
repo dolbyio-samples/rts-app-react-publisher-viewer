@@ -47,6 +47,10 @@ const VideoView = ({
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = muted;
+
+      if (!muted) {
+        videoRef.current.volume = volume;
+      }
     }
   }, [muted]);
 

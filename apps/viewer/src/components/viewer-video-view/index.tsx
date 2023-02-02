@@ -22,6 +22,7 @@ const ViewerVideoView = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [volume, setVolume] = useState(0);
 
   const enterFullScreen = () => {
     setIsFullScreen(true);
@@ -35,7 +36,21 @@ const ViewerVideoView = ({
     }
   };
 
-  const toggleAudio = () => {
+  const handleChangeVolume = (newVolume: number) => {
+    if (newVolume === 0) {
+      audioTrack.enabled = false;
+
+      setIsAudioEnabled(false);
+    } else {
+      audioTrack.enabled = true;
+
+      setIsAudioEnabled(true);
+    }
+
+    setVolume(newVolume);
+  };
+
+  const handleToggleAudio = () => {
     setIsAudioEnabled((prevIsAudioEnabled) => {
       audioTrack.enabled = !prevIsAudioEnabled;
 
@@ -43,11 +58,11 @@ const ViewerVideoView = ({
     });
   };
 
-  const togglePlayback = () => {
+  const handleTogglePlayback = () => {
     setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
   };
 
-  const toggleVideo = () => {
+  const handleToggleVideo = () => {
     if (videoTrack) {
       setIsVideoEnabled((prevIsVideoEnabled) => {
         videoTrack.enabled = !prevIsVideoEnabled;
@@ -75,6 +90,7 @@ const ViewerVideoView = ({
         isFullScreen={isFullScreen}
         muted={!isAudioEnabled}
         playing={isPlaybackActive}
+        volume={volume}
         {...videoProps}
       />
       {showControlBar ? (
@@ -85,14 +101,15 @@ const ViewerVideoView = ({
           hasAudioTrack={!!audioTrack}
           hasVideoTrack={!!videoTrack}
           isStreaming={isStreaming}
+          onChangeVolume={handleChangeVolume}
           onFullScreen={enterFullScreen}
+          onToggleAudio={handleToggleAudio}
+          onTogglePlayback={handleTogglePlayback}
+          onToggleVideo={handleToggleVideo}
           opacity={0}
           settings={settings}
           statistics={statistics}
           test-id="videoControlBar"
-          toggleAudio={toggleAudio}
-          togglePlayback={togglePlayback}
-          toggleVideo={toggleVideo}
         />
       ) : undefined}
     </Box>
