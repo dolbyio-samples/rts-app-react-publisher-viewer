@@ -61,7 +61,7 @@ const App = () => {
     onClose: onFileSelectModalClose,
   } = useDisclosure();
 
-  const [allLive, setAllLive] = useState(false);
+  const [allStreamsLive, setAllStreamsLive] = useState(false);
   const [newCamera, setNewCamera] = useState<InputDeviceInfo>();
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo>();
 
@@ -115,7 +115,7 @@ const App = () => {
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   useEffect(() => {
-    if (allLive) {
+    if (allStreamsLive) {
       sources.forEach((source, id) => {
         try {
           if (!source.publish.isActive()) {
@@ -211,7 +211,7 @@ const App = () => {
     if (!source?.broadcastOptions.mediaStream) {
       updateSourceMediaStream(id, mediaStream);
 
-      if (allLive) {
+      if (allStreamsLive) {
         startStreamingToSource(id, mediaStream);
       }
     }
@@ -232,7 +232,7 @@ const App = () => {
       }
     }
 
-    setAllLive(true);
+    setAllStreamsLive(true);
   };
 
   const handleStopAllLive = () => {
@@ -240,13 +240,13 @@ const App = () => {
       stopStreamingToSource(id);
     }
 
-    setAllLive(false);
+    setAllStreamsLive(false);
   };
 
   const handleStopLive = (id: string) => {
     stopStreamingToSource(id);
 
-    setAllLive(false);
+    setAllStreamsLive(false);
   };
 
   const handleSubmitLocalFile = (event: FormEvent) => {
