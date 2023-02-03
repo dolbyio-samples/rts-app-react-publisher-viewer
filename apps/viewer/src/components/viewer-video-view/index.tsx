@@ -25,25 +25,26 @@ const ViewerVideoView = ({
   const [volume, setVolume] = useState(0);
 
   // Hide/show control bar on mouse move
-  // @ts-expect-error Not all code paths return a value.
   useEffect(() => {
-    if (videoViewRef.current) {
-      const handleMouseMove = (event: MouseEvent) => {
-        event.preventDefault();
-
-        isControlBarVisibleRef.current = true;
-
-        new Promise((resolve) => setTimeout(resolve, SHOW_CONTROL_BAR_DURATION)).then(() => {
-          isControlBarVisibleRef.current = false;
-        });
-      };
-
-      videoViewRef.current.addEventListener('mousemove', handleMouseMove);
-
-      return () => {
-        videoViewRef.current?.removeEventListener('mousemove', handleMouseMove);
-      };
+    if (!videoViewRef.current) {
+      return undefined;
     }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      event.preventDefault();
+
+      isControlBarVisibleRef.current = true;
+
+      new Promise((resolve) => setTimeout(resolve, SHOW_CONTROL_BAR_DURATION)).then(() => {
+        isControlBarVisibleRef.current = false;
+      });
+    };
+
+    videoViewRef.current.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      videoViewRef.current?.removeEventListener('mousemove', handleMouseMove);
+    };
   }, [videoViewRef.current]);
 
   const { mediaStream } = videoProps;
