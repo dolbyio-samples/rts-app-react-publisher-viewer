@@ -62,7 +62,7 @@ const PublisherVideoView = ({
       }}
       width="100%"
     >
-      <VideoView displayVideo={isVideoEnabled} muted={!isAudioEnabled} playing={isPlaybackActive} {...videoProps} />
+      <VideoView displayVideo={isVideoEnabled} muted playing={isPlaybackActive} {...videoProps} />
       <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
       <VideoControlBar
         activeAudio={isAudioEnabled}
