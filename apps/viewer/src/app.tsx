@@ -72,19 +72,9 @@ const App = () => {
   useEffect(() => {
     if (mainSourceId) {
       // Change main stream
-      projectToMainStream(mainSourceId).then((source) => {
-        if (!source) {
-          return;
-        }
-
-        // Reapply previous quality setting
-        const { quality, streamQualityOptions } = source;
-
-        const simulcastQuality = streamQualityOptions.find(({ streamQuality }) => streamQuality === quality);
-
-        if (simulcastQuality) {
-          setSourceQuality(mainSourceId, simulcastQuality);
-        }
+      projectToMainStream(mainSourceId).then(() => {
+        // Reset quality
+        setSourceQuality(mainSourceId, { streamQuality: 'Auto' });
       });
     }
   }, [mainSourceId]);
