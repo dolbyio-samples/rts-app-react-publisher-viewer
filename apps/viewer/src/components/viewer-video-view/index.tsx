@@ -24,6 +24,7 @@ const ViewerVideoView = ({
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [volume, setVolume] = useState(0);
 
+  // Hide/show control bar on mouse move
   // @ts-expect-error Not all code paths return a value.
   useEffect(() => {
     if (videoViewRef.current) {
@@ -53,6 +54,11 @@ const ViewerVideoView = ({
   const handleToggleFullScreen = () => {
     setIsFullScreen((prevIsFullScreen) => !prevIsFullScreen);
   };
+
+  // Reenable playback when switching main source
+  useEffect(() => {
+    setIsPlaybackActive(true);
+  }, [videoProps.label]);
 
   const handleChangeVolume = (newVolume: number) => {
     if (newVolume === 0) {
