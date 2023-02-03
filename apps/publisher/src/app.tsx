@@ -433,6 +433,7 @@ const App = () => {
                   onStopLive={() => handleStopLive(id)}
                   settings={settings(id)}
                   statistics={statistics}
+                  streamType={type}
                   videoProps={{
                     label,
                     mediaStream,

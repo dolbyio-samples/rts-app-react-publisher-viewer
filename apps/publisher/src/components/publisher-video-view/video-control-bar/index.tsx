@@ -8,6 +8,8 @@ import {
   IconMicrophoneOn,
   IconPause,
   IconPlay,
+  IconSoundOff,
+  IconSoundOn,
 } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
@@ -15,6 +17,7 @@ import StatisticsPopover from '@millicast-react/statistics-popover';
 import { VideoControlBarProps } from './types';
 import SettingsPopover from './settings-popover';
 import LiveIndicator from '@millicast-react/live-indicator';
+import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 
 const VideoControlBar = ({
   activeAudio,
@@ -32,8 +35,22 @@ const VideoControlBar = ({
   onToggleVideo: handleToggleVideo,
   settings,
   statistics,
+  streamType,
   ...rest
 }: VideoControlBarProps) => {
+  const audioIcon =
+    streamType === StreamTypes.MEDIA ? (
+      activeAudio ? (
+        <IconMicrophoneOn />
+      ) : (
+        <IconMicrophoneOff />
+      )
+    ) : activeAudio ? (
+      <IconSoundOn />
+    ) : (
+      <IconSoundOff />
+    );
+
   return (
     <HStack
       background="backgroundTranslucent"
@@ -55,7 +72,7 @@ const VideoControlBar = ({
       </HStack>
       <HStack>
         <IconButton
-          icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+          icon={audioIcon}
           isActive={!activeAudio}
           isDisabled={!hasAudioTrack}
           onClick={handleToggleAudio}

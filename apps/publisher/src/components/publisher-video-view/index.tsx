@@ -15,6 +15,7 @@ const PublisherVideoView = ({
   onStopLive: handleStopLive,
   settings,
   statistics,
+  streamType,
   videoProps,
 }: PublisherVideoViewProps) => {
   const { mediaStream } = videoProps;
@@ -22,7 +23,7 @@ const PublisherVideoView = ({
   const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
   const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
 
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
@@ -80,6 +81,7 @@ const PublisherVideoView = ({
         opacity={0}
         settings={settings}
         statistics={statistics}
+        streamType={streamType}
         test-id="videoControlBar"
       />
     </Box>
