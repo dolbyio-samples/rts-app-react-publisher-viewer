@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@chakra-ui/react';
+import { ButtonProps } from '@chakra-ui/react';
 
 export interface LiveIndicatorProps extends ButtonProps {
   isActive: boolean;
