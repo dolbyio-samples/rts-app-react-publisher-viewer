@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import VideoView from '@millicast-react/video-view';
 
 import { ViewerVideoViewProps } from './types';
+import { delay } from './utils';
 import VideoControlBar from './video-control-bar';
 
 const SHOW_CONTROL_BAR_DURATION = 2000;
@@ -30,14 +31,14 @@ const ViewerVideoView = ({
       return undefined;
     }
 
-    const handleMouseMove = (event: MouseEvent) => {
+    const handleMouseMove = async (event: MouseEvent) => {
       event.preventDefault();
 
       isControlBarVisibleRef.current = true;
 
-      new Promise((resolve) => setTimeout(resolve, SHOW_CONTROL_BAR_DURATION)).then(() => {
-        isControlBarVisibleRef.current = false;
-      });
+      await delay(SHOW_CONTROL_BAR_DURATION);
+
+      isControlBarVisibleRef.current = false;
     };
 
     videoViewRef.current.addEventListener('mousemove', handleMouseMove);

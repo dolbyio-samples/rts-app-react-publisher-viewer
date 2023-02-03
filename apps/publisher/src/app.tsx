@@ -235,8 +235,6 @@ const App = () => {
     setAllLive(true);
   };
 
-  // TODO: const handleStopDisplayCapture = () => {}
-
   const handleStopAllLive = () => {
     for (const id of sources.keys()) {
       stopStreamingToSource(id);
