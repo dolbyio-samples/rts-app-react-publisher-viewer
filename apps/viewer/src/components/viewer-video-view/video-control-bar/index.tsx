@@ -5,10 +5,10 @@ import {
   IconCameraOff,
   IconCameraOn,
   IconExpand,
-  IconMicrophoneOff,
-  IconMicrophoneOn,
   IconPause,
   IconPlay,
+  IconSoundOn,
+  IconSoundOff,
 } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
@@ -57,7 +57,7 @@ const VideoControlBar = ({
       <HStack>
         <Box position="relative">
           <IconButton
-            icon={activeAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />}
+            icon={activeAudio ? <IconSoundOn /> : <IconSoundOff />}
             isActive={!activeAudio}
             isDisabled={!hasAudioTrack}
             onClick={handleToggleAudio}
