@@ -107,17 +107,22 @@ const usePublisher = ({
     ? `${viewerAppBaseUrl}?streamAccountId=${streamNameId}&streamName=${streamName}`
     : undefined;
 
-  const startStreamingToSource = async (id: string) => {
+  const startStreamingToSource = async (id: string, mediaStream?: MediaStream) => {
     const source = sources.get(id);
 
-    if (!source || source.publish.isActive() || !source.broadcastOptions.mediaStream) {
+    if (!source || source.publish.isActive() || (!source.broadcastOptions.mediaStream && !mediaStream)) {
       return;
     }
+
+    const broadcastOptions = {
+      ...source.broadcastOptions,
+      mediaStream: mediaStream ?? source.broadcastOptions.mediaStream,
+    } as BroadcastOptions;
 
     try {
       dispatch({ id, state: 'connecting', type: PublisherActionType.UPDATE_SOURCE_STATE });
 
-      await source.publish.connect(source.broadcastOptions as BroadcastOptions);
+      await source.publish.connect(broadcastOptions);
 
       dispatch({ id, state: 'streaming', type: PublisherActionType.UPDATE_SOURCE_STATE });
 
@@ -168,29 +173,6 @@ const usePublisher = ({
 
   const tokenGenerator = useCallback(() => Director.getPublisher({ streamName, token }), [streamName, token]);
 
-  const updateSourceMediaStream = (id: string, mediaStream: MediaStream) => {
-    const source = sources.get(id);
-
-    if (!source) {
-      return;
-    }
-
-    const [audioTrack] = mediaStream.getAudioTracks();
-    const [videoTrack] = mediaStream.getVideoTracks();
-
-    if (source.publish.isActive()) {
-      if (audioTrack) {
-        source.publish.webRTCPeer?.replaceTrack(audioTrack);
-      }
-
-      if (videoTrack) {
-        source.publish.webRTCPeer?.replaceTrack(videoTrack);
-      }
-    }
-
-    dispatch({ broadcastOptions: { mediaStream }, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
-  };
-
   const updateSourceBroadcastOptions = async (id: string, broadcastOptions: Partial<BroadcastOptions>) => {
     const source = sources.get(id);
 
@@ -216,6 +198,29 @@ const usePublisher = ({
     }
 
     dispatch({ broadcastOptions, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
+  };
+
+  const updateSourceMediaStream = (id: string, mediaStream: MediaStream) => {
+    const source = sources.get(id);
+
+    if (!source) {
+      return;
+    }
+
+    const [audioTrack] = mediaStream.getAudioTracks();
+    const [videoTrack] = mediaStream.getVideoTracks();
+
+    if (source.publish.isActive()) {
+      if (audioTrack) {
+        source.publish.webRTCPeer?.replaceTrack(audioTrack);
+      }
+
+      if (videoTrack) {
+        source.publish.webRTCPeer?.replaceTrack(videoTrack);
+      }
+    }
+
+    dispatch({ broadcastOptions: { mediaStream }, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
   };
 
   return {

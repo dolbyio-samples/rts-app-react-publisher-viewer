@@ -212,13 +212,13 @@ const App = () => {
   };
 
   const handleSrcMediaStreamReady = (id: string) => (mediaStream: MediaStream) => {
-    updateSourceMediaStream(id, mediaStream);
+    const source = sources.get(id);
 
-    if (allLive) {
-      try {
-        startStreamingToSource(id);
-      } catch (error) {
-        showError(`Failed to start streaming: ${error}`);
+    if (!source?.broadcastOptions.mediaStream) {
+      updateSourceMediaStream(id, mediaStream);
+
+      if (allLive) {
+        startStreamingToSource(id, mediaStream);
       }
     }
   };

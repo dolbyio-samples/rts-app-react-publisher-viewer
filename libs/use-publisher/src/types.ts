@@ -19,7 +19,7 @@ export interface Publisher {
   shareUrl?: string;
   sources: PublisherSources;
   // startStreamingToSource will add a new stream to publisher
-  startStreamingToSource: (id: string) => Promise<void>;
+  startStreamingToSource: (id: string, mediaStream?: MediaStream) => Promise<void>;
   // stopStreamingToSource will remove an existing stream from publisher
   stopStreamingToSource: (id: string) => void;
   updateSourceMediaStream: (id: string, mediaStream: MediaStream) => void;

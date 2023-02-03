@@ -16,8 +16,8 @@ const VideoView = ({
   muted = true, // Has to be true for AutoPlay in chromium
   onClick,
   onError,
-  onSrcMediaStreamClose,
-  onSrcMediaStreamReady,
+  onSrcMediaStreamClose: handleSrcMediaStreamClose,
+  onSrcMediaStreamReady: handleSrcMediaStreamReady,
   placeholderNode,
   playing = true,
   showDotIndicator,
@@ -77,17 +77,17 @@ const VideoView = ({
   useEffect(() => {
     return () => {
       if (streamId) {
-        onSrcMediaStreamClose?.(streamId);
+        handleSrcMediaStreamClose?.(streamId);
       }
     };
   }, [streamId]);
 
   const onCanPlay = () => {
-    if (videoRef.current) {
+    if (videoRef.current && !mediaStream) {
       // Custom type as captureStream is not defined in HTMLVideoElement by default
       const capturedMediaStream = (videoRef.current as HTMLVideoElementWithCaptureStream).captureStream();
 
-      onSrcMediaStreamReady?.(capturedMediaStream);
+      handleSrcMediaStreamReady?.(capturedMediaStream);
       setStreamId(capturedMediaStream.id);
     }
   };
