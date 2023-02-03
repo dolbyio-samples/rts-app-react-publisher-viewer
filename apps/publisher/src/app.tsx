@@ -180,21 +180,17 @@ const App = () => {
   const handleSelectBitrate = (id: string, bitrate: number) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { bandwidth: bitrate });
     }
-
-    updateSourceBroadcastOptions(id, { bandwidth: bitrate });
   };
 
   const handleSelectCodec = (id: string, codec: VideoCodec) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { codec });
     }
-
-    updateSourceBroadcastOptions(id, { codec });
   };
 
   const handleSelectVideoResolution = async (id: string, resolution: Resolution) => {
@@ -204,11 +200,9 @@ const App = () => {
   const handleSetSimulcast = (id: string, simulcast: boolean) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { simulcast });
     }
-
-    updateSourceBroadcastOptions(id, { simulcast });
   };
 
   const handleSrcMediaStreamReady = (id: string) => (mediaStream: MediaStream) => {

@@ -71,13 +71,23 @@ const App = () => {
 
   useEffect(() => {
     if (mainSourceId) {
-      projectToMainStream(mainSourceId);
+      // Change main stream
+      projectToMainStream(mainSourceId).then((source) => {
+        if (!source) {
+          return;
+        }
+
+        // Reapply previous quality setting
+        const { quality, streamQualityOptions } = source;
+
+        const simulcastQuality = streamQualityOptions.find(({ streamQuality }) => streamQuality === quality);
+
+        if (simulcastQuality) {
+          setSourceQuality(mainSourceId, simulcastQuality);
+        }
+      });
     }
   }, [mainSourceId]);
-
-  const handleClickVideo = (sourceId: string) => {
-    setMainSourceId(sourceId);
-  };
 
   const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
 
@@ -166,9 +176,7 @@ const App = () => {
                   cursor="pointer"
                   height={`calc(100% / ${MAX_SOURCES})`}
                   key={sourceId}
-                  onClick={() => {
-                    handleClickVideo(sourceId);
-                  }}
+                  onClick={() => setMainSourceId(sourceId)}
                   test-id="millicastVideo"
                   width="100%"
                 >

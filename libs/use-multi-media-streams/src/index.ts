@@ -77,21 +77,19 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   ) => {
     const prevStream = streams.get(id);
 
-    if (!prevStream?.mediaStream) {
-      return;
+    if (prevStream?.mediaStream) {
+      const { mediaStream } = prevStream;
+
+      const [audioTrack] = mediaStream.getAudioTracks();
+      const [videoTrack] = mediaStream.getVideoTracks();
+
+      const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
+      const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
+
+      await Promise.all([applyAudioConstraints, applyVideoConstraints]);
+
+      updateStream(id, { mediaStream });
     }
-
-    const { mediaStream } = prevStream;
-
-    const [audioTrack] = mediaStream.getAudioTracks();
-    const [videoTrack] = mediaStream.getVideoTracks();
-
-    const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
-    const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
-
-    await Promise.all([applyAudioConstraints, applyVideoConstraints]);
-
-    updateStream(id, { mediaStream });
   };
 
   const getDevicesList = async () => {
