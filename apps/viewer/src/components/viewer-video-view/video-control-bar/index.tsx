@@ -62,7 +62,7 @@ const VideoControlBar = ({
               isActive={!activeAudio}
               onClick={handleToggleAudio}
               testId="toggleAudioButton"
-              tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
+              tooltipProps={{ label: 'Toggle audio', placement: 'bottom' }}
             />
             <Center
               background="white"

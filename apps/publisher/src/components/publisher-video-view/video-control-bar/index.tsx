@@ -77,7 +77,10 @@ const VideoControlBar = ({
             isActive={!activeAudio}
             onClick={handleToggleAudio}
             testId="toggleAudioButton"
-            tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
+            tooltipProps={{
+              label: `Toggle ${streamType === StreamTypes.MEDIA ? 'microphone' : 'audio'}`,
+              placement: 'bottom',
+            }}
           />
         ) : undefined}
         {hasVideoTrack ? (

@@ -1,6 +1,7 @@
 import { Box, CloseButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
+import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 import VideoView from '@millicast-react/video-view';
 
 import { PublisherVideoViewProps } from './types';
@@ -62,7 +63,12 @@ const PublisherVideoView = ({
       }}
       width="100%"
     >
-      <VideoView displayVideo={isVideoEnabled} muted playing={isPlaybackActive} {...videoProps} />
+      <VideoView
+        displayVideo={isVideoEnabled}
+        muted={streamType === StreamTypes.MEDIA || !isAudioEnabled}
+        playing={isPlaybackActive}
+        {...videoProps}
+      />
       <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
       <VideoControlBar
         activeAudio={isAudioEnabled}
