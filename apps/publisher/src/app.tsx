@@ -155,21 +155,7 @@ const App = () => {
       return;
     }
 
-    const allLabels = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
-
-    let dedupedLabel = newLabel;
-
-    if (allLabels.includes(newLabel)) {
-      dedupedLabel = newLabel.replace(/\((?<dupeCounter>\d+)\)$|$/, (match, dupeCounter) => {
-        if (!match) {
-          return ' (2)';
-        }
-
-        return `(${parseInt(dupeCounter, 10) + 1})`;
-      });
-    }
-
-    updateSourceBroadcastOptions(id, { sourceId: dedupedLabel });
+    updateSourceBroadcastOptions(id, { sourceId: newLabel });
   };
 
   const handleRemove = (id: string) => {

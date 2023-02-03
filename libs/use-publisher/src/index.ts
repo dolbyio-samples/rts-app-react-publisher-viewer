@@ -14,6 +14,7 @@ import { bitrateList } from './constants';
 
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
+import { validateDuplicateSourceIds } from './utils';
 
 const usePublisher = ({
   handleError,
@@ -47,13 +48,17 @@ const usePublisher = ({
 
       const { label, mediaStream } = stream;
 
+      const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
+
+      const dedupedSourceId = validateDuplicateSourceIds(label ?? streamId, allSourceIds);
+
       const broadcastOptions = {
         bandwidth: bitrateList[0].value,
         codec: codecList[0],
         events: ['viewercount'] as Event[],
         mediaStream,
         simulcast: codecList[0] === 'h264',
-        sourceId: label ?? streamId,
+        sourceId: dedupedSourceId,
       };
 
       const publish = new Publish(streamName, tokenGenerator, true);
@@ -193,6 +198,21 @@ const usePublisher = ({
           handleInternalError(error);
         }
       }
+
+      return;
+    }
+
+    // Validate source id for duplicates
+    if (broadcastOptions.sourceId) {
+      const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
+
+      const dedupedSourceId = validateDuplicateSourceIds(broadcastOptions.sourceId, allSourceIds);
+
+      dispatch({
+        broadcastOptions: { ...broadcastOptions, sourceId: dedupedSourceId },
+        id,
+        type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS,
+      });
 
       return;
     }
