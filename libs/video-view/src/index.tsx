@@ -56,15 +56,13 @@ const VideoView = ({
   // Toggle playback
   useEffect(() => {
     if (videoRef.current) {
-      if (playing && videoRef.current.paused) {
+      if (playing) {
         videoRef.current.play().catch(() => null);
-      }
-
-      if (!playing && !videoRef.current.paused) {
+      } else {
         videoRef.current.pause();
       }
     }
-  }, [playing, videoRef.current?.paused]);
+  }, [playing]);
 
   // Change volume
   useEffect(() => {
