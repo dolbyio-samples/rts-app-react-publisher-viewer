@@ -55,51 +55,53 @@ const VideoControlBar = ({
         />
       </HStack>
       <HStack>
-        <Box position="relative">
-          <IconButton
-            icon={activeAudio ? <IconSoundOn /> : <IconSoundOff />}
-            isActive={!activeAudio}
-            isDisabled={!hasAudioTrack}
-            onClick={handleToggleAudio}
-            testId="toggleAudioButton"
-            tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
-          />
-          <Center
-            background="white"
-            borderRadius="4px"
-            left="50%"
-            padding="12px 0"
-            position="absolute"
-            top="-16px"
-            transform="translate(-50%, -100%)"
-            width="100%"
-          >
-            <Slider
-              aria-label="volumeSlider"
-              defaultValue={activeAudio ? 100 : 0}
-              height="100px"
-              max={1}
-              min={0}
-              onChange={handleChangeVolume}
-              orientation="vertical"
-              step={0.01}
-              value={volume}
+        {hasAudioTrack ? (
+          <Box position="relative">
+            <IconButton
+              icon={activeAudio ? <IconSoundOn /> : <IconSoundOff />}
+              isActive={!activeAudio}
+              onClick={handleToggleAudio}
+              testId="toggleAudioButton"
+              tooltipProps={{ label: 'Toggle microphone', placement: 'bottom' }}
+            />
+            <Center
+              background="white"
+              borderRadius="4px"
+              left="50%"
+              padding="12px 0"
+              position="absolute"
+              top="-16px"
+              transform="translate(-50%, -100%)"
+              width="100%"
             >
-              <SliderTrack background="dolbyNeutral.300">
-                <SliderFilledTrack background="dolbyPurple.400" />
-              </SliderTrack>
-              <SliderThumb background="dolbyNeutral.800" />
-            </Slider>
-          </Center>
-        </Box>
-        <IconButton
-          icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
-          isActive={!activeVideo}
-          isDisabled={!hasVideoTrack}
-          onClick={handleToggleVideo}
-          testId="toggleVideoButton"
-          tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
-        />
+              <Slider
+                aria-label="volumeSlider"
+                defaultValue={activeAudio ? 100 : 0}
+                height="100px"
+                max={1}
+                min={0}
+                onChange={handleChangeVolume}
+                orientation="vertical"
+                step={0.01}
+                value={volume}
+              >
+                <SliderTrack background="dolbyNeutral.300">
+                  <SliderFilledTrack background="dolbyPurple.400" />
+                </SliderTrack>
+                <SliderThumb background="dolbyNeutral.800" />
+              </Slider>
+            </Center>
+          </Box>
+        ) : undefined}
+        {hasVideoTrack ? (
+          <IconButton
+            icon={activeVideo ? <IconCameraOn /> : <IconCameraOff />}
+            isActive={!activeVideo}
+            onClick={handleToggleVideo}
+            testId="toggleVideoButton"
+            tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
+          />
+        ) : undefined}
         <IconButton
           icon={activePlayback ? <IconPlay /> : <IconPause />}
           isActive={!activePlayback}
