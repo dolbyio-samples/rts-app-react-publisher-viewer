@@ -9,7 +9,6 @@
 Quickly stand-up a lightning fast, broadcast quality, real-time streaming app with ultra low-latency (sub 500ms).
 Want to learn more? Check out the [Real Time Streaming app gallery page](https://docs.dolby.io/streaming-apis/docs/real-time-streaming-publisher-viewer-sample-apps).
 
-
 ## Getting Started
 
 ### Prerequisites
@@ -20,7 +19,7 @@ Want to learn more? Check out the [Real Time Streaming app gallery page](https:/
 
 #### How to get a Dolby.io account
 
-To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.
 
 ## Features and roadmap
 
@@ -79,6 +78,7 @@ VITE_RTS_STREAM_NAME=<your stream name>
 VITE_RTS_STREAM_PUBLISHING_TOKEN=<your stream token>
 VITE_RTS_ACCOUNT_ID=<your account id>
 ```
+
 ![docs](docs/img/env.png)
 
 **Note**: Please set these env variables before you launch the apps. You can either set them via the command line in your bash/zsh environment or by entering them in your .env file.

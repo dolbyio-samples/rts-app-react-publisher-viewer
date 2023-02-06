@@ -41,12 +41,8 @@ import './styles/font.css';
 const MAX_SOURCES = 4;
 const TIMESTAMP_STREAM_NAME = new Date().valueOf().toString();
 
-const {
-  VITE_RTS_VIEWER_BASE_URL,
-  VITE_RTS_ACCOUNT_ID,
-  VITE_RTS_STREAM_NAME,
-  VITE_RTS_STREAM_PUBLISHING_TOKEN,
-} = import.meta.env;
+const { VITE_RTS_VIEWER_BASE_URL, VITE_RTS_ACCOUNT_ID, VITE_RTS_STREAM_NAME, VITE_RTS_STREAM_PUBLISHING_TOKEN } =
+  import.meta.env;
 
 const App = () => {
   const {
