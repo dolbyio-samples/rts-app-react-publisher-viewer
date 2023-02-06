@@ -79,6 +79,7 @@ VITE_RTS_STREAM_NAME=<your stream name>
 VITE_RTS_STREAM_PUBLISHING_TOKEN=<your stream token>
 VITE_RTS_ACCOUNT_ID=<your account id>
 ```
+![docs](docs/img/env.png)
 
 **Note**: Please set these env variables before you launch the apps. You can either set them via the command line in your bash/zsh environment or by entering them in your .env file.
 
