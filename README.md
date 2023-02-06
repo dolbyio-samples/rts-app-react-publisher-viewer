@@ -1,10 +1,26 @@
-# rts-app-react-publisher-viewer
+# Real-time Streaming - Publisher & Viewer Sample Apps
 
-A sample app to showcase the capabilities of Dolby.io's Real Time Streaming SDK and how it can be used to design solutions that require ultra low latency (sub 500ms). You can read more about this offering from Dolby.io [here](https://dolby.io/products/real-time-streaming/).
+<p align="center">
+<img src="documentation/assets/banner.jpg" width="175px" />
+</p>
 
-## Prerequisites
+## Overview
 
-In order to run this demo, you will need a Dolby.io account. If you don't already have one, you can create one on [our website](https://dashboard.dolby.io).
+Quickly stand-up a lightning fast, broadcast quality, real-time streaming app with ultra low-latency (sub 500ms).
+Want to learn more? Check out the [Real Time Streaming app gallery page](https://docs.dolby.io/streaming-apis/docs/real-time-streaming-publisher-viewer-sample-apps).
+
+
+## Getting Started
+
+### Prerequisites
+
+- Node v16.16.0
+- Yarn v1.22.19
+- A Dolby.io account
+
+#### How to get a Dolby.io account
+
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
 
 ## Features and roadmap
 
@@ -60,9 +76,9 @@ In order for this application to work, you need three sets of tokens - `stream n
 ![tokens screenshot](docs/img/tokens.png)
 
 ```bash
-VITE_MILLICAST_STREAM_NAME=<your stream name>
-VITE_MILLICAST_STREAM_PUBLISHING_TOKEN=<your stream token>
-VITE_MILLICAST_STREAM_ID=<your stream id>
+VITE_RTS_STREAM_NAME=<your stream name>
+VITE_RTS_STREAM_PUBLISHING_TOKEN=<your stream token>
+VITE_RTS_ACCOUNT_ID=<your stream id>
 ```
 
 **Note**: Please set these env variables before you launch the apps. You can either set them via the command line in your bash/zsh environment or by entering them in your .env file.
@@ -72,13 +88,13 @@ VITE_MILLICAST_STREAM_ID=<your stream id>
 The viewer link is configured in the `.env` file in your `apps/publisher` directory, or in your bash/zsh/systen environment variables. To set the URL, insert/update the following variable:
 
 ```bash
-VITE_MILLICAST_VIEWER_BASE_URL=<Your URL goes here>
+VITE_RTS_VIEWER_BASE_URL=<Your URL goes here>
 ```
 
 > If you are using a particular port number, please add this to the URL.
 
 ```bash
-VITE_MILLICAST_VIEWER_BASE_URL=http://localhost:5174/
+VITE_RTS_VIEWER_BASE_URL=http://localhost:5174/
 ```
 
 #### Run the publisher app in dev mode
@@ -134,3 +150,7 @@ There are known limitations with webRTC and Mozilla Firefox, and therefore the b
 The apps and components provided here should be used as reference material. Although we have taken great care in creating these, please note that they are not intended for real production use and there may be some bugs.
 
 Please report any issues under `Issues` on our [GitHub](https://github.com/dolbyio-samples/stream-demo-react-millicast/issues) and appropriately label them. Please review the existing open issues before raising a new one.
+
+## More resources
+
+Looking for more sample apps and projects? Head to the [Project Gallery](https://docs.dolby.io/communications-apis/page/gallery).
