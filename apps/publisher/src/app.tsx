@@ -42,10 +42,10 @@ const MAX_SOURCES = 4;
 const TIMESTAMP_STREAM_NAME = new Date().valueOf().toString();
 
 const {
-  VITE_MILLICAST_VIEWER_BASE_URL,
-  VITE_MILLICAST_STREAM_ID,
-  VITE_MILLICAST_STREAM_NAME,
-  VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
+  VITE_RTS_VIEWER_BASE_URL,
+  VITE_RTS_ACCOUNT_ID,
+  VITE_RTS_STREAM_NAME,
+  VITE_RTS_STREAM_PUBLISHING_TOKEN,
 } = import.meta.env;
 
 const App = () => {
@@ -90,11 +90,11 @@ const App = () => {
     viewerCount,
   } = usePublisher({
     handleError: showError,
-    streamNameId: VITE_MILLICAST_STREAM_ID,
+    streamNameId: VITE_RTS_ACCOUNT_ID,
     streams,
-    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
-    token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-    viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
+    streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
+    token: VITE_RTS_STREAM_PUBLISHING_TOKEN,
+    viewerAppBaseUrl: VITE_RTS_VIEWER_BASE_URL,
   });
 
   // Prevent closing the page

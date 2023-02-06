@@ -70,10 +70,10 @@ getAppURL(){
 
   if [[ ${NAME} == publisher ]];then
     echo "PUBLISHER_URL=$URL" >> .test.env
-    export VITE_MILLICAST_PUBLISHER_BASE_URL=$URL
+    export VITE_RTS_PUBLISHER_BASE_URL=$URL
   else
     echo "VIEWER_URL=$URL" >> .test.env
-    export VITE_MILLICAST_VIEWER_BASE_URL=$URL
+    export VITE_RTS_VIEWER_BASE_URL=$URL
   fi
 }
 
@@ -103,6 +103,6 @@ checkOS(){
 }
 
 unsetEnvVariables(){
-  unset VITE_MILLICAST_PUBLISHER_BASE_URL
-  unset VITE_MILLICAST_VIEWER_BASE_URL
+  unset VITE_RTS_PUBLISHER_BASE_URL
+  unset VITE_RTS_VIEWER_BASE_URL
 }
