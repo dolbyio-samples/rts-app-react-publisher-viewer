@@ -5,4 +5,4 @@ COMPONENTS:
   - 'settings'
   - 'stream-stats'
 validation: 'go live button:displayed'
-go live button: '[test-id=start-live-indicator]'
+go live button: '[test-id=start-all-live-indicator]'

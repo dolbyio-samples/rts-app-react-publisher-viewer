@@ -10,7 +10,7 @@ import {
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { addSource, configureSettings } from './workflow/workflow';
-import { getDefaultSettings } from './workflow/workflow.data';
+import { getDefaultConfigureSettings } from './workflow/workflow.data';
 
 When(
   /^the publisher turns (Off|On) the "([^"]*)"$/,
@@ -41,7 +41,7 @@ When(
 When(
   /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the default values$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
-    const expectedData = getDefaultSettings(`publisher ${viewName}`);
+    const expectedData = getDefaultConfigureSettings(`publisher ${this.currentPageName} ${viewName}`);
     await configureSettings(this, elementPosition, viewName, expectedData);
   }
 );
@@ -49,7 +49,7 @@ When(
 When(
   /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
-    const defaultExpectedData = getDefaultSettings(`publisher ${viewName}`);
+    const defaultExpectedData = getDefaultConfigureSettings(`publisher ${this.currentPageName} ${viewName}`);
     let expectedData = dataTable.rowsHash();
 
     if (!arrayContainsAll(Object.keys(defaultExpectedData), Object.keys(expectedData))) {

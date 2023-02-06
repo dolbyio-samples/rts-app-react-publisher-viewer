@@ -49,13 +49,13 @@ export const validateText = async (
   // eslint-disable-next-line @typescript-eslint/ban-types
   let verifyMethod: Function;
 
-  if (expText.startsWith('ignore: ')) {
+  if (expText.startsWith('ignore:')) {
     return;
-  } else if (expText.startsWith('contains: ')) {
-    expText = expText.split('contains: ')[1];
+  } else if (expText.startsWith('contains:')) {
+    expText = expText.split('contains:')[1].trim();
     verifyMethod = verifyElementContainsText;
-  } else if (expText.startsWith('regex: ')) {
-    expText = expText.split('regex: ')[1];
+  } else if (expText.startsWith('regex:')) {
+    expText = expText.split('regex:')[1].trim();
     verifyMethod = verifyElementMatchText;
   } else {
     verifyMethod = verifyElementText;

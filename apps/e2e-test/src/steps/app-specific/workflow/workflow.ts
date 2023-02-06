@@ -56,31 +56,31 @@ export const verifyView = async (
     keyCount++;
   }
 
-  if (keys.includes('microphone button')) {
-    logger.info(`Verify ${viewName} microphone button state`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} microphone button`);
-    await validateState(scWorld, targetSelector, expectedData['microphone button'], elementIndex);
+  if (keys.includes('audio button')) {
+    logger.info(`Verify ${viewName} audio button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} audio button`);
+    await validateState(scWorld, targetSelector, expectedData['audio button'], elementIndex);
     keyCount++;
   }
 
-  if (keys.includes('microphone button status')) {
-    logger.info(`Verify ${viewName} microphone button status`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} microphone button`);
-    await validateStatus(scWorld, targetSelector, expectedData['microphone button status'] as Status, elementIndex);
+  if (keys.includes('audio button status')) {
+    logger.info(`Verify ${viewName} audio button status`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} audio button`);
+    await validateStatus(scWorld, targetSelector, expectedData['audio button status'] as Status, elementIndex);
     keyCount++;
   }
 
-  if (keys.includes('camera button')) {
-    logger.info(`Verify ${viewName} camera button state`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} camera button`);
-    await validateState(scWorld, targetSelector, expectedData['camera button'], elementIndex);
+  if (keys.includes('video button')) {
+    logger.info(`Verify ${viewName} video button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} video button`);
+    await validateState(scWorld, targetSelector, expectedData['video button'], elementIndex);
     keyCount++;
   }
 
-  if (keys.includes('camera button status')) {
-    logger.info(`Verify ${viewName} camera button status`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} camera button`);
-    await validateStatus(scWorld, targetSelector, expectedData['camera button status'] as Status, elementIndex);
+  if (keys.includes('video button status')) {
+    logger.info(`Verify ${viewName} video button status`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} video button`);
+    await validateStatus(scWorld, targetSelector, expectedData['video button status'] as Status, elementIndex);
     keyCount++;
   }
 
@@ -102,6 +102,34 @@ export const verifyView = async (
     logger.info(`Verify ${viewName} full screen button state`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} full screen button`);
     await validateState(scWorld, targetSelector, expectedData['full screen button'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('go live button')) {
+    logger.info(`Verify ${viewName} go live button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} go live button`);
+    await validateState(scWorld, targetSelector, expectedData['go live button'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('go live button text')) {
+    logger.info(`Verify ${viewName} go live button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} go live button`);
+    await validateText(scWorld, targetSelector, expectedData['go live button text'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('stop button')) {
+    logger.info(`Verify ${viewName} stop button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} stop button`);
+    await validateState(scWorld, targetSelector, expectedData['stop button'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('stop button text')) {
+    logger.info(`Verify ${viewName} stop button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} stop button`);
+    await validateText(scWorld, targetSelector, expectedData['stop button text'], elementIndex);
     keyCount++;
   }
 
@@ -240,7 +268,7 @@ export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [
     keyCount++;
   }
 
-  if (keys.includes('stop button text')) {
+  if (keys.includes('invite button text')) {
     logger.info(`Verify invite button text`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'invite button');
     await validateText(scWorld, targetSelector, expectedData['invite button text']);
@@ -248,6 +276,43 @@ export const verifyHeaderData = async (scWorld: ScenarioWorld, expectedData: { [
   }
 
   const message = 'Some header data parameters are not verified';
+  verifyEqualTo(keyCount, keys.length, message);
+};
+
+export const verifyFooterData = async (scWorld: ScenarioWorld, expectedData: { [key: string]: string }) => {
+  const keys = Object.keys(expectedData);
+  let targetSelector: TargetSelector;
+  let keyCount = 0;
+
+  if (keys.includes('add source button')) {
+    logger.info(`Verify add source button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
+    await validateState(scWorld, targetSelector, expectedData['add source button']);
+    keyCount++;
+  }
+
+  if (keys.includes('add source button text')) {
+    logger.info(`Verify add source button text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
+    await validateText(scWorld, targetSelector, expectedData['add source button text']);
+    keyCount++;
+  }
+
+  if (keys.includes('app version')) {
+    logger.info(`Verify app version state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'app version');
+    await validateState(scWorld, targetSelector, expectedData['app version']);
+    keyCount++;
+  }
+
+  if (keys.includes('app version text')) {
+    logger.info(`Verify app version text`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'app version');
+    await validateText(scWorld, targetSelector, expectedData['app version text']);
+    keyCount++;
+  }
+
+  const message = 'Some footer data parameters are not verified';
   verifyEqualTo(keyCount, keys.length, message);
 };
 
@@ -265,13 +330,13 @@ export const verifySettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} setting button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
 
   if (keys.includes('source name')) {
     logger.info(`Verify ${viewName} source name`);
     if (!expectedData['source name'].startsWith('ignore: ')) {
-      targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} source name input`);
+      targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `source name input`);
       await validateValue(scWorld, targetSelector, expectedData['source name'], elementIndex);
     }
     keyCount++;
@@ -279,24 +344,21 @@ export const verifySettings = async (
 
   if (keys.includes('resolution')) {
     logger.info(`Verify ${viewName} resolution`);
-    targetSelector = scWorld.selectorMap.getSelector(
-      scWorld.currentPageName,
-      `${viewName} resolution dropdown default`
-    );
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown default`);
     await validateText(scWorld, targetSelector, expectedData['resolution'], elementIndex);
     keyCount++;
   }
 
   if (keys.includes('bitrate')) {
     logger.info(`Verify ${viewName} bitrate`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} bitrate dropdown default`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown default`);
     await validateText(scWorld, targetSelector, expectedData['bitrate'], elementIndex);
     keyCount++;
   }
 
   if (keys.includes('simulcast')) {
     logger.info(`Verify ${viewName} simulcast`);
-    const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} simulcast`);
+    const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `simulcast`);
     const state = expectedData['simulcast'] === 'On' ? 'checked' : 'unchecked';
     await validateState(scWorld, targetSelector, state, elementIndex);
     keyCount++;
@@ -304,15 +366,15 @@ export const verifySettings = async (
 
   if (keys.includes('codec')) {
     logger.info(`Verify ${viewName} codec`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} codec dropdown default`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown default`);
     await validateText(scWorld, targetSelector, expectedData['codec'], elementIndex);
     keyCount++;
   }
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings close button`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings close button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
   const message = 'Some settings parameters are not verified';
@@ -403,13 +465,13 @@ export const configureSettings = async (
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} setting button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
 
   if (keys.includes('source name')) {
     logger.info(`Configure ${viewName} source name`);
     if (!expectedData['source name'].startsWith('ignore: ')) {
-      targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} source name input`);
+      targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `source name input`);
       await clearText(scWorld.currentPage, targetSelector, elementIndex);
       await enterText(scWorld.currentPage, targetSelector, expectedData['source name'], elementIndex);
     }
@@ -418,11 +480,8 @@ export const configureSettings = async (
 
   if (keys.includes('resolution')) {
     logger.info(`Configure ${viewName} resolution`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} resolution dropdown`);
-    OptionsSelector = scWorld.selectorMap.getSelector(
-      scWorld.currentPageName,
-      `${viewName} resolution dropdown options`
-    );
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown`);
+    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown options`);
     await selectSettingDropdown(
       scWorld.currentPage,
       targetSelector,
@@ -435,8 +494,8 @@ export const configureSettings = async (
 
   if (keys.includes('bitrate')) {
     logger.info(`Configure ${viewName} bitrate`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} bitrate dropdown`);
-    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} bitrate dropdown options`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown`);
+    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown options`);
     await selectSettingDropdown(
       scWorld.currentPage,
       targetSelector,
@@ -449,8 +508,8 @@ export const configureSettings = async (
 
   if (keys.includes('simulcast')) {
     logger.info(`Configure ${viewName} simulcast`);
-    const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} simulcast`);
-    const clickSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} simulcast label`);
+    const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `simulcast`);
+    const clickSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `simulcast label`);
     await toogleSimulcast(
       scWorld.currentPage,
       targetSelector,
@@ -464,8 +523,8 @@ export const configureSettings = async (
 
   if (keys.includes('codec')) {
     logger.info(`Configure ${viewName} codec`);
-    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} codec dropdown`);
-    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} codec dropdown options`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown`);
+    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown options`);
     await selectSettingDropdown(
       scWorld.currentPage,
       targetSelector,
@@ -476,10 +535,10 @@ export const configureSettings = async (
     keyCount++;
   }
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings close button`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings close button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} settings`);
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
   await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
   const message = 'Setting is not configured as expected';

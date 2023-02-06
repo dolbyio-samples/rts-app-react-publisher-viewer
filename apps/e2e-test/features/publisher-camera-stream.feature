@@ -1,108 +1,104 @@
 @publisher
+
 Feature: Publisher streaming with camera only
     As a publisher
     I want to do live streaming for an event with camera only
 
-    Scenario: Verify the header information, settings options, camera view, stream stats when streaming with camera
+    Background: Publisher camera preiew page
         Given a publisher is on the "preview" page
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
-        And the "streaming header" should be displayed with default values
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - 3840x2160 |
-            | bitrate    | Bitrate  - Auto         |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
 
-    Scenario: Verify the screen view and local file view should not be displayed when streaming with camera
-        Given a publisher is on the "preview" page
+    @only
+    Scenario: Verify the header information, settings options, camera view, stream stats when streaming with camera
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
+        And the "header" should be displayed with default values
+        And the "camera view" should be displayed with default values
+        And the "camera view" setting should be displayed with default values
+        And the "camera view" stats with quality tabs should be displayed with default values
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
 
+    @only
     Scenario: Verify the publisher is redirected to preview page when streaming is stopped
-        Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
+        And wait for "1" seconds
 
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
+        And the "header" should be displayed with default values
+        And the "camera view" should be displayed with default values
+        And the "camera view" setting should be displayed with default values
+        And the "screen view" should not be displayed
+        And the "local file view" should not be displayed
 
+    @only
     Scenario: Stream duration is not zero when stream is live
-        Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And wait for "5" seconds
-        And the "streaming header" should be displayed with following values only
+        And the "header" should be displayed with following values only
             | timer text | regex: ^00:00:[0][4-9]$ |
 
+    @only
     Scenario: Publisher should be able to toggle camera and microphone when streaming
-        Given a publisher is on the "preview" page
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
 
-        When the publisher turns Off the "camera of camera view"
-        And the publisher turns Off the "microphone of camera view"
+        When the publisher turns Off the "video of camera view"
+        And the publisher turns Off the "audio of camera view"
         Then the "camera view" should be displayed with following values only
-            | camera button status     | Off                |
-            | microphone button status | Off                |
+            | video button status | Off                |
+            | audio button status | Off                |
+        And the "camera view video mute image" should be displayed
 
-        When the publisher turns On the "camera of camera view"
-        And the publisher turns On the "microphone of camera view"
-        Then the "camera view" should be displayed with following values only
-            | camera button status     | On                |
-            | microphone button status | On                |
+        When the publisher turns On the "video of camera view"
+        And the publisher turns On the "audio of camera view"
+        Then the "camera view" should be displayed with default values
+        And the "camera view video mute image" should not be displayed
 
+    @only
     Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming
-        Given a publisher is on the "preview" page
-
-        When the publisher turns Off the "camera of camera view"
+        When the publisher turns Off the "video of camera view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
-            | camera button status     | Off                |
-            | microphone button status | On                 |
-            | stream info button       | displayed\|enabled |
+            | video button status     | Off    |
+        And the "camera view video mute image" should be displayed
 
-        When the publisher turns On the "camera of camera view"
-        Then the "camera view" should be displayed with following values only
-            | camera button status     | On                 |
-            | microphone button status | On                 |
+        When the publisher turns On the "video of camera view"
+        Then the "camera view" should be displayed with default values
+        And the "camera view video mute image" should not be displayed
 
-        When the publisher turns Off the "camera of camera view"
-        Then the "camera view" should be displayed with following values only
-            | camera button status     | Off                |
-            | microphone button status | On                 |
+        When the publisher turns Off the "video of camera view"
+        And the "camera view" should be displayed with following values
+            | video button status     | Off     |
+        And the "camera view video mute image" should be displayed
 
+    @only
     Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming
-        Given a publisher is on the "preview" page
-
-        When the publisher turns Off the "microphone of camera view"
+        When the publisher turns Off the "audio of camera view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
-            | camera button status     | On                 |
-            | microphone button status | Off                |
-            | stream info button       | displayed\|enabled |
+            | audio button status | Off  |
+        And the "camera view video mute image" should not be displayed
 
-        When the publisher turns On the "microphone of camera view"
-        Then the "camera view" should be displayed with following values only
-            | camera button status     | On                 |
-            | microphone button status | On                 |
+        When the publisher turns On the "audio of camera view"
+        Then the "camera view" should be displayed with default values
+        And the "camera view video mute image" should not be displayed
 
-        When the publisher turns Off the "microphone of camera view"
+        When the publisher turns Off the "audio of camera view"
         Then the "camera view" should be displayed with following values only
-            | camera button status     | On                 |
-            | microphone button status | Off                |
+            | audio button status | Off  |
+        And the "camera view video mute image" should not be displayed
 
     Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
         Given a publisher is on the "preview" page
         And the publisher turns Off the "camera of camera view"
         And the publisher turns Off the "microphone of camera view"
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values only
             | camera button status     | Off                |
             | microphone button status | Off                |
@@ -116,7 +112,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be presented with Resolution and Bitrate Setting controls when streaming with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
 
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings" should be displayed
@@ -133,7 +129,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be presented with different resolutions under setting when streaming with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
 
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings" should be displayed
@@ -142,7 +138,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be presented with different bitrate under setting when streaming with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
 
         When the publisher clicks on the "camera view setting button"
         Then the "camera view settings" should be displayed
@@ -153,7 +149,7 @@ Feature: Publisher streaming with camera only
         And the publisher configures "camera view" setting with the following values only
             | source name |  BuiltIn Camera |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | source name text   | BuiltIn Camera     |
             | stream info button | displayed\|enabled |
@@ -164,7 +160,7 @@ Feature: Publisher streaming with camera only
             | simulcast | Off       |
             | codec     | <codec>   |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" stream stats should be displayed with following values
@@ -181,7 +177,7 @@ Feature: Publisher streaming with camera only
             | simulcast | On        |
             | codec     | <codec>   |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" stream stats with quality tabs should be displayed with following values
@@ -197,7 +193,7 @@ Feature: Publisher streaming with camera only
             | simulcast     | On            |
             | resolution    | <resolution>  |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
             
@@ -215,7 +211,7 @@ Feature: Publisher streaming with camera only
             | simulcast  | On         |
             | bitrate    | <bitrate>  |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
@@ -236,7 +232,7 @@ Feature: Publisher streaming with camera only
             | resolution   | <resolution> |
             | bitrate      | <bitrate>    |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
@@ -257,7 +253,7 @@ Feature: Publisher streaming with camera only
             | resolution   | <resolution> |
             | bitrate      | <bitrate>    |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
@@ -275,7 +271,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
         
@@ -293,7 +289,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be able to change the resolution to <resolution> when streaming is live with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         
         When the publisher configures "camera view" setting with the following values only
             | resolution    | <resolution>    |
@@ -309,7 +305,7 @@ Feature: Publisher streaming with camera only
     Scenario: Publisher should be able to change the bitrate multiple time when streaming is live with camera
         Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         
         When the publisher configures "camera view" setting with the following values only
             | bitrate     | 2 Mbps             |
@@ -334,7 +330,7 @@ Feature: Publisher streaming with camera only
             | codec       | vp8               |
             | bitrate     | 1 Mbps            |
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "streaming" page
         
         When the publisher configures "camera view" setting with the following values only
             | resolution  | 640x480  |
