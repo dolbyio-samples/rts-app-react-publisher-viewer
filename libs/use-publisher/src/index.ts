@@ -14,6 +14,7 @@ import { bitrateList } from './constants';
 
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
+import { adjustDuplicateSourceIds } from './utils';
 
 const usePublisher = ({
   handleError,
@@ -47,13 +48,17 @@ const usePublisher = ({
 
       const { label, mediaStream } = stream;
 
+      const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
+
+      const dedupedSourceId = adjustDuplicateSourceIds(label ?? streamId, allSourceIds);
+
       const broadcastOptions = {
         bandwidth: bitrateList[0].value,
         codec: codecList[0],
         events: ['viewercount'] as Event[],
         mediaStream,
         simulcast: codecList[0] === 'h264',
-        sourceId: label ?? streamId,
+        sourceId: dedupedSourceId,
       };
 
       const publish = new Publish(streamName, tokenGenerator, true);
@@ -107,17 +112,22 @@ const usePublisher = ({
     ? `${viewerAppBaseUrl}?streamAccountId=${streamNameId}&streamName=${streamName}`
     : undefined;
 
-  const startStreamingToSource = async (id: string) => {
+  const startStreamingToSource = async (id: string, mediaStream?: MediaStream) => {
     const source = sources.get(id);
 
-    if (!source || source.publish.isActive()) {
+    if (!source || source.publish.isActive() || (!source.broadcastOptions.mediaStream && !mediaStream)) {
       return;
     }
+
+    const broadcastOptions = {
+      ...source.broadcastOptions,
+      mediaStream: mediaStream ?? source.broadcastOptions.mediaStream,
+    } as BroadcastOptions;
 
     try {
       dispatch({ id, state: 'connecting', type: PublisherActionType.UPDATE_SOURCE_STATE });
 
-      await source.publish.connect(source.broadcastOptions);
+      await source.publish.connect(broadcastOptions);
 
       dispatch({ id, state: 'streaming', type: PublisherActionType.UPDATE_SOURCE_STATE });
 
@@ -192,7 +202,45 @@ const usePublisher = ({
       return;
     }
 
+    // Validate source id for duplicates
+    if (broadcastOptions.sourceId) {
+      const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
+
+      const dedupedSourceId = adjustDuplicateSourceIds(broadcastOptions.sourceId, allSourceIds);
+
+      dispatch({
+        broadcastOptions: { ...broadcastOptions, sourceId: dedupedSourceId },
+        id,
+        type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS,
+      });
+
+      return;
+    }
+
     dispatch({ broadcastOptions, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
+  };
+
+  const updateSourceMediaStream = (id: string, mediaStream: MediaStream) => {
+    const source = sources.get(id);
+
+    if (!source) {
+      return;
+    }
+
+    const [audioTrack] = mediaStream.getAudioTracks();
+    const [videoTrack] = mediaStream.getVideoTracks();
+
+    if (source.publish.isActive()) {
+      if (audioTrack) {
+        source.publish.webRTCPeer?.replaceTrack(audioTrack);
+      }
+
+      if (videoTrack) {
+        source.publish.webRTCPeer?.replaceTrack(videoTrack);
+      }
+    }
+
+    dispatch({ broadcastOptions: { mediaStream }, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
   };
 
   return {
@@ -202,6 +250,7 @@ const usePublisher = ({
     startStreamingToSource,
     stopStreamingToSource,
     updateSourceBroadcastOptions,
+    updateSourceMediaStream,
     viewerCount,
   };
 };

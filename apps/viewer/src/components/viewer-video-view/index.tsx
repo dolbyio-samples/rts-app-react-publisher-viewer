@@ -1,45 +1,145 @@
-import { Box, useDisclosure } from '@chakra-ui/react';
-import React from 'react';
+import { Box } from '@chakra-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { IconSettings } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
-import StatisticsPopover from '@millicast-react/statistics-popover';
 import VideoView from '@millicast-react/video-view';
 
 import { ViewerVideoViewProps } from './types';
-import VideoSettingsDrawer from './video-settings-drawer';
+import { delay } from './utils';
+import VideoControlBar from './video-control-bar';
 
-const ViewerVideoView = ({ isActive, settingsProps, statistics, videoProps }: ViewerVideoViewProps) => {
-  const { isOpen: isSettingsOpen, onClose: handleSettingsClose, onOpen: handleSettingsOpen } = useDisclosure();
+const SHOW_CONTROL_BAR_DURATION = 2000;
+
+const ViewerVideoView = ({
+  isStreaming,
+  settings,
+  showControlBar,
+  statistics,
+  videoProps = {},
+}: ViewerVideoViewProps) => {
+  const videoViewRef = useRef<HTMLDivElement>(null);
+  const isControlBarVisibleRef = useRef<boolean>();
+
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [volume, setVolume] = useState(0);
+
+  // Hide/show control bar on mouse move
+  useEffect(() => {
+    if (!videoViewRef.current) {
+      return undefined;
+    }
+
+    const handleMouseMove = async (event: MouseEvent) => {
+      event.preventDefault();
+
+      isControlBarVisibleRef.current = true;
+
+      await delay(SHOW_CONTROL_BAR_DURATION);
+
+      isControlBarVisibleRef.current = false;
+    };
+
+    videoViewRef.current.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      videoViewRef.current?.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [videoViewRef.current]);
 
   const { mediaStream } = videoProps;
 
+  const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
+  const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
+  const handleToggleFullScreen = () => {
+    setIsFullScreen((prevIsFullScreen) => !prevIsFullScreen);
+  };
+
+  // Reenable playback when switching main source
+  useEffect(() => {
+    setIsPlaybackActive(true);
+  }, [videoProps.label]);
+
+  const handleChangeVolume = (newVolume: number) => {
+    if (newVolume === 0) {
+      audioTrack.enabled = false;
+
+      setIsAudioEnabled(false);
+    } else {
+      audioTrack.enabled = true;
+
+      setIsAudioEnabled(true);
+    }
+
+    setVolume(newVolume);
+  };
+
+  const handleToggleAudio = () => {
+    setIsAudioEnabled((prevIsAudioEnabled) => {
+      audioTrack.enabled = !prevIsAudioEnabled;
+
+      return audioTrack.enabled;
+    });
+  };
+
+  const handleTogglePlayback = () => {
+    setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
+  };
+
+  const handleToggleVideo = () => {
+    if (videoTrack) {
+      setIsVideoEnabled((prevIsVideoEnabled) => {
+        videoTrack.enabled = !prevIsVideoEnabled;
+
+        return videoTrack.enabled;
+      });
+    }
+  };
+
   return (
-    <Box height="100%" overflow="hidden" margin="0 auto" position="relative" width="100%">
-      <VideoView {...videoProps} />
-      {isActive && statistics ? (
-        <Box bottom="12px" left="18px" position="absolute">
-          <StatisticsPopover statistics={statistics} />
-        </Box>
-      ) : undefined}
-      {settingsProps ? (
-        <>
-          <IconButton
-            background="transparent"
-            bottom="12px"
-            icon={<IconSettings />}
-            isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-            isRound
-            onClick={handleSettingsOpen}
-            position="absolute"
-            right="18px"
-            reversed
-            size="sm"
-            testId="settingsOpenButton"
-            tooltipProps={{ label: 'Settings' }}
-          />
-          <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
-        </>
+    <Box
+      bottom={0}
+      height={isFullScreen ? '100vh' : '100%'}
+      left={0}
+      margin="0 auto"
+      overflow="hidden"
+      position={isFullScreen ? 'fixed' : 'relative'}
+      ref={videoViewRef}
+      right={0}
+      top={0}
+      width={isFullScreen ? '100vw' : '100%'}
+      zIndex={isFullScreen ? '1' : '0'}
+    >
+      <VideoView
+        displayVideo={isVideoEnabled}
+        muted={!isAudioEnabled}
+        paused={!isPlaybackActive}
+        volume={volume}
+        {...videoProps}
+      />
+      {showControlBar ? (
+        <VideoControlBar
+          activeAudio={isAudioEnabled}
+          activePlayback={isPlaybackActive}
+          activeVideo={isVideoEnabled}
+          hasAudioTrack={!!audioTrack}
+          hasVideoTrack={!!videoTrack}
+          isStreaming={isStreaming}
+          onChangeVolume={handleChangeVolume}
+          onToggleAudio={handleToggleAudio}
+          onToggleFullScreen={handleToggleFullScreen}
+          onTogglePlayback={handleTogglePlayback}
+          onToggleVideo={handleToggleVideo}
+          opacity={isControlBarVisibleRef.current ? 1 : 0}
+          settings={settings}
+          statistics={statistics}
+          sx={{
+            ':hover': { opacity: 1 },
+          }}
+          test-id="videoControlBar"
+        />
       ) : undefined}
     </Box>
   );

@@ -13,10 +13,6 @@ export interface CreateStreamOptions {
   videoConstraints?: MediaTrackConstraints;
 }
 
-export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
-  captureStream: (frameRequestRate?: number) => MediaStream;
-}
-
 export interface MediaDevices {
   addStream: (options: CreateStreamOptions) => Promise<void>;
   applyConstraints: (id: string, options: ApplyConstraintsOptions) => Promise<void>;
@@ -42,7 +38,8 @@ export interface Resolution {
 
 export interface Stream {
   label?: string;
-  mediaStream: MediaStream;
+  mediaStream?: MediaStream;
+  objectUrl?: string;
   resolutions?: Resolution[];
   type: StreamTypes;
 }

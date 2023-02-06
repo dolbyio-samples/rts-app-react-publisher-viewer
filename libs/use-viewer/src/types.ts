@@ -29,7 +29,7 @@ export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export interface Viewer {
   mainMediaStream?: MediaStream;
-  projectToMainStream: (sourceId: string, prevSourceId?: string) => void;
+  projectToMainStream: (sourceId: string, prevSourceId?: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
   setSourceQuality: (sourceId: string, quality: SimulcastQuality) => void;
   startViewer: () => void;

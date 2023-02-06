@@ -11,7 +11,14 @@ import {
 import { useReducer, useRef, useState } from 'react';
 
 import reducer from './reducer';
-import { RemoteTrackSources, SimulcastQuality, Viewer, ViewerActionType, ViewerProps } from './types';
+import {
+  RemoteTrackSource,
+  RemoteTrackSources,
+  SimulcastQuality,
+  Viewer,
+  ViewerActionType,
+  ViewerProps,
+} from './types';
 import { addRemoteTrackAndProject, unprojectFromStream, projectToStream } from './utils';
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
@@ -73,6 +80,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         } catch (error) {
           handleInternalError(error);
         }
+
         break;
 
       case 'inactive': {
@@ -82,7 +90,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
           try {
             await unprojectFromStream(viewer, remoteTrackSource);
 
-            dispatch({ type: ViewerActionType.REMOVE_SOURCE, sourceId });
+            dispatch({ sourceId, type: ViewerActionType.REMOVE_SOURCE });
           } catch (error) {
             handleInternalError(error);
           }
@@ -100,6 +108,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
           medias: (event.data as MediaStreamLayers).medias,
           type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS,
         });
+
         break;
       }
     }
@@ -153,7 +162,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const projectToMainStream = async (sourceId: string) => {
+  const projectToMainStream = async (sourceId: string): Promise<RemoteTrackSource | void> => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
@@ -165,6 +174,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     if (remoteTrackSource) {
       try {
         await projectToStream(viewer, remoteTrackSource, mainAudioMapping, mainVideoMapping);
+
+        return remoteTrackSource;
       } catch (error) {
         handleInternalError(error);
       }
@@ -214,16 +225,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const stopViewer = () => {
     const { current: viewer } = viewerRef;
 
-    if (!viewer) {
-      return;
+    if (viewer) {
+      viewer.removeAllListeners('broadcastEvent');
+      viewer.webRTCPeer?.removeAllListeners('stats');
+      viewer.webRTCPeer?.stopStats();
+      viewer.stop();
+
+      viewerRef.current = undefined;
     }
-
-    viewer.removeAllListeners('broadcastEvent');
-    viewer.webRTCPeer?.removeAllListeners('stats');
-    viewer.webRTCPeer?.stopStats();
-    viewer.stop();
-
-    viewerRef.current = undefined;
   };
 
   const tokenGenerator = () => Director.getSubscriber({ streamAccountId, streamName, subscriberToken });

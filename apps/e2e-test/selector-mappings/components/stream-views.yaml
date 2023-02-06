@@ -12,7 +12,6 @@ stop view button: '[test-id=videoControlBar] [test-id=stop-live-indicator]'
 view close button: 'button[aria-label=Close]'
 
 
-
 camera view:
   - '$ref: camera view container'
   - '$ref: video frame'

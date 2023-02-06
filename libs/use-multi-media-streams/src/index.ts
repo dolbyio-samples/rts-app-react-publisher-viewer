@@ -40,7 +40,7 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
       const usedDevices = new Set();
 
       streams.forEach(({ mediaStream, type }) => {
-        if (type === StreamTypes.MEDIA) {
+        if (mediaStream && type === StreamTypes.MEDIA) {
           const [audioTrack] = mediaStream.getAudioTracks();
           const [videoTrack] = mediaStream.getVideoTracks();
 
@@ -77,21 +77,19 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   ) => {
     const prevStream = streams.get(id);
 
-    if (!prevStream) {
-      return;
+    if (prevStream?.mediaStream) {
+      const { mediaStream } = prevStream;
+
+      const [audioTrack] = mediaStream.getAudioTracks();
+      const [videoTrack] = mediaStream.getVideoTracks();
+
+      const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
+      const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
+
+      await Promise.all([applyAudioConstraints, applyVideoConstraints]);
+
+      updateStream(id, { mediaStream });
     }
-
-    const { mediaStream } = prevStream;
-
-    const [audioTrack] = mediaStream.getAudioTracks();
-    const [videoTrack] = mediaStream.getVideoTracks();
-
-    const applyAudioConstraints = audioTrack.applyConstraints(audioConstraints);
-    const applyVideoConstraints = videoTrack.applyConstraints(videoConstraints);
-
-    await Promise.all([applyAudioConstraints, applyVideoConstraints]);
-
-    updateStream(id, { mediaStream });
   };
 
   const getDevicesList = async () => {
@@ -167,8 +165,8 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     initDefaultStream,
     microphoneList,
     removeStream,
-    streams,
     reset,
+    streams,
     updateStream,
   };
 };

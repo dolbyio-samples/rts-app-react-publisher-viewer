@@ -13,22 +13,31 @@ import { formatBitrate, formatBytes, formatTimestamp } from './utils';
 const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
   const { audio, availableOutgoingBitrate, candidateType, currentRoundTripTime, video } = statistics ?? {};
 
+  const isAudioInbound = 'totalBytesReceived' in (audio ?? {});
+  const isVideoInbound = 'totalBytesReceived' in (video ?? {});
+
   const audioTotal = useMemo(() => {
-    if (!audio) return undefined;
+    if (!audio) {
+      return undefined;
+    }
 
-    if ('totalBytesReceived' in audio) return (audio as StreamAudioInboundsStats).totalBytesReceived;
-    if ('totalBytesSent' in audio) return (audio as StreamAudioOutboundsStats).totalBytesSent;
+    if (isAudioInbound) {
+      return (audio as StreamAudioInboundsStats).totalBytesReceived;
+    }
 
-    return undefined;
+    return (audio as StreamAudioOutboundsStats).totalBytesSent;
   }, [audio]);
 
   const videoTotal = useMemo(() => {
-    if (!video) return undefined;
+    if (!video) {
+      return undefined;
+    }
 
-    if ('totalBytesReceived' in video) return (video as StreamVideoInboundsStats).totalBytesReceived;
-    if ('totalBytesSent' in video) return (video as StreamVideoOutboundsStats).totalBytesSent;
+    if (isVideoInbound) {
+      return (video as StreamVideoInboundsStats).totalBytesReceived;
+    }
 
-    return undefined;
+    return (video as StreamVideoOutboundsStats).totalBytesSent;
   }, [video]);
 
   return (
@@ -97,13 +106,13 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               ) : undefined}
               {videoTotal ? (
                 <Tr>
-                  <Th>Video total sent:</Th>
+                  <Th>Video total {isVideoInbound ? 'received' : 'sent'}:</Th>
                   <Td>{formatBytes(videoTotal)}</Td>
                 </Tr>
               ) : undefined}
               {audioTotal ? (
                 <Tr>
-                  <Th>Audio total sent:</Th>
+                  <Th>Audio total {isAudioInbound ? 'received' : 'sent'}:</Th>
                   <Td>{formatBytes(audioTotal)}</Td>
                 </Tr>
               ) : undefined}

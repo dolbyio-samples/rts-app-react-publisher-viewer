@@ -14,6 +14,7 @@ const dolbyioTheme = extendTheme({
   },
   colors: {
     background: '#14141A',
+    backgroundTranslucent: '#14141A80',
     dolbyPurple: {
       400: '#AA33FF',
       500: '#8829CC',
