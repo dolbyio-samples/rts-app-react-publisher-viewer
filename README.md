@@ -53,7 +53,7 @@ This project is setup as a [yarn](https://yarnpkg.com/) based [nx-managed](https
 
 - Publisher app (under `apps/publisher`)
 - Viewer/subscriber app (under `apps/viewer`)
-- Tests (under `tests/*` )
+- Tests (under `apps/e2e-test/*` )
 - Shared components/hooks (under `libs/*`)
 - Storybook stories (under `.apps/stories/*`)
 
@@ -143,9 +143,8 @@ yarn nx preview viewer
 
 #### Run the end to end test
 
-```bash
-yarn nx e2e publisher
-```
+Refer to this guide [here](apps/e2e-test/README.md).
+**note** Please ensure your RTS tokens are present either in a .env file or as environment variables. 
 
 ## Browser compatibility
 
