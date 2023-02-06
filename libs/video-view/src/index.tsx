@@ -19,7 +19,7 @@ const VideoView = ({
   onSrcMediaStreamClose: handleSrcMediaStreamClose,
   onSrcMediaStreamReady: handleSrcMediaStreamReady,
   placeholderNode,
-  playing = true,
+  paused = false,
   showDotIndicator,
   src,
   volume = 1,
@@ -56,13 +56,13 @@ const VideoView = ({
   // Toggle playback
   useEffect(() => {
     if (videoRef.current) {
-      if (playing) {
+      if (!paused) {
         videoRef.current.play().catch(() => null);
       } else {
         videoRef.current.pause();
       }
     }
-  }, [playing]);
+  }, [paused]);
 
   // Change volume
   useEffect(() => {

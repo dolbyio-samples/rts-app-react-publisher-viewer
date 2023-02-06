@@ -20,7 +20,7 @@ export interface VideoViewProps {
   onSrcMediaStreamClose?: (id: string) => void;
   onSrcMediaStreamReady?: (value: MediaStream) => void;
   placeholderNode?: ReactNode;
-  playing?: boolean;
+  paused?: boolean;
   showDotIndicator?: boolean;
   src?: string;
   statistics?: StreamStats;

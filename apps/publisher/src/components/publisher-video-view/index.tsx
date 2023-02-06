@@ -66,7 +66,7 @@ const PublisherVideoView = ({
       <VideoView
         displayVideo={isVideoEnabled}
         muted={streamType === StreamTypes.MEDIA || !isAudioEnabled}
-        playing={isPlaybackActive}
+        paused={!isPlaybackActive}
         {...videoProps}
       />
       <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />

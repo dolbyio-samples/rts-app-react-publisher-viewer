@@ -115,7 +115,7 @@ const ViewerVideoView = ({
       <VideoView
         displayVideo={isVideoEnabled}
         muted={!isAudioEnabled}
-        playing={isPlaybackActive}
+        paused={!isPlaybackActive}
         volume={volume}
         {...videoProps}
       />
