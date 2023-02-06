@@ -1,8 +1,9 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
+import { IconProfile } from '@millicast-react/dolbyio-icons';
 import InfoLabel from '@millicast-react/info-label';
 import ParticipantCount from '@millicast-react/participant-count';
 import Timer from '@millicast-react/timer';
@@ -15,7 +16,7 @@ import './styles/font.css';
 
 const MAX_SOURCES = 4;
 
-function App() {
+const App = () => {
   const href = new URL(window.location.href);
 
   const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_RTS_STREAM_NAME;
@@ -31,7 +32,7 @@ function App() {
     startViewer,
     stopViewer,
     viewerCount,
-  } = useViewer({ streamName, streamAccountId, handleError: showError });
+  } = useViewer({ handleError: showError, streamAccountId, streamName });
 
   const [mainSourceId, setMainSourceId] = useState<string>();
 
@@ -57,7 +58,11 @@ function App() {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (remoteTrackSources.size && !mainSourceId) {
+    if (!remoteTrackSources.size) {
+      return;
+    }
+
+    if (!mainSourceId || !remoteTrackSources.get(mainSourceId)) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
@@ -66,13 +71,13 @@ function App() {
 
   useEffect(() => {
     if (mainSourceId) {
-      projectToMainStream(mainSourceId);
+      // Change main stream
+      projectToMainStream(mainSourceId).then(() => {
+        // Reset quality
+        setSourceQuality(mainSourceId, { streamQuality: 'Auto' });
+      });
     }
   }, [mainSourceId]);
-
-  const handleClickVideo = (sourceId: string) => {
-    setMainSourceId(sourceId);
-  };
 
   const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
 
@@ -99,21 +104,21 @@ function App() {
 
   return (
     <Flex bg="background" direction="column" height="100vh" maxHeight="100vh" p={6} width="100vw">
-      <Box w="100%" h="94px">
+      <Box height="94px" width="100%">
         <ActionBar title="Company name" />
-        <Flex w="100%" justifyContent="space-between" mt="4" position="relative" zIndex={1}>
-          <VStack spacing="4" alignItems="flex-start">
+        <Flex justifyContent="space-between" mt="4" position="relative" w="100%" zIndex={1}>
+          <VStack alignItems="flex-start" spacing="4">
             <Flex alignItems="center">
               <Timer isActive={isStreaming} />
               {hasMultiStream && (
                 <InfoLabel
-                  text="Multi–stream view"
-                  ml="2.5"
-                  color="white"
                   bgColor="dolbyNeutral.300"
-                  py="5px"
-                  h="auto"
+                  color="white"
                   fontWeight="600"
+                  h="auto"
+                  ml="2.5"
+                  py="5px"
+                  text="Multi–stream view"
                 />
               )}
             </Flex>
@@ -121,10 +126,10 @@ function App() {
           </VStack>
         </Flex>
       </Box>
-      <Flex flex={1} width="100%" alignItems="center" justifyContent="center">
+      <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
         {!isStreaming ? (
           <VStack>
-            <Heading test-id="pageHeader" as="h2" fontSize="24px" fontWeight="600">
+            <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Stream is not live
             </Heading>
             <Text test-id="pageDesc">Please wait for livestream to begin.</Text>
@@ -133,16 +138,25 @@ function App() {
           <HStack height="573px" maxHeight="573px">
             <Box height="100%" test-id="millicastVideo">
               <ViewerVideoView
-                isActive={isStreaming}
-                settingsProps={mainSourceSettings()}
+                isStreaming={isStreaming}
+                settings={mainSourceSettings()}
+                showControlBar
                 statistics={mainSource?.statistics as StreamStats}
                 videoProps={{
-                  // TODO: hide video
-                  // displayVideo: !hideVideo,
                   displayVideo: true,
+                  label: mainSourceId,
                   mediaStream: mainMediaStream,
-                  // TODO: mute audio
-                  // muted: muteAudio,
+                  placeholderNode: (
+                    <Center
+                      background="dolbyNeutral.800"
+                      color="dolbyNeutral.700"
+                      height="100%"
+                      position="absolute"
+                      width="100%"
+                    >
+                      <IconProfile height="174px" width="174px" />
+                    </Center>
+                  ),
                 }}
               />
             </Box>
@@ -152,16 +166,15 @@ function App() {
                   cursor="pointer"
                   height={`calc(100% / ${MAX_SOURCES})`}
                   key={sourceId}
-                  onClick={() => {
-                    handleClickVideo(sourceId);
-                  }}
+                  onClick={() => setMainSourceId(sourceId)}
                   test-id="millicastVideo"
                   width="100%"
                 >
                   <ViewerVideoView
-                    isActive={isStreaming}
+                    isStreaming={isStreaming}
                     videoProps={{
                       displayVideo: true,
+                      label: sourceId,
                       mediaStream,
                       muted: true,
                     }}
@@ -172,11 +185,11 @@ function App() {
           </HStack>
         )}
       </Flex>
-      <Box test-id="appVersion" position="fixed" bottom="5px" left="5px">
+      <Box bottom="5px" left="5px" position="fixed" test-id="appVersion">
         <Text fontSize="12px">Version: {__APP_VERSION__} </Text>
       </Box>
     </Flex>
   );
-}
+};
 
 export default App;

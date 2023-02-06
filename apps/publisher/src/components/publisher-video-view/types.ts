@@ -1,12 +1,19 @@
 import { StreamStats } from '@millicast/sdk';
 
+import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 import { VideoViewProps } from '@millicast-react/video-view';
 
-import { VideoSettingsDrawerProps } from './video-settings-drawer';
+import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 
 export interface PublisherVideoViewProps {
-  isActive: boolean;
-  settingsProps?: Omit<VideoSettingsDrawerProps, 'isOpen' | 'onClose'>;
+  canTogglePlayback?: boolean;
+  isConnecting?: boolean;
+  isStreaming?: boolean;
+  onRemove: () => void;
+  onStartLive: () => void;
+  onStopLive: () => void;
+  settings?: SettingsPopoverProps;
   statistics?: StreamStats;
+  streamType?: StreamTypes;
   videoProps: VideoViewProps;
 }

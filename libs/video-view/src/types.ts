@@ -2,9 +2,11 @@ import { BoxProps } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 import { ReactNode } from 'react';
 
+export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
+  captureStream: (frameRequestRate?: number) => MediaStream;
+}
+
 export interface VideoViewProps {
-  displayFullscreenButton?: boolean;
-  displayMuteButton?: boolean;
   displayVideo?: boolean;
   height?: string;
   label?: string;
@@ -18,6 +20,7 @@ export interface VideoViewProps {
   onSrcMediaStreamClose?: (id: string) => void;
   onSrcMediaStreamReady?: (value: MediaStream) => void;
   placeholderNode?: ReactNode;
+  paused?: boolean;
   showDotIndicator?: boolean;
   src?: string;
   statistics?: StreamStats;

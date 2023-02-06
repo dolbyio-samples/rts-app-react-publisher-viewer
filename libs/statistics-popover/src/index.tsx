@@ -1,26 +1,15 @@
-import {
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
-} from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 
 import { IconInfo } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
+import Popover from '@millicast-react/popover';
 import Tabs from '@millicast-react/tabs';
 
 import StatisticsInfo from './components/statistics-info';
 import { StatisticsPopoverProps, TabQualities } from './types';
 
-const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
-  const {
-    audio: { inbounds: audioIn, outbounds: audioOut },
-    video: { inbounds: videoIn, outbounds: videoOut },
-  } = statistics;
+const StatisticsPopover = ({ iconProps, statistics }: StatisticsPopoverProps) => {
+  const { inbounds: audioIn, outbounds: audioOut } = statistics?.audio ?? {};
+  const { inbounds: videoIn, outbounds: videoOut } = statistics?.video ?? {};
 
   const [audio] = audioIn?.length ? audioIn : audioOut?.length ? audioOut : [];
   const video = videoIn?.length ? videoIn : videoOut?.length ? videoOut : [];
@@ -56,46 +45,20 @@ const StatisticsPopover = ({ statistics }: StatisticsPopoverProps) => {
   }, [statistics]);
 
   return (
-    <>
-      <Popover gutter={-32} isLazy placement="top-start">
-        <PopoverTrigger>
-          <IconButton
-            aria-label="Stream Information"
-            background="transparent"
-            borderRadius="50%"
-            className="icon-button"
-            icon={<IconInfo fill="white" />}
-            isRound
-            size="sm"
-            testId="streamInfoButton"
-            tooltipProps={{ label: 'Stream information' }}
-          />
-        </PopoverTrigger>
-        <Portal>
-          <PopoverContent bg="dolbyNeutral.800" width="400px" border="none" p={6}>
-            <PopoverHeader
-              test-id="streamInfoPopoverTitle"
-              border="none"
-              color="white"
-              fontSize="16px"
-              fontWeight="600"
-              mb="16px"
-              p={0}
-            >
-              Stream information
-            </PopoverHeader>
-            <PopoverCloseButton test-id="popoverCloseButton" color="white" />
-            <PopoverBody p={0}>
-              {tabs.length ? (
-                <Tabs tabs={tabs} />
-              ) : (
-                <StatisticsInfo statistics={{ ...statistics, audio, video: video[0] }} />
-              )}
-            </PopoverBody>
-          </PopoverContent>
-        </Portal>
-      </Popover>
-    </>
+    <Popover
+      heading="Stream information"
+      icon={<IconInfo fill="white" />}
+      iconProps={iconProps}
+      label="Stream information"
+    >
+      {statistics ? (
+        tabs.length ? (
+          <Tabs tabs={tabs} />
+        ) : (
+          <StatisticsInfo statistics={{ ...statistics, audio, video: video[0] }} />
+        )
+      ) : undefined}
+    </Popover>
   );
 };
 

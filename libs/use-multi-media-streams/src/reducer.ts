@@ -6,7 +6,7 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
     case StreamsActionType.ADD_STREAM: {
       const prevMediaStream = state.get(action.id);
 
-      if (prevMediaStream) {
+      if (prevMediaStream?.mediaStream) {
         stopTracks(prevMediaStream.mediaStream);
       }
 
@@ -19,7 +19,7 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
     case StreamsActionType.REMOVE_STREAM: {
       const prevMediaStream = state.get(action.id);
 
-      if (prevMediaStream) {
+      if (prevMediaStream?.mediaStream) {
         stopTracks(prevMediaStream.mediaStream);
       }
 
@@ -30,8 +30,10 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
     }
 
     case StreamsActionType.RESET: {
-      state.forEach((stream) => {
-        stopTracks(stream.mediaStream);
+      state.forEach(({ mediaStream }) => {
+        if (mediaStream) {
+          stopTracks(mediaStream);
+        }
       });
 
       return new Map<string, Stream>();

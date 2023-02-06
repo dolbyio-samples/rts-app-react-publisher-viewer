@@ -1,5 +1,5 @@
-settings: '//*[@test-id="settingTitle"]/parent::*'
-settings title: '[test-id=settingTitle]'
+settings: '//*[@test-id="streamSettingsPopoverHeading"]/parent::*'
+settings title: '[test-id=streamSettingsPopoverHeading]'
 settings dropdowns: '[test-id*=SelectDefault]'
 source name label: '[test-id=sourceName] label'
 source name input: '[test-id=sourceName] input'

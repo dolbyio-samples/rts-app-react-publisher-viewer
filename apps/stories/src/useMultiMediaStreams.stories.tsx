@@ -56,18 +56,18 @@ const StreamWrapper = ({ stream, removeStream, toggleAudio, toggleVideo, updateR
             ? {
                 icon: state.muteAudio ? <IconMicrophoneOn /> : <IconMicrophoneOff />,
                 isActive: !state.muteAudio,
-                key: 'toggleMicrophoneButton',
+                key: 'toggleAudioButton',
                 onClick: toggleAudio,
-                testId: 'toggleMicrophoneButton',
+                testId: 'toggleAudioButton',
                 tooltipProps: { label: 'Toggle microphone', placement: 'top' },
               }
             : null,
           {
             icon: state.displayVideo ? <IconCameraOn /> : <IconCameraOff />,
             isActive: !state.displayVideo,
-            key: 'toggleCameraButton',
+            key: 'toggleVideoButton',
             onClick: toggleVideo,
-            testId: 'toggleCameraButton',
+            testId: 'toggleVideoButton',
             tooltipProps: { label: 'Toggle camera', placement: 'top' },
           },
         ]}

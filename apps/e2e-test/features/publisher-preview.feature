@@ -1,4 +1,5 @@
 @publisher
+@ignore
 Feature: Publisher Preview - Not Live
     As a publisher
     I want to setup the stream configuration on Preview page

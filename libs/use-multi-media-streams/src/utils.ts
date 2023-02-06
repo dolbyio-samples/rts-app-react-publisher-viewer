@@ -1,5 +1,5 @@
 import { idealCameraConfig, resolutionList } from './constants';
-import { CreateStreamOptions, HTMLVideoElementWithCaptureStream, Stream, StreamTypes } from './types';
+import { CreateStreamOptions, Stream, StreamTypes } from './types';
 
 export const createStream = async ({
   audioConstraints = {},
@@ -34,20 +34,11 @@ export const createStream = async ({
         return;
       }
 
-      // Custom type as captureStream is not defined in HTMLVideoElement by default
-      const video = document.createElement('video') as HTMLVideoElementWithCaptureStream;
-      video.loop = true;
-      video.src = objectUrl;
-
-      const mediaStream = video.captureStream();
-
-      await video.play();
-
       return {
-        id: mediaStream.id,
+        id: objectUrl,
         stream: {
           label,
-          mediaStream,
+          objectUrl,
           type,
         } as Stream,
       };
