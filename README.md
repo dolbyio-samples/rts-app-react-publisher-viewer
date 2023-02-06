@@ -36,7 +36,6 @@ To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard
 - [x] Ability to stream from up to 4 sources. See [here](https://docs.dolby.io/streaming-apis/docs/create-multi-view-web-app) for bandwidth limitations.
 - [x] Ability to stream a local video file
 - [x] Observing stream statistics for each simulcast layer
-- [ ] Ability to have multiple publishers
 - [ ] Recording your streams
 
 ### RTS Viewer
@@ -69,7 +68,7 @@ To install the libraries necessary, run the following command:
 yarn
 ```
 
-### Millicast (RTS) Tokens
+### RTS Tokens
 
 In order for this application to work, you need three sets of tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the streaming tab for a given token.
 
