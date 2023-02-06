@@ -106,8 +106,25 @@ const publisherCameraViewStatsData: ViewData = {
   'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
   'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
   'Codecs:': 'video/H264, audio/opus',
+  'Timestamp:': 
+    'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} ([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
+};
+
+const publisherScreenViewStatsData: ViewData = {
+  Name: 'Value',
+  'Current RTT:': 'regex: \\d{1,3} ms',
+  'Outgoing bitrate:': 'regex: ([0-9]*[.])?[0-9]+ (kbps|mbps)',
+  'Candidate type:': 'regex: [s|p]rflx',
+  'Video resolution:': 'regex: \\d{3,4}x\\d{3,4}',
+  'Quality limitation reason:': 'regex: (bandwidth|cpu|none)',
+  'Frames per second:': 'regex: \\d{1,2}',
+  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
+  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
+  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Codecs:': 'video/H264, audio/opus',
   'Timestamp:':
-    'regex: (0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M',
+    'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4} ([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9]) [A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4} (2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
 };
 
 export const getDefaultViewData = (viewName: string) => {
@@ -136,7 +153,7 @@ export const getDefaultSettings = (viewName: string) => {
   switch (viewName) {
     case 'publisher camera view':
       return publisherCameraViewSettings;
-    case 'publisher streaming view':
+    case 'publisher screen view':
       return publisherScreenViewSettings;
     default:
       throw Error(`Invalid view name ${viewName}`);
@@ -147,7 +164,7 @@ export const getDefaultSettingsData = (viewName: string) => {
   switch (viewName) {
     case 'publisher camera view':
       return publisherCameraViewSettingsData;
-    case 'publisher streaming view':
+    case 'publisher screen view':
       return publisherScreenViewSettingsData;
     default:
       throw Error(`Invalid view name ${viewName}`);
@@ -158,8 +175,8 @@ export const getDefaultStatsData = (viewName: string) => {
   switch (viewName) {
     case 'publisher camera view':
       return publisherCameraViewStatsData;
-    case 'publisher streaming view':
-      return publisherCameraViewStatsData;
+    case 'publisher screen view':
+      return publisherScreenViewStatsData;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }

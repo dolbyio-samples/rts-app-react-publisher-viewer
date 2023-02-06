@@ -151,21 +151,21 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs)? should be displayed with default values$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string, qualityTabs: string) {
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs| with high quality tab)? should be displayed with default values$/,
+  async function (this: ScenarioWorld, elementPosition: string, viewName: string, qualityTab: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultStatsData(`${appName} ${viewName}`);
-    await verifyStats(this, elementPosition, appName, viewName, !!qualityTabs, expectedData);
+    await verifyStats(this, elementPosition, appName, viewName, qualityTab, expectedData);
   }
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs)? should be displayed with following values( only)?$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stream stats( with quality tabs| with high quality tab)? should be displayed with following values( only)?$/,
   async function (
     this: ScenarioWorld,
     elementPosition: string,
     viewName: string,
-    qualityTabs: string,
+    qualityTab: string,
     type: string,
     dataTable: DataTable
   ) {
@@ -181,6 +181,6 @@ Then(
       expectedData = { ...defaultExpectedData, ...dataTable.rowsHash() };
     }
 
-    await verifyStats(this, elementPosition, appName, viewName, !!qualityTabs, expectedData);
+    await verifyStats(this, elementPosition, appName, viewName, qualityTab, expectedData);
   }
 );

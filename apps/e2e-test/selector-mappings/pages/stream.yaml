@@ -4,4 +4,5 @@ COMPONENTS:
   - 'add-source'
   - 'settings'
   - 'stream-stats'
-stop button: "[test-id=stop-live-indicator]"
+validation: 'stop button:displayed'
+stop button: '//button[@test-id="stop-live-indicator" and not(@data-loading)]'
