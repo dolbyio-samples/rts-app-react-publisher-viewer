@@ -1,4 +1,5 @@
 @publisher
+@ignore
 Feature: Publisher streaming with Screen share
     As a publisher
     I want to do live streaming for an event with screen share

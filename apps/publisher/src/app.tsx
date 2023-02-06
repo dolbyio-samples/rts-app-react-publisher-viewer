@@ -1,22 +1,22 @@
 import {
   Box,
+  Button,
+  Center,
   Flex,
   HStack,
   Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   Spacer,
   Stack,
   Text,
-  useDisclosure,
   VStack,
   Wrap,
   WrapItem,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  Button,
-  Center,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
@@ -61,24 +61,14 @@ const App = () => {
     onClose: onFileSelectModalClose,
   } = useDisclosure();
 
-  const [allLive, setAllLive] = useState(false);
+  const [allStreamsLive, setAllStreamsLive] = useState(false);
   const [newCamera, setNewCamera] = useState<InputDeviceInfo>();
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo>();
 
   const { showError } = useNotification();
 
-  const {
-    addStream,
-    applyConstraints,
-    cameraList,
-    initDefaultStream,
-    microphoneList,
-    // TODO: remove and reset streams
-    // removeStream,
-    // reset,
-    streams,
-    // TODO: per-stream audio/video toggling
-  } = useMultiMediaStreams();
+  const { addStream, applyConstraints, cameraList, initDefaultStream, microphoneList, removeStream, streams } =
+    useMultiMediaStreams();
 
   const {
     codecList,
@@ -87,12 +77,13 @@ const App = () => {
     startStreamingToSource,
     stopStreamingToSource,
     updateSourceBroadcastOptions,
+    updateSourceMediaStream,
     viewerCount,
   } = usePublisher({
     handleError: showError,
+    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     streamNameId: VITE_MILLICAST_STREAM_ID,
     streams,
-    streamName: VITE_MILLICAST_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     token: VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_MILLICAST_VIEWER_BASE_URL,
   });
@@ -124,19 +115,17 @@ const App = () => {
   }, [isDeviceSelectionOpen, cameraList, microphoneList]);
 
   useEffect(() => {
-    if (!allLive) {
-      return;
-    }
-
-    sources.forEach((source, id) => {
-      try {
-        if (!source.publish.isActive()) {
-          startStreamingToSource(id);
+    if (allStreamsLive) {
+      sources.forEach((source, id) => {
+        try {
+          if (!source.publish.isActive()) {
+            startStreamingToSource(id);
+          }
+        } catch (error) {
+          showError(`Failed to start streaming: ${error}`);
         }
-      } catch (error) {
-        showError(`Failed to start streaming: ${error}`);
-      }
-    });
+      });
+    }
   }, [sources.size]);
 
   const addNewDevice = async () => {
@@ -166,41 +155,28 @@ const App = () => {
       return;
     }
 
-    const allLabels = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
+    updateSourceBroadcastOptions(id, { sourceId: newLabel });
+  };
 
-    let dedupedLabel = newLabel;
-
-    if (allLabels.includes(newLabel)) {
-      dedupedLabel = newLabel.replace(/\((?<dupeCounter>\d+)\)$|$/, (match, dupeCounter) => {
-        if (!match) {
-          return ' (2)';
-        }
-
-        return `(${parseInt(dupeCounter, 10) + 1})`;
-      });
-    }
-
-    updateSourceBroadcastOptions(id, { sourceId: dedupedLabel });
+  const handleRemove = (id: string) => {
+    stopStreamingToSource(id);
+    removeStream(id);
   };
 
   const handleSelectBitrate = (id: string, bitrate: number) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { bandwidth: bitrate });
     }
-
-    updateSourceBroadcastOptions(id, { bandwidth: bitrate });
   };
 
   const handleSelectCodec = (id: string, codec: VideoCodec) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { codec });
     }
-
-    updateSourceBroadcastOptions(id, { codec });
   };
 
   const handleSelectVideoResolution = async (id: string, resolution: Resolution) => {
@@ -210,11 +186,21 @@ const App = () => {
   const handleSetSimulcast = (id: string, simulcast: boolean) => {
     const source = sources.get(id);
 
-    if (!source) {
-      return;
+    if (source) {
+      updateSourceBroadcastOptions(id, { simulcast });
     }
+  };
 
-    updateSourceBroadcastOptions(id, { simulcast });
+  const handleSrcMediaStreamReady = (id: string) => (mediaStream: MediaStream) => {
+    const source = sources.get(id);
+
+    if (!source?.broadcastOptions.mediaStream) {
+      updateSourceMediaStream(id, mediaStream);
+
+      if (allStreamsLive) {
+        startStreamingToSource(id, mediaStream);
+      }
+    }
   };
 
   const handleStartDisplayCapture = async () => {
@@ -232,17 +218,21 @@ const App = () => {
       }
     }
 
-    setAllLive(true);
+    setAllStreamsLive(true);
   };
-
-  // TODO: const handleStopDisplayCapture = () => {}
 
   const handleStopAllLive = () => {
     for (const id of sources.keys()) {
       stopStreamingToSource(id);
     }
 
-    setAllLive(false);
+    setAllStreamsLive(false);
+  };
+
+  const handleStopLive = (id: string) => {
+    stopStreamingToSource(id);
+
+    setAllStreamsLive(false);
   };
 
   const handleSubmitLocalFile = (event: FormEvent) => {
@@ -277,15 +267,12 @@ const App = () => {
 
     const codecListSimulcast = simulcast ? codecList.filter((item) => item !== 'vp9') : codecList;
 
-    // TODO: reenable this for granular connecting/streaming states in #195
-    // const isConnecting = state === 'connecting';
-    const isConnecting = isPublisherConnecting;
+    const isConnecting = state === 'connecting';
     const isReady = state === 'ready';
-    // const isStreaming = state === 'streaming';
-    const isStreaming = isPublisherStreaming;
+    const isStreaming = state === 'streaming';
 
-    const { height, width } = mediaStream.getVideoTracks()[0].getSettings();
-    const resolution = `${width}x${height}`;
+    const { height, width } = mediaStream?.getVideoTracks()[0].getSettings() ?? {};
+    const resolution = height && width ? `${width}x${height}` : '';
 
     return {
       bitrate: {
@@ -318,7 +305,7 @@ const App = () => {
         handleSelect: (data: unknown) => {
           handleSelectVideoResolution(id, data as Resolution);
         },
-        isDisabled: type !== StreamTypes.MEDIA || isPublisherConnecting,
+        isDisabled: type !== StreamTypes.MEDIA || isConnecting,
         isHidden: type !== StreamTypes.MEDIA,
         options: resolutions ?? [],
         value: resolution,
@@ -334,10 +321,9 @@ const App = () => {
     };
   };
 
+  const isMultiSourceStreaming = Array.from(sources).filter(([, { publish }]) => publish.isActive()).length > 1;
   const isPublisherConnecting = Array.from(sources).some(([, { state }]) => state === 'connecting');
   const isPublisherStreaming = Array.from(sources).some(([, { state }]) => state === 'streaming');
-
-  const isMultiSourceStreaming = Array.from(sources).filter(([, { publish }]) => publish.isActive()).length > 1;
 
   const [maxHeight, maxWidth] = useMemo(() => {
     switch (streams.size) {
@@ -377,6 +363,7 @@ const App = () => {
               isLoading={isPublisherConnecting}
               start={handleStartAllLive}
               stop={handleStopAllLive}
+              testId={isPublisherStreaming ? 'stop-all-live-indicator' : 'start-all-live-indicator'}
             />
           </Stack>
           <Stack alignItems="flex-end" direction="column" spacing="4">
@@ -401,30 +388,48 @@ const App = () => {
               state,
               statistics,
             } = source;
-            const { type } = streams.get(id) ?? {};
+            const { objectUrl, type } = streams.get(id) ?? {};
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
-            const isStreaming = state === 'streaming';
             const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
+
+            // Kill if device is disconnected, screenshare has stopped, etc
+            mediaStream?.getTracks().forEach((track) => {
+              track.addEventListener('ended', () => {
+                handleRemove(id);
+              });
+            });
 
             return (
               <WrapItem flexBasis={flexBasis} key={id} maxHeight={maxHeight} maxWidth={maxWidth} test-id={testId}>
                 <PublisherVideoView
-                  isActive={isStreaming}
-                  settingsProps={settings(id)}
+                  canTogglePlayback={type === StreamTypes.LOCAL}
+                  isConnecting={state === 'connecting'}
+                  isStreaming={state === 'streaming'}
+                  onRemove={() => handleRemove(id)}
+                  onStartLive={() => startStreamingToSource(id)}
+                  onStopLive={() => handleStopLive(id)}
+                  settings={settings(id)}
                   statistics={statistics}
+                  streamType={type}
                   videoProps={{
-                    displayFullscreenButton: false,
-                    displayVideo: mediaStream.getVideoTracks()[0].enabled,
                     label,
-                    mediaStream: mediaStream,
+                    mediaStream,
                     mirrored: type === StreamTypes.MEDIA,
+                    onSrcMediaStreamReady: objectUrl ? handleSrcMediaStreamReady(id) : undefined,
                     placeholderNode: (
-                      <Box color="dolbyNeutral.700" height="174px" position="absolute" width="174px">
-                        <IconProfile />
-                      </Box>
+                      <Center
+                        background="dolbyNeutral.800"
+                        color="dolbyNeutral.700"
+                        height="100%"
+                        position="absolute"
+                        width="100%"
+                      >
+                        <IconProfile height="174px" width="174px" />
+                      </Center>
                     ),
-                    showDotIndicator: isStreaming,
+                    showDotIndicator: state === 'streaming',
+                    src: objectUrl,
                   }}
                 />
               </WrapItem>
@@ -432,9 +437,9 @@ const App = () => {
           })}
         </Wrap>
       </Flex>
-      <HStack alignItems="center" bottom="32px" h="48px" pos="fixed" w="96%">
+      <HStack alignItems="center" bottom="32px" h="48px" pointerEvents="none" position="fixed" width="96%">
         <Spacer />
-        <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end">
+        <Flex alignItems="center" direction="row" gap={2} justifyContent="flex-end" pointerEvents="all">
           <PopupMenu
             buttonTitle="Add Source"
             disabled={streams.size >= MAX_SOURCES}

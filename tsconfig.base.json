@@ -29,6 +29,7 @@
       "@millicast-react/input": ["libs/input/src/index.tsx"],
       "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
       "@millicast-react/participant-count": ["libs/participant-count/src/index.tsx"],
+      "@millicast-react/popover": ["libs/popover/src/index.tsx"],
       "@millicast-react/popup-menu": ["libs/popup-menu/src/index.tsx"],
       "@millicast-react/share-link-button": ["libs/share-link-button/src/index.tsx"],
       "@millicast-react/statistics-popover": ["libs/statistics-popover/src/index.tsx"],

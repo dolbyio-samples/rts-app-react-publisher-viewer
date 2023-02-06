@@ -1,12 +1,12 @@
 import { StreamStats } from '@millicast/sdk';
 
 import { VideoViewProps } from '@millicast-react/video-view';
-
-import { VideoSettingsDrawerProps } from './video-settings-drawer';
+import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 
 export interface ViewerVideoViewProps {
-  isActive: boolean;
-  settingsProps?: Omit<VideoSettingsDrawerProps, 'isOpen' | 'onClose'>;
+  isStreaming?: boolean;
+  settings?: SettingsPopoverProps;
+  showControlBar?: boolean;
   statistics?: StreamStats;
-  videoProps: VideoViewProps;
+  videoProps?: VideoViewProps;
 }

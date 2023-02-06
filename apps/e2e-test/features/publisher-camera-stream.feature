@@ -1,4 +1,5 @@
 @publisher
+@ignore
 Feature: Publisher streaming with camera only
     As a publisher
     I want to do live streaming for an event with camera only

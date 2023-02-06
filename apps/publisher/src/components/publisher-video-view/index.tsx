@@ -1,44 +1,95 @@
-import { Box, useDisclosure } from '@chakra-ui/react';
-import React from 'react';
+import { Box, CloseButton } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
-import { IconSettings } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
-import StatisticsPopover from '@millicast-react/statistics-popover';
+import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 import VideoView from '@millicast-react/video-view';
 
 import { PublisherVideoViewProps } from './types';
-import VideoSettingsDrawer from './video-settings-drawer';
+import VideoControlBar from './video-control-bar';
 
-const PublisherVideoView = ({ isActive, settingsProps, statistics, videoProps }: PublisherVideoViewProps) => {
-  const { onClose: handleSettingsClose, onOpen: handleSettingsOpen, isOpen: isSettingsOpen } = useDisclosure();
-
+const PublisherVideoView = ({
+  canTogglePlayback,
+  isConnecting,
+  isStreaming,
+  onRemove: handleRemove,
+  onStartLive: handleStartLive,
+  onStopLive: handleStopLive,
+  settings,
+  statistics,
+  streamType,
+  videoProps,
+}: PublisherVideoViewProps) => {
   const { mediaStream } = videoProps;
 
+  const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
+  const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
+
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+
+  const handleToggleAudio = () => {
+    setIsAudioEnabled((prevIsAudioEnabled) => {
+      audioTrack.enabled = !prevIsAudioEnabled;
+
+      return audioTrack.enabled;
+    });
+  };
+
+  const handleTogglePlayback = () => {
+    setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
+  };
+
+  const handleToggleVideo = () => {
+    if (videoTrack) {
+      setIsVideoEnabled((prevIsVideoEnabled) => {
+        videoTrack.enabled = !prevIsVideoEnabled;
+
+        return videoTrack.enabled;
+      });
+    }
+  };
+
   return (
-    <Box height="100%" overflow="hidden" margin="0 auto" position="relative" width="100%">
-      <VideoView {...videoProps} />
-      {isActive && statistics ? (
-        <Box bottom="12px" left="18px" position="absolute">
-          <StatisticsPopover statistics={statistics} />
-        </Box>
-      ) : undefined}
-      <IconButton
-        background="transparent"
-        bottom="12px"
-        icon={<IconSettings />}
-        isDisabled={!(mediaStream && mediaStream.getVideoTracks().length)}
-        isRound
-        onClick={handleSettingsOpen}
-        position="absolute"
-        right="18px"
-        reversed
-        size="sm"
-        testId="settingsOpenButton"
-        tooltipProps={{ label: 'Settings' }}
+    <Box
+      height="100%"
+      margin="0 auto"
+      overflow="hidden"
+      position="relative"
+      sx={{
+        ':hover': {
+          '&>*': { opacity: 1 },
+        },
+      }}
+      width="100%"
+    >
+      <VideoView
+        displayVideo={isVideoEnabled}
+        muted={streamType === StreamTypes.MEDIA || !isAudioEnabled}
+        paused={!isPlaybackActive}
+        {...videoProps}
       />
-      {settingsProps ? (
-        <VideoSettingsDrawer isOpen={isSettingsOpen} onClose={handleSettingsClose} {...settingsProps} />
-      ) : undefined}
+      <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
+      <VideoControlBar
+        activeAudio={isAudioEnabled}
+        activePlayback={isPlaybackActive}
+        activeVideo={isVideoEnabled}
+        canTogglePlayback={canTogglePlayback}
+        hasAudioTrack={!!audioTrack}
+        hasVideoTrack={!!videoTrack}
+        isConnecting={isConnecting}
+        isStreaming={isStreaming}
+        onStartLive={handleStartLive}
+        onStopLive={handleStopLive}
+        onToggleAudio={handleToggleAudio}
+        onTogglePlayback={handleTogglePlayback}
+        onToggleVideo={handleToggleVideo}
+        opacity={0}
+        settings={settings}
+        statistics={statistics}
+        streamType={streamType}
+        test-id="videoControlBar"
+      />
     </Box>
   );
 };
