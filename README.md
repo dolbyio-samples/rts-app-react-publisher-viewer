@@ -144,7 +144,7 @@ yarn nx preview viewer
 #### Run the end to end test
 
 Refer to this guide [here](apps/e2e-test/README.md).
-**note** Please ensure your RTS tokens are present either in a .env file or as environment variables. 
+**note** Please ensure your RTS tokens are present either in a .env file or as environment variables.
 
 ## Browser compatibility
 
