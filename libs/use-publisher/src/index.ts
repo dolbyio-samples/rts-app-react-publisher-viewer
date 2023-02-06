@@ -14,7 +14,7 @@ import { bitrateList } from './constants';
 
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
-import { validateDuplicateSourceIds } from './utils';
+import { adjustDuplicateSourceIds } from './utils';
 
 const usePublisher = ({
   handleError,
@@ -50,7 +50,7 @@ const usePublisher = ({
 
       const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
 
-      const dedupedSourceId = validateDuplicateSourceIds(label ?? streamId, allSourceIds);
+      const dedupedSourceId = adjustDuplicateSourceIds(label ?? streamId, allSourceIds);
 
       const broadcastOptions = {
         bandwidth: bitrateList[0].value,
@@ -206,7 +206,7 @@ const usePublisher = ({
     if (broadcastOptions.sourceId) {
       const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
 
-      const dedupedSourceId = validateDuplicateSourceIds(broadcastOptions.sourceId, allSourceIds);
+      const dedupedSourceId = adjustDuplicateSourceIds(broadcastOptions.sourceId, allSourceIds);
 
       dispatch({
         broadcastOptions: { ...broadcastOptions, sourceId: dedupedSourceId },
