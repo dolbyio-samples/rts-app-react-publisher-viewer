@@ -107,10 +107,10 @@ function App() {
   useEffect(() => {
     const date = new Date();
     setupPublisher(
-      import.meta.env.VITE_MILLICAST_STREAM_PUBLISHING_TOKEN,
-      import.meta.env.VITE_MILLICAST_STREAM_NAME || date.valueOf().toString(),
-      import.meta.env.VITE_MILLICAST_STREAM_ID,
-      import.meta.env.VITE_MILLICAST_VIEWER_BASE_URL
+      import.meta.env.VITE_RTS_STREAM_PUBLISHING_TOKEN,
+      import.meta.env.VITE_RTS_STREAM_NAME || date.valueOf().toString(),
+      import.meta.env.VITE_RTS_ACCOUNT_ID,
+      import.meta.env.VITE_RTS_VIEWER_BASE_URL
     );
   }, []);
 
