@@ -7,9 +7,9 @@ on:
   pull_request:
 
 env:
-  VITE_MILLICAST_STREAM_NAME: ${{ secrets.STREAM_NAME }}
-  VITE_MILLICAST_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-  VITE_MILLICAST_STREAM_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
+  VITE_RTS_STREAM_NAME: ${{ secrets.STREAM_NAME }}
+  VITE_RTS_STREAM_PUBLISHING_TOKEN: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  VITE_RTS_ACCOUNT_ID: ${{ secrets.STREAM_ACCOUNT_ID }}
   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
   BRANCH_REF: ${{ github.ref }}
   PR_TITLE: ${{ github.event.pull_request.title }}
