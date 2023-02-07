@@ -30,7 +30,7 @@ yarn
 
 ## [Optional] Publisher and Viewer app installation locally
 
-Follow the RTS Tokens section of the main ReadMe [ReadMe file](../../README.md) to configure the token as environment variable
+Follow the RTS Tokens section of the main ReadMe [ReadMe file](../../README.md) to configure the token as environment variable.
 
 To launch the Publisher and Viewer App locally, run the following command:
 

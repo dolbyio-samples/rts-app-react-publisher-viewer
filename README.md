@@ -83,7 +83,7 @@ Once created, you can grab the stream name, publisher token and stream ID from t
 
 For your application to pick these values up, you can either set them as environment variables or store them in a .env file. The `.env` file must be under `apps/publisher/` and `apps/viewer/`.
 
-**note** : This file is typically not added to git. When you clone the repo, you will not find this file and will have to create one yourself.
+**note** : This file is typically not added to git. When you clone the repo, you will not find this file and will have to create one yourself. The `.env.example` app can be used as a template with basic keys. Rename the file to `.env` and insert your tokens to get the file up and running.
 
 ![env file folder structure](docs/img/env.png)
 
