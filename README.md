@@ -147,4 +147,4 @@ There are known limitations with webRTC and Mozilla Firefox, and therefore the b
 
 The apps and components provided here should be used as reference material. Although we have taken great care in creating these, please note that they are not intended for real production use and there may be some bugs.
 
-Please report any issues under `Issues` on our [GitHub](https://github.com/dolbyio-samples/stream-demo-react-RTS/issues) and appropriately label them. Please review the existing open issues before raising a new one.
+Please report any issues under `Issues` on our [GitHub](https://github.com/dolbyio-samples/rts-app-react-publisher-viewer/issues) and appropriately label them. Please review the existing open issues before raising a new one.
