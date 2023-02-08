@@ -402,7 +402,7 @@ const App = () => {
                   canTogglePlayback={type === StreamTypes.LOCAL}
                   isConnecting={state === 'connecting'}
                   isStreaming={state === 'streaming'}
-                  onRemove={() => handleRemove(id)}
+                  onRemove={sources.size > 1 ? () => handleRemove(id) : undefined}
                   onStartLive={() => startStreamingToSource(id)}
                   onStopLive={() => handleStopLive(id)}
                   settings={settings(id)}
