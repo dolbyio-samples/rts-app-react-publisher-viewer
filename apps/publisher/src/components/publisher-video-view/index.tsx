@@ -69,7 +69,9 @@ const PublisherVideoView = ({
         paused={!isPlaybackActive}
         {...videoProps}
       />
-      <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
+      {handleRemove ? (
+        <CloseButton color="white" onClick={handleRemove} position="absolute" right="4px" size="lg" top="4px" />
+      ) : undefined}
       <VideoControlBar
         activeAudio={isAudioEnabled}
         activePlayback={isPlaybackActive}

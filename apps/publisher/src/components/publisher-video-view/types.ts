@@ -9,7 +9,7 @@ export interface PublisherVideoViewProps {
   canTogglePlayback?: boolean;
   isConnecting?: boolean;
   isStreaming?: boolean;
-  onRemove: () => void;
+  onRemove?: () => void;
   onStartLive: () => void;
   onStopLive: () => void;
   settings?: SettingsPopoverProps;
