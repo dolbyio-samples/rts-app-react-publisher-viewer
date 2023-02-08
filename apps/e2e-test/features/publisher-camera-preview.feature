@@ -1,5 +1,5 @@
 @publisher
-Feature: Publisher Camera Preview - Not Live
+Feature: Publisher Camera Preview Not Live
     As a publisher
     I want to setup the cmaera stream configuration on Preview page
     So that I can cmaera stream with required configuration
@@ -118,7 +118,7 @@ Feature: Publisher Camera Preview - Not Live
         When the publisher hovers the mouse over the "camera view go live button"
         Then the "tooltip" should not be displayed
 
-    Scenario: Publisher app should load the camera view when camera view is closed on preview page
+    Scenario: Publisher settings should be preserved on preview page
         When the publisher configures "camera view" setting with the following values only
             | source name  | BuiltIn Camera |
             | simulcast    | On             |
@@ -132,6 +132,6 @@ Feature: Publisher Camera Preview - Not Live
             | resolution   | Resolution  - 1280x720 |
             | bitrate      | Bitrate  - 1 Mbps      |
 
-        When the publisher clicks on the "camera view close button"
+    Scenario: Publisher should not be able to close the single camera view
         Then the "camera view" should be displayed with default values
-        And the "camera view" setting should be displayed with default values
+        And the "camera view close button" should not be displayed
