@@ -170,4 +170,3 @@ Please report any issues under `Issues` on our [GitHub](https://github.com/dolby
 ## More resources
 
 Looking for more sample apps and projects? Head to the [Project Gallery](https://docs.dolby.io/communications-apis/page/gallery).
-
