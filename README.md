@@ -32,9 +32,9 @@ To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard
 - [x] Screen sharing
 - [x] Mute audio and video
 - [x] Resolution, bandwidth, codec, and bitrate selection
-- [x] Ability to stream from up to 4 sources. See [here](https://docs.dolby.io/streaming-apis/docs/create-multi-view-web-app) for bandwidth limitations.
-- [x] Ability to stream a local video file
-- [x] Observing stream statistics for each simulcast layer
+- [ ] Ability to stream from up to 4 sources. See [here](https://docs.dolby.io/streaming-apis/docs/create-multi-view-web-app) for bandwidth limitations.
+- [ ] Ability to stream a local video file
+- [ ] Observing stream statistics for each simulcast layer
 - [ ] Recording your streams
 
 ### RTS Viewer
@@ -43,7 +43,7 @@ To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard
 - [x] Mute audio and video
 - [x] Observing stream statistics
 - [x] Select incoming stream quality with simulcast
-- [x] Ability to see stats for each individual source
+- [ ] Ability to see stats for each individual source
 - [ ] Chromecast support
 - [ ] Picture in picture support
 
