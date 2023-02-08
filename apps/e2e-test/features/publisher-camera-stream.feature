@@ -88,6 +88,7 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with default values
 
          # Screenshot Validations
+        And wait for "1" seconds
         And take the screenshot of "main view" at path "pub_camera_video_toggle_off_1.png"
         And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_1.png"
         And wait for "1" seconds
@@ -108,6 +109,7 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with default values
         
         # Screenshot Validations
+        And wait for "1" seconds
         And take the screenshot of "main view" at path "pub_camera_video_toggle_off_3.png"
         And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_3.png"
         And the image "pub_camera_video_toggle_off_1.png" should not be equal to image "pub_camera_video_toggle_off_3.png"
@@ -126,6 +128,7 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with default values
 
         # Screenshot Validations
+        And wait for "1" seconds
         And take the screenshot of "main view" at path "pub_camera_video_toggle_off_4.png"
         And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_4.png"
         And the image "pub_camera_video_toggle_off_1.png" should be equal to image "pub_camera_video_toggle_off_4.png"
@@ -207,7 +210,8 @@ Feature: Publisher streaming with camera only
         And the "stream list loading items" should not be displayed
         And the "main view" should be displayed with default values
 
-         # Screenshot Validations
+        # Screenshot Validations
+        And wait for "1" seconds
         And take the screenshot of "main view" at path "pub_camera_audio_video_toggle_off_1.png"
         And take the screenshot of "camera tile list item" at path "pub_camera_audio_video_tile_toggle_off_1.png"
         And wait for "1" seconds
@@ -230,7 +234,8 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with default values
         And the "stream list loading items" should not be displayed
         
-         # Screenshot Validations
+        # Screenshot Validations
+        And wait for "1" seconds
         And take the screenshot of "main view" at path "pub_camera_audio_video_toggle_off_3.png"
         And take the screenshot of "camera tile list item" at path "pub_camera_audio_video_tile_toggle_off_3.png"
         And the image "pub_camera_audio_video_toggle_off_1.png" should not be equal to image "pub_camera_audio_video_toggle_off_3.png"
