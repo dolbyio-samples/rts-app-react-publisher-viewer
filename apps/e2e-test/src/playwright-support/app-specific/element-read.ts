@@ -7,7 +7,7 @@ import { TargetSelector } from '../../utils/selector-mapper';
 import { Screen, State, Status } from '../../utils/types';
 import { click } from '../generic/element-action';
 import { getLocator } from '../generic/element-helper';
-import { getElementCount, getElementState, getElementText, getTableData } from '../generic/element-read';
+import { getElementCount, getElementText, getTableData } from '../generic/element-read';
 import { verifyElementState } from '../generic/element-verification';
 
 export const getViewScreenSize = async (page: Page, selector: TargetSelector, index?: number): Promise<Screen> => {

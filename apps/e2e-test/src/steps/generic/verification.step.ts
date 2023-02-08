@@ -1,6 +1,5 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
-import { Page } from 'playwright';
 import { defaultReportPath } from '../../config/defaults';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';

@@ -51,7 +51,9 @@ jobs:
           yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
       - name: build & test
         run: |
+          export VITE_RTS_STREAM_NAME=${{ secrets.STREAM_NAME }}
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
+          unset VITE_RTS_STREAM_NAME
           rm -rf dist
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
             search='https://'
