@@ -1,5 +1,8 @@
 import { logger } from '../../logger';
 import assert from 'assertion';
+import fs from 'fs';
+import pixelmatch from 'pixelmatch';
+import { PNG } from 'pngjs';
 
 export const verifyMatch = (actual: string, expPattern: string, message?: string): void => {
   message = `${message || ''}\n\tExpected RegEx: ${expPattern}\n\tActual: ${actual}`;
@@ -54,3 +57,31 @@ export const verifyArrayContains = (
   logger.trace(`Verify array should contains ${expected}`);
   assert.has(actualArray, expected, message);
 };
+
+export function verifyImageEqual(actualImage: string, expectedImage: string, diffOutput: string, threshold = 0.15) {
+  const pixelDiffCount = imageCompare(actualImage, expectedImage, diffOutput, threshold);
+  const message = `Image comparison failed - ${pixelDiffCount}.\n\tActual Image: ${actualImage}\n\tExpected Image: ${expectedImage}.\n\tDiff Image: ${diffOutput}.`;
+  assert.equal(pixelDiffCount, 0, message);
+}
+
+export function verifyImageNotEqual(actualImage: string, expectedImage: string, diffOutput: string, threshold = 0.15) {
+  const pixelDiffCount = imageCompare(actualImage, expectedImage, diffOutput, threshold);
+  const message = `Image comparison failed - ${pixelDiffCount}.\n\tActual Image: ${actualImage}\n\tExpected Image: ${expectedImage}.\n\tDiff Image: ${diffOutput}.`;
+  assert.notEqual(pixelDiffCount, 0, message);
+}
+
+function imageCompare(actualImage: string, expectedImage: string, diffOutput: string, threshold = 0.15) {
+  logger.trace(`Compare image actual: ${actualImage} , expected: ${expectedImage}, and diff Image: ${diffOutput}`);
+  const actualImg = PNG.sync.read(fs.readFileSync(actualImage));
+  const expectedImg = PNG.sync.read(fs.readFileSync(expectedImage));
+
+  const { width, height } = expectedImg;
+  const diff = new PNG({ width, height });
+
+  const numDiffPixels = pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
+    threshold: threshold,
+  });
+
+  fs.writeFileSync(diffOutput, PNG.sync.write(diff));
+  return numDiffPixels;
+}

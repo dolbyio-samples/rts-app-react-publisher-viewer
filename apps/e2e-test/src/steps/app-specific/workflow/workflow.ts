@@ -30,7 +30,10 @@ export const verifyView = async (
   const keys = Object.keys(expectedData);
   let keyCount = 0;
 
-  let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, viewName);
+  let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} loading`);
+  await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, viewName);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
 
   if (keys.includes('size')) {
@@ -81,6 +84,20 @@ export const verifyView = async (
     logger.info(`Verify ${viewName} video button status`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} video button`);
     await validateStatus(scWorld, targetSelector, expectedData['video button status'] as Status, elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('playback button')) {
+    logger.info(`Verify ${viewName} playback button state`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} playback button`);
+    await validateState(scWorld, targetSelector, expectedData['playback button'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('playback button status')) {
+    logger.info(`Verify ${viewName} playback button status`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} playback button`);
+    await validateStatus(scWorld, targetSelector, expectedData['playback button status'] as Status, elementIndex);
     keyCount++;
   }
 
@@ -368,6 +385,13 @@ export const verifySettings = async (
     logger.info(`Verify ${viewName} codec`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown default`);
     await validateText(scWorld, targetSelector, expectedData['codec'], elementIndex);
+    keyCount++;
+  }
+
+  if (keys.includes('quality')) {
+    logger.info(`Verify ${viewName} quality`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown default`);
+    await validateText(scWorld, targetSelector, expectedData['quality'], elementIndex);
     keyCount++;
   }
 

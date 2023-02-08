@@ -1,6 +1,5 @@
 @publisher
-@only
-Feature: Publisher Cmaera Preview - Not Live
+Feature: Publisher Camera Preview - Not Live
     As a publisher
     I want to setup the cmaera stream configuration on Preview page
     So that I can cmaera stream with required configuration

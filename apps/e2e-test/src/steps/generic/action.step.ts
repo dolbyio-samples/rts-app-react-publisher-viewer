@@ -1,8 +1,9 @@
 /* eslint-disable func-names */
 import { When } from '@cucumber/cucumber';
+import { defaultReportPath } from '../../config/defaults';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { check, click, hover, uncheck } from '../../playwright-support/generic/element-action';
+import { check, click, hover, takeScreenshot, uncheck } from '../../playwright-support/generic/element-action';
 
 When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string) {
   const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
@@ -29,3 +30,12 @@ When(/^(?:the .*|I) hovers the mouse over the "([^"]*)"$/, async function (this:
   const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
   await hover(this.currentPage, targetSelector);
 });
+
+When(
+  /^(?:I )?take the screenshot of "([^"]*)" at path "([^"]*)"$/,
+  async function (this: ScenarioWorld, selectorName: string, imgName: string) {
+    const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+    const screenshotPath = `${defaultReportPath}/image-compare/${imgName}`;
+    await takeScreenshot(this.currentPage, targetSelector, screenshotPath);
+  }
+);

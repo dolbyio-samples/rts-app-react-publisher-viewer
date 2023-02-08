@@ -136,7 +136,7 @@ const App = () => {
           </VStack>
         ) : (
           <HStack height="573px" maxHeight="573px">
-            <Box height="100%" test-id="millicastVideo">
+            <Box height="100%" test-id="millicastVideoMain">
               <ViewerVideoView
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}

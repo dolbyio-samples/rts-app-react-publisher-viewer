@@ -40,3 +40,17 @@ export const clearText = async (page: Page, selector: TargetSelector, index?: nu
   const locator = getLocator(page, selector, index);
   await locator.clear();
 };
+
+export const takeScreenshot = async (
+  page: Page,
+  selector: TargetSelector,
+  path: string,
+  index?: number
+): Promise<void> => {
+  logger.trace(`take screenshot of selector: ${selector}`);
+  const locator = getLocator(page, selector, index);
+  await locator.screenshot({
+    animations: 'disabled',
+    path: path,
+  });
+};

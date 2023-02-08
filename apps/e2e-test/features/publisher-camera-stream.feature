@@ -5,11 +5,13 @@ Feature: Publisher streaming with camera only
 
     Background: Publisher camera preiew page
         Given a publisher is on the "preview" page
+        And a viewer is on the "waiting-room" page
+        And switch to "preview" page on "publisher" app
 
-    @only
-    Scenario: Verify the header information, settings options, camera view, stream stats when streaming with camera
+    Scenario: Verify the header information, settings options, camera view, stream stats and settings when streaming with camera
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "header" should be displayed with default values
         And the "camera view" should be displayed with default values
         And the "camera view" setting should be displayed with default values
@@ -17,12 +19,30 @@ Feature: Publisher streaming with camera only
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
 
-    @only
-    Scenario: Verify the publisher is redirected to preview page when streaming is stopped
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And wait for "1" seconds
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "header" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
 
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed
+
+    Scenario: Verify the publisher is redirected to preview page when streaming is stopped
+        # Publisher App
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page    
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
         And the "header" should be displayed with default values
@@ -31,139 +51,278 @@ Feature: Publisher streaming with camera only
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
 
-    @only
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        Then the viewer should be navigated to "waiting-room" page
+        And the "header" should be displayed with default values
+        And the "main view" should not be displayed
+
     Scenario: Stream duration is not zero when stream is live
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And wait for "5" seconds
         And the "header" should be displayed with following values only
             | timer text | regex: ^00:00:[0][4-9]$ |
 
-    @only
-    Scenario: Publisher should be able to toggle camera and microphone when streaming
-        And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And wait for "5" seconds
+        And the "header" should be displayed with following values only
+            | timer text | regex: ^00:00:[0][4-9]$ |     
 
-        When the publisher turns Off the "video of camera view"
-        And the publisher turns Off the "audio of camera view"
-        Then the "camera view" should be displayed with following values only
-            | video button status | Off                |
-            | audio button status | Off                |
-        And the "camera view video mute image" should be displayed
-
-        When the publisher turns On the "video of camera view"
-        And the publisher turns On the "audio of camera view"
-        Then the "camera view" should be displayed with default values
-        And the "camera view video mute image" should not be displayed
-
-    @only
     Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming
+        # Publisher App
         When the publisher turns Off the "video of camera view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | video button status     | Off    |
         And the "camera view video mute image" should be displayed
 
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with default values
+
+         # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_video_toggle_off_1.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_1.png"
+        And wait for "1" seconds
+        And take the screenshot of "main view" at path "pub_camera_video_toggle_off_2.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_2.png"
+        And the image "pub_camera_video_toggle_off_1.png" should be equal to image "pub_camera_video_toggle_off_2.png"
+        And the image "pub_camera_video_toggle_off_tile_1.png" should be equal to image "pub_camera_video_toggle_off_tile_2.png"
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "video of camera view"
         Then the "camera view" should be displayed with default values
         And the "camera view video mute image" should not be displayed
 
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with default values
+        
+        # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_video_toggle_off_3.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_3.png"
+        And the image "pub_camera_video_toggle_off_1.png" should not be equal to image "pub_camera_video_toggle_off_3.png"
+        And the image "pub_camera_video_toggle_off_tile_1.png" should not be equal to image "pub_camera_video_toggle_off_tile_3.png"
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns Off the "video of camera view"
         And the "camera view" should be displayed with following values
             | video button status     | Off     |
         And the "camera view video mute image" should be displayed
 
-    @only
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with default values
+
+        # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_video_toggle_off_4.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_video_toggle_off_tile_4.png"
+        And the image "pub_camera_video_toggle_off_1.png" should be equal to image "pub_camera_video_toggle_off_4.png"
+        And the image "pub_camera_video_toggle_off_tile_1.png" should be equal to image "pub_camera_video_toggle_off_tile_4.png"
+
     Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming
+        # Publisher App
         When the publisher turns Off the "audio of camera view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | audio button status | Off  |
         And the "camera view video mute image" should not be displayed
 
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with default values
+        
+        # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_audio_toggle_off_1.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_toggle_off_tile_1.png"
+        And wait for "1" seconds
+        And take the screenshot of "main view" at path "pub_camera_audio_toggle_off_2.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_toggle_off_tile_2.png"
+        And the image "pub_camera_audio_toggle_off_1.png" should not be equal to image "pub_camera_audio_toggle_off_2.png"
+        And the image "pub_camera_audio_toggle_off_tile_1.png" should not be equal to image "pub_camera_audio_toggle_off_tile_2.png"
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "audio of camera view"
         Then the "camera view" should be displayed with default values
         And the "camera view video mute image" should not be displayed
 
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "main view" should be displayed with default values
+        And the "stream list loading items" should not be displayed
+        
+        # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_audio_toggle_off_3.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_toggle_off_tile_3.png"
+        And the image "pub_camera_audio_toggle_off_1.png" should not be equal to image "pub_camera_audio_toggle_off_3.png"
+        And the image "pub_camera_audio_toggle_off_tile_1.png" should not be equal to image "pub_camera_audio_toggle_off_tile_3.png"
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns Off the "audio of camera view"
         Then the "camera view" should be displayed with following values only
             | audio button status | Off  |
         And the "camera view video mute image" should not be displayed
 
-    Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
-        Given a publisher is on the "preview" page
-        And the publisher turns Off the "camera of camera view"
-        And the publisher turns Off the "microphone of camera view"
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values only
-            | camera button status     | Off                |
-            | microphone button status | Off                |
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "main view" should be displayed with default values
+        And the "stream list loading items" should not be displayed
 
-        When the publisher turns On the "camera of camera view"
-        And the publisher turns On the "microphone of camera view"
+        # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_audio_toggle_off_4.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_toggle_off_tile_4.png"
+        And the image "pub_camera_audio_toggle_off_1.png" should not be equal to image "pub_camera_audio_toggle_off_4.png"
+        And the image "pub_camera_audio_toggle_off_tile_1.png" should not be equal to image "pub_camera_audio_toggle_off_tile_4.png"
+
+    Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
+        # Viewer App
+        And the publisher turns Off the "video of camera view"
+        And the publisher turns Off the "audio of camera view"
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with following values only
+            | video button status | Off                |
+            | audio button status | Off                |
+        And the "camera view video mute image" should be displayed
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with default values
+
+         # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_audio_video_toggle_off_1.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_video_tile_toggle_off_1.png"
+        And wait for "1" seconds
+        And take the screenshot of "main view" at path "pub_camera_audio_video_toggle_off_2.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_video_tile_toggle_off_2.png"
+        And the image "pub_camera_audio_video_toggle_off_1.png" should be equal to image "pub_camera_audio_video_toggle_off_2.png"
+        And the image "pub_camera_audio_video_tile_toggle_off_1.png" should be equal to image "pub_camera_audio_video_tile_toggle_off_2.png"
+
+        # Viewer App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher turns On the "video of camera view"
+        And the publisher turns On the "audio of camera view"
         Then the "camera view" should be displayed with following values only
-            | camera button status     | On                 |
-            | microphone button status | On                 |
+            | video button status | On                 |
+            | audio button status | On                 |
+        And the "camera view video mute image" should not be displayed
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "main view" should be displayed with default values
+        And the "stream list loading items" should not be displayed
+        
+         # Screenshot Validations
+        And take the screenshot of "main view" at path "pub_camera_audio_video_toggle_off_3.png"
+        And take the screenshot of "camera tile list item" at path "pub_camera_audio_video_tile_toggle_off_3.png"
+        And the image "pub_camera_audio_video_toggle_off_1.png" should not be equal to image "pub_camera_audio_video_toggle_off_3.png"
+        And the image "pub_camera_audio_video_tile_toggle_off_1.png" should not be equal to image "pub_camera_audio_video_tile_toggle_off_3.png"
 
     Scenario: Publisher should be presented with Resolution and Bitrate Setting controls when streaming with camera
-        Given a publisher is on the "preview" page
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
 
         When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings" should be displayed
-        And the "camera view settings title" text should be "Settings"
-        And the number of "camera view settings dropdowns" count should be "2"
-        And the "camera view resolution dropdown" should be displayed
-        And the "camera view resolution dropdown" should be enabled
-        And the "camera view bitrate dropdown" should be displayed
-        And the "camera view bitrate dropdown" should be enabled
-        And the "camera view source name input" should not be displayed
-        And the "camera view codec dropdown" should not be displayed
-        And the "camera view simulcast switch" should not be displayed
+        Then the "settings popup" should be displayed
+        And the "settings title" text should be "Stream settings"
+        And the number of "settings dropdowns" count should be "2"
+        And the "resolution dropdown" should be displayed
+        And the "resolution dropdown" should be enabled
+        And the "bitrate dropdown" should be displayed
+        And the "bitrate dropdown" should be enabled
+        And the "resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
+        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 Kbps,250 Kbps" options
 
-    Scenario: Publisher should be presented with different resolutions under setting when streaming with camera
-        Given a publisher is on the "preview" page
+        And the "source name input" should not be displayed
+        And the "codec dropdown" should not be displayed
+        And the "simulcast switch" should not be displayed
+
+    Scenario: Viewer should be presented with quality Setting controls when streaming with camera
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        Then the publisher should be navigated to "publisher-streaming" page
 
-        When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings" should be displayed
-        And the "camera view resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with default values
 
-    Scenario: Publisher should be presented with different bitrate under setting when streaming with camera
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-
-        When the publisher clicks on the "camera view setting button"
-        Then the "camera view settings" should be displayed
-        And the "camera view bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 Kbps,250 Kbps" options
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the number of "settings dropdowns" count should be "1"
+        And the "quality dropdown" should be displayed
+        And the "quality dropdown" should be enabled
+        And the "quality dropdown options" should contain "Auto,High,Low" options
 
     Scenario: Verify source name is reflected correctly after modifing it when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
             | source name |  BuiltIn Camera |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | source name text   | BuiltIn Camera     |
             | stream info button | displayed\|enabled |
+        
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text   | BuiltIn Camera     |
+        
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "stream list item" with locator attribute "BuiltIn Camera" should be displayed
 
     Scenario: Publisher should be able to stream with <codec> codec and simulcast off when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
             | simulcast | Off       |
             | codec     | <codec>   |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
-        And the "camera view" stream stats should be displayed with following values
+        And the "camera view" setting should be displayed with default values
+        And the "camera view" stats should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed    
+
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the number of "settings dropdowns" count should be "1"
+        And the "quality dropdown" should be displayed
+        And the "quality dropdown" should be enabled
+        And the "quality dropdown options" should equal to "Auto" options
     Examples:
         |  codec  |
         |  h264   |
@@ -171,175 +330,37 @@ Feature: Publisher streaming with camera only
         |  vp9    |
     
     Scenario: Publisher should be able to stream with <codec> codec and simulcast ON when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
             | simulcast | On        |
             | codec     | <codec>   |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | stream info button | displayed\|enabled |
-        And the "camera view" stream stats with quality tabs should be displayed with following values
+        And the "camera view" stats with quality tabs should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed
+
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the number of "settings dropdowns" count should be "1"
+        And the "quality dropdown" should be displayed
+        And the "quality dropdown" should be enabled
+        And the "quality dropdown options" should contain "Auto,High,Low" options
     Examples:
         |  codec  |
         |  h264   |
         |  vp8    |
-
-    Scenario: Publisher should be able to stream with <resolution> resolution and simulcast ON when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
-            | simulcast     | On            |
-            | resolution    | <resolution>  |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-            
-        And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - <resolution> |
-            | bitrate    | Bitrate  - Auto            |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-    Examples:
-        |  resolution  |
-        |  640x480      |
-
-    Scenario: Publisher should be able to stream with <bitrate> bitrate and simulcast ON when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
-            | simulcast  | On         |
-            | bitrate    | <bitrate>  |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - <bitrate>       |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-    Examples:
-        |  bitrate    |
-        |  2 Mbps     |
-        |  1 Mbps     |
-        |  500 Kbps   |
-        |  250 Kbps   |
-
-    Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast ON when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
-            | simulcast    | On           |
-            | codec        | <codec>      |
-            | resolution   | <resolution> |
-            | bitrate      | <bitrate>    |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - <resolution> |
-            | bitrate    | Bitrate  - <bitrate>       |
-        And the "camera view" stream stats with quality tabs should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
-    Examples:
-        | codec |  resolution | bitrate    |
-        | vp8   |  640x480    | 2 Mbps     |
-        | h264  |  640x480    | 500 Kbps   |
-
-    Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast OFF when streaming with camera
-        Given a publisher is on the "preview" page
-        And the publisher configures "camera view" setting with the following values only
-            | simulcast    | Off          |
-            | codec        | <codec>      |
-            | resolution   | <resolution> |
-            | bitrate      | <bitrate>    |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - <resolution> |
-            | bitrate    | Bitrate  - <bitrate>       |
-        And the "camera view" stream stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
-    Examples:
-        | codec |  resolution | bitrate    |
-        | vp9   |  640x480    | 2 Mbps     |
-        | vp8   |  640x480    | 500 Kbps   |
-        | h264  |  640x480    | 250 Kbps   |
-
-    @ignore #Issue-259
-    Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with camera
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        
-        When the publisher configures "camera view" setting with the following values only
-            | bitrate      | <bitrate>    |
-        And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - <bitrate>       |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-    Examples:
-        |  bitrate    |
-        |  2 Mbps     |
-        |  500 Kbps   |
-
-    @ignore #Issue-259
-    Scenario: Publisher should be able to change the resolution to <resolution> when streaming is live with camera
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        
-        When the publisher configures "camera view" setting with the following values only
-            | resolution    | <resolution>    |
-        And the "camera view" setting should be displayed with following values only
-            | resolution    | Resolution  - <resolution>  |
-            | bitrate       | Bitrate  - Auto             |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-    Examples:
-        |  resolution  |
-        |  640x480     |
-
-    @ignore #Issue-258
-    Scenario: Publisher should be able to change the bitrate multiple time when streaming is live with camera
-        Given a publisher is on the "preview" page
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        
-        When the publisher configures "camera view" setting with the following values only
-            | bitrate     | 2 Mbps             |
-        Then the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 2 Mbps   |
-        
-        When the publisher configures "camera view" setting with the following values only
-            | bitrate     | 500 Kbps           |
-        Then the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
-        And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
-        And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-
-    @ignore #Issue-259
-    Scenario: Publisher settings should be preserved after the streaming is stopped when changed during streaming
-        Given a publisher is on the "preview" page
-        When the publisher configures "camera view" setting with the following values only
-            | source name | Dummy Camera View |
-            | codec       | vp8               |
-            | bitrate     | 1 Mbps            |
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "streaming" page
-        
-        When the publisher configures "camera view" setting with the following values only
-            | resolution  | 640x480  |
-            | bitrate     | 2 Mbps    |
-        And the publisher clicks on the "stop button"
-        Then the publisher should be navigated to "preview" page
-
-        And the "camera view" setting should be displayed with following values only
-            | resolution  | Resolution  - 640x480   |
-            | bitrate     | Bitrate  - 2 Mbps       |
-            | source name | Dummy Camera View       |
-        And the "camera view" should be displayed with following values
-            | source name text | Dummy Camera View |

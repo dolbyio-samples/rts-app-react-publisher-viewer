@@ -6,6 +6,7 @@ import { getData } from '../../hooks/utils';
 import {
   verifyDeviceStatus,
   verifyOptions,
+  verifyOptionsContains,
   verifyViewScreenSize,
 } from '../../playwright-support/app-specific/element-verification';
 import { verifyElementState } from '../../playwright-support/generic/element-verification';
@@ -48,6 +49,17 @@ Then(
   async function (this: ScenarioWorld, selectorName: string, negate: string, options: string) {
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
     const verifyMethod = async () => {
+      await verifyOptionsContains(this.currentPage, targetSelector, options.split(','), !!negate);
+    };
+    await waitFor(verifyMethod);
+  }
+);
+
+Then(
+  /^the "([^"]*)" should( not)? equal to "([^"]*)" options$/,
+  async function (this: ScenarioWorld, selectorName: string, negate: string, options: string) {
+    const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+    const verifyMethod = async () => {
       await verifyOptions(this.currentPage, targetSelector, options.split(','), !!negate);
     };
     await waitFor(verifyMethod);
@@ -68,7 +80,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" should be displayed with default values$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" should be displayed with default values$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultViewData(`${appName} ${this.currentPageName} ${viewName}`);
@@ -77,7 +89,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" should be displayed with following values( only)?$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" should be displayed with following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultViewData(`${appName} ${this.currentPageName} ${viewName}`);
@@ -152,7 +164,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" setting should be displayed with default values$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" setting should be displayed with default values$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultSettingsData(`${appName} ${this.currentPageName} ${viewName}`);
@@ -161,7 +173,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" setting should be displayed with following values( only)?$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" setting should be displayed with following values( only)?$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
     const appName = getData(this, 'App');
     const defaultExpectedData = getDefaultSettingsData(`${appName} ${this.currentPageName} ${viewName}`);
@@ -180,7 +192,7 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stats( with quality tabs| with high quality tab)? should be displayed with default values$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" stats( with quality tabs| with high quality tab)? should be displayed with default values$/,
   async function (this: ScenarioWorld, elementPosition: string, viewName: string, qualityTab: string) {
     const appName = getData(this, 'App');
     const expectedData = getDefaultStatsData(`${appName} ${this.currentPageName} ${viewName}`);
@@ -189,11 +201,10 @@ Then(
 );
 
 Then(
-  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view)" stats( with quality tabs| with high quality tab)? should be displayed with following values( only)?$/,
+  /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|local file view|remote file view|main view)" stats( with quality tabs| with high quality tab)? should be displayed with following values( only)?$/,
   async function (
     this: ScenarioWorld,
     elementPosition: string,
-    appState: string,
     viewName: string,
     qualityTab: string,
     type: string,
