@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page, Locator } from 'playwright';
 
 import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
@@ -45,12 +45,21 @@ export const takeScreenshot = async (
   page: Page,
   selector: TargetSelector,
   path: string,
+  targetMaskSelectors?: TargetSelector[],
   index?: number
 ): Promise<void> => {
   logger.trace(`take screenshot of selector: ${selector}`);
   const locator = getLocator(page, selector, index);
+
+  targetMaskSelectors = targetMaskSelectors || [];
+  const maskLocators: Locator[] = [];
+  for (const maskSelector of targetMaskSelectors) {
+    maskLocators.push(getLocator(page, maskSelector, index));
+  }
+
   await locator.screenshot({
     animations: 'disabled',
+    mask: maskLocators,
     path: path,
   });
 };

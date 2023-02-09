@@ -2,7 +2,7 @@ video frame: '[test-id="videoView"]'
 #video frame: '//*[text()!="Loading..."]/ancestor::*[@test-id="videoViewWrapper"]/descendant::*[@test-id="videoView"]'
 source name: '[test-id=sourceName]'
 video mute icon: '[test-id=videoViewWrapper] svg'
-
+control bar: '[test-id=videoControlBar]'
 audio button: '[test-id=videoControlBar] [test-id=toggleAudioButton], [test-id=toggleMainStreamAudioButton]'
 video button: '[test-id=videoControlBar] [test-id=toggleVideoButton], [test-id=toggleMainStreamVideoButton]'
 full screen button: '[test-id=videoControlBar] [test-id=toggleFullScreenButton]'
@@ -185,6 +185,9 @@ main view stop button:
 main view close button:
   - '$ref: main view container'
   - '$ref: view close button'
+main view control bar:
+  - '$ref: main view container'
+  - '$ref: control bar'
 
 stream list items: '[test-id=millicastVideo]'
 stream list loading items:

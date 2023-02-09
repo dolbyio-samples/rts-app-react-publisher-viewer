@@ -559,6 +559,20 @@ export const configureSettings = async (
     keyCount++;
   }
 
+  if (keys.includes('quality')) {
+    logger.info(`Configure ${viewName} quality`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown`);
+    OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown options`);
+    await selectSettingDropdown(
+      scWorld.currentPage,
+      targetSelector,
+      OptionsSelector,
+      expectedData['quality'],
+      elementIndex
+    );
+    keyCount++;
+  }
+
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings close button`);
   await click(scWorld.currentPage, targetSelector, elementIndex);
 

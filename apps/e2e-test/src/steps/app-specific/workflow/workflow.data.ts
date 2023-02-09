@@ -172,6 +172,10 @@ const publisherStreamingLocalFileViewConfigureSettings: ViewData = {
   bitrate: 'Auto',
 };
 
+const viewerStreamingMainViewConfigureSettings: ViewData = {
+  quality: 'Auto',
+};
+
 const viewSettingsData: ViewData = {
   bitrate: 'Bitrate  - Auto',
   simulcast: 'On',
@@ -296,6 +300,8 @@ export const getDefaultConfigureSettings = (viewName: string) => {
       return publisherStreamingScreenViewConfigureSettings;
     case 'publisher publisher-streaming local file view':
       return publisherStreamingLocalFileViewConfigureSettings;
+    case 'viewer viewer-streaming main view':
+      return viewerStreamingMainViewConfigureSettings;
     default:
       throw Error(`Invalid view name ${viewName}`);
   }

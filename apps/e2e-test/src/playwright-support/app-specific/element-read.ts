@@ -19,8 +19,13 @@ export const getViewScreenSize = async (page: Page, selector: TargetSelector, in
 export const isViewFullScreen = async (page: Page, selector: TargetSelector, index?: number): Promise<boolean> => {
   logger.trace(`Is view full screen`);
   const locator = getLocator(page, selector, index);
-  const attributeValue = await locator.getAttribute('class');
-  return !!attributeValue?.includes('video--fullscreen');
+  const pageSize = page.viewportSize();
+  const elementSize = await locator.boundingBox();
+
+  if (pageSize?.height == elementSize?.height && pageSize?.width == elementSize?.width) {
+    return true;
+  }
+  return false;
 };
 
 export const getDeviceStatus = async (page: Page, selector: TargetSelector, index?: number): Promise<Status> => {
