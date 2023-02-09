@@ -135,8 +135,8 @@ const App = () => {
             <Text test-id="pageDesc">Please wait for livestream to begin.</Text>
           </VStack>
         ) : (
-          <HStack height="573px" justifyContent="center" maxHeight="573px" width="100%">
-            <Box height="100%" maxWidth="1024px" test-id="millicastVideo" width="70%">
+          <HStack height="573px" justifyContent="center" maxHeight="573px" width="100vw">
+            <Box height="100%" maxWidth="90vw" test-id="millicastVideo" width="80vw">
               <ViewerVideoView
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}
@@ -160,7 +160,7 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%" maxWidth="fit-content">
+            <VStack height="100%" maxWidth="20vW">
               {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
                 <Box
                   cursor="pointer"
