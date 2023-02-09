@@ -369,3 +369,224 @@ Feature: Publisher streaming with camera only
         |  codec  |
         |  h264   |
         |  vp8    |
+
+    Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast ON when streaming with camera
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
+            | simulcast    | On           |
+            | codec        | <codec>      |
+            | resolution   | <resolution> |
+            | bitrate      | <bitrate>    |
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
+        And the "camera view" setting should be displayed with following values only
+            | resolution | Resolution  - <resolution> |
+            | bitrate    | Bitrate  - <bitrate>       |
+        And the "camera view" stats with quality tabs should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed
+
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the "quality dropdown options" should contain "Auto,High,Low" options
+    Examples:
+        | codec |  resolution | bitrate    |
+        | vp8   |  1280x720   | 2 Mbps     |
+        | h264  |  1280x720   | 500 Kbps   |
+        | vp8   |  640x480    | 1 Mbps     |
+
+    Scenario: Publisher should be able to stream with combination of lower bitrate <bitrate> , <resolution> resolution, <codec> codec and simulcast ON when streaming with camera
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
+            | simulcast    | On           |
+            | codec        | <codec>      |
+            | resolution   | <resolution> |
+            | bitrate      | <bitrate>    |
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
+        And the "camera view" setting should be displayed with following values only
+            | resolution | Resolution  - <resolution> |
+            | bitrate    | Bitrate  - <bitrate>       |
+        And the "camera view" stats with quality tabs should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed
+
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the "quality dropdown options" should contain "Auto" options
+    Examples:
+        | codec |  resolution | bitrate    |
+        | vp8   |  1280x720   | 250 Kbps   |
+        | h264  |  640x480    | 250 Kbps   |
+
+    Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast OFF when streaming with camera
+        # Publisher App
+        When the publisher configures "camera view" setting with the following values only
+            | simulcast    | Off          |
+            | codec        | <codec>      |
+            | resolution   | <resolution> |
+            | bitrate      | <bitrate>    |
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
+        And the "camera view" setting should be displayed with following values only
+            | resolution | Resolution  - <resolution> |
+            | bitrate    | Bitrate  - <bitrate>       |
+        And the "camera view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+        And the "camera tile list item" should be displayed    
+
+        When the publisher clicks on the "main view setting button"
+        Then the "settings popup" should be displayed
+        And the "quality dropdown options" should equal to "Auto" options
+    Examples:
+        | codec |  resolution | bitrate    |
+        | vp9   |  1280x720   | 2 Mbps     |
+        | vp9   |  640x480    | 1 Mbps     |
+        | vp8   |  1280x720   | 500 Kbps   |
+        | h264  |  640x480    | 250 Kbps   |
+
+    Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with camera
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        
+        When the publisher configures "camera view" setting with the following values only
+            | bitrate      | <bitrate>    |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
+        And the "camera view" setting should be displayed with following values only
+            | bitrate    | Bitrate  - <bitrate>       |
+        And the "camera view" stats with quality tabs should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+    Examples:
+        |  bitrate    |
+        |  2 Mbps     |
+        |  500 Kbps   |
+
+    Scenario: Publisher should be able to change the resolution to <resolution> when streaming is live with camera
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        
+        When the publisher configures "camera view" setting with the following values only
+            | resolution    | <resolution>    |
+        And the "camera view" should be displayed with following values
+            | stream info button | displayed\|enabled |
+        And the "camera view" setting should be displayed with following values only
+            | resolution    | Resolution  - <resolution>  |
+            | bitrate       | Bitrate  - Auto             |
+        And the "camera view" stats with quality tabs should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+    Examples:
+        |  resolution  |
+        |  640x480     |
+        |  640x360     |
+
+    Scenario: Publisher should be able to change the bitrate multiple time when streaming is live with camera
+
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        
+        When the publisher configures "camera view" setting with the following values only
+            | bitrate     | 2 Mbps             |
+        Then the "camera view" setting should be displayed with following values only
+            | bitrate    | Bitrate  - 2 Mbps   |
+        
+        When the publisher configures "camera view" setting with the following values only
+            | bitrate     | 500 Kbps           |
+        Then the "camera view" setting should be displayed with following values only
+            | bitrate    | Bitrate  - 500 Kbps |
+        And the "camera view" setting should be displayed with following values only
+            | bitrate    | Bitrate  - 500 Kbps |
+        And the "camera view" setting should be displayed with following values only
+            | bitrate    | Bitrate  - 500 Kbps |
+        And the "camera view" stats with quality tabs should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+
+    Scenario: Publisher settings should be preserved after the streaming is stopped when changed during streaming
+        When the publisher configures "camera view" setting with the following values only
+            | source name | Dummy Camera View |
+            | codec       | vp8               |
+            | bitrate     | 1 Mbps            |
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        
+        When the publisher configures "camera view" setting with the following values only
+            | resolution  | 640x480  |
+            | bitrate     | 2 Mbps    |
+        And the publisher clicks on the "stop button"
+        Then the publisher should be navigated to "preview" page
+
+        And the "camera view" setting should be displayed with following values only
+            | resolution  | Resolution  - 640x480   |
+            | bitrate     | Bitrate  - 2 Mbps       |
+            | source name | Dummy Camera View       |
+        And the "camera view" should be displayed with following values
+            | source name text | Dummy Camera View |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the "header" should be displayed with default values
+        And the "main view" should not be displayed
+

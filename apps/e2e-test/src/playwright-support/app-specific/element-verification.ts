@@ -63,6 +63,6 @@ export const verifyOptionsContains = async (
   logger.trace(`Verify element should${negate ? ' not' : ''} contain ${options} options`);
   const actOptions = await getOptions(page, selector);
 
-  const message = `\tExpected Item: ${options}\n\tActualArray: ${actOptions}`;
+  const message = `\n\tExpected Item: ${options}\n\tActualArray: ${actOptions}`;
   assert.has(actOptions, options, message);
 };

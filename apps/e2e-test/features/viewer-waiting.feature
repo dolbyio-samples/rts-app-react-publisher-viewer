@@ -9,6 +9,7 @@ Feature: Viewer Waiting Room
         And the "footer" should be displayed with default values
         And the "go live button" should not be displayed
         And the "invite button" should not be displayed
+        And the "main view" should not be displayed
         And the "camera view" should not be displayed
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
@@ -20,6 +21,7 @@ Feature: Viewer Waiting Room
         And the "footer" should be displayed with default values
         And the "go live button" should not be displayed
         And the "invite button" should not be displayed
+        And the "main view" should not be displayed
         And the "camera view" should not be displayed
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
