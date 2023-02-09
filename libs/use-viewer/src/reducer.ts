@@ -29,7 +29,7 @@ const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSo
         const audioIn = audio.inbounds?.filter(({ mid }) => mid === audioMediaId) ?? [];
         const videoIn = video.inbounds?.filter(({ mid }) => mid === videoMediaId) ?? [];
 
-        if (audioIn.length && videoIn.length) {
+        if (audioIn.length || videoIn.length) {
           const newRemoteTrackSource = {
             ...remoteTrackSource,
             statistics: {
