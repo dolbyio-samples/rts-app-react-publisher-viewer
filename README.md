@@ -1,7 +1,7 @@
 # Real-time Streaming - Publisher & Viewer Sample Apps
 
 <p align="center">
-<img src="documentation/assets/banner.jpg" width="175px" />
+<img src="docs/img//banner.jpeg" width="175px" />
 </p>
 
 ## Overview
