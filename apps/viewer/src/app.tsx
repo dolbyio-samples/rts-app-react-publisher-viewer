@@ -160,7 +160,7 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%" maxWidth="20vW">
+            <VStack height="100%" maxWidth="20vw">
               {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
                 <Box
                   cursor="pointer"
