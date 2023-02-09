@@ -136,7 +136,7 @@ const App = () => {
           </VStack>
         ) : (
           <HStack height="573px" justifyContent="center" maxHeight="573px" width="100%">
-            <Box height="100%" maxWidth="1024px" test-id="millicastVideo" width="100%">
+            <Box height="100%" maxWidth="1024px" test-id="millicastVideo" width="70%">
               <ViewerVideoView
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}
@@ -160,7 +160,7 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%" maxWidth="240px">
+            <VStack height="100%" maxWidth="fit-content">
               {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
                 <Box
                   cursor="pointer"
