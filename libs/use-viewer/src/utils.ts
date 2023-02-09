@@ -80,7 +80,6 @@ export const unprojectFromStream = async (viewer: View, source: RemoteTrackSourc
   const mediaIds = [];
   if (source.audioMediaId) mediaIds.push(source.audioMediaId);
   if (source.videoMediaId) mediaIds.push(source.videoMediaId);
-  console.log('unproject', mediaIds);
   if (mediaIds.length) {
     await viewer.unproject(mediaIds);
   }
