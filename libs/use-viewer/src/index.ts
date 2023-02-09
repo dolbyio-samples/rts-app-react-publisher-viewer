@@ -182,14 +182,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const setSourceQuality = (sourceId: string, quality: SimulcastQuality) => {
+  const setSourceQuality = (sourceId: string, quality?: SimulcastQuality) => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
       return;
     }
 
-    const { streamQuality, simulcastLayer } = quality;
+    const { streamQuality, simulcastLayer } = quality ?? {};
 
     if (streamQuality === 'Auto') {
       viewer.select({});
@@ -198,7 +198,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
 
     dispatch({
-      quality: streamQuality,
+      quality: streamQuality ?? 'Auto',
       sourceId,
       type: ViewerActionType.UPDATE_SOURCE_QUALITY,
     });
