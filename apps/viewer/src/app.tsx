@@ -160,28 +160,32 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%">
-              {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
-                <Box
-                  cursor="pointer"
-                  height={`calc(100% / ${MAX_SOURCES})`}
-                  key={sourceId}
-                  onClick={() => setMainSourceId(sourceId)}
-                  test-id="millicastVideo"
-                  width="100%"
-                >
-                  <ViewerVideoView
-                    isStreaming={isStreaming}
-                    videoProps={{
-                      displayVideo: true,
-                      label: sourceId,
-                      mediaStream,
-                      muted: true,
-                    }}
-                  />
-                </Box>
-              ))}
-            </VStack>
+            {remoteTrackSources.size > 1 ? (
+              <VStack height="100%">
+                {Array.from(remoteTrackSources)
+                  .filter(([sourceId]) => sourceId !== mainSourceId)
+                  .map(([sourceId, { mediaStream }]) => (
+                    <Box
+                      cursor="pointer"
+                      height={`calc(100% / ${MAX_SOURCES})`}
+                      key={sourceId}
+                      onClick={() => setMainSourceId(sourceId)}
+                      test-id="millicastVideo"
+                      width="100%"
+                    >
+                      <ViewerVideoView
+                        isStreaming={isStreaming}
+                        videoProps={{
+                          displayVideo: true,
+                          label: sourceId,
+                          mediaStream,
+                          muted: true,
+                        }}
+                      />
+                    </Box>
+                  ))}
+              </VStack>
+            ) : undefined}
           </HStack>
         )}
       </Flex>
