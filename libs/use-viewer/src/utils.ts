@@ -77,8 +77,9 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
 };
 
 export const unprojectFromStream = async (viewer: View, source: RemoteTrackSource) => {
-  const mediaIds = [...(source.audioMediaId ?? []), ...(source.videoMediaId ?? [])];
-
+  const mediaIds = [];
+  if (source.audioMediaId) mediaIds.push(source.audioMediaId);
+  if (source.videoMediaId) mediaIds.push(source.videoMediaId);
   if (mediaIds.length) {
     await viewer.unproject(mediaIds);
   }
