@@ -167,7 +167,7 @@ const App = () => {
                   .map(([sourceId, { mediaStream }]) => (
                     <Box
                       cursor="pointer"
-                      height={`calc(100% / ${MAX_SOURCES})`}
+                      height={`calc(100% / (${MAX_SOURCES} - 1))`}
                       key={sourceId}
                       onClick={() => setMainSourceId(sourceId)}
                       test-id="millicastVideo"
