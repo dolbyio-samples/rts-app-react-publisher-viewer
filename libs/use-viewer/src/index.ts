@@ -73,7 +73,6 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       case 'active':
         try {
           const newRemoteTrackSource = await addRemoteTrackAndProject(viewer, sourceId, tracks);
-
           setTimeout(() => {
             dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
           }, 1000);
@@ -85,17 +84,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
       case 'inactive': {
         const remoteTrackSource = remoteTrackSourcesRef.current?.get(sourceId);
-
         if (remoteTrackSource) {
           try {
-            await unprojectFromStream(viewer, remoteTrackSource);
-
             dispatch({ sourceId, type: ViewerActionType.REMOVE_SOURCE });
+            await unprojectFromStream(viewer, remoteTrackSource);
           } catch (error) {
             handleInternalError(error);
           }
         }
-
         break;
       }
 
