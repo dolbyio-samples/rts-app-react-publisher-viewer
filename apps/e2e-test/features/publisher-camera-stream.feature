@@ -696,7 +696,7 @@ Feature: Publisher streaming with camera only
             | source name text  | contains: fake |
         And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with following values
-            | quality      | <quality>    |
+            | quality      | Quality  - <quality>    |
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
