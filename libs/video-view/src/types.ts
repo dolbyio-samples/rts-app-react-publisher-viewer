@@ -10,8 +10,6 @@ export interface VideoViewProps {
   displayVideo?: boolean;
   height?: string;
   label?: string;
-  maxHeight?: string;
-  maxWidth?: string;
   mediaStream?: MediaStream;
   mirrored?: boolean;
   muted?: boolean;
