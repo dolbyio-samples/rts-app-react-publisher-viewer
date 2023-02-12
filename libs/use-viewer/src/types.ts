@@ -1,4 +1,4 @@
-import { LayerInfo, Media, StreamStats } from '@millicast/sdk';
+import { LayerInfo, Media, StreamStats, ViewProjectSourceMapping } from '@millicast/sdk';
 
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
@@ -10,8 +10,9 @@ export enum ViewerActionType {
 
 export interface RemoteTrackSource {
   audioMediaId?: string;
-  quality?: StreamQuality;
+  mapping: ViewProjectSourceMapping[];
   mediaStream: MediaStream;
+  quality?: StreamQuality;
   sourceId: string;
   statistics?: StreamStats;
   streamQualityOptions: SimulcastQuality[];
@@ -31,6 +32,7 @@ export interface Viewer {
   mainMediaStream?: MediaStream;
   projectToMainStream: (sourceId: string, prevSourceId?: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
+  reprojectFromMainStream: (sourceId: string) => void;
   setSourceQuality: (sourceId: string, quality: SimulcastQuality) => void;
   startViewer: () => void;
   stopViewer: () => void;

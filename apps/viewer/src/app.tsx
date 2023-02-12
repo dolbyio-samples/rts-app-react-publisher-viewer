@@ -28,6 +28,7 @@ const App = () => {
     mainMediaStream,
     projectToMainStream,
     remoteTrackSources,
+    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,
@@ -65,21 +66,25 @@ const App = () => {
     if (!mainSourceId || !remoteTrackSources.get(mainSourceId)) {
       const [[firstSourceId]] = remoteTrackSources;
 
-      setMainSourceId(firstSourceId);
+      changeMainSource(firstSourceId);
     }
   }, [remoteTrackSources.size]);
 
-  useEffect(() => {
-    if (mainSourceId) {
-      // Change main stream
-      projectToMainStream(mainSourceId).then(() => {
-        // Reset quality
-        setSourceQuality(mainSourceId, { streamQuality: 'Auto' });
-      });
-    }
-  }, [mainSourceId]);
-
   const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
+
+  const changeMainSource = async (sourceId: string) => {
+    const { sourceId: prevSourceId } = mainSource ?? {};
+
+    if (prevSourceId) {
+      reprojectFromMainStream(prevSourceId);
+    }
+
+    projectToMainStream(sourceId).then(() => {
+      setMainSourceId(sourceId);
+      // Reset quality
+      setSourceQuality(sourceId, { streamQuality: 'Auto' });
+    });
+  };
 
   const mainSourceSettings = useCallback(() => {
     if (!mainSource) {
@@ -169,7 +174,9 @@ const App = () => {
                       cursor="pointer"
                       height={`calc(100% / (${MAX_SOURCES} - 1))`}
                       key={sourceId}
-                      onClick={() => setMainSourceId(sourceId)}
+                      onClick={() => {
+                        changeMainSource(sourceId);
+                      }}
                       test-id="millicastVideo"
                       width="100%"
                     >

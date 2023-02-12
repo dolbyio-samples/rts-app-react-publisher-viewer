@@ -37,8 +37,9 @@ export const addRemoteTrackAndProject = async (
 
     return Promise.resolve({
       audioMediaId,
-      quality: 'Auto',
+      mapping,
       mediaStream,
+      quality: 'Auto',
       sourceId,
       statistics: { audio: { inbounds: [], outbounds: [] }, video: { inbounds: [], outbounds: [] } },
       streamQualityOptions: [{ streamQuality: 'Auto' }],

@@ -178,6 +178,25 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
+  const reprojectFromMainStream = async (sourceId: string) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    const remoteTrackSource = remoteTrackSources.get(sourceId);
+
+    if (remoteTrackSource) {
+      try {
+        // unprojectFromStream(viewer, remoteTrackSource);
+        await viewer.project(sourceId, remoteTrackSource.mapping);
+      } catch (error) {
+        handleInternalError(error);
+      }
+    }
+  };
+
   const setSourceQuality = (sourceId: string, quality: SimulcastQuality) => {
     const { current: viewer } = viewerRef;
 
@@ -237,6 +256,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     mainMediaStream,
     projectToMainStream,
     remoteTrackSources,
+    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,
