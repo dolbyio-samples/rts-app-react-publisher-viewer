@@ -182,7 +182,7 @@ const App = () => {
                 }}
               />
             </Box>
-            {remoteTrackSources.size > 1 ? (
+            {mainSourceId && remoteTrackSources.size > 1 ? (
               <VStack height="100%" maxWidth="20vw">
                 {Array.from(remoteTrackSources)
                   .filter(([sourceId]) => sourceId !== mainSourceId)
