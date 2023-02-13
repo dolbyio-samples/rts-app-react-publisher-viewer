@@ -15,7 +15,7 @@ const StatisticsPopover = ({ iconProps, statistics }: StatisticsPopoverProps) =>
   const video = videoIn?.length ? videoIn : videoOut?.length ? videoOut : [];
 
   const tabs = useMemo(() => {
-    const streamVideoStats = [...video].sort((a, b) => b.bitrate - a.bitrate);
+    const streamVideoStats = [...video].filter((v) => v.bitrate > 0).sort((a, b) => b.bitrate - a.bitrate);
     const qualities: TabQualities = [];
 
     switch (streamVideoStats.length) {
