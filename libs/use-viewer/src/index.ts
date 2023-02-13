@@ -189,8 +189,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
-        // unprojectFromStream(viewer, remoteTrackSource);
-        await viewer.project(sourceId, remoteTrackSource.mapping);
+        await viewer.project(sourceId, remoteTrackSource.projectMapping);
       } catch (error) {
         handleInternalError(error);
       }

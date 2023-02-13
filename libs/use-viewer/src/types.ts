@@ -10,8 +10,8 @@ export enum ViewerActionType {
 
 export interface RemoteTrackSource {
   audioMediaId?: string;
-  mapping: ViewProjectSourceMapping[];
   mediaStream: MediaStream;
+  projectMapping: ViewProjectSourceMapping[];
   quality?: StreamQuality;
   sourceId: string;
   statistics?: StreamStats;
