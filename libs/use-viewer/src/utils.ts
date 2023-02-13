@@ -61,9 +61,15 @@ export const buildQualityOptions = (layers: MediaLayer[]) => {
     case 3:
       qualities.push('High', 'Medium', 'Low');
       break;
+
+    default:
+      // Exit with only the auto layer
+      return [{ streamQuality: 'Auto' } as SimulcastQuality];
   }
 
-  const qualityOptions: SimulcastQuality[] = layers.map((layer, idx) => ({
+  const descendingLayers = layers.sort((a, b) => b.bitrate - a.bitrate);
+
+  const qualityOptions: SimulcastQuality[] = descendingLayers.map((layer, idx) => ({
     simulcastLayer: {
       bitrate: layer.bitrate,
       encodingId: layer.id,
