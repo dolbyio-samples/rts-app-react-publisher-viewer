@@ -36,6 +36,8 @@ const App = () => {
 
   const [mainSourceId, setMainSourceId] = useState<string>();
 
+  const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
+
   // Prevent closing the page
   useEffect(() => {
     const pageCloseHandler = (event: BeforeUnloadEvent) => {
@@ -69,17 +71,32 @@ const App = () => {
     }
   }, [remoteTrackSources.size]);
 
+  // Change main stream
   useEffect(() => {
     if (mainSourceId) {
-      // Change main stream
       projectToMainStream(mainSourceId).then(() => {
         // Reset quality
-        setSourceQuality(mainSourceId, { streamQuality: 'Auto' });
+        setSourceQuality(mainSourceId);
       });
     }
   }, [mainSourceId]);
 
-  const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
+  // Reset main stream when layers change
+  useEffect(() => {
+    if (!mainSource) {
+      return;
+    }
+
+    const { quality, sourceId, streamQualityOptions } = mainSource;
+    const streamQualities = streamQualityOptions.map(({ streamQuality }) => streamQuality);
+
+    if (!quality || !streamQualities.includes(quality)) {
+      // Must reproject before resetting quality
+      projectToMainStream(sourceId).then(() => {
+        setSourceQuality(sourceId);
+      });
+    }
+  }, [mainSource?.streamQualityOptions.length]);
 
   const mainSourceSettings = useCallback(() => {
     if (!mainSource) {

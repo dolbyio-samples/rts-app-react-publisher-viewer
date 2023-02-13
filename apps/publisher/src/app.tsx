@@ -387,7 +387,7 @@ const App = () => {
             const { objectUrl, type } = streams.get(id) ?? {};
 
             const flexBasis = streams.size > 1 ? 'calc(50% - 12px)' : '100%';
-            const testId = `millicastVideo${type?.replace(/(?<=\w)(\w+)/, (match) => match.toLowerCase())}`;
+            const testId = `millicastVideo${type ? type[0].toUpperCase() + type.slice(1).toLowerCase() : 'Unknown'}`;
 
             // Kill if device is disconnected, screenshare has stopped, etc
             mediaStream?.getTracks().forEach((track) => {
