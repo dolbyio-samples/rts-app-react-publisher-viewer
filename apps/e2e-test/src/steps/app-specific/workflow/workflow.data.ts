@@ -32,21 +32,25 @@ const streamingViewDefaultData: ViewData = {
 const publisherPreviewCameraViewDefaultData: ViewData = {
   ...previewViewDefaultData,
   'source name text': 'contains: fake',
+  'close button': 'hidden',
 };
 
 const publisherStreamingCameraViewDefaultData: ViewData = {
   ...streamingViewDefaultData,
   'source name text': 'contains: fake',
+  'close button': 'hidden',
 };
 
 const publisherPreviewScreenViewDefaultData: ViewData = {
   ...previewViewDefaultData,
   'source name text': 'contains: screen',
+  'close button': 'displayed|enabled',
 };
 
 const publisherStreamingScreenViewDefaultData: ViewData = {
   ...streamingViewDefaultData,
   'source name text': 'contains: screen',
+  'close button': 'displayed|enabled',
 };
 
 const viewerStreamingMainViewDefaultData: ViewData = {
@@ -62,6 +66,7 @@ const viewerStreamingMainViewDefaultData: ViewData = {
   'go live button text': 'ignore: ',
   'stop button': 'hidden',
   'stop button text': 'ignore: ',
+  'close button': 'hidden',
 };
 
 const headerData: ViewData = {

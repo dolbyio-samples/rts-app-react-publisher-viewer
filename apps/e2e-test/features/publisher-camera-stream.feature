@@ -1,4 +1,4 @@
-@publisher
+@e2e
 Feature: Publisher streaming with camera only
     As a publisher
     I want to do live streaming for an event with camera only
@@ -706,3 +706,88 @@ Feature: Publisher streaming with camera only
         |  quality  |
         |  High     |
         |  Low      |
+
+    Scenario: Pubisher should be able to start and stop the streaming using individual source start-stop button
+        # Publisher App
+        When the publisher clicks on the "camera view go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with default values
+        And the "camera view" setting should be displayed with default values
+        And the "camera view" stats with quality tabs should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "camera view stop button"
+        Then the publisher should be navigated to "preview" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        Then the viewer should be navigated to "waiting-room" page
+        And the "main view" should not be displayed
+
+        # Publisher App
+        And switch to "preview" page on "publisher" app
+        When the publisher clicks on the "camera view go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+    Scenario: Pubisher should be able to start using start all go live option and stop the streaming using individual source stop button
+        # Publisher App
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "camera view stop button"
+        Then the publisher should be navigated to "preview" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        Then the viewer should be navigated to "waiting-room" page
+        And the "main view" should not be displayed
+
+    Scenario: Pubisher should be able to start using individual source start button and stop the streaming using stop all button
+        # Publisher App
+        When the publisher clicks on the "camera view go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "stop button"
+        Then the publisher should be navigated to "preview" page
+        And the "camera view" should be displayed with default values
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        Then the viewer should be navigated to "waiting-room" page
+        And the "main view" should not be displayed

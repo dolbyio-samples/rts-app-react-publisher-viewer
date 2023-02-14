@@ -2,7 +2,7 @@
 Feature: Publisher Camera Preview Not Live
     As a publisher
     I want to setup the cmaera stream configuration on Preview page
-    So that I can cmaera stream with required configuration
+    So that I can camera stream with required configuration
 
     Background: Publisher camera preiew page
         Given a publisher is on the "preview" page

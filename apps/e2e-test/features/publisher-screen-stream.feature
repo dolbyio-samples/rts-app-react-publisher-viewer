@@ -1,4 +1,4 @@
-@publisher
+@e2e
 @ignore
 Feature: Publisher streaming with Screen share
     As a publisher
@@ -6,97 +6,140 @@ Feature: Publisher streaming with Screen share
 
     Background: Add screen source on preview page
         Given a publisher is on the "preview" page
+        And a viewer is on the "waiting-room" page
+        And switch to "preview" page on "publisher" app
         When the publisher adds "screen" source
-
-    Scenario: Verify the header information, settings options, camera view, stream stats when streaming with screen share
         Then the "screen view" should be displayed with default values
-        And the "camera view" should be displayed with default values 
-        
+
+    @only
+    Scenario: Verify the header information, settings options, camera view, stream stats when streaming with screen share
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
-        And the "streaming header" should be displayed with following values
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "header" should be displayed with following values
             | multi source label       |  displayed           |
             | multi source label text  |  Multisource enabled |
 
-        And the "screen view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "screen view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - Auto         |
-        And the "screen view" stream stats with quality tabs should be displayed with default values
+        And the "screen view" should be displayed with default values
+        And the "screen view" setting should be displayed with default values
+        And the "screen view" stats with quality tabs should be displayed with default values
 
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
-        And the "camera view" setting should be displayed with following values only
-            | resolution | Resolution  - 3840x2160 |
-            | bitrate    | Bitrate  - Auto         |
-        And the "camera view" stream stats with quality tabs should be displayed with default values
-
-    Scenario: Verify the local file view should not be displayed when streaming with screen share
-        When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
-        And the "screen view" should be displayed
+            | close button | displayed\|enabled |
+        And the "camera view" setting should be displayed with default values
+        And the "camera view" stats with quality tabs should be displayed with default values
         And the "local file view" should not be displayed
 
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "header" should be displayed with default values
+
+        When the viewer clicks on the "screen share tile list item"
+        And the "main view" should be displayed with following values
+            | source name text  | contains: screen |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+
+        And the number of "stream list items" count should be "2"
+        And the number of "stream list loading items" count should be "0"
+        And the "screen share tile list item" should be displayed    
+        And the "camera tile list item" should be displayed 
+
+        When the viewer clicks on the "camera tile list item"
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "main view" stats should be displayed with default values
+        And the "main view" setting should be displayed with default values
+
+    @only
     Scenario: Verify the publisher is redirected to preview page when streaming is stopped
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+
+        # Publisher App      
+        And switch to "publisher-streaming" page on "publisher" app  
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
         And the "screen view" should be displayed with default values
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | displayed\|enabled |
+        And the "screen view" setting should be displayed with default values
+        And the "camera view" setting should be displayed with default values
 
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        Then the viewer should be navigated to "waiting-room" page
+        And the "header" should be displayed with default values
+        And the "main view" should not be displayed
+
+    @only
     Scenario: Stream duration is not zero when stream is live with screen share
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And wait for "5" seconds
-        And the "streaming header" should be displayed with following values only
+        And the "header" should be displayed with following values only
             | timer text | regex: ^00:00:[0][4-9]$ |
 
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And wait for "5" seconds
+        And the "header" should be displayed with following values only
+            | timer text | regex: ^00:00:[0][4-9]$ |   
+
+    @only
     Scenario: Publisher should be able to toggle camera and microphone when streaming with screen share
+        # Publisher App
         When the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "publisher-streaming" page
 
-        When the publisher turns Off the "camera of screen view"
-        And the publisher turns Off the "microphone of screen view"
+        When the publisher turns Off the "video of screen view"
+        And the publisher turns Off the "audio of screen view"
         Then the "screen view" should be displayed with following values only
-            | camera button status     | Off                |
-            | microphone button status | Off                |
+            | video button status | Off                |
+            | audio button status | Off                |
+        And the "screen view video mute image" should be displayed
 
-        When the publisher turns On the "camera of screen view"
-        And the publisher turns On the "microphone of screen view"
-        Then the "screen view" should be displayed with following values only
-            | camera button status     | On                |
-            | microphone button status | On                |
+        When the publisher turns On the "video of screen view"
+        And the publisher turns On the "audio of screen view"
+        Then the "screen view" should be displayed with default values
+        And the "camera view video mute image" should not be displayed
 
+    @only
     Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming with screen share
-        When the publisher turns Off the "camera of screen view"
+        When the publisher turns Off the "video of screen view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "screen view" should be displayed with following values
-            | camera button status     | Off                |
-            | microphone button status | On                 |
-            | stream info button       | displayed\|enabled |
+            | video button status     | Off      |
+        And the "screen view video mute image" should be displayed
 
-        When the publisher turns On the "camera of screen view"
-        Then the "screen view" should be displayed with following values only
-            | camera button status     | On                 |
-            | microphone button status | On                 |
+        When the publisher turns On the "video of screen view"
+        Then the "screen view" should be displayed with default values
+        And the "screen view video mute image" should not be displayed
 
-        When the publisher turns Off the "camera of screen view"
+        When the publisher turns Off the "video of screen view"
         Then the "screen view" should be displayed with following values only
-            | camera button status     | Off                |
-            | microphone button status | On                 |
+            | video button status | Off      |
+            | audio button status | On       |
+        And the "screen view video mute image" should be displayed
 
     Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming with screen share
-        When the publisher turns Off the "microphone of screen view"
+        When the publisher turns Off the "audio of screen view"
         And the publisher clicks on the "go live button"
-        Then the publisher should be navigated to "stream" page
+        Then the publisher should be navigated to "publisher-streaming" page
         And the "screen view" should be displayed with following values
-            | camera button status     | On                 |
-            | microphone button status | Off                |
-            | stream info button       | displayed\|enabled |
+            | audio button status | Off       |
+        And the "screen view video mute image" should not be displayed
 
-        When the publisher turns On the "microphone of screen view"
+        When the publisher turns On the "audio of screen view"
         Then the "screen view" should be displayed with following values only
             | camera button status     | On                 |
             | microphone button status | On                 |
@@ -356,3 +399,6 @@ Feature: Publisher streaming with Screen share
             | bitrate     | Bitrate  - 1 Mbps     |
         And the "screen view" should be displayed with following values
             | source name text | Dummy Screen View |
+
+    
+    #TODO: Go Live from View 

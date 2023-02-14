@@ -65,6 +65,9 @@ screen view loading:
 screen view source name:
   - '$ref: screen view container'
   - '$ref: source name'
+screen view video mute image:
+  - '$ref: screen view container'
+  - '$ref: video mute icon'
 audio of screen view: '$ref: screen view audio button'
 screen view audio button:
   - '$ref: screen view container'
@@ -108,6 +111,9 @@ local file view loading:
 local file view source name:
   - '$ref: local file view container'
   - '$ref: source name'
+local file view video mute image:
+  - '$ref: local file view container'
+  - '$ref: video mute icon'
 local file view audio button:
   - '$ref: local file view container'
   - '$ref: audio button'
@@ -126,9 +132,6 @@ local file view setting button:
 local file view stream info button:
   - '$ref: local file view container'
   - '$ref: stream info button'
-local file view video mute image:
-  - '$ref: local file view container'
-  - '$ref: video mute icon'
 local file view go live button:
   - '$ref: local file view container'
   - '$ref: go live view button'

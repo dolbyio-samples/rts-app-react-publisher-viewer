@@ -7,7 +7,7 @@ import { TargetSelector } from '../../utils/selector-mapper';
 import { Screen, State, Status } from '../../utils/types';
 import { click } from '../generic/element-action';
 import { getLocator } from '../generic/element-helper';
-import { getElementCount, getElementText, getTableData } from '../generic/element-read';
+import { getElementCount, getElementState, getElementText, getTableData } from '../generic/element-read';
 import { verifyElementState } from '../generic/element-verification';
 
 export const getViewScreenSize = async (page: Page, selector: TargetSelector, index?: number): Promise<Screen> => {
@@ -68,8 +68,8 @@ export const getStreamStats = async (
   logger.trace(`Get stream info stats`);
   const infoData: { [k: string]: { [k: string]: string } } = {};
 
-  if (qualityTabName != 'None') {
-    await verifyElementState(page, tabSelector, 'displayed' as State, false, 0);
+  const isTabsDisplayed = await getElementState(page, tabSelector, 'displayed' as State, 0);
+  if (qualityTabName != 'None' && isTabsDisplayed) {
     const tabCount = await getElementCount(page, tabSelector);
 
     for (let i = 0; i < tabCount; i++) {
@@ -86,7 +86,7 @@ export const getStreamStats = async (
   } else {
     await delay(3000);
     const statsInfo = await getTableData(page, tableSelector);
-    infoData['Standard'] = transponseStreamData(statsInfo);
+    infoData['Auto'] = transponseStreamData(statsInfo);
   }
 
   return infoData;

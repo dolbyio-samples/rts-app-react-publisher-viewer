@@ -150,6 +150,13 @@ export const verifyView = async (
     keyCount++;
   }
 
+  if (keys.includes('close button')) {
+    logger.info(`Verify ${viewName} close button`);
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} close button`);
+    await validateState(scWorld, targetSelector, expectedData['close button'], elementIndex);
+    keyCount++;
+  }
+
   const message = 'Some stream view parameters are not verified';
   verifyEqualTo(keyCount, keys.length, message);
 };
@@ -348,13 +355,13 @@ export const verifySettings = async (
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
-  await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
+  await validateState(scWorld, targetSelector, 'displayed' as State);
 
   if (keys.includes('source name')) {
     logger.info(`Verify ${viewName} source name`);
     if (!expectedData['source name'].startsWith('ignore: ')) {
       targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `source name input`);
-      await validateValue(scWorld, targetSelector, expectedData['source name'], elementIndex);
+      await validateValue(scWorld, targetSelector, expectedData['source name']);
     }
     keyCount++;
   }
@@ -362,44 +369,48 @@ export const verifySettings = async (
   if (keys.includes('resolution')) {
     logger.info(`Verify ${viewName} resolution`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown default`);
-    await validateText(scWorld, targetSelector, expectedData['resolution'], elementIndex);
+    await validateText(scWorld, targetSelector, expectedData['resolution']);
     keyCount++;
   }
 
   if (keys.includes('bitrate')) {
     logger.info(`Verify ${viewName} bitrate`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown default`);
-    await validateText(scWorld, targetSelector, expectedData['bitrate'], elementIndex);
+    await validateText(scWorld, targetSelector, expectedData['bitrate']);
     keyCount++;
   }
 
+  let state = '';
   if (keys.includes('simulcast')) {
     logger.info(`Verify ${viewName} simulcast`);
     const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `simulcast`);
-    const state = expectedData['simulcast'] === 'On' ? 'checked' : 'unchecked';
-    await validateState(scWorld, targetSelector, state, elementIndex);
+    state = expectedData['simulcast'] === 'On' ? 'checked' : 'unchecked';
+    if (expectedData['codec'].includes('vp9')) {
+      state = 'hidden' as State;
+    }
+    await validateState(scWorld, targetSelector, state);
     keyCount++;
   }
 
   if (keys.includes('codec')) {
     logger.info(`Verify ${viewName} codec`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown default`);
-    await validateText(scWorld, targetSelector, expectedData['codec'], elementIndex);
+    await validateText(scWorld, targetSelector, expectedData['codec']);
     keyCount++;
   }
 
   if (keys.includes('quality')) {
     logger.info(`Verify ${viewName} quality`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown default`);
-    await validateText(scWorld, targetSelector, expectedData['quality'], elementIndex);
+    await validateText(scWorld, targetSelector, expectedData['quality']);
     keyCount++;
   }
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings close button`);
-  await click(scWorld.currentPage, targetSelector, elementIndex);
+  await click(scWorld.currentPage, targetSelector);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
-  await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
+  await validateState(scWorld, targetSelector, 'hidden' as State);
 
   const message = 'Some settings parameters are not verified';
   verifyEqualTo(keyCount, keys.length, message);
@@ -434,13 +445,20 @@ export const verifyStats = async (
   try {
     let streamStatsKeys = Object.keys(streamStats);
     let message;
+    let tabs;
     if (qualityTabName != 'None' && appName === 'publisher') {
       logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-      message = 'Stream Info stats does not have High/Low quality tabs';
-      verifyArrayContains(streamStatsKeys, ['High', 'Low'], message);
-
-      message = 'Stream Info stats have more than 3 quality tabs';
-      verifyLessThan(streamStatsKeys.length, 4, message);
+      if (streamStatsKeys.length == 3) {
+        message = 'Stream Info stats does not have High/Medium/Low quality tabs';
+        tabs = ['High', 'Medium', 'Low'];
+      } else if (streamStatsKeys.length == 2) {
+        message = 'Stream Info stats does not have High/Low quality tabs';
+        tabs = ['High', 'Low'];
+      } else {
+        message = 'Stream Info stats does not have stats for Auto';
+        tabs = ['Auto'];
+      }
+      verifyArrayContains(streamStatsKeys, tabs, message);
 
       if (qualityTabName !== 'All') {
         streamStatsKeys = [qualityTabName];
@@ -449,17 +467,16 @@ export const verifyStats = async (
       for (const quality of streamStatsKeys) {
         logger.info(`Verify ${viewName} stats with ${quality} quality`);
         message = 'Unknown Stream Info quality';
-        verifyArrayContains(['High', 'Medium', 'Low'], quality, message);
         validateStatsInfo(streamStats[quality], expectedData);
       }
     } else {
       logger.info(`Verify ${appName} ${viewName} stats`);
       message = 'Stream Info stats have quality tabs';
-      verifyArrayContains(streamStatsKeys, 'Standard', message);
+      verifyArrayContains(streamStatsKeys, 'Auto', message);
 
       message = 'Stream Info quality has less or more than 1 quality';
       verifyEqualTo(streamStatsKeys.length, 1, message);
-      validateStatsInfo(streamStats['Standard'], expectedData);
+      validateStatsInfo(streamStats['Auto'], expectedData);
     }
   } catch (exception) {
     logger.error(`Actual stream stats: ${JSON.stringify(streamStats, null, 2)}`);
@@ -468,10 +485,10 @@ export const verifyStats = async (
   }
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info close button`);
-  await click(scWorld.currentPage, targetSelector, elementIndex);
+  await click(scWorld.currentPage, targetSelector);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream info popover`);
-  await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
+  await validateState(scWorld, targetSelector, 'hidden' as State);
 };
 
 export const configureSettings = async (
@@ -490,14 +507,14 @@ export const configureSettings = async (
   await click(scWorld.currentPage, targetSelector, elementIndex);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
-  await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
+  await validateState(scWorld, targetSelector, 'displayed' as State);
 
   if (keys.includes('source name')) {
     logger.info(`Configure ${viewName} source name`);
     if (!expectedData['source name'].startsWith('ignore: ')) {
       targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `source name input`);
-      await clearText(scWorld.currentPage, targetSelector, elementIndex);
-      await enterText(scWorld.currentPage, targetSelector, expectedData['source name'], elementIndex);
+      await clearText(scWorld.currentPage, targetSelector);
+      await enterText(scWorld.currentPage, targetSelector, expectedData['source name']);
     }
     keyCount++;
   }
@@ -506,13 +523,7 @@ export const configureSettings = async (
     logger.info(`Configure ${viewName} resolution`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown`);
     OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `resolution dropdown options`);
-    await selectSettingDropdown(
-      scWorld.currentPage,
-      targetSelector,
-      OptionsSelector,
-      expectedData['resolution'],
-      elementIndex
-    );
+    await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, expectedData['resolution']);
     keyCount++;
   }
 
@@ -520,13 +531,7 @@ export const configureSettings = async (
     logger.info(`Configure ${viewName} bitrate`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown`);
     OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `bitrate dropdown options`);
-    await selectSettingDropdown(
-      scWorld.currentPage,
-      targetSelector,
-      OptionsSelector,
-      expectedData['bitrate'],
-      elementIndex
-    );
+    await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, expectedData['bitrate']);
     keyCount++;
   }
 
@@ -539,8 +544,7 @@ export const configureSettings = async (
       targetSelector,
       clickSelector,
       expectedData['simulcast'] as Status,
-      false,
-      elementIndex
+      false
     );
     keyCount++;
   }
@@ -549,13 +553,7 @@ export const configureSettings = async (
     logger.info(`Configure ${viewName} codec`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown`);
     OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `codec dropdown options`);
-    await selectSettingDropdown(
-      scWorld.currentPage,
-      targetSelector,
-      OptionsSelector,
-      expectedData['codec'],
-      elementIndex
-    );
+    await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, expectedData['codec']);
     keyCount++;
   }
 
@@ -563,21 +561,15 @@ export const configureSettings = async (
     logger.info(`Configure ${viewName} quality`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown`);
     OptionsSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `quality dropdown options`);
-    await selectSettingDropdown(
-      scWorld.currentPage,
-      targetSelector,
-      OptionsSelector,
-      expectedData['quality'],
-      elementIndex
-    );
+    await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, expectedData['quality']);
     keyCount++;
   }
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings close button`);
-  await click(scWorld.currentPage, targetSelector, elementIndex);
+  await click(scWorld.currentPage, targetSelector);
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `settings popup`);
-  await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
+  await validateState(scWorld, targetSelector, 'hidden' as State);
 
   const message = 'Setting is not configured as expected';
   verifyEqualTo(keyCount, keys.length, message);
