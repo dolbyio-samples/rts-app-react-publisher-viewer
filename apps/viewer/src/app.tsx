@@ -11,6 +11,7 @@ import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
+import usePlaybackControl from './hooks/usePlaybackControl';
 
 import './styles/font.css';
 
@@ -33,6 +34,8 @@ const App = () => {
     stopViewer,
     viewerCount,
   } = useViewer({ handleError: showError, streamAccountId, streamName });
+
+  const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
   const [mainSourceId, setMainSourceId] = useState<string>();
 
@@ -144,7 +147,7 @@ const App = () => {
         </Flex>
       </Box>
       <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-        {!isStreaming ? (
+        {!isStreaming || !mainSourceId ? (
           <VStack>
             <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Stream is not live
@@ -155,6 +158,7 @@ const App = () => {
           <HStack height="573px" justifyContent="center" maxHeight="573px" width="100vw">
             <Box height="100%" maxWidth="90vw" test-id="millicastVideo" width="80vw">
               <ViewerVideoView
+                controls={viewerPlaybackControl[mainSourceId]}
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}
                 showControlBar
@@ -177,28 +181,33 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%" maxWidth="20vw">
-              {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
-                <Box
-                  cursor="pointer"
-                  height={`calc(100% / ${MAX_SOURCES})`}
-                  key={sourceId}
-                  onClick={() => setMainSourceId(sourceId)}
-                  test-id="millicastVideo"
-                  width="100%"
-                >
-                  <ViewerVideoView
-                    isStreaming={isStreaming}
-                    videoProps={{
-                      displayVideo: true,
-                      label: sourceId,
-                      mediaStream,
-                      muted: true,
-                    }}
-                  />
-                </Box>
-              ))}
-            </VStack>
+            {remoteTrackSources.size > 1 ? (
+              <VStack height="100%" maxWidth="20vw">
+                {Array.from(remoteTrackSources)
+                  .filter(([sourceId]) => sourceId !== mainSourceId)
+                  .map(([sourceId, { mediaStream }]) => (
+                    <Box
+                      cursor="pointer"
+                      height={`calc(100% / (${MAX_SOURCES} - 1))`}
+                      key={sourceId}
+                      onClick={() => setMainSourceId(sourceId)}
+                      test-id="millicastVideo"
+                      width="100%"
+                    >
+                      <ViewerVideoView
+                        controls={viewerPlaybackControl[sourceId]}
+                        isStreaming={isStreaming}
+                        videoProps={{
+                          displayVideo: true,
+                          label: sourceId,
+                          mediaStream,
+                          muted: true,
+                        }}
+                      />
+                    </Box>
+                  ))}
+              </VStack>
+            ) : undefined}
           </HStack>
         )}
       </Flex>
