@@ -61,14 +61,10 @@ const App = () => {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (!remoteTrackSources.size) {
-      return;
-    }
-
-    if (!mainSourceId || !remoteTrackSources.get(mainSourceId)) {
+    if (!mainSourceId && remoteTrackSources.size) {
       const [[firstSourceId]] = remoteTrackSources;
 
-      changeMainSource(firstSourceId);
+      setMainSourceId(firstSourceId);
     }
   }, [remoteTrackSources.size]);
 
