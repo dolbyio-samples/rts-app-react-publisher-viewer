@@ -1,5 +1,5 @@
 @publisher
-Feature: Publisher Preview - Not Live
+Feature: Publisher Preview
     As a publisher
     I want to setup the stream configuration on Preview page
     So that I can stream with required configuration

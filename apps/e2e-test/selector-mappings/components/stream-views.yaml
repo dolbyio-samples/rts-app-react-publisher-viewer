@@ -192,11 +192,11 @@ main view control bar:
   - '$ref: main view container'
   - '$ref: control bar'
 
-stream list items: '[test-id=millicastVideo]'
+stream list items: '[test-id=rtsVideo]'
 stream list loading items:
   - '$ref: stream list items'
   - '$ref: loading'
-camera tile list item: '//*[@test-id="sourceName" and contains(text(), "fake")]/ancestor::*[@test-id="millicastVideo"]'
-screen share tile list item: '//*[@test-id="sourceName" and contains(text(), "screen")]/ancestor::*[@test-id="millicastVideo"]'
-local file tile list item: '//*[@test-id="sourceName" and contains(text(), "local-file")]/ancestor::*[@test-id="millicastVideo"]'
-stream list item: '//*[@test-id="sourceName" and contains(text(), "<REPLACE>")]/ancestor::*[@test-id="millicastVideo"]'
+camera tile list item: '//*[@test-id="sourceName" and contains(text(), "fake")]/ancestor::*[@test-id="rtsVideo"]'
+screen share tile list item: '//*[@test-id="sourceName" and contains(text(), "screen")]/ancestor::*[@test-id="rtsVideo"]'
+local file tile list item: '//*[@test-id="sourceName" and contains(text(), "local-file")]/ancestor::*[@test-id="rtsVideo"]'
+stream list item: '//*[@test-id="sourceName" and contains(text(), "<REPLACE>")]/ancestor::*[@test-id="rtsVideo"]'

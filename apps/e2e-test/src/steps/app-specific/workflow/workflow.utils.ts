@@ -105,7 +105,6 @@ export const validateStatsInfo = (actStats: { [key: string]: string }, expStats:
 
   keys.forEach((key) => {
     logger.info(`Verify stats for key ${key}: ${actStats[key]}`);
-    console.log(`Verify stats for key ${key}: ${actStats[key]}`);
     message = `Stats '${key}' not matched`;
     if (expStats[key].startsWith('regex: ')) {
       const pattern = expStats[key].split('regex: ')[1];

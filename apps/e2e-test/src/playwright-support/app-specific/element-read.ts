@@ -74,7 +74,7 @@ export const getStreamStats = async (
     const tabCount = await getElementCount(page, tabSelector);
 
     for (let i = 0; i < tabCount; i++) {
-      if (!await getElementState(page, tabSelector, 'displayed' as State, i)) continue
+      if (!(await getElementState(page, tabSelector, 'displayed' as State, i))) continue;
       const tabName = await getElementText(page, tabSelector, i);
       if (qualityTabName === 'All' || qualityTabName === tabName) {
         await click(page, tabSelector, i);

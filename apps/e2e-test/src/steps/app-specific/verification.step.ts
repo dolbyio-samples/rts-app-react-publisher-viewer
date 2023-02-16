@@ -45,11 +45,11 @@ Then(
 );
 
 Then(
-  /^the "([^"]*)" should( not)? contain "([^"]*)" options$/,
-  async function (this: ScenarioWorld, selectorName: string, negate: string, options: string) {
+  /^the "([^"]*)" should contain "([^"]*)" options$/,
+  async function (this: ScenarioWorld, selectorName: string, options: string) {
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
     const verifyMethod = async () => {
-      await verifyOptionsContains(this.currentPage, targetSelector, options.split(','), !!negate);
+      await verifyOptionsContains(this.currentPage, targetSelector, options.split(','));
     };
     await waitFor(verifyMethod);
   }

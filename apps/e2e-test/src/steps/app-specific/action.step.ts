@@ -9,7 +9,7 @@ import {
 } from '../../playwright-support/app-specific/element-action';
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
-import { addSource, configureSettings } from './workflow/workflow';
+import { addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
 import { getDefaultConfigureSettings } from './workflow/workflow.data';
 
 When(
@@ -73,3 +73,10 @@ When(
 When(/^the publisher adds "(camera|screen)" source$/, async function (this: ScenarioWorld, srcName: string) {
   await addSource(this, srcName);
 });
+
+When(
+  /^the viewer projects main stream as source name containing "([^"]*)"$/,
+  async function (this: ScenarioWorld, srcName: string) {
+    await projectAsMainStream(this, srcName);
+  }
+);

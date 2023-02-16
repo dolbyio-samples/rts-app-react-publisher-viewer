@@ -1,5 +1,5 @@
 @publisher
-Feature: Publisher Camera Preview Not Live
+Feature: Publisher Camera Preview
     As a publisher
     I want to setup the cmaera stream configuration on Preview page
     So that I can camera stream with required configuration

@@ -54,13 +54,8 @@ export const verifyOptions = async (
   }
 };
 
-export const verifyOptionsContains = async (
-  page: Page,
-  selector: TargetSelector,
-  options: string[],
-  negate = false
-): Promise<void> => {
-  logger.trace(`Verify element should${negate ? ' not' : ''} contain ${options} options`);
+export const verifyOptionsContains = async (page: Page, selector: TargetSelector, options: string[]): Promise<void> => {
+  logger.trace(`Verify element should contain ${options} options`);
   const actOptions = await getOptions(page, selector);
 
   const message = `\n\tExpected Item: ${options}\n\tActualArray: ${actOptions}`;

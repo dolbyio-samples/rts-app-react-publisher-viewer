@@ -1,5 +1,5 @@
 @publisher
-Feature: Publisher Preview Screen Sharing Not Live
+Feature: Publisher Screen Preview
     As a publisher
     I want to setup the screen stream configuration on Preview page
     So that I can screen stream with required configuration
@@ -249,4 +249,4 @@ Feature: Publisher Preview Screen Sharing Not Live
             | codec        | Codec  - h264        |
             | bitrate      | Bitrate  - Auto      |
 
-    #TODO: Verify states of the audio and video
+    #TODO: Verify states of the audio and video for different streams

@@ -1,5 +1,5 @@
 # Source view containers
-camera view container: '[test-id="millicastVideoMedia"]'
-screen view container: '[test-id="millicastVideoDisplay"]'
-local file view container: '[test-id="millicastVideoLocal"]'
-main view container: '[test-id="millicastVideoMain"]'
+camera view container: '[test-id="rtsVideoMedia"]'
+screen view container: '[test-id="rtsVideoDisplay"]'
+local file view container: '[test-id="rtsVideoLocal"]'
+main view container: '[test-id="rtsVideoMain"]'

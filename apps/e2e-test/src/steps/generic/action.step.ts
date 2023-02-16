@@ -12,11 +12,14 @@ When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)"$/, async function (this: S
   await click(this.currentPage, targetSelector);
 });
 
-When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)" with locator attribute "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string, attributeValue: string) {
-  let targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName, );
-  targetSelector = replaceAttributeTargetSelector(targetSelector, attributeValue);
-  await click(this.currentPage, targetSelector);
-});
+When(
+  /^(?:the .*|I) (?:clicks|click) on the "([^"]*)" with locator attribute "([^"]*)"$/,
+  async function (this: ScenarioWorld, selectorName: string, attributeValue: string) {
+    let targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+    targetSelector = replaceAttributeTargetSelector(targetSelector, attributeValue);
+    await click(this.currentPage, targetSelector);
+  }
+);
 
 When(
   /^(?:the .*|I) (?:check|checks|select|selects) the "([^"]*)"$/,

@@ -1,3 +1,4 @@
+import { getElementText } from '../../../playwright-support/generic/element-read';
 import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
 import { logger } from '../../../logger';
 import { selectSettingDropdown, toogleSimulcast } from '../../../playwright-support/app-specific/element-action';
@@ -9,6 +10,7 @@ import { waitFor } from '../../../playwright-support/generic/element-wait';
 import { verifyArrayContains, verifyEqualTo } from '../../../playwright-support/generic/verification';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
+import { replaceAttributeTargetSelector } from '../../generic/utils';
 import {
   addCamera,
   addScreen,
@@ -19,6 +21,7 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
+import 'source-map-support/register';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,
@@ -35,6 +38,9 @@ export const verifyView = async (
 
   targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, viewName);
   await validateState(scWorld, targetSelector, 'displayed' as State, elementIndex);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} loading`);
+  await validateState(scWorld, targetSelector, 'hidden' as State, elementIndex);
 
   if (keys.includes('size')) {
     logger.info(`Verify ${viewName} size`);
@@ -444,33 +450,21 @@ export const verifyStats = async (
 
   try {
     let streamStatsKeys = Object.keys(streamStats);
-    console.log(`Quality Tabs On App: ${JSON.stringify(streamStatsKeys, null, 2)}`);
-    let message = "";
-    let tabs: string[] = [];
+    let message = '';
     if (qualityTabName != 'None' && appName === 'publisher') {
       logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
-      console.log(`Verify ${appName} ${viewName} stats with simulcast On`);
-      if (streamStatsKeys.length == 3) {
-        message = 'Stream Info stats does not have High/Medium/Low quality tabs';
-        tabs = ['High', 'Medium', 'Low'];
-      } else if (streamStatsKeys.length == 2) {
-        message = 'Stream Info stats does not have High/Low quality tabs';
-        tabs = ['High'];
-      } else {
-        message = 'Stream Info stats does not have stats for Auto';
-        tabs = ['Auto'];
-      }
-      verifyArrayContains(streamStatsKeys, tabs, message);
+
+      const tabs = ['Auto', 'High', 'Medium', 'Low'];
+      const isFound = tabs.some((item) => streamStatsKeys.includes(item));
+      message = `Stream Info stats does not have Auto/High/Medium/Low quality tabs\nActual Tabs: ${streamStatsKeys}`;
+      verifyEqualTo(isFound, true, message);
 
       if (qualityTabName !== 'All') {
         streamStatsKeys = [qualityTabName];
-        console.log(`Update streamStatsKeys In If : ${JSON.stringify(streamStatsKeys, null, 2)}`);
       }
 
-      console.log(`Quality Tabs Before Verification: ${JSON.stringify(streamStatsKeys, null, 2)}`);
       for (const quality of streamStatsKeys) {
         logger.info(`Verify ${viewName} stats with ${quality} quality`);
-        console.log(`Verify ${viewName} stats with ${quality} quality`);
         message = 'Unknown Stream Info quality';
         validateStatsInfo(streamStats[quality], expectedData);
       }
@@ -593,5 +587,16 @@ export const addSource = async (scWorld: ScenarioWorld, srcName: string) => {
       break;
     default:
       throw Error(`Invalid source name - ${srcName}`);
+  }
+};
+
+export const projectAsMainStream = async (scWorld: ScenarioWorld, srcName: string) => {
+  let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'main view source name');
+  const mainViewSrcName = await getElementText(scWorld.currentPage, targetSelector);
+
+  if (!mainViewSrcName?.includes(srcName)) {
+    targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream list item`);
+    targetSelector = replaceAttributeTargetSelector(targetSelector, srcName);
+    await click(scWorld.currentPage, targetSelector);
   }
 };

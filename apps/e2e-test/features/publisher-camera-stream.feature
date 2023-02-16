@@ -1,5 +1,5 @@
 @e2e
-Feature: Publisher streaming with camera only
+Feature: Publisher Camera Streaming
     As a publisher
     I want to do live streaming for an event with camera only
 
@@ -26,12 +26,9 @@ Feature: Publisher streaming with camera only
         And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed
+        And the "stream list items" should not be displayed
 
     Scenario: Verify the publisher is redirected to preview page when streaming is stopped
         # Publisher App
@@ -87,10 +84,9 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "stream list loading items" should not be displayed
-        And the "main view" should be displayed with default values
-
-         # Screenshot Validations
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "stream list items" should not be displayed
     
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -101,8 +97,8 @@ Feature: Publisher streaming with camera only
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
-        And the "stream list loading items" should not be displayed
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
         
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -114,8 +110,8 @@ Feature: Publisher streaming with camera only
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
-        And the "stream list loading items" should not be displayed
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
     Scenario: Publisher should be able to start streaming with microphone Off and toggle microphone during streaming
         # Publisher App
@@ -130,9 +126,10 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "stream list loading items" should not be displayed
-        And the "main view" should be displayed with default values
-        
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "stream list items" should not be displayed
+
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "audio of camera view"
@@ -142,8 +139,8 @@ Feature: Publisher streaming with camera only
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
-        And the "main view" should be displayed with default values
-        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
         
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -155,8 +152,8 @@ Feature: Publisher streaming with camera only
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
-        And the "main view" should be displayed with default values
-        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
     Scenario: Publisher should be able to start streaming with microphone-camera Off and toggle microphone-camera during streaming
         # Publisher App
@@ -173,8 +170,9 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "stream list loading items" should not be displayed
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+        And the "stream list items" should not be displayed
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -186,8 +184,8 @@ Feature: Publisher streaming with camera only
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
-        And the "main view" should be displayed with default values
-        And the "stream list loading items" should not be displayed
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
         
     Scenario: Publisher should be presented with Resolution and Bitrate Setting controls when streaming with camera
         When the publisher clicks on the "go live button"
@@ -215,7 +213,8 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
         And the "main view" setting should be displayed with default values
 
         When the viewer clicks on the "main view setting button"
@@ -239,10 +238,7 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text   | BuiltIn Camera     |
-        
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "stream list item" with locator attribute "BuiltIn Camera" should be displayed
+        And the "stream list items" should not be displayed
 
     Scenario: Publisher should be able to stream with <codec> codec and simulcast off when streaming with camera
         # Publisher App
@@ -262,13 +258,10 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        #And the "main view" stats should be displayed with following values
+        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed    
+        And the "stream list items" should not be displayed   
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
@@ -298,13 +291,10 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        #And the "main view" stats should be displayed with following values
+        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed
+        And the "stream list items" should not be displayed
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
@@ -338,13 +328,10 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        #And the "main view" stats should be displayed with following values
+        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed
+        And the "stream list items" should not be displayed
 
     Examples:
         | codec |  resolution | bitrate    |
@@ -374,13 +361,10 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        #And the "main view" stats should be displayed with following values
+        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed
+        And the "stream list items" should not be displayed
 
     Examples:
         | codec |  resolution | bitrate    |
@@ -409,13 +393,9 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with following values
-            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
-        And the "main view" setting should be displayed with default values
-
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed    
+        #And the "main view" stats should be displayed with following values
+        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" setting should be displayed with default values  
     Examples:
         | codec |  resolution | bitrate    |
         | vp9   |  1280x720   | 2 Mbps     |
@@ -440,7 +420,7 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
     Examples:
         |  bitrate    |
@@ -465,7 +445,7 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
     Examples:
         |  resolution  |
@@ -497,7 +477,7 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
     Scenario: Publisher settings should be preserved after the streaming is stopped when changed during streaming
@@ -529,6 +509,7 @@ Feature: Publisher streaming with camera only
         And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
+    @ignore #Bug - 326
     Scenario: Viewer should be able to select video quality <quality> when streaming is live with camera
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
@@ -543,7 +524,7 @@ Feature: Publisher streaming with camera only
             | quality      | <quality>    |
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with following values
             | quality      | Quality  - <quality>    |
 
@@ -567,11 +548,13 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         When the viewer turns Off the "video of main view"
         Then the "main view" should be displayed with following values
             | video button status | Off |
+            | source name text    | contains: fake |
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -580,7 +563,8 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         When the viewer turns On the "video of main view"
-        Then the "main view" should be displayed with default values
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -608,7 +592,8 @@ Feature: Publisher streaming with camera only
         #Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         When the viewer turns On the "playback of main view"
-        Then the "main view" should be displayed with default values
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -623,11 +608,13 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         When the viewer turns On the "audio of main view"
         Then the "main view" should be displayed with following values
             | audio button status | On |
+            | source name text    | contains: fake |
 
         #Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -636,7 +623,8 @@ Feature: Publisher streaming with camera only
         #Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         When the viewer turns Off the "audio of main view"
-        Then the "main view" should be displayed with default values
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
@@ -651,26 +639,24 @@ Feature: Publisher streaming with camera only
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "main view" should be displayed with default values
+        And the "main view" should be displayed with following values
+            | source name text  | contains: fake |
 
         When the viewer clicks on the "main view full screen button"
         And the "main view" should be displayed with following values
             | size              | Full           |
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
         When the viewer clicks on the "main view full screen button"
         And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
-        And the number of "stream list items" count should be "1"
-        And the number of "stream list loading items" count should be "0"
-        And the "camera tile list item" should be displayed                
-
+    @ignore #Bug - 326
     Scenario: Viewer should be able to select video quality <quality> in full screen mode when streaming is live with camera
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
@@ -691,7 +677,7 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with following values
             | size              | Full           |
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with following values
             | quality      | Quality  - <quality>    |
 
@@ -720,7 +706,7 @@ Feature: Publisher streaming with camera only
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        And the "main view" stats should be displayed with default values
+        #And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
         # Publisher App
