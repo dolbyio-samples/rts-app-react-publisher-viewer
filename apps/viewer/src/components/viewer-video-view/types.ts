@@ -10,9 +10,7 @@ export interface ViewerVideoViewProps {
     onChangeVolume?: (volume: number | ((prevVolume: number) => number)) => void;
     onToggleAudio?: (audioEnabled: boolean | ((prevAudioEnabled: boolean) => boolean)) => void;
     onToggleFullScreen?: (fullScreen: boolean | ((prevFullScreen: boolean) => boolean)) => void;
-    onTogglePlayback?: (playbackActive: boolean | ((prevPlaybackActive: boolean) => boolean)) => void;
     onToggleVideo?: (videoEnabled: boolean | ((prevVideoEnabled: boolean) => boolean)) => void;
-    playbackActive: boolean;
     videoEnabled: boolean;
     volume: number;
   };

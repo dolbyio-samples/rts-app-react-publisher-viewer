@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 
@@ -23,15 +23,15 @@ const ViewerVideoView = ({
     onChangeVolume,
     onToggleAudio,
     onToggleFullScreen,
-    onTogglePlayback,
     onToggleVideo,
-    playbackActive,
     videoEnabled,
     volume,
   } = controls ?? {};
 
   const videoViewRef = useRef<HTMLDivElement>(null);
   const isControlBarVisibleRef = useRef<boolean>();
+
+  const [isPlaybackActive, setIsPlaybackActive] = useState(true);
 
   // Hide/show control bar on mouse move
   useEffect(() => {
@@ -55,6 +55,11 @@ const ViewerVideoView = ({
       videoViewRef.current?.removeEventListener('mousemove', handleMouseMove);
     };
   }, [videoViewRef.current]);
+
+  // Reenable playback when switching main source
+  useEffect(() => {
+    setIsPlaybackActive(true);
+  }, [videoProps.label]);
 
   useEffect(() => {
     videoTrack.enabled = videoEnabled;
@@ -86,7 +91,7 @@ const ViewerVideoView = ({
   };
 
   const handleTogglePlayback = () => {
-    onTogglePlayback?.((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
+    setIsPlaybackActive((prevIsPlaysetIsPlaybackActive) => !prevIsPlaysetIsPlaybackActive);
   };
 
   const handleToggleVideo = () => {
@@ -112,14 +117,14 @@ const ViewerVideoView = ({
       <VideoView
         displayVideo={videoEnabled}
         muted={!audioEnabled}
-        paused={!playbackActive}
+        paused={!isPlaybackActive}
         volume={volume}
         {...videoProps}
       />
       {showControlBar ? (
         <VideoControlBar
           activeAudio={audioEnabled}
-          activePlayback={playbackActive}
+          activePlayback={isPlaybackActive}
           activeVideo={videoEnabled}
           hasAudioTrack={!!audioTrack}
           hasVideoTrack={!!videoTrack}
