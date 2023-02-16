@@ -28,6 +28,7 @@ const App = () => {
     mainMediaStream,
     projectToMainStream,
     remoteTrackSources,
+    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,
@@ -60,26 +61,13 @@ const App = () => {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (!remoteTrackSources.size) {
-      return;
-    }
-
-    if (!mainSourceId || !remoteTrackSources.get(mainSourceId)) {
+    if (remoteTrackSources.size && (!mainSourceId || !remoteTrackSources.get(mainSourceId))) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
+      changeMainSource(firstSourceId);
     }
   }, [remoteTrackSources.size]);
-
-  // Change main stream
-  useEffect(() => {
-    if (mainSourceId) {
-      projectToMainStream(mainSourceId).then(() => {
-        // Reset quality
-        setSourceQuality(mainSourceId);
-      });
-    }
-  }, [mainSourceId]);
 
   // Reset main stream when layers change
   useEffect(() => {
@@ -97,6 +85,20 @@ const App = () => {
       });
     }
   }, [mainSource?.streamQualityOptions.length]);
+
+  const changeMainSource = async (sourceId: string) => {
+    const { sourceId: prevSourceId } = mainSource ?? {};
+
+    if (prevSourceId) {
+      reprojectFromMainStream(prevSourceId);
+    }
+
+    projectToMainStream(sourceId).then(() => {
+      setMainSourceId(sourceId);
+      // Reset quality
+      setSourceQuality(sourceId, { streamQuality: 'Auto' });
+    });
+  };
 
   const mainSourceSettings = useCallback(() => {
     if (!mainSource) {
@@ -177,28 +179,34 @@ const App = () => {
                 }}
               />
             </Box>
-            <VStack height="100%" maxWidth="20vw">
-              {Array.from(remoteTrackSources).map(([sourceId, { mediaStream }]) => (
-                <Box
-                  cursor="pointer"
-                  height={`calc(100% / ${MAX_SOURCES})`}
-                  key={sourceId}
-                  onClick={() => setMainSourceId(sourceId)}
-                  test-id="millicastVideo"
-                  width="100%"
-                >
-                  <ViewerVideoView
-                    isStreaming={isStreaming}
-                    videoProps={{
-                      displayVideo: true,
-                      label: sourceId,
-                      mediaStream,
-                      muted: true,
-                    }}
-                  />
-                </Box>
-              ))}
-            </VStack>
+            {mainSourceId && remoteTrackSources.size > 1 ? (
+              <VStack height="100%" maxWidth="20vw">
+                {Array.from(remoteTrackSources)
+                  .filter(([sourceId]) => sourceId !== mainSourceId)
+                  .map(([sourceId, { mediaStream }]) => (
+                    <Box
+                      cursor="pointer"
+                      height={`calc(100% / (${MAX_SOURCES} - 1))`}
+                      key={sourceId}
+                      onClick={() => {
+                        changeMainSource(sourceId);
+                      }}
+                      test-id="millicastVideo"
+                      width="100%"
+                    >
+                      <ViewerVideoView
+                        isStreaming={isStreaming}
+                        videoProps={{
+                          displayVideo: true,
+                          label: sourceId,
+                          mediaStream,
+                          muted: true,
+                        }}
+                      />
+                    </Box>
+                  ))}
+              </VStack>
+            ) : undefined}
           </HStack>
         )}
       </Flex>

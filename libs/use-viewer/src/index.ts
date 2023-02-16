@@ -19,7 +19,7 @@ import {
   ViewerActionType,
   ViewerProps,
 } from './types';
-import { addRemoteTrackAndProject, unprojectFromStream, projectToStream } from './utils';
+import { addRemoteTrack, unprojectFromStream, projectToStream } from './utils';
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const viewerRef = useRef<View>();
@@ -29,9 +29,12 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const remoteTrackSourcesRef = useRef<RemoteTrackSources>();
   remoteTrackSourcesRef.current = remoteTrackSources;
 
-  const [mainAudioMapping, setMainAudioMapping] = useState<ViewProjectSourceMapping>();
+  // Use this to keep track of the quantity of concurrent active event handlers
+  const activeEventCounterRef = useRef(0);
+  const mainAudioMappingRef = useRef<ViewProjectSourceMapping>();
+  const mainVideoMappingRef = useRef<ViewProjectSourceMapping>();
+
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
-  const [mainVideoMapping, setMainVideoMapping] = useState<ViewProjectSourceMapping>();
   const [viewerCount, setViewerCount] = useState<number>(0);
 
   const handleInternalError = (error: unknown) => {
@@ -72,12 +75,32 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     switch (event.name) {
       case 'active':
         try {
-          const newRemoteTrackSource = await addRemoteTrackAndProject(viewer, sourceId, tracks);
-          setTimeout(() => {
-            dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
-          }, 1000);
+          const activeEventCounter = activeEventCounterRef.current + 1;
+          activeEventCounterRef.current = activeEventCounter;
+
+          const newRemoteTrackSource = await addRemoteTrack(viewer, sourceId, tracks);
+
+          dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
+
+          try {
+            // Project to main stream if there are currently no remote tracks and it is the first active event
+            if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
+              await projectToStream(
+                viewer,
+                newRemoteTrackSource,
+                mainAudioMappingRef.current,
+                mainVideoMappingRef.current
+              );
+            } else {
+              await viewer.project(sourceId, newRemoteTrackSource.projectMapping);
+            }
+          } catch (error) {
+            handleInternalError(error);
+          }
         } catch (error) {
           handleInternalError(error);
+        } finally {
+          activeEventCounterRef.current = activeEventCounterRef.current - 1;
         }
 
         break;
@@ -151,9 +174,9 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       setMainMediaStream(mediaStream);
 
       if (kind === 'audio') {
-        setMainAudioMapping(newMapping);
+        mainAudioMappingRef.current = newMapping;
       } else if (kind === 'video') {
-        setMainVideoMapping(newMapping);
+        mainVideoMappingRef.current = newMapping;
       }
     }
   };
@@ -169,9 +192,28 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
-        await projectToStream(viewer, remoteTrackSource, mainAudioMapping, mainVideoMapping);
+        await projectToStream(viewer, remoteTrackSource, mainAudioMappingRef.current, mainVideoMappingRef.current);
 
         return remoteTrackSource;
+      } catch (error) {
+        handleInternalError(error);
+      }
+    }
+  };
+
+  const reprojectFromMainStream = async (sourceId: string) => {
+    const { current: viewer } = viewerRef;
+
+    if (!viewer) {
+      return;
+    }
+
+    const remoteTrackSource = remoteTrackSources.get(sourceId);
+
+    if (remoteTrackSource) {
+      try {
+        await unprojectFromStream(viewer, remoteTrackSource);
+        await viewer.project(sourceId, remoteTrackSource.projectMapping);
       } catch (error) {
         handleInternalError(error);
       }
@@ -237,6 +279,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     mainMediaStream,
     projectToMainStream,
     remoteTrackSources,
+    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,
