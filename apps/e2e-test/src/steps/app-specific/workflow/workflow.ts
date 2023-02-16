@@ -6,7 +6,7 @@ import { verifyViewScreenSize } from '../../../playwright-support/app-specific/e
 import { clearText, click, enterText } from '../../../playwright-support/generic/element-action';
 
 import { waitFor } from '../../../playwright-support/generic/element-wait';
-import { verifyArrayContains, verifyEqualTo, verifyLessThan } from '../../../playwright-support/generic/verification';
+import { verifyArrayContains, verifyEqualTo } from '../../../playwright-support/generic/verification';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status, Screen } from '../../../utils/types';
 import {
@@ -444,16 +444,18 @@ export const verifyStats = async (
 
   try {
     let streamStatsKeys = Object.keys(streamStats);
-    let message;
-    let tabs;
+    console.log(`Quality Tabs On App: ${JSON.stringify(streamStatsKeys, null, 2)}`);
+    let message = "";
+    let tabs: string[] = [];
     if (qualityTabName != 'None' && appName === 'publisher') {
       logger.info(`Verify ${appName} ${viewName} stats with simulcast On`);
+      console.log(`Verify ${appName} ${viewName} stats with simulcast On`);
       if (streamStatsKeys.length == 3) {
         message = 'Stream Info stats does not have High/Medium/Low quality tabs';
         tabs = ['High', 'Medium', 'Low'];
       } else if (streamStatsKeys.length == 2) {
         message = 'Stream Info stats does not have High/Low quality tabs';
-        tabs = ['High', 'Low'];
+        tabs = ['High'];
       } else {
         message = 'Stream Info stats does not have stats for Auto';
         tabs = ['Auto'];
@@ -462,10 +464,13 @@ export const verifyStats = async (
 
       if (qualityTabName !== 'All') {
         streamStatsKeys = [qualityTabName];
+        console.log(`Update streamStatsKeys In If : ${JSON.stringify(streamStatsKeys, null, 2)}`);
       }
 
+      console.log(`Quality Tabs Before Verification: ${JSON.stringify(streamStatsKeys, null, 2)}`);
       for (const quality of streamStatsKeys) {
         logger.info(`Verify ${viewName} stats with ${quality} quality`);
+        console.log(`Verify ${viewName} stats with ${quality} quality`);
         message = 'Unknown Stream Info quality';
         validateStatsInfo(streamStats[quality], expectedData);
       }

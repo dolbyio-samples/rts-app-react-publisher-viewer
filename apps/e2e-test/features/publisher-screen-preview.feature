@@ -10,8 +10,7 @@ Feature: Publisher Preview Screen Sharing Not Live
 
     Scenario: Publisher should be presented with screen view
         Then the "screen view" should be displayed with default values
-        And the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
+        And the "camera view" should be displayed with default values
         And the "local file view" should not be displayed
 
     Scenario: Publisher should be able to turn off and on the video of screen view
@@ -137,31 +136,25 @@ Feature: Publisher Preview Screen Sharing Not Live
         |  Off        |  vp9    |
 
     Scenario: Publisher should be able to close camera source with 2 sources
-        Then the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
+        Then the "camera view" should be displayed with default values
         And the "screen view" should be displayed with default values
-        # And the "camera view close button" should be displayed
-        # And the "screen view close button" should be displayed
 
         When the publisher clicks on the "camera view close button"
         Then the "camera view" should not be displayed
         And the "screen view" should be displayed with following values
             | close button | hidden |
-        # And the "screen view close button" should not be displayed
 
     Scenario: Publisher should be able to close screen source with 2 sources
-        Then the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
+        Then the "camera view" should be displayed with default values
         And the "screen view" should be displayed with default values
 
         When the publisher clicks on the "screen view close button"
         Then the "screen view" should not be displayed
-        And the "camera view" should be displayed with default values
-        # And the "camera view close button" should not be displayed
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
     Scenario: Publisher should be able to close screen source and add it again
-        Then the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
+        Then the "camera view" should be displayed with default values
         And the "screen view" should be displayed with default values
 
         When the publisher clicks on the "screen view close button"
@@ -169,11 +162,7 @@ Feature: Publisher Preview Screen Sharing Not Live
 
         When the publisher adds "screen" source
         Then the "screen view" should be displayed with default values
-        # And the "screen view close button" should be displayed
-
-        And the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
-        # And the "screen view close button" should be displayed
+        And the "camera view" should be displayed with default values
 
     Scenario: Changing the camera settings should not change the screen settings with simulcast <simulcast>
         When the publisher configures "camera view" setting with the following values only
@@ -196,10 +185,8 @@ Feature: Publisher Preview Screen Sharing Not Live
 
     Scenario: Publisher should be able to add multiple screen source
         When the publisher adds "screen" source
-        Then the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
+        Then the "camera view" should be displayed with default values
         And the "camera view" setting should be displayed with default values
-        # And the "camera view close button" should be displayed
 
         And the "1st" "screen view" should be displayed with default values
         And the "1st" "screen view close button" should be displayed
@@ -210,9 +197,7 @@ Feature: Publisher Preview Screen Sharing Not Live
         And the "2nd" "screen view" setting should be displayed with default values
 
         When the publisher adds "screen" source
-        Then the "camera view" should be displayed with following values
-            | close button | displayed\|enabled |
-        # And the "camera view close button" should be displayed
+        Then the "camera view" should be displayed with default values
         And the "camera view" setting should be displayed with default values
 
         And the "1st" "screen view" should be displayed with default values

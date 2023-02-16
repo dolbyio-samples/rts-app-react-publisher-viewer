@@ -67,12 +67,14 @@ export const getStreamStats = async (
 ) => {
   logger.trace(`Get stream info stats`);
   const infoData: { [k: string]: { [k: string]: string } } = {};
+  await delay(3000);
 
   const isTabsDisplayed = await getElementState(page, tabSelector, 'displayed' as State, 0);
   if (qualityTabName != 'None' && isTabsDisplayed) {
     const tabCount = await getElementCount(page, tabSelector);
 
     for (let i = 0; i < tabCount; i++) {
+      if (!await getElementState(page, tabSelector, 'displayed' as State, i)) continue
       const tabName = await getElementText(page, tabSelector, i);
       if (qualityTabName === 'All' || qualityTabName === tabName) {
         await click(page, tabSelector, i);
@@ -84,7 +86,6 @@ export const getStreamStats = async (
       }
     }
   } else {
-    await delay(3000);
     const statsInfo = await getTableData(page, tableSelector);
     infoData['Auto'] = transponseStreamData(statsInfo);
   }

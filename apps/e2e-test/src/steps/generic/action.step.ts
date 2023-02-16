@@ -5,9 +5,16 @@ import { defaultReportPath } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { check, click, hover, takeScreenshot, uncheck } from '../../playwright-support/generic/element-action';
 import { TargetSelector } from '../../utils/selector-mapper';
+import { replaceAttributeTargetSelector } from './utils';
 
 When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string) {
   const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+  await click(this.currentPage, targetSelector);
+});
+
+When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)" with locator attribute "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string, attributeValue: string) {
+  let targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName, );
+  targetSelector = replaceAttributeTargetSelector(targetSelector, attributeValue);
   await click(this.currentPage, targetSelector);
 });
 

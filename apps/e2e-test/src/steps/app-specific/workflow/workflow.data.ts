@@ -9,6 +9,7 @@ const ViewDefaultData: ViewData = {
   'video button': 'displayed|enabled',
   'video button status': 'On',
   'full screen button': 'hidden',
+  'close button': 'displayed|enabled',
 };
 
 const previewViewDefaultData: ViewData = {
@@ -32,25 +33,21 @@ const streamingViewDefaultData: ViewData = {
 const publisherPreviewCameraViewDefaultData: ViewData = {
   ...previewViewDefaultData,
   'source name text': 'contains: fake',
-  'close button': 'hidden',
 };
 
 const publisherStreamingCameraViewDefaultData: ViewData = {
   ...streamingViewDefaultData,
   'source name text': 'contains: fake',
-  'close button': 'hidden',
 };
 
 const publisherPreviewScreenViewDefaultData: ViewData = {
   ...previewViewDefaultData,
   'source name text': 'contains: screen',
-  'close button': 'displayed|enabled',
 };
 
 const publisherStreamingScreenViewDefaultData: ViewData = {
   ...streamingViewDefaultData,
   'source name text': 'contains: screen',
-  'close button': 'displayed|enabled',
 };
 
 const viewerStreamingMainViewDefaultData: ViewData = {

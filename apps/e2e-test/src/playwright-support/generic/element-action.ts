@@ -32,7 +32,7 @@ export const hover = async (page: Page, selector: TargetSelector, index?: number
 export const enterText = async (page: Page, selector: TargetSelector, text: string, index?: number): Promise<void> => {
   logger.trace(`Enter ${text} in selector: ${selector}`);
   const locator = getLocator(page, selector, index);
-  await locator.type(text);
+  await locator.type(text, {delay: 100});
 };
 
 export const clearText = async (page: Page, selector: TargetSelector, index?: number): Promise<void> => {

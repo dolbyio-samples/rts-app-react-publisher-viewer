@@ -8,7 +8,8 @@ Feature: Publisher Camera Preview Not Live
         Given a publisher is on the "preview" page
 
     Scenario: Publisher should be presented with camera view
-        Then the "camera view" should be displayed with default values
+        Then the "camera view" should be displayed with following values
+            | close button | hidden |
 
     Scenario: Publisher should be able to turn off and on the video of camera view
         Then the "video of camera view" should be turned On
@@ -131,7 +132,3 @@ Feature: Publisher Camera Preview Not Live
             | codec        | Codec  - vp8           |
             | resolution   | Resolution  - 1280x720 |
             | bitrate      | Bitrate  - 1 Mbps      |
-
-    Scenario: Publisher should not be able to close the single camera view
-        Then the "camera view" should be displayed with default values
-        And the "camera view close button" should not be displayed

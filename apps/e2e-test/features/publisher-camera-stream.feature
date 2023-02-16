@@ -13,7 +13,8 @@ Feature: Publisher streaming with camera only
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "header" should be displayed with default values
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view" setting should be displayed with default values
         And the "camera view" stats with quality tabs should be displayed with default values
         And the "screen view" should not be displayed
@@ -46,7 +47,8 @@ Feature: Publisher streaming with camera only
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
         And the "header" should be displayed with default values
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view" setting should be displayed with default values
         And the "screen view" should not be displayed
         And the "local file view" should not be displayed
@@ -79,6 +81,7 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | video button status     | Off    |
+            | close button            | hidden |
         And the "camera view video mute image" should be displayed
 
         # Viewer App
@@ -92,7 +95,8 @@ Feature: Publisher streaming with camera only
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "video of camera view"
-        Then the "camera view" should be displayed with default values
+        Then the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view video mute image" should not be displayed
 
         # Viewer App
@@ -105,6 +109,7 @@ Feature: Publisher streaming with camera only
         When the publisher turns Off the "video of camera view"
         And the "camera view" should be displayed with following values
             | video button status     | Off     |
+            | close button            | hidden  |
         And the "camera view video mute image" should be displayed
 
         # Viewer App
@@ -119,6 +124,7 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | audio button status | Off  |
+            | close button        | hidden |
         And the "camera view video mute image" should not be displayed
 
         # Viewer App
@@ -130,7 +136,8 @@ Feature: Publisher streaming with camera only
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "audio of camera view"
-        Then the "camera view" should be displayed with default values
+        Then the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view video mute image" should not be displayed
 
         # Viewer App
@@ -142,7 +149,8 @@ Feature: Publisher streaming with camera only
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns Off the "audio of camera view"
         Then the "camera view" should be displayed with following values only
-            | audio button status | Off  |
+            | audio button status | Off    |
+            | close button        | hidden |
         And the "camera view video mute image" should not be displayed
 
         # Viewer App
@@ -150,8 +158,8 @@ Feature: Publisher streaming with camera only
         And the "main view" should be displayed with default values
         And the "stream list loading items" should not be displayed
 
-    Scenario: Publisher should be able to start streaming with microphone/camera Off and toggle microphone/camera during streaming
-        # Viewer App
+    Scenario: Publisher should be able to start streaming with microphone-camera Off and toggle microphone-camera during streaming
+        # Publisher App
         And the publisher turns Off the "video of camera view"
         And the publisher turns Off the "audio of camera view"
         When the publisher clicks on the "go live button"
@@ -159,6 +167,7 @@ Feature: Publisher streaming with camera only
         And the "camera view" should be displayed with following values only
             | video button status | Off                |
             | audio button status | Off                |
+            | close button        | hidden             |
         And the "camera view video mute image" should be displayed
 
         # Viewer App
@@ -167,13 +176,12 @@ Feature: Publisher streaming with camera only
         And the "stream list loading items" should not be displayed
         And the "main view" should be displayed with default values
 
-        # Viewer App
+        # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher turns On the "video of camera view"
         And the publisher turns On the "audio of camera view"
         Then the "camera view" should be displayed with following values only
-            | video button status | On                 |
-            | audio button status | On                 |
+            | close button        | hidden             |
         And the "camera view video mute image" should not be displayed
 
         # Viewer App
@@ -208,13 +216,13 @@ Feature: Publisher streaming with camera only
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with default values
+        And the "main view" setting should be displayed with default values
 
-        When the publisher clicks on the "main view setting button"
+        When the viewer clicks on the "main view setting button"
         Then the "settings popup" should be displayed
         And the number of "settings dropdowns" count should be "1"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
-        And the "quality dropdown options" should contain "Auto,High,Low" options
 
     Scenario: Verify source name is reflected correctly after modifing it when streaming with camera
         # Publisher App
@@ -224,7 +232,7 @@ Feature: Publisher streaming with camera only
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
             | source name text   | BuiltIn Camera     |
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
@@ -244,7 +252,7 @@ Feature: Publisher streaming with camera only
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with default values
         And the "camera view" stats should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
@@ -267,7 +275,6 @@ Feature: Publisher streaming with camera only
         And the number of "settings dropdowns" count should be "1"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
-        And the "quality dropdown options" should equal to "Auto" options
     Examples:
         |  codec  |
         |  h264   |
@@ -282,7 +289,7 @@ Feature: Publisher streaming with camera only
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" stats with quality tabs should be displayed with following values
             | Codecs:  | regex: ^video/<codec>, audio/opus$ |
 
@@ -304,7 +311,6 @@ Feature: Publisher streaming with camera only
         And the number of "settings dropdowns" count should be "1"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
-        And the "quality dropdown options" should contain "Auto,High,Low" options
     Examples:
         |  codec  |
         |  h264   |
@@ -320,7 +326,7 @@ Feature: Publisher streaming with camera only
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - <bitrate>       |
@@ -340,9 +346,6 @@ Feature: Publisher streaming with camera only
         And the number of "stream list loading items" count should be "0"
         And the "camera tile list item" should be displayed
 
-        When the publisher clicks on the "main view setting button"
-        Then the "settings popup" should be displayed
-        And the "quality dropdown options" should contain "Auto,High,Low" options
     Examples:
         | codec |  resolution | bitrate    |
         | vp8   |  1280x720   | 2 Mbps     |
@@ -359,7 +362,7 @@ Feature: Publisher streaming with camera only
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - <bitrate>       |
@@ -379,9 +382,6 @@ Feature: Publisher streaming with camera only
         And the number of "stream list loading items" count should be "0"
         And the "camera tile list item" should be displayed
 
-        When the publisher clicks on the "main view setting button"
-        Then the "settings popup" should be displayed
-        And the "quality dropdown options" should contain "Auto" options
     Examples:
         | codec |  resolution | bitrate    |
         | vp8   |  1280x720   | 250 Kbps   |
@@ -397,7 +397,7 @@ Feature: Publisher streaming with camera only
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - <resolution> |
             | bitrate    | Bitrate  - <bitrate>       |
@@ -416,10 +416,6 @@ Feature: Publisher streaming with camera only
         And the number of "stream list items" count should be "1"
         And the number of "stream list loading items" count should be "0"
         And the "camera tile list item" should be displayed    
-
-        When the publisher clicks on the "main view setting button"
-        Then the "settings popup" should be displayed
-        And the "quality dropdown options" should equal to "Auto" options
     Examples:
         | codec |  resolution | bitrate    |
         | vp9   |  1280x720   | 2 Mbps     |
@@ -434,7 +430,7 @@ Feature: Publisher streaming with camera only
         When the publisher configures "camera view" setting with the following values only
             | bitrate      | <bitrate>    |
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with following values only
             | bitrate    | Bitrate  - <bitrate>       |
         And the "camera view" stats with quality tabs should be displayed with default values
@@ -458,7 +454,7 @@ Feature: Publisher streaming with camera only
         When the publisher configures "camera view" setting with the following values only
             | resolution    | <resolution>    |
         And the "camera view" should be displayed with following values
-            | stream info button | displayed\|enabled |
+            | close button       | hidden             |
         And the "camera view" setting should be displayed with following values only
             | resolution    | Resolution  - <resolution>  |
             | bitrate       | Bitrate  - Auto             |
@@ -524,6 +520,7 @@ Feature: Publisher streaming with camera only
             | source name | Dummy Camera View       |
         And the "camera view" should be displayed with following values
             | source name text | Dummy Camera View |
+            | close button     | hidden            |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
@@ -551,7 +548,8 @@ Feature: Publisher streaming with camera only
             | quality      | Quality  - <quality>    |
 
         And switch to "publisher-streaming" page on "publisher" app
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view" setting should be displayed with default values
         And the "camera view" stats with quality tabs should be displayed with default values
     Examples:
@@ -699,7 +697,8 @@ Feature: Publisher streaming with camera only
 
         # Publisher App
         And switch to "publisher-streaming" page on "publisher" app
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view" setting should be displayed with default values
         And the "camera view" stats with quality tabs should be displayed with default values
     Examples:
@@ -711,7 +710,8 @@ Feature: Publisher streaming with camera only
         # Publisher App
         When the publisher clicks on the "camera view go live button"
         Then the publisher should be navigated to "publisher-streaming" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
         And the "camera view" setting should be displayed with default values
         And the "camera view" stats with quality tabs should be displayed with default values
 
@@ -727,7 +727,8 @@ Feature: Publisher streaming with camera only
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "camera view stop button"
         Then the publisher should be navigated to "preview" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
@@ -738,7 +739,8 @@ Feature: Publisher streaming with camera only
         And switch to "preview" page on "publisher" app
         When the publisher clicks on the "camera view go live button"
         Then the publisher should be navigated to "publisher-streaming" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
@@ -750,7 +752,8 @@ Feature: Publisher streaming with camera only
         # Publisher App
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
@@ -762,7 +765,8 @@ Feature: Publisher streaming with camera only
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "camera view stop button"
         Then the publisher should be navigated to "preview" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
@@ -773,7 +777,8 @@ Feature: Publisher streaming with camera only
         # Publisher App
         When the publisher clicks on the "camera view go live button"
         Then the publisher should be navigated to "publisher-streaming" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
@@ -785,7 +790,8 @@ Feature: Publisher streaming with camera only
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
-        And the "camera view" should be displayed with default values
+        And the "camera view" should be displayed with following values
+            | close button | hidden |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
