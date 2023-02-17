@@ -289,7 +289,7 @@ Feature: Publisher Screen Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the number of "stream list items" count should be "1"
         And the number of "stream list loading items" count should be "0"
-        When the viewer projects main stream as source name containing "screen"
+        When the viewer projects main stream as source name containing "Dummy Screen View"
         Then the "main view" should be displayed with following values
             | source name text   | Dummy Screen View     |
 
