@@ -69,7 +69,6 @@
       "options": {
         "parallel": false,
         "commands": [
-          "yarn nx launch-server e2e-test --skip-nx-cache",
           "yarn nx test-publisher e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher/"
         ]
       }

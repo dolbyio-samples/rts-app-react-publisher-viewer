@@ -52,8 +52,9 @@ jobs:
       - name: build & test
         run: |
           export VITE_RTS_STREAM_NAME=${{ secrets.STREAM_NAME }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
-          eval "yarn nx e2e-build-test e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/e2e/"
+          eval "yarn nx e2e e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/e2e/"
           unset VITE_RTS_STREAM_NAME
           rm -rf dist
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
