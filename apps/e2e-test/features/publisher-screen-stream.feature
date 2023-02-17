@@ -1,4 +1,5 @@
 @e2e
+@only
 Feature: Publisher Screen Streaming
     As a publisher
     I want to do live streaming for an event with screen share
@@ -946,11 +947,372 @@ Feature: Publisher Screen Streaming
         Then the viewer should be navigated to "waiting-room" page
         And the "main view" should not be displayed
 
-    # TODO
-    #Scenario: Add new source after stoping a specific source
-    #Scenario: Swap streams when audio/video/playback is toogled
-    #Scenario: Stop the stream which is projected as main stream
-    #Scenario: Close the stream which is projected as main stream
-    #Scenario: Stream with 3 screen share
-    #Scenario: Streaming with screen share only
-    #Scenario: With all screen sharing
+    @ignore #Bug - 316
+    Scenario: New source should be streamed automatically if publisher had stop any specific source during streaming
+        # Publisher App
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "screen view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "screen view stop button"
+        And the "screen view" should be displayed with following values only
+            | go live button     | displayed\|enabled |
+            | stop button        | hidden             |
+        
+        When the publisher adds "screen" source
+        Then the "2nd" "screen view" should be displayed with default values
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the number of "stream list items" count should be "1"
+        And the number of "stream list loading items" count should be "0"
+
+        When the viewer projects main stream as source name containing "screen"
+        And the "main view" should be displayed with following values
+            | source name text | contains: screen |
+        And the "camera tile list item" should be displayed
+
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "1st" "screen view play button"
+        And the "1st" "screen view" should be displayed with default values
+        And the "2nd" "screen view" should be displayed with default values
+        And the "camera view" should be displayed with default values
+        
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the number of "stream list items" count should be "2"
+        And the number of "stream list loading items" count should be "0"
+
+    Scenario: Stop the stream which is projected as main stream on viewer app
+        # Publisher App
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "screen view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        When the viewer projects main stream as source name containing "screen"
+        And the "main view" should be displayed with following values
+            | source name text | contains: screen |
+        And the "camera tile list item" should be displayed        
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "screen view stop button"
+        And the "screen view" should be displayed with following values only
+            | go live button     | displayed\|enabled |
+            | stop button        | hidden             |
+        
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "stream list items" should not be displayed
+        And the "main view" should be displayed with following values
+            | source name text | contains: fake |
+
+    Scenario: Close the stream which is projected as main stream on viewer app
+        # Publisher App
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "screen view" should be displayed with default values
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        When the viewer projects main stream as source name containing "screen"
+        And the "main view" should be displayed with following values
+            | source name text | contains: screen |
+        And the "camera tile list item" should be displayed        
+
+        # Publisher App
+        And switch to "publisher-streaming" page on "publisher" app
+        When the publisher clicks on the "screen view close button"
+        And the "screen view" should not be displayed
+
+        # Viewer App
+        And switch to "viewer-streaming" page on "viewer" app
+        And the "stream list items" should not be displayed
+        And the "main view" should be displayed with following values
+            | source name text | contains: fake |
+
+    Scenario: Publisher should be able to stream multiple 3 screen share and camera
+        When the publisher configures "1st" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 1 |
+            | simulcast    | On                   |
+            | codec        | vp8                  |
+            | bitrate      | 2 Mbps               |        
+        And the publisher adds "screen" source
+        And the publisher configures "2nd" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 2 |
+            | simulcast    | Off                  |
+            | codec        | vp9                  |
+            | bitrate      | 1 Mbps               |
+        And the publisher adds "screen" source
+        And the publisher configures "3rd" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 3 |
+            | simulcast    | On                   |
+            | codec        | h264                 |
+
+
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "camera view" setting should be displayed with default values
+        And the "1st" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 1 |
+        And the "1st" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - 2 Mbps    |
+
+        And the "2nd" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 2 |    
+        And the "2nd" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - 1 Mbps    |
+        
+        And the "3rd" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 3 |    
+        And the "3rd" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - Auto      |
+    
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the number of "stream list items" count should be "3"
+        And the number of "stream list loading items" count should be "0"
+
+        When the viewer projects main stream as source name containing "Dummy Screen Share 1"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 1 |
+        And the "camera tile list item" should be displayed
+        And the "stream list item" with locator attribute "Dummy Screen Share 2" should be displayed
+        And the "stream list item" with locator attribute "Dummy Screen Share 3" should be displayed
+
+
+        When the viewer projects main stream as source name containing "Dummy Screen Share 2"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 2 |
+        When the viewer projects main stream as source name containing "Dummy Screen Share 3"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 3 |        
+
+    Scenario: Publisher sould be able to stream screen share only without camera
+        # Publisher App
+        When the publisher clicks on the "camera view close button"
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "screen view" should be displayed with following values
+            | close button | hidden |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the "main view" should be displayed with following values
+            | source name text | contains: screen |
+        And the "stream list items" should not be displayed
+
+    Scenario: Publisher should be able to stream all sources as screen share
+        When the publisher clicks on the "camera view close button"
+        And the publisher configures "1st" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 1 |
+            | simulcast    | On                   |
+            | codec        | vp8                  |
+            | bitrate      | 2 Mbps               |        
+        And the publisher adds "screen" source
+        And the publisher configures "2nd" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 2 |
+            | simulcast    | Off                  |
+            | codec        | vp9                  |
+            | bitrate      | 1 Mbps               |
+        And the publisher adds "screen" source
+        And the publisher configures "3rd" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 3 |
+            | simulcast    | On                   |
+            | codec        | h264                 |
+        And the publisher adds "screen" source
+        And the publisher configures "4th" "screen view" setting with the following values only
+            | source name  | Dummy Screen Share 4 |
+            | simulcast    | Off                  |
+            | codec        | vp8                  |
+            | bitrate      | 500 Kbps             |
+
+        When the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+        And the "1st" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 1 |
+        And the "1st" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - 2 Mbps    |
+
+        And the "2nd" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 2 |    
+        And the "2nd" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - 1 Mbps    |
+        
+        And the "3rd" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 3 |    
+        And the "3rd" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - Auto      |
+
+        And the "4th" "screen view" should be displayed with following values only
+            | source name text  | Dummy Screen Share 4 |    
+        And the "4th" "screen view" setting should be displayed with following values only
+            | bitrate      | Bitrate  - 500 Kbps      |
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        And the number of "stream list items" count should be "3"
+        And the number of "stream list loading items" count should be "0"
+
+        When the viewer projects main stream as source name containing "Dummy Screen Share 1"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 1 |
+        And the "stream list item" with locator attribute "Dummy Screen Share 2" should be displayed
+        And the "stream list item" with locator attribute "Dummy Screen Share 3" should be displayed
+        And the "stream list item" with locator attribute "Dummy Screen Share 4" should be displayed
+
+
+        When the viewer projects main stream as source name containing "Dummy Screen Share 2"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 2 |
+        When the viewer projects main stream as source name containing "Dummy Screen Share 3"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 3 |        
+        When the viewer projects main stream as source name containing "Dummy Screen Share 4"
+        And the "main view" should be displayed with following values
+            | source name text | contains: Dummy Screen Share 4 |    
+
+    @ignore #Bug - 311
+    Scenario: Video toggle should be preserved after swaping the streams on Viewer
+        # Publisher App
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        
+        When the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: screen |
+
+        When the viewer turns Off the "video of main view"
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        And the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text    | contains: screen |
+            | video button status | Off              |
+
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+    @ignore #Bug - 311
+    Scenario: Audio toggle should be preserved after swaping the streams on Viewer
+        # Publisher App
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        
+        When the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: screen |
+
+        When the viewer turns Off the "audio of main view"
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        And the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text    | contains: screen |
+            | audio button status | Off              |
+
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+    @ignore #Bug - 311
+    Scenario: Playback toggle should be preserved after swaping the streams on Viewer
+        # Publisher App
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        
+        When the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: screen |
+
+        When the viewer turns Off the "playback of main view"
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        And the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text       | contains: screen |
+            | playback button status | Off              |
+
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+    @ignore #Bug - 311
+    Scenario: Toggle controls should be preserved after swaping the streams on Viewer
+        # Publisher App
+        And the publisher clicks on the "go live button"
+        Then the publisher should be navigated to "publisher-streaming" page
+
+        # Viewer App
+        And switch to "waiting-room" page on "viewer" app
+        Then the viewer should be navigated to "viewer-streaming" page
+        
+        When the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: screen |
+
+        When the viewer turns Off the "video of main view"
+        And the viewer turns Off the "audio of main view"
+        And the viewer turns Off the "playback of main view"
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        And the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text       | contains: screen |
+            | vido button status     | Off              |
+            | audio button status    | Off              |
+            | playback button status | Off              |
+
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        When the viewer projects main stream as source name containing "screen"
+        And the viewer turns On the "playback of main view"
+
+        And the viewer projects main stream as source name containing "fake"
+        Then the "main view" should be displayed with following values
+            | source name text  | contains: fake |
+
+        And the viewer projects main stream as source name containing "screen"
+        Then the "main view" should be displayed with following values
+            | source name text       | contains: screen |
+            | vido button status     | Off              |
+            | audio button status    | Off              |
