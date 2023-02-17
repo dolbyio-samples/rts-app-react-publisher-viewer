@@ -46,6 +46,7 @@
     "e2e-build-test": {
       "executor": "nx:run-commands",
       "options": {
+        "parallel": false,
         "commands": [
           "yarn nx launch-server e2e-test --skip-nx-cache",
           "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@e2e and not @ignore\""
