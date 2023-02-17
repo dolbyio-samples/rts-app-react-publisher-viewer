@@ -6,6 +6,7 @@ import { TargetSelector } from '../../utils/selector-mapper';
 import { Screen, Status } from '../../utils/types';
 
 import { getDeviceStatus, getOptions, getViewScreenSize } from './element-read';
+import 'source-map-support/register';
 
 export const verifyViewScreenSize = async (
   page: Page,

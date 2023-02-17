@@ -6,6 +6,7 @@ import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { check, click, hover, takeScreenshot, uncheck } from '../../playwright-support/generic/element-action';
 import { TargetSelector } from '../../utils/selector-mapper';
 import { replaceAttributeTargetSelector } from './utils';
+import 'source-map-support/register';
 
 When(/^(?:the .*|I) (?:clicks|click) on the "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string) {
   const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);

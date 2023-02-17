@@ -1,5 +1,6 @@
 import { Logger as TSLogger, ISettingsParam } from 'tslog';
 import { ILogObj, ILogObjMeta } from 'tslog/dist/types/BaseLogger';
+import 'source-map-support/register';
 
 export class CustomLogger<LogObj> extends TSLogger<LogObj> {
   // eslint-disable-next-line no-useless-constructor

@@ -7,6 +7,7 @@ import { State } from '../../utils/types';
 
 import { getLocator } from './element-helper';
 import { getElementValue } from './element-read';
+import 'source-map-support/register';
 
 export const verifyElementState = async (
   page: Page,

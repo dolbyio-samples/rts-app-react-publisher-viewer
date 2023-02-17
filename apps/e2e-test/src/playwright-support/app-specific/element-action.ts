@@ -7,6 +7,7 @@ import { Status } from '../../utils/types';
 import { getLocator } from '../generic/element-helper';
 
 import { getDeviceStatus, getSimulcastStatus } from './element-read';
+import 'source-map-support/register';
 
 export const toogleDevice = async (page: Page, selector: TargetSelector, status: Status): Promise<void> => {
   status === 'On' ? await turnOnDevice(page, selector) : await turnOffDevice(page, selector);

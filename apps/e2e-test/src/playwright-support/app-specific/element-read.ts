@@ -8,6 +8,7 @@ import { Screen, State, Status } from '../../utils/types';
 import { click } from '../generic/element-action';
 import { getLocator } from '../generic/element-helper';
 import { getElementCount, getElementState, getElementText, getTableData } from '../generic/element-read';
+import 'source-map-support/register';
 
 export const getViewScreenSize = async (page: Page, selector: TargetSelector, index?: number): Promise<Screen> => {
   logger.trace(`Get view screen size`);

@@ -3,6 +3,7 @@ import { World, IWorldOptions, setWorldConstructor } from '@cucumber/cucumber';
 import { SelectorMapper } from '../utils/selector-mapper';
 import { ScenarioData, TestOptions } from '../utils/types';
 import { GlobalData } from './GlobalData';
+import 'source-map-support/register';
 
 export class ScenarioWorld extends World {
   currentPage!: any;

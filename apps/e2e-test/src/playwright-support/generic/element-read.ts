@@ -6,6 +6,7 @@ import { TargetSelector } from '../../utils/selector-mapper';
 import { State } from '../../utils/types';
 
 import { getLocator } from './element-helper';
+import 'source-map-support/register';
 
 export const getElementState = async (
   page: Page,

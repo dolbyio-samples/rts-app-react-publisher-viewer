@@ -21,6 +21,7 @@ import {
   getDefaultStatsData,
   getDefaultViewData,
 } from './workflow/workflow.data';
+import 'source-map-support/register';
 
 Then(
   /^the "([^"]*)" should( not)? be in (Full|Normal) size$/,

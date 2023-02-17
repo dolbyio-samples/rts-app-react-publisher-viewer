@@ -1,6 +1,7 @@
 import { Locator, Page } from 'playwright';
 
 import { TargetSelector } from '../../utils/selector-mapper';
+import 'source-map-support/register';
 
 export const getLocator = (page: Page, selector: TargetSelector, index?: number): Locator => {
   let targetLocator: Locator;

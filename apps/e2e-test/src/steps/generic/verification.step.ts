@@ -14,6 +14,7 @@ import { waitFor } from '../../playwright-support/generic/element-wait';
 import { verifyImageEqual, verifyImageNotEqual } from '../../playwright-support/generic/verification';
 import { State } from '../../utils/types';
 import { replaceAttributeTargetSelector } from './utils';
+import 'source-map-support/register';
 
 Then(
   /^the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "([^"]*)" should( not)? be (displayed|visible|invisible|hidden|enabled|disabled|editable|checked|selected)$/,

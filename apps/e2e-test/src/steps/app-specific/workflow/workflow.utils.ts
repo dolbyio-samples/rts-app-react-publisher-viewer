@@ -15,6 +15,7 @@ import { waitFor } from '../../../playwright-support/generic/element-wait';
 import { verifyGreaterThanEqualTo, verifyMatch, verifyEqualTo } from '../../../playwright-support/generic/verification';
 import { TargetSelector } from '../../../utils/selector-mapper';
 import { State, Status } from '../../../utils/types';
+import 'source-map-support/register';
 
 export const validateState = async (
   scWorld: ScenarioWorld,

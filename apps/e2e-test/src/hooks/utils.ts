@@ -1,6 +1,7 @@
 import { logger } from '../logger';
 import { GlobalData } from './GlobalData';
 import { ScenarioWorld } from './ScenarioWorld';
+import 'source-map-support/register';
 
 export const getData = (scenarioWorld: ScenarioWorld, name: string, globalSearch = true) => {
   logger.info(`Get local or global test data for ${name}`);
