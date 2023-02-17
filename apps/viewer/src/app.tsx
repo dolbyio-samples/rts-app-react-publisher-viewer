@@ -1,5 +1,4 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import { StreamStats } from '@millicast/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
@@ -26,6 +25,7 @@ const App = () => {
 
   const {
     mainMediaStream,
+    mainStatistics,
     projectToMainStream,
     remoteTrackSources,
     reprojectFromMainStream,
@@ -160,7 +160,7 @@ const App = () => {
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}
                 showControlBar
-                statistics={mainSource?.statistics as StreamStats}
+                statistics={mainStatistics}
                 videoProps={{
                   displayVideo: true,
                   label: mainSourceId,

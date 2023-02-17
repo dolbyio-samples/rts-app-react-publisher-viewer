@@ -50,10 +50,10 @@ const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSo
       const { quality, sourceId } = action;
 
       const newState = new Map(state);
-      const prevRamoteTrackSource = state.get(sourceId);
+      const prevRemoteTrackSource = state.get(sourceId);
 
-      if (prevRamoteTrackSource) {
-        newState.set(sourceId, { ...prevRamoteTrackSource, quality });
+      if (prevRemoteTrackSource) {
+        newState.set(sourceId, { ...prevRemoteTrackSource, quality });
       }
 
       return newState;

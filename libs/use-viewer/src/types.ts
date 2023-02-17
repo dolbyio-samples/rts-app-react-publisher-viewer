@@ -30,6 +30,7 @@ export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export interface Viewer {
   mainMediaStream?: MediaStream;
+  mainStatistics?: StreamStats;
   projectToMainStream: (sourceId: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
   reprojectFromMainStream: (sourceId: string) => void;
