@@ -10,7 +10,6 @@ import { BrowserContext, Page } from 'playwright';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { logger } from '../../logger';
 import { getData } from '../../hooks/utils';
-import 'source-map-support/register';
 
 export async function captureArtifacts(
   scenarioWorld: ScenarioWorld,

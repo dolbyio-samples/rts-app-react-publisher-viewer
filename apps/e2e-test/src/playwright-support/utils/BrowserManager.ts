@@ -8,7 +8,6 @@ import { defaultExecutionTimeout } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { logger } from '../../logger';
 import { TestOptions } from '../../utils/types';
-import 'source-map-support/register';
 
 export class BrowserManager {
   options: TestOptions;

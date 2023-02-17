@@ -1,5 +1,3 @@
-import 'source-map-support/register';
-
 export class GlobalData {
   private static instance: GlobalData;
   private data;

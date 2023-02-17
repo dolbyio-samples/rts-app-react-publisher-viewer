@@ -21,7 +21,6 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
-import 'source-map-support/register';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,

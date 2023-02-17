@@ -2,7 +2,6 @@ import { generate, Options } from 'cucumber-html-reporter';
 
 import { autName, testReportTitle } from '../config/defaults';
 import { BrowserManager } from '../playwright-support/utils/BrowserManager';
-import 'source-map-support/register';
 
 const browserMgr = new BrowserManager();
 

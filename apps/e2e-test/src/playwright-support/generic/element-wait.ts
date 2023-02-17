@@ -7,7 +7,6 @@ import { TimeOutError } from '../../utils/custom-exception';
 import { TargetSelector } from '../../utils/selector-mapper';
 
 import { getLocator } from './element-helper';
-import 'source-map-support/register';
 
 export const waitFor = async <T>(
   predicate: () => T | Promise<T>,

@@ -4,7 +4,6 @@ import path from 'path';
 import { load } from 'js-yaml';
 
 import { logger } from '../logger';
-import 'source-map-support/register';
 
 export type TargetSelector = string | string[];
 type PageSelectorMap = Map<string, TargetSelector>;

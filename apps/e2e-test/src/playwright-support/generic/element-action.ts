@@ -4,7 +4,6 @@ import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
 
 import { getLocator } from './element-helper';
-import 'source-map-support/register';
 
 export const click = async (page: Page, selector: TargetSelector, index?: number): Promise<void> => {
   logger.trace(`Click on selector: ${selector}`);

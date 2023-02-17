@@ -1,7 +1,6 @@
 import { Page } from 'playwright';
 
 import { logger } from '../../logger';
-import 'source-map-support/register';
 
 export const goToURL = async (page: Page, appURL: string): Promise<void> => {
   logger.trace(`Go to URL: ${appURL}`);

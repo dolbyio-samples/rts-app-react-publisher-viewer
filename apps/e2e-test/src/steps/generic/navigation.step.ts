@@ -7,7 +7,6 @@ import { verifyElementState } from '../../playwright-support/generic/element-ver
 import { waitFor } from '../../playwright-support/generic/element-wait';
 import { State } from '../../utils/types';
 import { getValidationCondition } from './utils';
-import 'source-map-support/register';
 
 Then(/^(?:the .*|I) should be navigated to "([^"]*)" page$/, async function (this: ScenarioWorld, pageName: string) {
   this.currentPageName = pageName;

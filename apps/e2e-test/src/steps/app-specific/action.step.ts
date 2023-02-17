@@ -11,7 +11,6 @@ import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
 import { getDefaultConfigureSettings } from './workflow/workflow.data';
-import 'source-map-support/register';
 
 When(
   /^the (?:publisher|viewer) turns (Off|On) the "([^"]*)"$/,

@@ -1,5 +1,4 @@
 import { CustomLogger } from './custom-logger';
-import 'source-map-support/register';
 
 export class Logger {
   private static instance: CustomLogger<unknown>;

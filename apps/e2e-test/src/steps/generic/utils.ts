@@ -1,7 +1,6 @@
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData } from '../../hooks/utils';
 import { SelectorMapper, TargetSelector } from '../../utils/selector-mapper';
-import 'source-map-support/register';
 
 export function replacePlaceholder(text: string, dataSource: ScenarioWorld): string {
   const replaceRegEx = /\$\{(.*?)\}/g;

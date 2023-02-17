@@ -7,7 +7,6 @@ import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData, saveData } from '../../hooks/utils';
 import { logger } from '../../logger';
 import { BrowserManager } from '../utils/BrowserManager';
-import 'source-map-support/register';
 
 export async function openPages(
   scenarioWorld: ScenarioWorld,

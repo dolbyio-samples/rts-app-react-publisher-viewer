@@ -3,7 +3,6 @@ import assert from 'assertion';
 import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
-import 'source-map-support/register';
 
 export const verifyMatch = (actual: string, expPattern: string, message?: string): void => {
   message = `${message || ''}\n\tExpected RegEx: ${expPattern}\n\tActual: ${actual}`;

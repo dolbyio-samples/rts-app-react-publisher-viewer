@@ -8,7 +8,6 @@ import { bringToFront, goToURL } from '../../playwright-support/generic/browser-
 import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 import { click, hover } from '../../playwright-support/generic/element-action';
 import { formatURL } from '../../utils/helper';
-import 'source-map-support/register';
 
 Given(/^a publisher is on the "(preview)" page$/, async function (this: ScenarioWorld, pageName: string) {
   this.currentPageName = pageName;

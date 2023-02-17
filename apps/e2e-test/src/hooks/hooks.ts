@@ -23,7 +23,6 @@ import { GlobalData } from './GlobalData';
 
 import { ScenarioWorld } from './ScenarioWorld';
 import { saveData } from './utils';
-import 'source-map-support/register';
 
 const selectorMap = new SelectorMapper(selectorMappingPath);
 const browserMgr = new BrowserManager();

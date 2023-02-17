@@ -11,7 +11,6 @@ import {
   verifyNotEqualTo,
   verifyNotMatch,
 } from '../../playwright-support/generic/verification';
-import 'source-map-support/register';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,
