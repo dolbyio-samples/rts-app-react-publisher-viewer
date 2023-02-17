@@ -160,11 +160,6 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     const videoIn = video.inbounds?.filter(({ mid }) => mid === mainVideoMappingRef.current?.mediaId) ?? [];
 
     setMainStatistics({ ...statistics, audio: { inbounds: audioIn }, video: { inbounds: videoIn } });
-
-    dispatch({
-      statistics,
-      type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
-    });
   };
 
   // Get the audio/video media IDs for the main stream from the track event

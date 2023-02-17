@@ -18,34 +18,6 @@ const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSo
       return newState;
     }
 
-    case ViewerActionType.UPDATE_SOURCES_STATISTICS: {
-      const { audio, video } = action.statistics;
-
-      const newState = new Map(state);
-
-      Array.from(state).forEach(([sourceId, remoteTrackSource]) => {
-        const { audioMediaId, videoMediaId } = remoteTrackSource;
-
-        const audioIn = audio.inbounds?.filter(({ mid }) => mid === audioMediaId) ?? [];
-        const videoIn = video.inbounds?.filter(({ mid }) => mid === videoMediaId) ?? [];
-
-        if (audioIn.length || videoIn.length) {
-          const newRemoteTrackSource = {
-            ...remoteTrackSource,
-            statistics: {
-              ...action.statistics,
-              audio: { inbounds: audioIn },
-              video: { inbounds: videoIn },
-            },
-          };
-
-          newState.set(sourceId, newRemoteTrackSource);
-        }
-      });
-
-      return newState;
-    }
-
     case ViewerActionType.UPDATE_SOURCE_QUALITY: {
       const { quality, sourceId } = action;
 

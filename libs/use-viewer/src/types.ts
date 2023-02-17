@@ -3,7 +3,6 @@ import { LayerInfo, Media, StreamStats, ViewProjectSourceMapping } from '@millic
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
   REMOVE_SOURCE = 'REMOVE_SOURCE',
-  UPDATE_SOURCES_STATISTICS = 'UPDATE_SOURCES_STATISTICS',
   UPDATE_SOURCE_QUALITY = 'UPDATE_SOURCE_QUALITY',
   UPDATE_SOURCES_QUALITY_OPTIONS = 'UPDATE_SOURCES_QUALITY_OPTIONS',
 }
@@ -14,7 +13,6 @@ export interface RemoteTrackSource {
   projectMapping: ViewProjectSourceMapping[];
   quality?: StreamQuality;
   sourceId: string;
-  statistics?: StreamStats;
   streamQualityOptions: SimulcastQuality[];
   videoMediaId?: string;
 }
@@ -47,7 +45,6 @@ export type ViewerAction =
       type: ViewerActionType.ADD_SOURCE;
     }
   | { sourceId: string; type: ViewerActionType.REMOVE_SOURCE }
-  | { statistics: StreamStats; type: ViewerActionType.UPDATE_SOURCES_STATISTICS }
   | { quality: StreamQuality; sourceId: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY }
   | { medias: Media[]; type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS };
 
