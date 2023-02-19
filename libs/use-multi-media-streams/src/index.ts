@@ -25,14 +25,6 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   // Handle internal list of devices
   useEffect(() => {
     getDevicesList();
-
-    navigator.mediaDevices.addEventListener('devicechange', getDevicesList);
-
-    return () => {
-      navigator.mediaDevices.removeEventListener('devicechange', getDevicesList);
-
-      dispatch({ type: StreamsActionType.RESET });
-    };
   }, []);
 
   useEffect(() => {
