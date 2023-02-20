@@ -1,6 +1,6 @@
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData } from '../../hooks/utils';
-import { SelectorMapper } from '../../utils/selector-mapper';
+import { SelectorMapper, TargetSelector } from '../../utils/selector-mapper';
 
 export function replacePlaceholder(text: string, dataSource: ScenarioWorld): string {
   const replaceRegEx = /\$\{(.*?)\}/g;
@@ -29,4 +29,16 @@ export function getValidationCondition(selectorMap: SelectorMapper, pageName: st
     selector: validationArray[0],
     condition: validationArray.length > 1 ? validationArray[1] : 'displayed',
   };
+}
+
+export function replaceAttributeTargetSelector(targetSelector: TargetSelector, attributeValue: string): TargetSelector {
+  if (typeof targetSelector === 'string') {
+    return targetSelector.replace('<REPLACE>', attributeValue);
+  } else {
+    const updatedTargetLocator: string[] = [];
+    for (const selector of targetSelector) {
+      (updatedTargetLocator as string[]).push(selector.replace('<REPLACE>', attributeValue));
+    }
+    return updatedTargetLocator;
+  }
 }

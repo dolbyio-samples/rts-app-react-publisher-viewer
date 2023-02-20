@@ -23,6 +23,7 @@ Given(/^a publisher is on the "(preview)" page$/, async function (this: Scenario
     viewerURL = readClipboardText();
   } else {
     viewerURL = formatURL(options?.viewerURL as string);
+    viewerURL = `${viewerURL}?streamAccountId=${process.env.VITE_RTS_ACCOUNT_ID}&streamName=${process.env.VITE_RTS_STREAM_NAME}`;
   }
   saveData(this, 'App', 'publisher');
   saveData(this, 'ViewerURL', viewerURL, false);
@@ -57,11 +58,11 @@ When(/^the viewer switch to "([^"]*)" page$/, async function (this: ScenarioWorl
 });
 
 When(
-  /^the (publisher|viewer) switch to "([^"]*)" page on "([^"]*)"$/,
-  async function (this: ScenarioWorld, appType: string, pageName: string, appName: string) {
+  /^switch to "([^"]*)" page on "(publisher|viewer)" app$/,
+  async function (this: ScenarioWorld, pageName: string, appName: string) {
     this.currentPageName = pageName;
-    this.currentPage = getData(this, appName);
-    saveData(this, 'App', appType);
+    this.currentPage = getData(this, `${appName}App`);
+    saveData(this, 'App', appName);
     await bringToFront(this.currentPage);
   }
 );
