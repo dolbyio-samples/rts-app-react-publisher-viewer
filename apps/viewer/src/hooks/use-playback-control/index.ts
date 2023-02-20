@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { ViewerVideoViewProps } from '../components/viewer-video-view';
+import { ViewerVideoViewProps } from '../../components/viewer-video-view';
+import { Controls } from './types';
 
 const usePlaybackControl = (sourceIds: string[]) => {
-  const [playbackControl, setPlaybackControl] = useState<Record<string, ViewerVideoViewProps['controls']>>({});
+  const [playbackControl, setPlaybackControl] = useState<Record<string, Controls>>({});
 
   useEffect(() => {
     setPlaybackControl((prevPlaybackSettings) =>
@@ -54,4 +55,5 @@ const usePlaybackControl = (sourceIds: string[]) => {
   return playbackControl;
 };
 
+export * from './types';
 export default usePlaybackControl;

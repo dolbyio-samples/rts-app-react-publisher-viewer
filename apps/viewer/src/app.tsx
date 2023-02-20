@@ -10,7 +10,7 @@ import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
-import usePlaybackControl from './hooks/usePlaybackControl';
+import usePlaybackControl from './hooks/use-playback-control';
 
 import './styles/font.css';
 
