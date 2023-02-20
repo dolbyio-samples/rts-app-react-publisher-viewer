@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { ViewerVideoViewProps } from '../../components/viewer-video-view';
 import { Controls } from './types';
 
 const usePlaybackControl = (sourceIds: string[]) => {
@@ -31,7 +30,7 @@ const usePlaybackControl = (sourceIds: string[]) => {
   }, [sourceIds.length]);
 
   const changePlaybackControl =
-    (sourceId: string, setting: keyof ViewerVideoViewProps['controls']) =>
+    (sourceId: string, setting: keyof Controls) =>
     <T>(value: T) => {
       setPlaybackControl((prevPlaybackSettings) => {
         const sourcePlaybackSettings = prevPlaybackSettings[sourceId];
