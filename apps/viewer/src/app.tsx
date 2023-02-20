@@ -158,7 +158,7 @@ const App = () => {
           </VStack>
         ) : (
           <HStack height="573px" justifyContent="center" maxHeight="573px" width="100vw">
-            <Box height="100%" maxWidth="90vw" test-id="millicastVideo" width="80vw">
+            <Box height="100%" maxWidth="90vw" test-id="rtsVideoMain" width="80vw">
               <ViewerVideoView
                 controls={viewerPlaybackControl[mainSourceId]}
                 isStreaming={isStreaming}
@@ -195,7 +195,7 @@ const App = () => {
                       onClick={() => {
                         changeMainSource(sourceId);
                       }}
-                      test-id="millicastVideo"
+                      test-id="rtsVideo"
                       width="100%"
                     >
                       <ViewerVideoView

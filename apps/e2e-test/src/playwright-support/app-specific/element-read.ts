@@ -18,8 +18,13 @@ export const getViewScreenSize = async (page: Page, selector: TargetSelector, in
 export const isViewFullScreen = async (page: Page, selector: TargetSelector, index?: number): Promise<boolean> => {
   logger.trace(`Is view full screen`);
   const locator = getLocator(page, selector, index);
-  const attributeValue = await locator.getAttribute('class');
-  return !!attributeValue?.includes('video--fullscreen');
+  const pageSize = page.viewportSize();
+  const elementSize = await locator.boundingBox();
+
+  if (pageSize?.height == elementSize?.height && pageSize?.width == elementSize?.width) {
+    return true;
+  }
+  return false;
 };
 
 export const getDeviceStatus = async (page: Page, selector: TargetSelector, index?: number): Promise<Status> => {
@@ -61,11 +66,14 @@ export const getStreamStats = async (
 ) => {
   logger.trace(`Get stream info stats`);
   const infoData: { [k: string]: { [k: string]: string } } = {};
+  await delay(3000);
 
-  if (await getElementState(page, tabSelector, 'displayed' as State, 0)) {
+  const isTabsDisplayed = await getElementState(page, tabSelector, 'displayed' as State, 0);
+  if (qualityTabName != 'None' && isTabsDisplayed) {
     const tabCount = await getElementCount(page, tabSelector);
 
     for (let i = 0; i < tabCount; i++) {
+      if (!(await getElementState(page, tabSelector, 'displayed' as State, i))) continue;
       const tabName = await getElementText(page, tabSelector, i);
       if (qualityTabName === 'All' || qualityTabName === tabName) {
         await click(page, tabSelector, i);
@@ -77,9 +85,8 @@ export const getStreamStats = async (
       }
     }
   } else {
-    await delay(3000);
     const statsInfo = await getTableData(page, tableSelector);
-    infoData['Standard'] = transponseStreamData(statsInfo);
+    infoData['Auto'] = transponseStreamData(statsInfo);
   }
 
   return infoData;

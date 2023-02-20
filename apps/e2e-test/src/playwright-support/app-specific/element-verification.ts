@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { Page } from 'playwright';
-
+import assert from 'assertion';
 import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
 import { Screen, Status } from '../../utils/types';
@@ -52,4 +52,12 @@ export const verifyOptions = async (
   } else {
     expect(actOptions).toEqual(options);
   }
+};
+
+export const verifyOptionsContains = async (page: Page, selector: TargetSelector, options: string[]): Promise<void> => {
+  logger.trace(`Verify element should contain ${options} options`);
+  const actOptions = await getOptions(page, selector);
+
+  const message = `\n\tExpected Item: ${options}\n\tActualArray: ${actOptions}`;
+  assert.has(actOptions, options, message);
 };

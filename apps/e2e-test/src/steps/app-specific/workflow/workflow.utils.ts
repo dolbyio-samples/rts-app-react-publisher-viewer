@@ -49,13 +49,13 @@ export const validateText = async (
   // eslint-disable-next-line @typescript-eslint/ban-types
   let verifyMethod: Function;
 
-  if (expText.startsWith('ignore: ')) {
+  if (expText.startsWith('ignore:')) {
     return;
-  } else if (expText.startsWith('contains: ')) {
-    expText = expText.split('contains: ')[1];
+  } else if (expText.startsWith('contains:')) {
+    expText = expText.split('contains:')[1].trim();
     verifyMethod = verifyElementContainsText;
-  } else if (expText.startsWith('regex: ')) {
-    expText = expText.split('regex: ')[1];
+  } else if (expText.startsWith('regex:')) {
+    expText = expText.split('regex:')[1].trim();
     verifyMethod = verifyElementMatchText;
   } else {
     verifyMethod = verifyElementText;
@@ -103,15 +103,21 @@ export const validateStatsInfo = (actStats: { [key: string]: string }, expStats:
   let message = 'Stream Info has less than 5 parameters in stats';
   verifyGreaterThanEqualTo(keys.length, 5, message);
 
-  keys.forEach((key) => {
-    message = `Stats '${key}' not matched`;
-    if (expStats[key].startsWith('regex: ')) {
-      const pattern = expStats[key].split('regex: ')[1];
-      verifyMatch(actStats[key], pattern, message);
-    } else {
-      verifyEqualTo(actStats[key], expStats[key], message);
+  for (const key of keys) {
+    try {
+      logger.info(`Verify stats for key ${key}: ${actStats[key]}`);
+      message = `Stats '${key}' not matched`;
+      if (expStats[key].startsWith('regex: ')) {
+        const pattern = expStats[key].split('regex: ')[1];
+        verifyMatch(actStats[key], pattern, message);
+      } else {
+        verifyEqualTo(actStats[key], expStats[key], message);
+      }
+    } catch (exception) {
+      logger.error(`Keys: ${keys}\nKey: ${key} ,Value: ${expStats[key]}`);
+      throw exception;
     }
-  });
+  }
 };
 
 export const addCamera = async (scWorld: ScenarioWorld) => {

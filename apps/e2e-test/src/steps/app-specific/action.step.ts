@@ -9,11 +9,11 @@ import {
 } from '../../playwright-support/app-specific/element-action';
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
-import { addSource, configureSettings } from './workflow/workflow';
-import { getDefaultSettings } from './workflow/workflow.data';
+import { addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
+import { getDefaultConfigureSettings } from './workflow/workflow.data';
 
 When(
-  /^the publisher turns (Off|On) the "([^"]*)"$/,
+  /^the (?:publisher|viewer) turns (Off|On) the "([^"]*)"$/,
   async function (this: ScenarioWorld, status: Status, selectorName: string) {
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
     await toogleDevice(this.currentPage, targetSelector, status);
@@ -21,7 +21,7 @@ When(
 );
 
 When(
-  /^(?:the publisher|I) turns (Off|On) the "([^"]*)" feature$/,
+  /^(?:the publisher|the viewer|I) turns (Off|On) the "([^"]*)" feature$/,
   async function (this: ScenarioWorld, status: Status, selectorName: string) {
     const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
     const clickSelector = this.selectorMap.getSelector(this.currentPageName, 'simulcast label');
@@ -39,17 +39,24 @@ When(
 );
 
 When(
-  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the default values$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string) {
-    const expectedData = getDefaultSettings(`publisher ${viewName}`);
+  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view)" setting with the default values$/,
+  async function (this: ScenarioWorld, actor: string, elementPosition: string, viewName: string) {
+    const expectedData = getDefaultConfigureSettings(`${actor} ${this.currentPageName} ${viewName}`);
     await configureSettings(this, elementPosition, viewName, expectedData);
   }
 );
 
 When(
-  /^the publisher configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view)" setting with the following values( only)?$/,
-  async function (this: ScenarioWorld, elementPosition: string, viewName: string, type: string, dataTable: DataTable) {
-    const defaultExpectedData = getDefaultSettings(`publisher ${viewName}`);
+  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view)" setting with the following values( only)?$/,
+  async function (
+    this: ScenarioWorld,
+    actor: string,
+    elementPosition: string,
+    viewName: string,
+    type: string,
+    dataTable: DataTable
+  ) {
+    const defaultExpectedData = getDefaultConfigureSettings(`${actor} ${this.currentPageName} ${viewName}`);
     let expectedData = dataTable.rowsHash();
 
     if (!arrayContainsAll(Object.keys(defaultExpectedData), Object.keys(expectedData))) {
@@ -66,3 +73,10 @@ When(
 When(/^the publisher adds "(camera|screen)" source$/, async function (this: ScenarioWorld, srcName: string) {
   await addSource(this, srcName);
 });
+
+When(
+  /^the viewer projects main stream as source name containing "([^"]*)"$/,
+  async function (this: ScenarioWorld, srcName: string) {
+    await projectAsMainStream(this, srcName);
+  }
+);
