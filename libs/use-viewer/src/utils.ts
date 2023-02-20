@@ -91,17 +91,15 @@ export const projectToStream = async (
   audioMapping?: ViewProjectSourceMapping,
   videoMapping?: ViewProjectSourceMapping
 ) => {
-  const { audioMediaId, sourceId, videoMediaId } = source;
-
   const mapping: ViewProjectSourceMapping[] = [];
 
-  if (audioMediaId && audioMapping) {
+  if (audioMapping) {
     mapping.push(audioMapping);
   }
 
-  if (videoMediaId && videoMapping) {
+  if (videoMapping) {
     mapping.push(videoMapping);
   }
 
-  await viewer.project(sourceId, mapping);
+  await viewer.project(source.sourceId, mapping);
 };
