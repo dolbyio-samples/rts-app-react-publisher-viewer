@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { Controls } from './types';
 
+/**
+ * This hook is used to manage playback control states (e.g. audio/video enabled, volume level)
+ * on a per-source basis.
+ */
 const usePlaybackControl = (sourceIds: string[]) => {
   const [playbackControl, setPlaybackControl] = useState<Record<string, Controls>>({});
 
