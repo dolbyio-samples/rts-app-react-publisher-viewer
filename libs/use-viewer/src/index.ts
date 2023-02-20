@@ -35,6 +35,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const mainVideoMappingRef = useRef<ViewProjectSourceMapping>();
 
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
+  const [mainStatistics, setMainStatistics] = useState<StreamStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
 
   const handleInternalError = (error: unknown) => {
@@ -153,10 +154,12 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   };
 
   const handleStats = (statistics: StreamStats) => {
-    dispatch({
-      statistics,
-      type: ViewerActionType.UPDATE_SOURCES_STATISTICS,
-    });
+    const { audio, video } = statistics;
+
+    const audioIn = audio.inbounds?.filter(({ mid }) => mid === mainAudioMappingRef.current?.mediaId) ?? [];
+    const videoIn = video.inbounds?.filter(({ mid }) => mid === mainVideoMappingRef.current?.mediaId) ?? [];
+
+    setMainStatistics({ ...statistics, audio: { inbounds: audioIn }, video: { inbounds: videoIn } });
   };
 
   // Get the audio/video media IDs for the main stream from the track event
@@ -192,6 +195,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
+        await unprojectFromStream(viewer, remoteTrackSource);
         await projectToStream(viewer, remoteTrackSource, mainAudioMappingRef.current, mainVideoMappingRef.current);
 
         return remoteTrackSource;
@@ -212,7 +216,6 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
-        await unprojectFromStream(viewer, remoteTrackSource);
         await viewer.project(sourceId, remoteTrackSource.projectMapping);
       } catch (error) {
         handleInternalError(error);
@@ -277,6 +280,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   return {
     mainMediaStream,
+    mainStatistics,
     projectToMainStream,
     remoteTrackSources,
     reprojectFromMainStream,
