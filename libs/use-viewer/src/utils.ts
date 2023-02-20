@@ -1,16 +1,16 @@
 import { MediaLayer, MediaTrackInfo, View, ViewProjectSourceMapping } from '@millicast/sdk';
 import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
-export const addRemoteTrackAndProject = async (
+export const addRemoteTrack = async (
   viewer: View,
   sourceId: string,
-  trackInfo: MediaTrackInfo[]
+  trackInfo?: MediaTrackInfo[]
 ): Promise<RemoteTrackSource> => {
   const mapping: ViewProjectSourceMapping[] = [];
   const mediaStream = new MediaStream();
 
-  const trackAudio = trackInfo.find(({ media }) => media == 'audio');
-  const trackVideo = trackInfo.find(({ media }) => media == 'video');
+  const trackAudio = trackInfo?.find(({ media }) => media == 'audio');
+  const trackVideo = trackInfo?.find(({ media }) => media == 'video');
 
   let audioMediaId: string | undefined, videoMediaId: string | undefined;
 
@@ -32,21 +32,15 @@ export const addRemoteTrackAndProject = async (
     }
   }
 
-  try {
-    await viewer.project(sourceId, mapping);
-
-    return Promise.resolve({
-      audioMediaId,
-      quality: 'Auto',
-      mediaStream,
-      sourceId,
-      statistics: { audio: { inbounds: [], outbounds: [] }, video: { inbounds: [], outbounds: [] } },
-      streamQualityOptions: [{ streamQuality: 'Auto' }],
-      videoMediaId,
-    });
-  } catch (error: unknown) {
-    return Promise.reject(error);
-  }
+  return {
+    audioMediaId,
+    mediaStream,
+    projectMapping: mapping,
+    quality: 'Auto',
+    sourceId,
+    streamQualityOptions: [{ streamQuality: 'Auto' }],
+    videoMediaId,
+  };
 };
 
 export const buildQualityOptions = (layers: MediaLayer[]) => {
