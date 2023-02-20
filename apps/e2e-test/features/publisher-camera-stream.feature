@@ -200,7 +200,7 @@ Feature: Publisher Camera Streaming
         And the "bitrate dropdown" should be displayed
         And the "bitrate dropdown" should be enabled
         And the "resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
-        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 Kbps,250 Kbps" options
+        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 kbps,250 kbps" options
 
         And the "source name input" should not be displayed
         And the "codec dropdown" should not be displayed
@@ -336,7 +336,7 @@ Feature: Publisher Camera Streaming
     Examples:
         | codec |  resolution | bitrate    |
         | vp8   |  1280x720   | 2 Mbps     |
-        | h264  |  1280x720   | 500 Kbps   |
+        | h264  |  1280x720   | 500 kbps   |
         | vp8   |  640x480    | 1 Mbps     |
 
     Scenario: Publisher should be able to stream with combination of lower bitrate <bitrate> , <resolution> resolution, <codec> codec and simulcast ON when streaming with camera
@@ -368,8 +368,8 @@ Feature: Publisher Camera Streaming
 
     Examples:
         | codec |  resolution | bitrate    |
-        | vp8   |  1280x720   | 250 Kbps   |
-        | h264  |  640x480    | 250 Kbps   |
+        | vp8   |  1280x720   | 250 kbps   |
+        | h264  |  640x480    | 250 kbps   |
 
     Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <resolution> resolution, <codec> codec and simulcast OFF when streaming with camera
         # Publisher App
@@ -400,8 +400,8 @@ Feature: Publisher Camera Streaming
         | codec |  resolution | bitrate    |
         | vp9   |  1280x720   | 2 Mbps     |
         | vp9   |  640x480    | 1 Mbps     |
-        | vp8   |  1280x720   | 500 Kbps   |
-        | h264  |  640x480    | 250 Kbps   |
+        | vp8   |  1280x720   | 500 kbps   |
+        | h264  |  640x480    | 250 kbps   |
 
     Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with camera
         When the publisher clicks on the "go live button"
@@ -425,7 +425,7 @@ Feature: Publisher Camera Streaming
     Examples:
         |  bitrate    |
         |  2 Mbps     |
-        |  500 Kbps   |
+        |  500 kbps   |
 
     Scenario: Publisher should be able to change the resolution to <resolution> when streaming is live with camera
         When the publisher clicks on the "go live button"
@@ -463,13 +463,13 @@ Feature: Publisher Camera Streaming
             | bitrate    | Bitrate  - 2 Mbps   |
         
         When the publisher configures "camera view" setting with the following values only
-            | bitrate     | 500 Kbps           |
+            | bitrate     | 500 kbps           |
         Then the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "camera view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "camera view" stats with quality tabs should be displayed with default values
 
         # Viewer App
