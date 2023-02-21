@@ -17,7 +17,7 @@ export const getViewScreenSize = async (page: Page, selector: TargetSelector, in
 
 export const isViewFullScreen = async (page: Page, selector: TargetSelector, index?: number): Promise<boolean> => {
   logger.trace(`Is view full screen`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   const pageSize = page.viewportSize();
   const elementSize = await locator.boundingBox();
 
@@ -35,14 +35,14 @@ export const getDeviceStatus = async (page: Page, selector: TargetSelector, inde
 
 export const isDeviceButtonToggled = async (page: Page, selector: TargetSelector, index?: number): Promise<boolean> => {
   logger.trace(`Is device button toggled`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   const attributeValue = await locator.getAttribute('data-active');
   return attributeValue != null;
 };
 
 export const getOptions = async (page: Page, selector: TargetSelector): Promise<string[]> => {
   logger.trace(`Get options`);
-  const locator = getLocator(page, selector);
+  const locator = await getLocator(page, selector);
   const options: string[] = [];
   const count = await locator.count();
 
@@ -54,7 +54,7 @@ export const getOptions = async (page: Page, selector: TargetSelector): Promise<
 
 export const getSimulcastStatus = async (page: Page, selector: TargetSelector, index?: number): Promise<Status> => {
   logger.trace(`Get simulcast status`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   return (await locator.isChecked()) ? 'On' : 'Off';
 };
 

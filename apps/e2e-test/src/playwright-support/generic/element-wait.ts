@@ -66,7 +66,7 @@ export const waitForLocator = async (
   try {
     const { state = 'visible', timeout = 30 } = options || {};
 
-    const locator = getLocator(page, selector);
+    const locator = await getLocator(page, selector);
 
     await locator.waitFor({
       state,

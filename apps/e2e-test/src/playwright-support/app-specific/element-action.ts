@@ -14,7 +14,7 @@ export const toogleDevice = async (page: Page, selector: TargetSelector, status:
 
 export const turnOnDevice = async (page: Page, selector: TargetSelector): Promise<void> => {
   logger.trace(`Turn On the ${selector} device`);
-  const locator = getLocator(page, selector);
+  const locator = await getLocator(page, selector);
   if ((await getDeviceStatus(page, selector)) === 'Off') {
     await locator.click();
   } else {
@@ -24,7 +24,7 @@ export const turnOnDevice = async (page: Page, selector: TargetSelector): Promis
 
 export const turnOffDevice = async (page: Page, selector: TargetSelector): Promise<void> => {
   logger.trace(`Turn Off the ${selector} device`);
-  const locator = getLocator(page, selector);
+  const locator = await getLocator(page, selector);
   if ((await getDeviceStatus(page, selector)) === 'On') {
     await locator.click();
   } else {
@@ -54,7 +54,7 @@ export const turnOnSimulcast = async (
 ): Promise<void> => {
   logger.trace(`Turn On the simulcast`);
   if ((await getSimulcastStatus(page, selector, index)) === 'Off') {
-    const locator = getLocator(page, clickSelector, index);
+    const locator = await getLocator(page, clickSelector, index);
     await locator.click();
   } else if (raiseErr) {
     throw new Error(`Simulcast is already turned On`);
@@ -70,7 +70,7 @@ export const turnOffSimulcast = async (
 ): Promise<void> => {
   logger.trace(`Turn Off simulcast`);
   if ((await getSimulcastStatus(page, selector, index)) === 'On') {
-    const locator = getLocator(page, clickSelector, index);
+    const locator = await getLocator(page, clickSelector, index);
     await locator.click();
   } else if (raiseErr) {
     throw new Error(`Simulcast is already turned Off`);
@@ -85,7 +85,8 @@ export const selectSettingDropdown = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Select ${option} from ${selector}`);
-  await getLocator(page, selector, index).click();
-  const locator = getLocator(page, optionsSelector, index);
+  let locator = await getLocator(page, selector, index);
+  locator.click();
+  locator = await getLocator(page, optionsSelector, index);
   await locator.filter({ hasText: option }).click();
 };

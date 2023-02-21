@@ -50,6 +50,20 @@ const publisherStreamingScreenViewDefaultData: ViewData = {
   'source name text': 'contains: screen',
 };
 
+const publisherPreviewLocalFileViewDefaultData: ViewData = {
+  ...previewViewDefaultData,
+  'source name text': 'contains: local-file.mp4',
+  'playback button': 'displayed|enabled',
+  'playback button status': 'On',
+};
+
+const publisherStreamingLocalFileViewDefaultData: ViewData = {
+  ...streamingViewDefaultData,
+  'source name text': 'contains: local-file.mp4',
+  'playback button': 'displayed|enabled',
+  'playback button status': 'On',
+};
+
 const viewerStreamingMainViewDefaultData: ViewData = {
   ...ViewDefaultData,
   'source name text': 'ignore: ',
@@ -204,6 +218,15 @@ const publisherStreamingScreenViewSettingsData: ViewData = {
   bitrate: 'Bitrate  - Auto',
 };
 
+const publisherPreviewLocalFileViewSettingsData: ViewData = {
+  ...viewSettingsData,
+  'source name': 'contains: local-file.mp4',
+};
+
+const publisherStreamingLocalFileViewSettingsData: ViewData = {
+  bitrate: 'Bitrate  - Auto',
+};
+
 const viewerStreamingMainViewSettingsData: ViewData = {
   quality: 'Quality  - Auto',
 };
@@ -235,6 +258,12 @@ const publisherScreenViewStatsData: ViewData = {
   'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
 };
 
+const publisherLocalFileViewStatsData: ViewData = {
+  ...viewStatsData,
+  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+};
+
 const viewerMainViewStatsData: ViewData = {
   ...viewStatsData,
   'Video total received:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
@@ -251,6 +280,10 @@ export const getDefaultViewData = (viewName: string) => {
       return publisherPreviewScreenViewDefaultData;
     case 'publisher publisher-streaming screen view':
       return publisherStreamingScreenViewDefaultData;
+    case 'publisher preview local file view':
+      return publisherPreviewLocalFileViewDefaultData;
+    case 'publisher publisher-streaming local file view':
+      return publisherStreamingLocalFileViewDefaultData;
     case 'viewer viewer-streaming main view':
       return viewerStreamingMainViewDefaultData;
     default:
@@ -315,10 +348,14 @@ export const getDefaultSettingsData = (viewName: string) => {
       return publisherPreviewCameraViewSettingsData;
     case 'publisher preview screen view':
       return publisherPreviewScreenViewSettingsData;
+    case 'publisher preview local file view':
+      return publisherPreviewLocalFileViewSettingsData;
     case 'publisher publisher-streaming camera view':
       return publisherStreamingCameraViewSettingsData;
     case 'publisher publisher-streaming screen view':
       return publisherStreamingScreenViewSettingsData;
+    case 'publisher publisher-streaming local file view':
+      return publisherStreamingLocalFileViewSettingsData;
     case 'viewer viewer-streaming main view':
       return viewerStreamingMainViewSettingsData;
     default:
@@ -332,6 +369,8 @@ export const getDefaultStatsData = (viewName: string) => {
       return publisherCameraViewStatsData;
     case 'publisher publisher-streaming screen view':
       return publisherScreenViewStatsData;
+    case 'publisher publisher-streaming local file view':
+      return publisherLocalFileViewStatsData;
     case 'viewer viewer-streaming main view':
       return viewerMainViewStatsData;
     default:

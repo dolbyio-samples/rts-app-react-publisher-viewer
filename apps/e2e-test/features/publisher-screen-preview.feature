@@ -6,6 +6,7 @@ Feature: Publisher Screen Preview
 
     Background: Publisher screen sharing preiew page
         Given a publisher is on the "preview" page
+        And the "camera view" should be displayed
         And the publisher adds "screen" source
 
     Scenario: Publisher should be presented with screen view
@@ -18,22 +19,33 @@ Feature: Publisher Screen Preview
         And the "screen view video mute image" should not be displayed
 
         When the publisher turns Off the "video of screen view"
+        And the publisher turns Off the "video of camera view"
         Then the "video of screen view" should be turned Off
         And the "screen view video mute image" should be displayed
-        
+        And the "camera view" should be displayed with following values
+            | video button status | Off |
+         And the "screen view" should be displayed with following values
+            | video button status | Off |
+
         When the publisher turns On the "video of screen view"
         Then the "video of screen view" should be turned On
         And the "screen view video mute image" should not be displayed 
+        And the "camera view" should be displayed with following values
+            | video button status | Off |
 
     Scenario: Publisher should be able to turn off and on the audio of screen view
         Then the "audio of screen view" should be turned On
         When the publisher turns Off the "audio of screen view"
         Then the "audio of screen view" should be turned Off
         And the "screen view video mute image" should not be displayed 
+        And the "camera view" should be displayed with default values
 
         When the publisher turns On the "audio of screen view"
+        And the publisher turns Off the "audio of camera view"
         Then the "audio of screen view" should be turned On
         And the "screen view video mute image" should not be displayed 
+        And the "camera view" should be displayed with following values
+            | audio button status | Off |
 
     Scenario: Publisher should be able to turn off and on the video and audio of screen view
         Then the "video of screen view" should be turned On
@@ -43,12 +55,18 @@ Feature: Publisher Screen Preview
         Then the "video of screen view" should be turned Off
         And the "audio of screen view" should be turned Off
         And the "screen view video mute image" should be displayed
+        And the "camera view" should be displayed with default values
 
         When the publisher turns On the "video of screen view"
         And the publisher turns On the "audio of screen view"
+        And the publisher turns Off the "video of camera view"
+        And the publisher turns Off the "audio of camera view"
         Then the "video of screen view" should be turned On
         And the "audio of screen view" should be turned On
         And the "screen view video mute image" should not be displayed 
+        And the "camera view" should be displayed with following values
+            | video button status | Off |
+            | audio button status | Off |
 
     Scenario: Publisher should be presented with Setting controls under screen View
         When the publisher clicks on the "screen view setting button"

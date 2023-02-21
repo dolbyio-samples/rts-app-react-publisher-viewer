@@ -68,14 +68,20 @@
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
-        "commands": ["yarn nx test-viewer e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/"]
+        "commands": [
+          "yarn nx test-viewer e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/",
+          "yarn nx publisher-viewer e2e-test --report=./apps/e2e-test/reports/viewer-pub-view/"
+        ]
       }
     },
     "e2e-report": {
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
-        "commands": ["yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/"]
+        "commands": [
+          "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer/",
+          "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/viewer-pub-view/"
+        ]
       }
     },
     "deploy": {

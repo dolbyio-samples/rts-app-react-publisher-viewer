@@ -15,7 +15,7 @@ export const getElementState = async (
 ): Promise<boolean> => {
   logger.trace(`Get element state ${state}`);
 
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
 
   switch (state) {
     case 'displayed':
@@ -39,25 +39,25 @@ export const getElementState = async (
 
 export const getElementText = async (page: Page, selector: TargetSelector, index?: number) => {
   logger.trace(`Get element text`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   return await locator.textContent();
 };
 
 export const getElementValue = async (page: Page, selector: TargetSelector, index?: number) => {
   logger.trace(`Get element text`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   return await locator.inputValue();
 };
 
 export const getElementCount = async (page: Page, selector: TargetSelector, index?: number) => {
   logger.trace(`Get element count`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   return await locator.count();
 };
 
 export const getTableData = async (page: Page, selector: TargetSelector, index?: number): Promise<string[][]> => {
   logger.trace(`Get table data`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
 
   const tableRows = locator.locator('//tr');
   const tableRowsCount = await tableRows.count();

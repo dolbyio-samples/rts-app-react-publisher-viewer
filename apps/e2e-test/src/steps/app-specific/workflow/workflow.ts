@@ -13,6 +13,7 @@ import { State, Status, Screen } from '../../../utils/types';
 import { replaceAttributeTargetSelector } from '../../generic/utils';
 import {
   addCamera,
+  addLocalFile,
   addScreen,
   getQualityTabName,
   validateState,
@@ -21,6 +22,7 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
+import fs from 'fs';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,
@@ -74,7 +76,7 @@ export const verifyView = async (
   if (keys.includes('audio button status')) {
     logger.info(`Verify ${viewName} audio button status`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} audio button`);
-    await validateStatus(scWorld, targetSelector, expectedData['audio button status'] as Status, elementIndex);
+    await validateStatus(scWorld, targetSelector, expectedData['audio button status'], elementIndex);
     keyCount++;
   }
 
@@ -88,7 +90,7 @@ export const verifyView = async (
   if (keys.includes('video button status')) {
     logger.info(`Verify ${viewName} video button status`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} video button`);
-    await validateStatus(scWorld, targetSelector, expectedData['video button status'] as Status, elementIndex);
+    await validateStatus(scWorld, targetSelector, expectedData['video button status'], elementIndex);
     keyCount++;
   }
 
@@ -102,7 +104,7 @@ export const verifyView = async (
   if (keys.includes('playback button status')) {
     logger.info(`Verify ${viewName} playback button status`);
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `${viewName} playback button`);
-    await validateStatus(scWorld, targetSelector, expectedData['playback button status'] as Status, elementIndex);
+    await validateStatus(scWorld, targetSelector, expectedData['playback button status'], elementIndex);
     keyCount++;
   }
 
@@ -597,5 +599,25 @@ export const projectAsMainStream = async (scWorld: ScenarioWorld, srcName: strin
     targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `stream list item`);
     targetSelector = replaceAttributeTargetSelector(targetSelector, srcName);
     await click(scWorld.currentPage, targetSelector);
+  }
+};
+
+export const addFileSource = async (scWorld: ScenarioWorld, srcName: string, filePath: string) => {
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File ${filePath} does not exists`);
+  }
+
+  const targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add source button');
+  await click(scWorld.currentPage, targetSelector);
+
+  switch (srcName) {
+    case 'local':
+      await addLocalFile(scWorld, filePath);
+      break;
+    case 'remote':
+      // await addRemoteFile(scWorld, filePath);
+      break;
+    default:
+      throw Error(`Invalid source name - ${srcName}`);
   }
 };

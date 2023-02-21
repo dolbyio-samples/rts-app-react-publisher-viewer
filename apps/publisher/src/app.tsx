@@ -475,14 +475,16 @@ const App = () => {
         <Modal isCentered isOpen={isFileSelectModalOpen} onClose={onFileSelectModalClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalCloseButton />
+            <ModalCloseButton test-id="localFileClose" />
             <ModalBody>
               <VStack>
                 <form onSubmit={handleSubmitLocalFile}>
-                  <Heading as="h4" size="md">
+                  <Heading test-id="addLocalFileTitle" as="h4" size="md">
                     Add local media file
                   </Heading>
-                  <Text fontSize="md">Pick a local file</Text>
+                  <Text test-id="addLocalFileDesc" fontSize="md">
+                    Pick a local file
+                  </Text>
                   <Center
                     pb="32px"
                     pt="16px"
@@ -493,7 +495,9 @@ const App = () => {
                   >
                     <input accept="video/*" id="pickFile" multiple={false} name="file" type="file" />
                   </Center>
-                  <Button type="submit">ADD STREAMING FILE</Button>
+                  <Button test-id="addStreamingFile" type="submit">
+                    ADD STREAMING FILE
+                  </Button>
                 </form>
               </VStack>
             </ModalBody>
