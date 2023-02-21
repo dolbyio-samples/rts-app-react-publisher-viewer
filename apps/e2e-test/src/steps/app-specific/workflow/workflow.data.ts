@@ -211,13 +211,13 @@ const viewerStreamingMainViewSettingsData: ViewData = {
 const viewStatsData: ViewData = {
   Name: 'Value',
   'Current RTT:': 'regex: \\d{1,3} ms',
-  'Outgoing bitrate:': 'regex: ([0-9]*[.])?[0-9]+ (kbps|mbps)',
+  'Outgoing bitrate:': 'regex: ([0-9]*[.])?[0-9]+ (kbps|Mbps)',
   'Candidate type:': 'regex: (srflx|prflx|relay)',
   'Video resolution:': 'regex: \\d{3,4}x\\d{3,4}',
   'Quality limitation reason:': 'regex: (bandwidth|cpu|none)',
   'Frames per second:': 'regex: \\d{1,2}',
-  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
-  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| mbps)',
+  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
+  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
   'Codecs:': 'video/H264, audio/opus',
   'Timestamp:':
     'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4}\\s([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9])\\s[A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}\\s(2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
@@ -225,20 +225,20 @@ const viewStatsData: ViewData = {
 
 const publisherCameraViewStatsData: ViewData = {
   ...viewStatsData,
-  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
-  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 const publisherScreenViewStatsData: ViewData = {
   ...viewStatsData,
-  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
-  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 const viewerMainViewStatsData: ViewData = {
   ...viewStatsData,
-  'Video total received:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
-  'Audio total received:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Video total received:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total received:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 export const getDefaultViewData = (viewName: string) => {

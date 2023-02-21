@@ -10,20 +10,28 @@ import VideoControlBar from './video-control-bar';
 const SHOW_CONTROL_BAR_DURATION = 2000;
 
 const ViewerVideoView = ({
+  controls,
   isStreaming,
   settings,
   showControlBar,
   statistics,
   videoProps = {},
 }: ViewerVideoViewProps) => {
+  const {
+    audioEnabled,
+    fullScreen,
+    onChangeVolume,
+    onToggleAudio,
+    onToggleFullScreen,
+    onToggleVideo,
+    videoEnabled,
+    volume,
+  } = controls ?? {};
+
   const videoViewRef = useRef<HTMLDivElement>(null);
   const isControlBarVisibleRef = useRef<boolean>();
 
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
-  const [volume, setVolume] = useState(0);
 
   // Hide/show control bar on mouse move
   useEffect(() => {
@@ -48,40 +56,38 @@ const ViewerVideoView = ({
     };
   }, [videoViewRef.current]);
 
+  // Reenable playback when switching main source
+  useEffect(() => {
+    setIsPlaybackActive(true);
+  }, [videoProps.label]);
+
+  useEffect(() => {
+    videoTrack.enabled = videoEnabled;
+  }, [videoEnabled]);
+
   const { mediaStream } = videoProps;
 
   const [audioTrack] = mediaStream?.getAudioTracks() ?? [];
   const [videoTrack] = mediaStream?.getVideoTracks() ?? [];
 
   const handleToggleFullScreen = () => {
-    setIsFullScreen((prevIsFullScreen) => !prevIsFullScreen);
+    onToggleFullScreen?.((prevIsFullScreen) => !prevIsFullScreen);
   };
-
-  // Reenable playback when switching main source
-  useEffect(() => {
-    setIsPlaybackActive(true);
-  }, [videoProps.label]);
 
   const handleChangeVolume = (newVolume: number) => {
     if (newVolume === 0) {
       audioTrack.enabled = false;
 
-      setIsAudioEnabled(false);
+      onToggleAudio?.(false);
     } else {
-      audioTrack.enabled = true;
-
-      setIsAudioEnabled(true);
+      onToggleAudio?.(true);
     }
 
-    setVolume(newVolume);
+    onChangeVolume?.(newVolume);
   };
 
   const handleToggleAudio = () => {
-    setIsAudioEnabled((prevIsAudioEnabled) => {
-      audioTrack.enabled = !prevIsAudioEnabled;
-
-      return audioTrack.enabled;
-    });
+    onToggleAudio?.((prevIsAudioEnabled) => !prevIsAudioEnabled);
   };
 
   const handleTogglePlayback = () => {
@@ -90,40 +96,36 @@ const ViewerVideoView = ({
 
   const handleToggleVideo = () => {
     if (videoTrack) {
-      setIsVideoEnabled((prevIsVideoEnabled) => {
-        videoTrack.enabled = !prevIsVideoEnabled;
-
-        return videoTrack.enabled;
-      });
+      onToggleVideo?.((prevIsVideoEnabled) => !prevIsVideoEnabled);
     }
   };
 
   return (
     <Box
       bottom={0}
-      height={isFullScreen ? '100vh' : '100%'}
+      height={fullScreen ? '100vh' : '100%'}
       left={0}
       margin="0 auto"
       overflow="hidden"
-      position={isFullScreen ? 'fixed' : 'relative'}
+      position={fullScreen ? 'fixed' : 'relative'}
       ref={videoViewRef}
       right={0}
       top={0}
-      width={isFullScreen ? '100vw' : '100%'}
-      zIndex={isFullScreen ? '1' : '0'}
+      width={fullScreen ? '100vw' : '100%'}
+      zIndex={fullScreen ? '1' : '0'}
     >
       <VideoView
-        displayVideo={isVideoEnabled}
-        muted={!isAudioEnabled}
+        displayVideo={videoEnabled}
+        muted={!audioEnabled}
         paused={!isPlaybackActive}
         volume={volume}
         {...videoProps}
       />
       {showControlBar ? (
         <VideoControlBar
-          activeAudio={isAudioEnabled}
+          activeAudio={audioEnabled}
           activePlayback={isPlaybackActive}
-          activeVideo={isVideoEnabled}
+          activeVideo={videoEnabled}
           hasAudioTrack={!!audioTrack}
           hasVideoTrack={!!videoTrack}
           isStreaming={isStreaming}
@@ -139,6 +141,7 @@ const ViewerVideoView = ({
             ':hover': { opacity: 1 },
           }}
           test-id="videoControlBar"
+          volume={volume}
         />
       ) : undefined}
     </Box>

@@ -250,7 +250,7 @@ Feature: Publisher Screen Streaming
         And the number of "settings dropdowns" count should be "1"
         And the "bitrate dropdown" should be displayed
         And the "bitrate dropdown" should be enabled
-        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 Kbps,250 Kbps" options
+        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 kbps,250 kbps" options
 
         And the "source name input" should not be displayed
         And the "resolution dropdown" should not be displayed
@@ -396,7 +396,7 @@ Feature: Publisher Screen Streaming
         And the publisher configures "camera view" setting with the following values only
             | simulcast    | On           |
             | codec        | vp8          |
-            | bitrate      | 500 Kbps     |
+            | bitrate      | 500 kbps     |
             | resolution   | 1280x720     |
 
         And the publisher clicks on the "go live button"
@@ -408,7 +408,7 @@ Feature: Publisher Screen Streaming
 
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - 1280x720 |
-            | bitrate    | Bitrate  - 500 Kbps    |
+            | bitrate    | Bitrate  - 500 kbps    |
         And the "camera view" stats with quality tabs should be displayed with following values
             | Codecs:  | regex: ^video/vp8, audio/opus$ |
 
@@ -436,7 +436,7 @@ Feature: Publisher Screen Streaming
     Examples:
         | codec | bitrate    |
         | vp8   | 2 Mbps     |
-        | h264  | 500 Kbps   |
+        | h264  | 500 kbps   |
 
     Scenario: Publisher should be able to stream with combination of lower bitrate <bitrate> , <codec> codec and simulcast ON when streaming with screen share
         # Publisher App
@@ -447,7 +447,7 @@ Feature: Publisher Screen Streaming
         And the publisher configures "camera view" setting with the following values only
             | simulcast    | On           |
             | codec        | vp8          |
-            | bitrate      | 500 Kbps     |
+            | bitrate      | 500 kbps     |
             | resolution   | 1280x720     |
 
         And the publisher clicks on the "go live button"
@@ -459,7 +459,7 @@ Feature: Publisher Screen Streaming
 
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - 1280x720 |
-            | bitrate    | Bitrate  - 500 Kbps    |
+            | bitrate    | Bitrate  - 500 kbps    |
         And the "camera view" stats with quality tabs should be displayed with following values
             | Codecs:  | regex: ^video/vp8, audio/opus$ |
 
@@ -486,8 +486,8 @@ Feature: Publisher Screen Streaming
 
     Examples:
         | codec | bitrate    |
-        | vp8   | 250 Kbps   |
-        | h264  | 250 Kbps   |
+        | vp8   | 250 kbps   |
+        | h264  | 250 kbps   |
 
     Scenario: Publisher should be able to stream with combination of <bitrate> bitrate, <codec> codec and simulcast OFF when streaming with screen share
         # Publisher App
@@ -498,7 +498,7 @@ Feature: Publisher Screen Streaming
         And the publisher configures "camera view" setting with the following values only
             | simulcast    | On           |
             | codec        | vp8          |
-            | bitrate      | 250 Kbps     |
+            | bitrate      | 250 kbps     |
             | resolution   | 1280x720     |
         And the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
@@ -511,7 +511,7 @@ Feature: Publisher Screen Streaming
             | stream info button | displayed\|enabled |
         And the "camera view" setting should be displayed with following values only
             | resolution | Resolution  - 1280x720 |
-            | bitrate    | Bitrate  - 250 Kbps    |
+            | bitrate    | Bitrate  - 250 kbps    |
         And the "camera view" stats should be displayed with following values
             | Codecs:  | regex: ^video/vp8, audio/opus$ |
 
@@ -538,7 +538,7 @@ Feature: Publisher Screen Streaming
     Examples:
         | codec | bitrate    |
         | vp9   | 2 Mbps     |
-        | vp8   | 500 Kbps   |
+        | vp8   | 500 kbps   |
         | h264  | 1 Mbps     |
 
     Scenario: Publisher should be able to change the bitrate to <bitrate> when streaming is live with screen share
@@ -561,7 +561,7 @@ Feature: Publisher Screen Streaming
     Examples:
         |  bitrate    |
         |  2 Mbps     |
-        |  500 Kbps   |
+        |  500 kbps   |
 
     Scenario: Publisher should be able to change the bitrate multiple time when streaming is live with screen share
         When the publisher clicks on the "go live button"
@@ -573,13 +573,13 @@ Feature: Publisher Screen Streaming
             | bitrate    | Bitrate  - 2 Mbps   |
         
         When the publisher configures "screen view" setting with the following values only
-            | bitrate     | 500 Kbps           |
+            | bitrate     | 500 kbps           |
         Then the "screen view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "screen view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "screen view" setting should be displayed with following values only
-            | bitrate    | Bitrate  - 500 Kbps |
+            | bitrate    | Bitrate  - 500 kbps |
         And the "screen view" stats with quality tabs should be displayed with default values
 
         # Viewer App
@@ -1140,7 +1140,7 @@ Feature: Publisher Screen Streaming
             | source name  | Dummy Screen Share 4 |
             | simulcast    | Off                  |
             | codec        | vp8                  |
-            | bitrate      | 500 Kbps             |
+            | bitrate      | 500 kbps             |
 
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
@@ -1162,7 +1162,7 @@ Feature: Publisher Screen Streaming
         And the "4th" "screen view" should be displayed with following values only
             | source name text  | Dummy Screen Share 4 |    
         And the "4th" "screen view" setting should be displayed with following values only
-            | bitrate      | Bitrate  - 500 Kbps      |
+            | bitrate      | Bitrate  - 500 kbps      |
 
         # Viewer App
         And switch to "waiting-room" page on "viewer" app

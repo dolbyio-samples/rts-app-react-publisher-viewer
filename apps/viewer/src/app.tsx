@@ -10,6 +10,7 @@ import useNotification from '@millicast-react/use-notification';
 import useViewer, { SimulcastQuality } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
+import usePlaybackControl from './hooks/use-playback-control';
 
 import './styles/font.css';
 
@@ -34,6 +35,8 @@ const App = () => {
     stopViewer,
     viewerCount,
   } = useViewer({ handleError: showError, streamAccountId, streamName });
+
+  const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
   const [mainSourceId, setMainSourceId] = useState<string>();
 
@@ -146,7 +149,7 @@ const App = () => {
         </Flex>
       </Box>
       <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-        {!isStreaming ? (
+        {!isStreaming || !mainSourceId ? (
           <VStack>
             <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Stream is not live
@@ -157,6 +160,7 @@ const App = () => {
           <HStack height="573px" justifyContent="center" maxHeight="573px" width="100vw">
             <Box height="100%" maxWidth="90vw" test-id="rtsVideoMain" width="80vw">
               <ViewerVideoView
+                controls={viewerPlaybackControl[mainSourceId]}
                 isStreaming={isStreaming}
                 settings={mainSourceSettings()}
                 showControlBar
@@ -179,7 +183,7 @@ const App = () => {
                 }}
               />
             </Box>
-            {mainSourceId && remoteTrackSources.size > 1 ? (
+            {remoteTrackSources.size > 1 ? (
               <VStack height="100%" maxWidth="20vw">
                 {Array.from(remoteTrackSources)
                   .filter(([sourceId]) => sourceId !== mainSourceId)
@@ -195,6 +199,7 @@ const App = () => {
                       width="100%"
                     >
                       <ViewerVideoView
+                        controls={viewerPlaybackControl[sourceId]}
                         isStreaming={isStreaming}
                         videoProps={{
                           displayVideo: true,

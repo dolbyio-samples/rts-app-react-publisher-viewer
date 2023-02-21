@@ -77,7 +77,7 @@ Feature: Publisher Screen Preview
         And the "bitrate dropdown" should be displayed
         And the "bitrate dropdown" should be enabled
         And the "bitrate dropdown default" text should be "Bitrate  - Auto"
-        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 Kbps,250 Kbps" options
+        And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 kbps,250 kbps" options
 
     Scenario: Simulcast should be enabled by default with codec as h264
         When the publisher clicks on the "screen view setting button"
