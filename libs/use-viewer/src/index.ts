@@ -19,7 +19,7 @@ import {
   ViewerActionType,
   ViewerProps,
 } from './types';
-import { addRemoteTrack, unprojectFromStream, projectToStream } from './utils';
+import { addRemoteTrack, buildQualityOptions, projectToStream, unprojectFromStream } from './utils';
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const viewerRef = useRef<View>();
@@ -35,6 +35,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const mainVideoMappingRef = useRef<ViewProjectSourceMapping>();
 
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
+  const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>([]);
   const [mainStatistics, setMainStatistics] = useState<StreamStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
 
@@ -124,6 +125,15 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         break;
 
       case 'layers': {
+        const { mediaId } = mainVideoMappingRef.current ?? {};
+
+        if (mediaId) {
+          const mid = parseInt(mediaId, 10);
+          const { active } = (event.data as MediaStreamLayers).medias[mid];
+
+          setMainQualityOptions(buildQualityOptions(active));
+        }
+
         dispatch({
           medias: (event.data as MediaStreamLayers).medias,
           type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS,
@@ -280,6 +290,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   return {
     mainMediaStream,
+    mainQualityOptions,
     mainStatistics,
     projectToMainStream,
     remoteTrackSources,

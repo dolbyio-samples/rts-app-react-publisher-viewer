@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import ActionBar from '@millicast-react/action-bar';
 import { IconProfile } from '@millicast-react/dolbyio-icons';
@@ -26,6 +26,7 @@ const App = () => {
 
   const {
     mainMediaStream,
+    mainQualityOptions,
     mainStatistics,
     projectToMainStream,
     remoteTrackSources,
@@ -39,8 +40,6 @@ const App = () => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
   const [mainSourceId, setMainSourceId] = useState<string>();
-
-  const mainSource = mainSourceId !== undefined ? remoteTrackSources.get(mainSourceId) : undefined;
 
   // Prevent closing the page
   useEffect(() => {
@@ -74,52 +73,50 @@ const App = () => {
 
   // Reset main stream when layers change
   useEffect(() => {
-    if (!mainSource) {
+    if (!mainSourceId) {
       return;
     }
 
-    const { quality, sourceId, streamQualityOptions } = mainSource;
-    const streamQualities = streamQualityOptions.map(({ streamQuality }) => streamQuality);
+    const { quality } = remoteTrackSources.get(mainSourceId) ?? {};
+    const streamQualities = mainQualityOptions.map(({ streamQuality }) => streamQuality);
 
-    if (!quality || !streamQualities.includes(quality)) {
+    if (!quality || !streamQualities?.includes(quality)) {
       // Must reproject before resetting quality
-      projectToMainStream(sourceId).then(() => {
-        setSourceQuality(sourceId);
+      projectToMainStream(mainSourceId).then(() => {
+        setSourceQuality(mainSourceId);
       });
     }
-  }, [mainSource?.streamQualityOptions.length]);
+  }, [mainQualityOptions.length]);
 
-  const changeMainSource = async (sourceId: string) => {
-    const { sourceId: prevSourceId } = mainSource ?? {};
-
-    if (prevSourceId) {
-      reprojectFromMainStream(prevSourceId);
+  const changeMainSource = async (newMainSourceId: string) => {
+    if (mainSourceId) {
+      reprojectFromMainStream(mainSourceId);
     }
 
-    projectToMainStream(sourceId).then(() => {
-      setMainSourceId(sourceId);
+    projectToMainStream(newMainSourceId).then(() => {
+      setMainSourceId(newMainSourceId);
       // Reset quality
-      setSourceQuality(sourceId, { streamQuality: 'Auto' });
+      setSourceQuality(newMainSourceId, { streamQuality: 'Auto' });
     });
   };
 
-  const mainSourceSettings = useCallback(() => {
-    if (!mainSource) {
+  const mainSourceSettings = useMemo(() => {
+    if (!mainSourceId) {
       return {};
     }
 
-    const { quality, sourceId, streamQualityOptions } = mainSource;
+    const { quality } = remoteTrackSources.get(mainSourceId) ?? {};
 
     return {
       quality: {
         handleSelect: (data: unknown) => {
-          setSourceQuality(sourceId, data as SimulcastQuality);
+          setSourceQuality(mainSourceId, data as SimulcastQuality);
         },
-        options: streamQualityOptions,
+        options: mainQualityOptions,
         value: quality ?? '',
       },
     };
-  }, [mainSource]);
+  }, [mainQualityOptions, mainSourceId]);
 
   const hasMultiStream = remoteTrackSources.size > 1;
   const isStreaming = remoteTrackSources.size > 0;
@@ -162,7 +159,7 @@ const App = () => {
               <ViewerVideoView
                 controls={viewerPlaybackControl[mainSourceId]}
                 isStreaming={isStreaming}
-                settings={mainSourceSettings()}
+                settings={mainSourceSettings}
                 showControlBar
                 statistics={mainStatistics}
                 videoProps={{

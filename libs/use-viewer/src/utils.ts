@@ -38,7 +38,6 @@ export const addRemoteTrack = async (
     projectMapping: mapping,
     quality: 'Auto',
     sourceId,
-    streamQualityOptions: [{ streamQuality: 'Auto' }],
     videoMediaId,
   };
 };
