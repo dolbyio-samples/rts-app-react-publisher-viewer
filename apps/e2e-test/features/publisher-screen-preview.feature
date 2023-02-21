@@ -109,7 +109,7 @@ Feature: Publisher Screen Preview
 
         When the publisher hovers the mouse over the "screen view video button"
         Then the "tooltip" should be displayed
-        And the "tooltip" text should be "Toggle camera"
+        And the "tooltip" text should be "Toggle video"
 
         When the publisher hovers the mouse over the "screen view audio button"
         Then the "tooltip" should be displayed
