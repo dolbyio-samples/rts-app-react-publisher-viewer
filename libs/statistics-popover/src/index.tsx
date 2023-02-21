@@ -50,6 +50,7 @@ const StatisticsPopover = ({ iconProps, statistics }: StatisticsPopoverProps) =>
       icon={<IconInfo fill="white" />}
       iconProps={iconProps}
       label="Stream information"
+      placement="top-start"
     >
       {statistics ? (
         tabs.length ? (
