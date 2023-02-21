@@ -1,5 +1,4 @@
 import { RemoteTrackSources, ViewerAction, ViewerActionType } from './types';
-import { buildQualityOptions } from './utils';
 
 const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSources => {
   switch (action.type) {
@@ -27,26 +26,6 @@ const reducer = (state: RemoteTrackSources, action: ViewerAction): RemoteTrackSo
       if (prevRemoteTrackSource) {
         newState.set(sourceId, { ...prevRemoteTrackSource, quality });
       }
-
-      return newState;
-    }
-
-    case ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS: {
-      const newState = new Map(state);
-
-      Object.entries(action.medias).forEach(([mid, { active }]) => {
-        const [sourceId, remoteTrackSource] =
-          Array.from(state).find(([, { videoMediaId }]) => videoMediaId === mid) ?? [];
-
-        if (sourceId && remoteTrackSource) {
-          const newRemoteTrackSource = {
-            ...remoteTrackSource,
-            streamQualityOptions: buildQualityOptions(active),
-          };
-
-          newState.set(sourceId, newRemoteTrackSource);
-        }
-      });
 
       return newState;
     }

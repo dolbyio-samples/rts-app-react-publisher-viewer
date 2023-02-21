@@ -1,2 +1,2 @@
-export const KILOBYTES = 1024;
-export const MEGABYTES = KILOBYTES * KILOBYTES;
+export const KILO = 10 ** 3;
+export const MEGA = 10 ** 6;
