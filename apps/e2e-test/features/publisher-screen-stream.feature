@@ -237,7 +237,7 @@ Feature: Publisher Screen Streaming
         And the "screen view video mute image" should not be displayed
         And the "camera view" should be displayed with following values
             | video button status | Off |
-            | audio button status | off |
+            | audio button status | Off |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app

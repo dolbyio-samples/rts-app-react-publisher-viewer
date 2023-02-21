@@ -77,7 +77,7 @@ export const getStreamStats = async (
       const tabName = await getElementText(page, tabSelector, i);
       if (qualityTabName === 'All' || qualityTabName === tabName) {
         await click(page, tabSelector, i);
-        await delay(3000);
+        //await delay(3000);
         const statsInfo = await getTableData(page, tableSelector);
         infoData[tabName as string] = transponseStreamData(statsInfo);
       } else {

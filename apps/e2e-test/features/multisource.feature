@@ -82,7 +82,7 @@ Feature: Publisher Multisource Streaming
             | source name  | Dummy Local File   |
             | simulcast    | On                 |
             | codec        | h264               |
-            | bitrate      | 500 Kbps           |
+            | bitrate      | 500 kbps           |
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
 
@@ -104,7 +104,7 @@ Feature: Publisher Multisource Streaming
         And the "local file view" should be displayed with following values
             | source name text  | Dummy Local File |
         And the "local file view" setting should be displayed with following values
-            | bitrate      | Bitrate  - 500 Kbps  |
+            | bitrate      | Bitrate  - 500 kbps  |
         And the "local file view" stats with quality tabs should be displayed with default values
 
         # Viewer App
@@ -165,17 +165,17 @@ Feature: Publisher Multisource Streaming
             | resolution  | 640x480  |
             | bitrate     | 1 Mbps   |
         And the publisher configures "screen view" setting with the following values only
-            | bitrate     | 500 Kbps   |
+            | bitrate     | 500 kbps   |
         And the publisher configures "local file view" setting with the following values only
-            | bitrate     | 250 Kbps   |
+            | bitrate     | 250 kbps   |
 
         Then the "camera view" setting should be displayed with following values only
             | resolution  | Resolution  - 640x480   |
             | bitrate     | Bitrate  - 1 Mbps       |
         Then the "screen view" setting should be displayed with following values only
-            | bitrate     | Bitrate  - 500 Kbps     |
+            | bitrate     | Bitrate  - 500 kbps     |
         Then the "local file view" setting should be displayed with following values only
-            | bitrate     | Bitrate  - 250 Kbps     |
+            | bitrate     | Bitrate  - 250 kbps     |
 
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
