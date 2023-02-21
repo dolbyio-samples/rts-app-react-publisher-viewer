@@ -4,7 +4,8 @@ import React from 'react';
 import {
   IconCameraOff,
   IconCameraOn,
-  IconExpand,
+  IconFullScreen,
+  IconFullScreenExit,
   IconPause,
   IconPlay,
   IconSoundOn,
@@ -13,8 +14,8 @@ import {
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
 
-import { VideoControlBarProps } from './types';
 import SettingsPopover from './settings-popover';
+import { VideoControlBarProps } from './types';
 
 const VideoControlBar = ({
   activeAudio,
@@ -22,6 +23,7 @@ const VideoControlBar = ({
   activeVideo,
   hasAudioTrack,
   hasVideoTrack,
+  isFullScreen,
   isStreaming,
   onChangeVolume: handleChangeVolume,
   onToggleFullScreen: handleFullScreen,
@@ -56,7 +58,7 @@ const VideoControlBar = ({
       </HStack>
       <HStack>
         {hasAudioTrack ? (
-          <Box position="relative">
+          <Box position="relative" sx={{ ':hover>.volume-slider-wrapper': { opacity: 1, visibility: 'visible' } }}>
             <IconButton
               icon={activeAudio ? <IconSoundOn /> : <IconSoundOff />}
               isActive={!activeAudio}
@@ -64,33 +66,37 @@ const VideoControlBar = ({
               testId="toggleAudioButton"
               tooltipProps={{ label: 'Toggle audio', placement: 'bottom' }}
             />
-            <Center
-              background="white"
-              borderRadius="4px"
+            <Box
+              className="volume-slider-wrapper"
               left="50%"
-              padding="12px 0"
+              opacity={0}
               position="absolute"
-              top="-16px"
+              sx={{ ':hover': { opacity: 1, visibility: 'visible' } }}
+              top={0}
               transform="translate(-50%, -100%)"
+              transition="visibility linear 0.5s, opacity 0.5s"
+              visibility="hidden"
               width="100%"
             >
-              <Slider
-                aria-label="volumeSlider"
-                defaultValue={activeAudio ? 100 : 0}
-                height="100px"
-                max={1}
-                min={0}
-                onChange={handleChangeVolume}
-                orientation="vertical"
-                step={0.01}
-                value={volume}
-              >
-                <SliderTrack background="dolbyNeutral.300">
-                  <SliderFilledTrack background="dolbyPurple.400" />
-                </SliderTrack>
-                <SliderThumb background="dolbyNeutral.800" />
-              </Slider>
-            </Center>
+              <Center background="white" borderRadius="4px" marginBottom="16px" padding="12px 0" width="100%">
+                <Slider
+                  aria-label="volumeSlider"
+                  defaultValue={activeAudio ? 100 : 0}
+                  height="100px"
+                  max={1}
+                  min={0}
+                  onChange={handleChangeVolume}
+                  orientation="vertical"
+                  step={0.01}
+                  value={volume}
+                >
+                  <SliderTrack background="dolbyNeutral.300">
+                    <SliderFilledTrack background="dolbyPurple.400" />
+                  </SliderTrack>
+                  <SliderThumb background="dolbyNeutral.800" />
+                </Slider>
+              </Center>
+            </Box>
           </Box>
         ) : undefined}
         {hasVideoTrack ? (
@@ -99,7 +105,7 @@ const VideoControlBar = ({
             isActive={!activeVideo}
             onClick={handleToggleVideo}
             testId="toggleVideoButton"
-            tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
+            tooltipProps={{ label: 'Toggle video', placement: 'bottom' }}
           />
         ) : undefined}
         <IconButton
@@ -114,7 +120,7 @@ const VideoControlBar = ({
       <HStack>
         <IconButton
           background="none"
-          icon={<IconExpand fill="white" />}
+          icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
           isDisabled={!hasAudioTrack && !hasVideoTrack}
           onClick={handleFullScreen}
           testId="toggleFullScreenButton"
