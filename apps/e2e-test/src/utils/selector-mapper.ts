@@ -21,10 +21,13 @@ export class SelectorMapper {
 
   private componentList: string[];
 
+  private cache: Map<string, TargetSelector>;
+
   constructor(mappingsDir: string) {
     this.pageList = [];
     this.componentList = [];
     this.selectorMap = this.readMappingFiles(mappingsDir);
+    this.cache = new Map();
   }
 
   private readMappingFiles(mappingsDir: string): SelectorMap {
@@ -113,8 +116,11 @@ export class SelectorMapper {
 
   getSelector(pageName: string, selectorName: string): TargetSelector {
     logger.info(`Get Selector '${selectorName}' from '${pageName}' page`);
-    let targetSelector!: TargetSelector;
+    if (this.cache.has(`${pageName}-${selectorName}`)) {
+      return this.cache.get(`${pageName}-${selectorName}`) as TargetSelector;
+    }
 
+    let targetSelector!: TargetSelector;
     if (this.selectorMap.has(pageName)) {
       const pageSelectorMap = this.selectorMap.get(pageName) as PageSelectorMap;
       if (!pageSelectorMap.has(selectorName) && !pageSelectorMap.has('COMPONENTS')) {
@@ -130,6 +136,7 @@ export class SelectorMapper {
     }
 
     logger.info(`Selector Value: '${targetSelector}'`);
+    this.cache.set(`${pageName}-${selectorName}`, targetSelector);
     return targetSelector;
   }
 

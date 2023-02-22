@@ -105,6 +105,7 @@ export const validateStatsInfo = (actStats: { [key: string]: string }, expStats:
   verifyGreaterThanEqualTo(keys.length, 5, message);
 
   for (const key of keys) {
+    if (key === undefined) continue;
     try {
       logger.info(`Verify stats for key ${key}: ${actStats[key]}`);
       message = `Stats '${key}' not matched`;
