@@ -134,11 +134,6 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
           setMainQualityOptions(buildQualityOptions(active));
         }
 
-        dispatch({
-          medias: (event.data as MediaStreamLayers).medias,
-          type: ViewerActionType.UPDATE_SOURCES_QUALITY_OPTIONS,
-        });
-
         break;
       }
     }
