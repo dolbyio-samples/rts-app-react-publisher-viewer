@@ -9,7 +9,13 @@ import { SettingsPopoverProps } from './types';
 import { qualityElementResolver } from './utils';
 
 const SettingsPopover = ({ iconProps, quality }: SettingsPopoverProps = {}) => (
-  <Popover heading="Stream settings" icon={<IconSettings fill="white" />} iconProps={iconProps} label="Stream settings">
+  <Popover
+    heading="Stream settings"
+    icon={<IconSettings fill="white" />}
+    iconProps={iconProps}
+    label="Stream settings"
+    placement="top-end"
+  >
     {quality && !quality.isHidden ? (
       <Box>
         <Dropdown

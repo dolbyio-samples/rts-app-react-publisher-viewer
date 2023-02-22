@@ -13,14 +13,14 @@ import IconButton from '@millicast-react/icon-button';
 
 import { PopoverProps } from './types';
 
-const Popover = ({ children, heading, icon, iconProps, label }: PopoverProps) => {
+const Popover = ({ children, heading, icon, iconProps, label, placement }: PopoverProps) => {
   const camelCaseLabel = label
     .replace(/^./, (firstChar) => firstChar.toLowerCase())
     .replace(/\s+(\w)/, (_, char) => char.toUpperCase());
 
   return (
     <>
-      <ChakraPopover isLazy placement="top-start">
+      <ChakraPopover isLazy placement={placement}>
         <PopoverTrigger>
           <IconButton
             aria-label={label}

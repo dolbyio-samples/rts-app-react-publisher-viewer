@@ -75,11 +75,9 @@ const ViewerVideoView = ({
   };
 
   const handleChangeVolume = (newVolume: number) => {
-    if (newVolume === 0) {
-      audioTrack.enabled = false;
-
+    if (newVolume === 0 && audioEnabled) {
       onToggleAudio?.(false);
-    } else {
+    } else if (!audioEnabled && newVolume > 0) {
       onToggleAudio?.(true);
     }
 
@@ -87,7 +85,11 @@ const ViewerVideoView = ({
   };
 
   const handleToggleAudio = () => {
-    onToggleAudio?.((prevIsAudioEnabled) => !prevIsAudioEnabled);
+    if (audioEnabled) {
+      handleChangeVolume(0);
+    } else {
+      handleChangeVolume(0.5);
+    }
   };
 
   const handleTogglePlayback = () => {
@@ -128,6 +130,7 @@ const ViewerVideoView = ({
           activeVideo={videoEnabled}
           hasAudioTrack={!!audioTrack}
           hasVideoTrack={!!videoTrack}
+          isFullScreen={fullScreen}
           isStreaming={isStreaming}
           onChangeVolume={handleChangeVolume}
           onToggleAudio={handleToggleAudio}

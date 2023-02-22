@@ -51,6 +51,8 @@ const VideoControlBar = ({
       <IconSoundOff />
     );
 
+  const toggleVideoTooltip = streamType === StreamTypes.MEDIA ? 'Toggle camera' : 'Toggle video';
+
   return (
     <HStack
       background="backgroundTranslucent"
@@ -89,7 +91,7 @@ const VideoControlBar = ({
             isActive={!activeVideo}
             onClick={handleToggleVideo}
             testId="toggleVideoButton"
-            tooltipProps={{ label: 'Toggle camera', placement: 'bottom' }}
+            tooltipProps={{ label: toggleVideoTooltip, placement: 'bottom' }}
           />
         ) : undefined}
         {canTogglePlayback ? (
