@@ -7,7 +7,7 @@
 ## Overview
 
 Quickly stand-up a lightning fast, broadcast quality, real-time streaming app with ultra low-latency (sub 500ms).
-Want to learn more? Check out the [Real Time Streaming app gallery page](https://docs.dolby.io/streaming-apis/docs/real-time-streaming-publisher-viewer-sample-apps).
+Want to learn more? Check out the [Real Time Streaming app gallery page](https://docs.dolby.io/communications-apis/docs/real-time-streaming-publisher-viewer-sample-apps).
 
 ## Getting Started
 
