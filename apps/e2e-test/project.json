@@ -34,12 +34,12 @@
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
     },
-    "e2e": {
+    "publisher-viewer": {
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js  --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@e2e and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js  --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@publisher-viewer and not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]

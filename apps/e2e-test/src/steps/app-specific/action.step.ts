@@ -9,7 +9,7 @@ import {
 } from '../../playwright-support/app-specific/element-action';
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
-import { addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
+import { addFileSource, addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
 import { getDefaultConfigureSettings } from './workflow/workflow.data';
 
 When(
@@ -39,7 +39,7 @@ When(
 );
 
 When(
-  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view)" setting with the default values$/,
+  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view|local file view)" setting with the default values$/,
   async function (this: ScenarioWorld, actor: string, elementPosition: string, viewName: string) {
     const expectedData = getDefaultConfigureSettings(`${actor} ${this.currentPageName} ${viewName}`);
     await configureSettings(this, elementPosition, viewName, expectedData);
@@ -47,7 +47,7 @@ When(
 );
 
 When(
-  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view)" setting with the following values( only)?$/,
+  /^the (publisher|viewer) configures( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "(camera view|screen view|main view|local file view)" setting with the following values( only)?$/,
   async function (
     this: ScenarioWorld,
     actor: string,
@@ -78,5 +78,18 @@ When(
   /^the viewer projects main stream as source name containing "([^"]*)"$/,
   async function (this: ScenarioWorld, srcName: string) {
     await projectAsMainStream(this, srcName);
+  }
+);
+
+When(/^the publisher adds "(local|remote)" file source$/, async function (this: ScenarioWorld, srcName: string) {
+  const filePath = 'apps/e2e-test/resources/local-file.mp4';
+  await addFileSource(this, srcName, filePath);
+});
+
+When(
+  /^the publisher adds "(local|remote)" file source with file "([^"]*)"$/,
+  async function (this: ScenarioWorld, srcName: string, fileName: string) {
+    const filePath = `apps/e2e-test/resources/${fileName}`;
+    await addFileSource(this, srcName, filePath);
   }
 );

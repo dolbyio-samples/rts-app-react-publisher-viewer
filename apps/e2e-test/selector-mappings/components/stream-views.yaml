@@ -114,21 +114,30 @@ local file view source name:
 local file view video mute image:
   - '$ref: local file view container'
   - '$ref: video mute icon'
+audio of local file view: '$ref: local file view audio button'
 local file view audio button:
   - '$ref: local file view container'
   - '$ref: audio button'
+video of local file view: '$ref: local file view video button'
 local file view video button:
   - '$ref: local file view container'
   - '$ref: video button'
+playback of local file view: '$ref: local file view playback button'
+local file view playback button:
+  - '$ref: local file view container'
+  - '$ref: playback button'
 local file view stop share button:
   - '$ref: local file view container'
   - '[test-id=stopScreenShare]'
+full screen of local file view: '$ref: local file view full screen button'
 local file view full screen button:
   - '$ref: local file view container'
   - '$ref: full screen button'
+setting button of local file view: '$ref: local file view setting button'
 local file view setting button:
   - '$ref: local file view container'
   - '$ref: setting button'
+stream info button of local file view: '$ref: local file view stream info button'
 local file view stream info button:
   - '$ref: local file view container'
   - '$ref: stream info button'

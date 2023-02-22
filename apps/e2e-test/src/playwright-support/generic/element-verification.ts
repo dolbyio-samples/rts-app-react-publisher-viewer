@@ -16,7 +16,7 @@ export const verifyElementState = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element state${negate ? ' not' : ''} to be ${state}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   const matcher = negate ? expect(locator).not : expect(locator);
 
   switch (state) {
@@ -58,7 +58,7 @@ export const verifyElementText = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element text${negate ? ' not' : ''} to be ${text}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveText(text);
   } else {
@@ -74,7 +74,7 @@ export const verifyElementMatchText = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element text should${negate ? ' not' : ''} match to be ${expPattern}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   const actText = await locator.textContent();
 
   const regExp = new RegExp(expPattern, 'i');
@@ -93,7 +93,7 @@ export const verifyElementContainsText = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element${negate ? ' does not' : ''} contain text ${text}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
 
   if (negate) {
     await expect(locator).not.toContainText(text);
@@ -110,7 +110,7 @@ export const verifyElementValue = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element text${negate ? ' not' : ''} to be ${text}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveValue(text);
   } else {
@@ -142,7 +142,7 @@ export const verifyElementCount = async (
   index?: number
 ): Promise<void> => {
   logger.trace(`Verify element count${negate ? ' not' : ''} to be ${count}`);
-  const locator = getLocator(page, selector, index);
+  const locator = await getLocator(page, selector, index);
   if (negate) {
     await expect(locator).not.toHaveCount(count);
   } else {

@@ -53,8 +53,8 @@ jobs:
         run: |
           export VITE_RTS_STREAM_NAME=${{ secrets.STREAM_NAME }}
           eval "yarn nx launch-server e2e-test --skip-nx-cache"
-          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
-          eval "yarn nx e2e e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/e2e/"
+          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1"
+          eval "yarn nx publisher-viewer e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher-viewer/"
           unset VITE_RTS_STREAM_NAME
           rm -rf dist
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
@@ -67,7 +67,7 @@ jobs:
         if: always()
         run: |
           eval "yarn nx affected --target=e2e-report --base=${{ env.BASE_BRANCH }} --skip-nx-cache"
-          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/e2e/"
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher-viewer/"
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         if: always()

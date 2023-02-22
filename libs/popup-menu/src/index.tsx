@@ -42,7 +42,7 @@ const PopupMenu = ({ buttonTitle, disabled = false, items }: PopupMenuProps) => 
       >
         {items.map(({ icon, text, onClick, isDisabled }) => (
           <MenuItem
-            test-id={text.replace(' ', '')}
+            test-id={text.replace(/\s/g, '')}
             key={text}
             onClick={onClick}
             bg="dolbyNeutral.800"

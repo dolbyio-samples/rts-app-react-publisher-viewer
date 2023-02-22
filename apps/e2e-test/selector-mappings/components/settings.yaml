@@ -46,4 +46,4 @@ simulcast switch:
 simulcast: '$ref: simulcast switch'
 settings close button:
   - '$ref: settings popup'
-  - '[test-id=streamSettingsPopoverCloseButton]'
+  - '[test-id=streamSettingsPopoverCloseButton]'  

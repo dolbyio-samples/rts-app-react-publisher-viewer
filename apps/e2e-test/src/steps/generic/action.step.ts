@@ -41,10 +41,14 @@ When(
   }
 );
 
-When(/^(?:the .*|I) hovers the mouse over the "([^"]*)"$/, async function (this: ScenarioWorld, selectorName: string) {
-  const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
-  await hover(this.currentPage, targetSelector);
-});
+When(
+  /^(?:the .*|I) hovers the mouse over the( "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)")? "([^"]*)"$/,
+  async function (this: ScenarioWorld, elementPosition: string, selectorName: string) {
+    const targetSelector = this.selectorMap.getSelector(this.currentPageName, selectorName);
+    const elementIndex = elementPosition != null ? Number(elementPosition.match(/\d/g)?.join('')) - 1 : undefined;
+    await hover(this.currentPage, targetSelector, elementIndex);
+  }
+);
 
 When(
   /^(?:I )?take the screenshot of "([^"]*)" at path "([^"]*)"$/,

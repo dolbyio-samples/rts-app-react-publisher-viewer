@@ -106,7 +106,7 @@ const DeviceSelection = ({
                   testId="microphone-select"
                 />
               </Box>
-              <Button isDisabled={!camera || !microphone} onClick={handleSubmit}>
+              <Button test-id="addDevice" isDisabled={!camera || !microphone} onClick={handleSubmit}>
                 ADD TO STREAM
               </Button>
             </VStack>

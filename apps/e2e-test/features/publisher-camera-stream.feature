@@ -1,4 +1,4 @@
-@e2e
+@publisher-viewer
 Feature: Publisher Camera Streaming
     As a publisher
     I want to do live streaming for an event with camera only
@@ -26,7 +26,7 @@ Feature: Publisher Camera Streaming
         And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
         And the "stream list items" should not be displayed
 
@@ -258,8 +258,8 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with following values
-        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
         And the "stream list items" should not be displayed   
 
@@ -291,8 +291,8 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with following values
-        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
         And the "stream list items" should not be displayed
 
@@ -328,8 +328,8 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with following values
-        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
         And the "stream list items" should not be displayed
 
@@ -361,8 +361,8 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with following values
-        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values
         And the "stream list items" should not be displayed
 
@@ -393,8 +393,8 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with following values
-        #    | Codecs:  | regex: ^video/<codec>, audio/opus$ |
+        And the "main view" stats should be displayed with following values
+            | Codecs:  | regex: ^video/<codec>, audio/opus$ |
         And the "main view" setting should be displayed with default values  
     Examples:
         | codec |  resolution | bitrate    |
@@ -420,7 +420,7 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
     Examples:
         |  bitrate    |
@@ -445,7 +445,7 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
     Examples:
         |  resolution  |
@@ -477,7 +477,7 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
     Scenario: Publisher settings should be preserved after the streaming is stopped when changed during streaming
@@ -524,7 +524,7 @@ Feature: Publisher Camera Streaming
             | quality      | <quality>    |
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with following values
             | quality      | Quality  - <quality>    |
 
@@ -646,14 +646,14 @@ Feature: Publisher Camera Streaming
         And the "main view" should be displayed with following values
             | size              | Full           |
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
         When the viewer clicks on the "main view full screen button"
         And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
     @ignore #Bug - 326
@@ -677,7 +677,7 @@ Feature: Publisher Camera Streaming
         And the "main view" should be displayed with following values
             | size              | Full           |
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with following values
             | quality      | Quality  - <quality>    |
 
@@ -706,7 +706,7 @@ Feature: Publisher Camera Streaming
         Then the viewer should be navigated to "viewer-streaming" page
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
-        #And the "main view" stats should be displayed with default values
+        And the "main view" stats should be displayed with default values
         And the "main view" setting should be displayed with default values
 
         # Publisher App

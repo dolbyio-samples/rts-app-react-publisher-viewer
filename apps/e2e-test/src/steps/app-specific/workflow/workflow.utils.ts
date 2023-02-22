@@ -2,7 +2,7 @@ import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
 import { logger } from '../../../logger';
 import { selectSettingDropdown } from '../../../playwright-support/app-specific/element-action';
 import { verifyDeviceStatus } from '../../../playwright-support/app-specific/element-verification';
-import { click } from '../../../playwright-support/generic/element-action';
+import { click, fileUploadInput } from '../../../playwright-support/generic/element-action';
 import {
   verifyElementContainsText,
   verifyElementContainsValue,
@@ -32,11 +32,12 @@ export const validateState = async (
 export const validateStatus = async (
   scWorld: ScenarioWorld,
   targetSelector: TargetSelector,
-  expStatus: Status,
+  expStatus: string,
   elementIndex?: number | undefined
 ) => {
+  if (expStatus.includes('ignore:')) return;
   await waitFor(async () => {
-    await verifyDeviceStatus(scWorld.currentPage, targetSelector, expStatus, false, elementIndex);
+    await verifyDeviceStatus(scWorld.currentPage, targetSelector, expStatus as Status, false, elementIndex);
   });
 };
 
@@ -125,24 +126,24 @@ export const addCamera = async (scWorld: ScenarioWorld) => {
   let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'add cameras button');
   await click(scWorld.currentPage, targetSelector);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'select source popup');
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'camera source popup');
   await validateState(scWorld, targetSelector, 'displayed' as State);
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'select source camera dropdown');
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'camera source camera dropdown');
   let OptionsSelector = scWorld.selectorMap.getSelector(
     scWorld.currentPageName,
-    'select source camera dropdown options'
+    'camera source camera dropdown options'
   );
   await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, 'Fake_device_0');
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'select source microphone dropdown');
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'camera source microphone dropdown');
   OptionsSelector = scWorld.selectorMap.getSelector(
     scWorld.currentPageName,
-    'select source microphone dropdown options'
+    'camera source microphone dropdown options'
   );
   await selectSettingDropdown(scWorld.currentPage, targetSelector, OptionsSelector, 'Fake Audio Input 1');
 
-  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'select source add button');
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'camera source add button');
   await click(scWorld.currentPage, targetSelector);
 };
 
@@ -168,4 +169,20 @@ export const getQualityTabName = (qualityTab: string) => {
   }
 
   return qualityTabName;
+};
+
+export const addLocalFile = async (scWorld: ScenarioWorld, filePath: string) => {
+  logger.info(`Add local file source - ${filePath}`);
+
+  let targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'local file button');
+  await click(scWorld.currentPage, targetSelector);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `local file popup`);
+  await validateState(scWorld, targetSelector, 'displayed' as State);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, `local file input`);
+  await fileUploadInput(scWorld.currentPage, targetSelector, filePath);
+
+  targetSelector = scWorld.selectorMap.getSelector(scWorld.currentPageName, 'local file add streaming button');
+  await click(scWorld.currentPage, targetSelector);
 };
