@@ -52,7 +52,7 @@ jobs:
       - name: build & test
         run: |
           eval "yarn nx launch-server e2e-test --skip-nx-cache"
-          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1"
+          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
           eval "yarn nx publisher-viewer e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher-viewer/"
           rm -rf dist
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then

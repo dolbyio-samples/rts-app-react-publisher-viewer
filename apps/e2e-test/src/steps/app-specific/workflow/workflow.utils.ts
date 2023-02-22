@@ -105,7 +105,7 @@ export const validateStatsInfo = (actStats: { [key: string]: string }, expStats:
   verifyGreaterThanEqualTo(keys.length, 5, message);
 
   for (const key of keys) {
-    if (key === undefined) continue;
+    if (key === "undefined") continue;
     try {
       logger.info(`Verify stats for key ${key}: ${actStats[key]}`);
       message = `Stats '${key}' not matched`;
@@ -116,7 +116,7 @@ export const validateStatsInfo = (actStats: { [key: string]: string }, expStats:
         verifyEqualTo(actStats[key], expStats[key], message);
       }
     } catch (exception) {
-      logger.error(`Keys: ${keys}\nKey: ${key} ,Value: ${expStats[key]}`);
+      logger.error(`Keys: ${keys}\nKey: ${key} - typeof: ${typeof key},Value: ${expStats[key]}`);
       throw exception;
     }
   }
