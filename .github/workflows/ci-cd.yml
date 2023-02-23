@@ -38,31 +38,55 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   test-viewer:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-viewer
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   test-camera-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-camera-streaming
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   test-local-file-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-local-file-streaming
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   test-screen-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-screen-streaming
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   test-multisource-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-multisource-streaming
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
+      account_id: $VITE_RTS_ACCOUNT_ID
   deploy:
     needs:
       [

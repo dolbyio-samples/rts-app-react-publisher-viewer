@@ -1,5 +1,9 @@
 name: Setup Steps
 description: Setup Steps
+inputs:
+  branch_ref:
+    description: 'branch reference'
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -15,6 +19,8 @@ runs:
       shell: bash
       run: yarn --frozen-lockfile
     - name: Set base branch
+      env:
+        BRANCH_REF: ${{ inputs.branch_ref }}
       shell: bash
       run: |
         if [ $BRANCH_REF = 'refs/heads/main' ]; then

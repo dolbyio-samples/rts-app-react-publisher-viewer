@@ -6,13 +6,26 @@ on:
       suite_name:
         required: true
         type: string
+      branch_ref:
+        required: true
+        type: string
+    secrets:
+      publishing_token:
+        required: true
+      account_id:
+        required: true    
 
 jobs:
   test-suite:
     runs-on: ubuntu-latest
+    env:
+      VITE_RTS_STREAM_PUBLISHING_TOKEN: ${{ secrets.publishing_token }}
+      VITE_RTS_ACCOUNT_ID: ${{ secrets.account_id }}
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
+        with:
+          branch_ref: ${{inputs.branch_ref}}
       - name: Execute ${{inputs.suite_name}} suite
         run: |
           export VITE_RTS_STREAM_NAME=${{inputs.suite_name}}-${{ github.run_id }}
