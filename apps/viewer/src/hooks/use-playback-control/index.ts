@@ -12,7 +12,7 @@ const usePlaybackControl = (sourceIds: string[]) => {
   useEffect(() => {
     setPlaybackControl((prevPlaybackSettings) =>
       sourceIds.reduce((accPlaybackSettings, sourceId) => {
-        if (sourceId in accPlaybackSettings) {
+        if (sourceId in prevPlaybackSettings) {
           return { ...accPlaybackSettings, [sourceId]: prevPlaybackSettings[sourceId] };
         }
 
