@@ -13,7 +13,7 @@ const usePlaybackControl = (sourceIds: string[]) => {
     setPlaybackControl((prevPlaybackSettings) =>
       sourceIds.reduce((accPlaybackSettings, sourceId) => {
         if (sourceId in accPlaybackSettings) {
-          return accPlaybackSettings;
+          return { ...accPlaybackSettings, [sourceId]: prevPlaybackSettings[sourceId] };
         }
 
         return {
@@ -29,7 +29,7 @@ const usePlaybackControl = (sourceIds: string[]) => {
             volume: 0,
           },
         };
-      }, prevPlaybackSettings)
+      }, {})
     );
   }, [sourceIds.length]);
 

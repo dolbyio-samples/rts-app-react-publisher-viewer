@@ -85,10 +85,13 @@ const ViewerVideoView = ({
   };
 
   const handleToggleAudio = () => {
+    console.log({ audioEnabled, volume });
     if (audioEnabled) {
-      handleChangeVolume(0);
-    } else {
+      onToggleAudio?.(false);
+    } else if (volume === 0) {
       handleChangeVolume(0.5);
+    } else {
+      onToggleAudio?.(true);
     }
   };
 
@@ -144,7 +147,7 @@ const ViewerVideoView = ({
             ':hover': { opacity: 1 },
           }}
           test-id="videoControlBar"
-          volume={volume}
+          volume={audioEnabled ? volume : 0}
         />
       ) : undefined}
     </Box>
