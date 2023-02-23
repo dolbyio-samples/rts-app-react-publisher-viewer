@@ -85,7 +85,6 @@ const ViewerVideoView = ({
   };
 
   const handleToggleAudio = () => {
-    console.log({ audioEnabled, volume });
     if (audioEnabled) {
       onToggleAudio?.(false);
     } else if (volume === 0) {
