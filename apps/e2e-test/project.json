@@ -43,16 +43,6 @@
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
     },
-    "test-publisher-viewer": {
-      "executor": "nx:run-commands",
-      "options": {
-        "parallel": false,
-        "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@publisher-viewer and not @ignore\""
-        ]
-      },
-      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
-    },
     "test-publisher": {
       "executor": "nx:run-commands",
       "options": {
@@ -67,6 +57,46 @@
       "options": {
         "commands": [
           "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local and not @ignore\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-multisource-streaming": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@multisource-streaming and not @ignore\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-camera-streaming": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@camera-streaming and not @ignore\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-local-file-streaming": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@local-file-streaming and not @ignore\""
+        ]
+      },
+      "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
+    },
+    "test-screen-streaming": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@screen-share-streaming and not @ignore\""
         ]
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]

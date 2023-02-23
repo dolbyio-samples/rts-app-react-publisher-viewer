@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CI-CD:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -38,28 +38,32 @@ jobs:
       # waiting for approval - uses: nrwl/nx-set-shas@v3
       - name: set base branch
         run: |
-          if [ $BRANCH_REF = 'refs/heads/main' ]; then 
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
             echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
           else
             echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
           fi
+  lint-check:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: lint & check
         run: |
           yarn nx workspace-lint
           yarn nx format:check
           git fetch origin main
           yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
-      - name: build & test
+  test-publisher-viewer:
+    needs: lint-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Publisher Viewer
         run: |
+          export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
           eval "yarn nx launch-server e2e-test --skip-nx-cache"
           eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
           rm -rf dist
-          if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
-            search='https://'
-            replace='https://dp-'${PR_NUM}'--'
-            export VITE_RTS_VIEWER_BASE_URL=${VITE_RTS_VIEWER_BASE_URL/$search/$replace}
-          fi
-          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
+          unset VITE_RTS_STREAM_NAME
       - name: Generate Test Report
         if: always()
         run: |
@@ -71,5 +75,111 @@ jobs:
           name: test-artifacts
           path: ./apps/e2e-test/reports/
           retention-days: 2
+  test-camera-streaming:
+    needs: lint-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Camera Streaming
+        run: |
+          export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
+          eval "yarn nx test-camera-streaming e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/camera-streaming/"
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/camera-streaming/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/camera-streaming/
+          retention-days: 2
+  test-local-file-streaming:
+    needs: lint-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Local File Streaming
+        run: |
+          export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
+          eval "yarn nx test-local-file-streaming e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/local-file-streaming/"
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/local-file-streaming/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/local-file-streaming/
+          retention-days: 2
+  test-screen-streaming:
+    needs: lint-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Screen Streaming
+        run: |
+          export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
+          eval "yarn nx test-screen-streaming e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/screen-streaming/"
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/screen-streaming/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/screen-streaming/
+          retention-days: 2
+  test-multisource-streaming:
+    needs: lint-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Multisource Streaming
+        run: |
+          export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
+          eval "yarn nx test-multisource-streaming e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/multisource-streaming/"
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/multisource-streaming/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/multisource-streaming/
+          retention-days: 2
+  deploy:
+    needs:
+      [
+        test-publisher-viewer,
+        test-camera-streaming,
+        test-local-file-streaming,
+        test-screen-streaming,
+        test-multisource-streaming,
+      ]
+    runs-on: ubuntu-latest
+    steps:
       - name: deploy
-        run: eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"
+        run: |
+          if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
+            search='https://'
+            replace='https://dp-'${PR_NUM}'--'
+            export VITE_RTS_VIEWER_BASE_URL=${VITE_RTS_VIEWER_BASE_URL/$search/$replace}
+          fi
+          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
+          eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"

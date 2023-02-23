@@ -1,4 +1,5 @@
 @publisher-viewer
+@local-file-streaming
 Feature: Publisher Local File Streaming
     As a publisher
     I want to do live streaming for an event with local file
