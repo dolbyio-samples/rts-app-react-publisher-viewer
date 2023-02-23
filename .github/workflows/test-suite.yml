@@ -28,6 +28,8 @@ jobs:
           branch_ref: ${{inputs.branch_ref}}
       - name: Execute ${{inputs.suite_name}} suite
         run: |
+          export VITE_RTS_STREAM_PUBLISHING_TOKEN=${{secrets.publishing_token}}
+          export VITE_RTS_ACCOUNT_ID=${{secrets.account_id}}
           export VITE_RTS_STREAM_NAME=${{inputs.suite_name}}-${{ github.run_id }}
           eval "yarn nx launch-server e2e-test --skip-nx-cache"
           eval "yarn nx ${{inputs.suite_name}} e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/${{inputs.suite_name}}/"

@@ -19,10 +19,9 @@ runs:
       shell: bash
       run: yarn --frozen-lockfile
     - name: Set base branch
-      env:
-        BRANCH_REF: ${{ inputs.branch_ref }}
       shell: bash
       run: |
+        export BRANCH_REF=${{ inputs.branch_ref }}
         if [ $BRANCH_REF = 'refs/heads/main' ]; then
           echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
         else
