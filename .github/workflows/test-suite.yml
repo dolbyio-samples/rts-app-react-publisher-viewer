@@ -1,0 +1,48 @@
+name: Execute Test Suite
+
+on:
+  workflow_call:
+    inputs:
+      suite_name:
+        required: true
+        type: string
+
+jobs:
+  test-suite-executor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install
+        run: yarn --frozen-lockfile
+      - name: Set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
+      - name: Execute ${{inputs.suite_name}} suite
+        run: |
+          export VITE_RTS_STREAM_NAME=${{inputs.suite_name}}-${{ github.run_id }}
+          eval "yarn nx launch-server e2e-test --skip-nx-cache"
+          eval "yarn nx ${{inputs.suite_name}} e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/${{inputs.suite_name}}/"
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          eval "yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/${{inputs.suite_name}}/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/${{inputs.suite_name}}/
+          retention-days: 2
