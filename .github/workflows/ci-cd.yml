@@ -25,6 +25,7 @@ jobs:
   lint-check:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: lint & check
         run: |
@@ -74,6 +75,7 @@ jobs:
       ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: deploy
         run: |

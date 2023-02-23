@@ -11,6 +11,7 @@ jobs:
   test-suite:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: Execute ${{inputs.suite_name}} suite
         run: |
