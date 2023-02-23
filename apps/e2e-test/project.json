@@ -43,7 +43,7 @@
       },
       "dependsOn": [{ "projects": "self", "target": "cleanup", "params": "forward" }]
     },
-    "publisher-viewer": {
+    "test-publisher-viewer": {
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,

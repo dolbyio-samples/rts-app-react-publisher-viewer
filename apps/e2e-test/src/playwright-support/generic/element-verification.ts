@@ -127,10 +127,11 @@ export const verifyElementContainsValue = async (
 ): Promise<void> => {
   logger.trace(`Verify element ${negate ? ' does not' : ''} contain value ${value}`);
   const actValue = await getElementValue(page, selector, index);
+  const regExp = new RegExp(value);
   if (negate) {
-    await expect(actValue).not.toMatch(value);
+    await expect(actValue).not.toMatch(regExp);
   } else {
-    await expect(actValue).toMatch(value);
+    await expect(actValue).toMatch(regExp);
   }
 };
 
