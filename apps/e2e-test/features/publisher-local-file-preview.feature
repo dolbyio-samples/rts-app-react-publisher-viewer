@@ -139,7 +139,7 @@ Feature: Publisher Local File Preview
 
         When the publisher hovers the mouse over the "local file view video button"
         Then the "tooltip" should be displayed
-        And the "tooltip" text should be "Toggle camera"
+        And the "tooltip" text should be "Toggle video"
 
         When the publisher hovers the mouse over the "local file view audio button"
         Then the "tooltip" should be displayed
