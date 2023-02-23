@@ -14,7 +14,7 @@ import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_libr
 import { options } from '../../test.config';
 import { selectorMappingPath } from '../config/defaults';
 import { logger } from '../logger';
-import { closePages, openPages } from '../playwright-support/app-specific/browser-actions';
+import { closePages, consoleLogsVerification, openPages } from '../playwright-support/app-specific/browser-actions';
 import { BrowserManager } from '../playwright-support/utils/BrowserManager';
 import { captureArtifacts } from '../playwright-support/utils/test-artifacts';
 import { formatURL } from '../utils/helper';
@@ -55,8 +55,9 @@ Before(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
 
 After(async function (this: ScenarioWorld, scenario: ITestCaseHookParameter) {
   console.log(`\n`);
+  await consoleLogsVerification(this, apps);
   await captureArtifacts(this, scenario, apps);
-  await closePages(this, browserMgr, apps);
+  await closePages(this, browserMgr);
 
   await this.attach(`Status: ${scenario.result?.status}`);
 });

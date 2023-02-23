@@ -5,8 +5,7 @@ import { options } from '../../../test.config';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData, hasData, saveData } from '../../hooks/utils';
 import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';
-import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
-import { click, hover } from '../../playwright-support/generic/element-action';
+import { getElementText } from '../../playwright-support/generic/element-read';
 import { formatURL } from '../../utils/helper';
 
 Given(/^a publisher is on the "(preview)" page$/, async function (this: ScenarioWorld, pageName: string) {
@@ -14,19 +13,11 @@ Given(/^a publisher is on the "(preview)" page$/, async function (this: Scenario
   this.currentPage = getData(this, 'publisherApp');
   await goToURL(this.currentPage, options?.publisherURL as string);
 
-  let viewerURL: string;
-  if (this.options.dynamicStreamName) {
-    let targetSelector = this.selectorMap.getSelector(this.currentPageName, 'invite button');
-    await click(this.currentPage, targetSelector);
-    targetSelector = this.selectorMap.getSelector(this.currentPageName, 'company name');
-    await hover(this.currentPage, targetSelector);
-    viewerURL = readClipboardText();
-  } else {
-    viewerURL = formatURL(options?.viewerURL as string);
-    viewerURL = `${viewerURL}?streamAccountId=${process.env.VITE_RTS_ACCOUNT_ID}&streamName=${process.env.VITE_RTS_STREAM_NAME}`;
-  }
+  const targetSelector = this.selectorMap.getSelector(this.currentPageName, 'viewer link');
+  const viewerURL = (await getElementText(this.currentPage, targetSelector)) as string;
+
   saveData(this, 'App', 'publisher');
-  saveData(this, 'ViewerURL', viewerURL, false);
+  saveData(this, 'ViewerURL', viewerURL);
   saveData(this, 'ViewerBaseURL', `${new URL(viewerURL).origin}`, false);
 });
 
