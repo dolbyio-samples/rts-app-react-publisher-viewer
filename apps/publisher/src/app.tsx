@@ -17,6 +17,7 @@ import {
   Wrap,
   WrapItem,
   useDisclosure,
+  VisuallyHidden,
 } from '@chakra-ui/react';
 import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
@@ -365,9 +366,7 @@ const App = () => {
           <Stack alignItems="flex-end" direction="column" spacing="4">
             {shareUrl && <ShareLinkButton linkText={shareUrl} tooltip={{ placement: 'top' }} />}
             {isPublisherStreaming && <ParticipantCount count={viewerCount} />}
-            <Text test-id="hiddenViewerLink" hidden>
-              {shareUrl}
-            </Text>
+            <VisuallyHidden test-id="hiddenViewerLink">{shareUrl}</VisuallyHidden>
           </Stack>
         </Flex>
       </Box>
