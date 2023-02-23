@@ -25,24 +25,7 @@ jobs:
   lint-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: install
-        run: yarn --frozen-lockfile
-      # waiting for approval - uses: nrwl/nx-set-shas@v3
-      - name: set base branch
-        run: |
-          if [ $BRANCH_REF = 'refs/heads/main' ]; then
-            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
-          else
-            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
-          fi
+      - uses: ./.github/actions/setup
       - name: lint & check
         run: |
           yarn nx workspace-lint
@@ -91,24 +74,7 @@ jobs:
       ]
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: install
-        run: yarn --frozen-lockfile
-      # waiting for approval - uses: nrwl/nx-set-shas@v3
-      - name: set base branch
-        run: |
-          if [ $BRANCH_REF = 'refs/heads/main' ]; then
-            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
-          else
-            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
-          fi
+      - uses: ./.github/actions/setup
       - name: deploy
         run: |
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
