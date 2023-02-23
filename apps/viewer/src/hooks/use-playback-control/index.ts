@@ -12,8 +12,8 @@ const usePlaybackControl = (sourceIds: string[]) => {
   useEffect(() => {
     setPlaybackControl((prevPlaybackSettings) =>
       sourceIds.reduce((accPlaybackSettings, sourceId) => {
-        if (sourceId in accPlaybackSettings) {
-          return accPlaybackSettings;
+        if (sourceId in prevPlaybackSettings) {
+          return { ...accPlaybackSettings, [sourceId]: prevPlaybackSettings[sourceId] };
         }
 
         return {
@@ -29,7 +29,7 @@ const usePlaybackControl = (sourceIds: string[]) => {
             volume: 0,
           },
         };
-      }, prevPlaybackSettings)
+      }, {})
     );
   }, [sourceIds.length]);
 
