@@ -26,19 +26,17 @@ export async function openPages(
   }
 }
 
-export async function closePages(
-  scenarioWorld: ScenarioWorld,
-  browserMgr: BrowserManager,
-  apps: string[]
-): Promise<void> {
+export async function closePages(scenarioWorld: ScenarioWorld, browserMgr: BrowserManager): Promise<void> {
   logger.trace('Close context and page');
   const context = getData(scenarioWorld, 'context') as BrowserContext;
 
   // Close Pages and Context
   await browserMgr.closePages(context);
   await BrowserManager.closeContext(context);
+}
 
-  // Verify Console logs for the opened pages/tabs
+export async function consoleLogsVerification(scenarioWorld: ScenarioWorld, apps: string[]): Promise<void> {
+  logger.trace('Console logs verification');
   for (const app of apps) {
     const consoleLogs = getData(scenarioWorld, `${app}ConsoleLogs`) as string[];
     const errorLogs = BrowserManager.filterErrorLogs(consoleLogs);
