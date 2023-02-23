@@ -82,7 +82,8 @@ jobs:
   deploy:
     needs:
       [
-        test-publisher-viewer,
+        test-publisher,
+        test-viewer,
         test-camera-streaming,
         test-local-file-streaming,
         test-screen-streaming,
