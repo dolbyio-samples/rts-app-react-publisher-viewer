@@ -22,7 +22,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  setup:
+  lint-check:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -43,10 +44,6 @@ jobs:
           else
             echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
           fi
-  lint-check:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: lint & check
         run: |
           yarn nx workspace-lint
@@ -57,6 +54,24 @@ jobs:
     needs: lint-check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: Test Publisher Viewer
         run: |
           export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
@@ -79,6 +94,24 @@ jobs:
     needs: lint-check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: Test Camera Streaming
         run: |
           export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
@@ -101,6 +134,24 @@ jobs:
     needs: lint-check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: Test Local File Streaming
         run: |
           export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
@@ -123,6 +174,24 @@ jobs:
     needs: lint-check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: Test Screen Streaming
         run: |
           export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
@@ -145,6 +214,24 @@ jobs:
     needs: lint-check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: Test Multisource Streaming
         run: |
           export VITE_RTS_STREAM_NAME=${{ github.job }}-${{ github.run_id }}
@@ -174,6 +261,24 @@ jobs:
       ]
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: install
+        run: yarn --frozen-lockfile
+      # waiting for approval - uses: nrwl/nx-set-shas@v3
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - name: deploy
         run: |
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
