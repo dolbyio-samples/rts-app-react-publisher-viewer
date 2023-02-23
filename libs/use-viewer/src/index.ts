@@ -35,7 +35,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const mainVideoMappingRef = useRef<ViewProjectSourceMapping>();
 
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
-  const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>([]);
+  const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>(buildQualityOptions());
   const [mainStatistics, setMainStatistics] = useState<StreamStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
 
@@ -109,6 +109,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
       case 'inactive': {
         const remoteTrackSource = remoteTrackSourcesRef.current?.get(sourceId);
+
         if (remoteTrackSource) {
           try {
             dispatch({ sourceId, type: ViewerActionType.REMOVE_SOURCE });
@@ -117,6 +118,11 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
             handleInternalError(error);
           }
         }
+
+        if (!remoteTrackSourcesRef.current?.size) {
+          setMainQualityOptions(buildQualityOptions());
+        }
+
         break;
       }
 
@@ -129,7 +135,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
         if (mediaId) {
           const mid = parseInt(mediaId, 10);
-          const { active } = (event.data as MediaStreamLayers).medias[mid];
+          const { active } = (event.data as MediaStreamLayers).medias[mid] ?? {};
 
           setMainQualityOptions(buildQualityOptions(active));
         }

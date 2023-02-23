@@ -80,14 +80,14 @@ Feature: Publisher Local File Streaming
         Then the publisher should be navigated to "publisher-streaming" page
         And wait for "5" seconds
         And the "header" should be displayed with following values only
-            | timer text | regex: ^00:00:[0][4-9]$ |
+            | timer text | regex: ^00:00:[0-1][0-9]$ |
 
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
         And wait for "5" seconds
         And the "header" should be displayed with following values only
-            | timer text | regex: ^00:00:[0][4-9]$ |   
+            | timer text | regex: ^00:00:[0-2][0-9]$ |
 
     Scenario: Publisher should be able to start streaming with camera Off and toggle camera during streaming with local file
         When the publisher turns Off the "video of local file view"

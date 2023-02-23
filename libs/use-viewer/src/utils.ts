@@ -42,7 +42,7 @@ export const addRemoteTrack = async (
   };
 };
 
-export const buildQualityOptions = (layers: MediaLayer[]) => {
+export const buildQualityOptions = (layers: MediaLayer[] = []) => {
   const qualities: StreamQuality[] = [];
 
   switch (layers.length) {
