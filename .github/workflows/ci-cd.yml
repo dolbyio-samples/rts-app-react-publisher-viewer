@@ -46,7 +46,7 @@ jobs:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-publisher
+      suite_name: test-viewer
       branch_ref: $BRANCH_REF
     secrets:
       publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
@@ -55,7 +55,7 @@ jobs:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-publisher
+      suite_name: test-camera-streaming
       branch_ref: $BRANCH_REF
     secrets:
       publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
@@ -64,7 +64,7 @@ jobs:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-publisher
+      suite_name: test-local-file-streaming
       branch_ref: $BRANCH_REF
     secrets:
       publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
@@ -73,7 +73,7 @@ jobs:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-publisher
+      suite_name: test-screen-streaming
       branch_ref: $BRANCH_REF
     secrets:
       publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
@@ -82,7 +82,7 @@ jobs:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
-      suite_name: test-publisher
+      suite_name: test-multisource-streaming
       branch_ref: $BRANCH_REF
     secrets:
       publishing_token: $VITE_RTS_STREAM_PUBLISHING_TOKEN
