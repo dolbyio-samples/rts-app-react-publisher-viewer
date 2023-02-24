@@ -22,54 +22,91 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CI-CD:
+  lint-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: install
-        run: yarn --frozen-lockfile
-      # waiting for approval - uses: nrwl/nx-set-shas@v3
-      - name: set base branch
-        run: |
-          if [ $BRANCH_REF = 'refs/heads/main' ]; then 
-            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
-          else
-            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
-          fi
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
       - name: lint & check
         run: |
           yarn nx workspace-lint
           yarn nx format:check
           git fetch origin main
           yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
-      - name: build & test
+  test-publisher:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-publisher
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  test-viewer:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-viewer
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  test-camera-streaming:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-camera-streaming
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  test-local-file-streaming:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-local-file-streaming
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  test-screen-streaming:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-screen-streaming
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  test-multisource-streaming:
+    needs: lint-check
+    uses: ./.github/workflows/test-suite.yml
+    with:
+      suite_name: test-multisource-streaming
+      branch_ref: $BRANCH_REF
+    secrets:
+      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  deploy:
+    needs:
+      [
+        test-publisher,
+        test-viewer,
+        test-camera-streaming,
+        test-local-file-streaming,
+        test-screen-streaming,
+        test-multisource-streaming,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - name: deploy
         run: |
-          eval "yarn nx launch-server e2e-test --skip-nx-cache"
-          eval "yarn nx affected --target=e2e --base=${{ env.BASE_BRANCH }} --parallel=1 --skip-nx-cache"
-          rm -rf dist
           if [[ $BRANCH_REF != 'refs/heads/main' ]]; then
             search='https://'
             replace='https://dp-'${PR_NUM}'--'
             export VITE_RTS_VIEWER_BASE_URL=${VITE_RTS_VIEWER_BASE_URL/$search/$replace}
           fi
-          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
-      - name: Generate Test Report
-        if: always()
-        run: |
-          eval "yarn nx affected --target=e2e-report --base=${{ env.BASE_BRANCH }} --skip-nx-cache"
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-artifacts
-          path: ./apps/e2e-test/reports/
-          retention-days: 2
-      - name: deploy
-        run: eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"
+          yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3
+          yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy

@@ -1,0 +1,29 @@
+name: Setup Steps
+description: Setup Steps
+inputs:
+  branch_ref:
+    description: 'branch reference'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Setup Nodejs 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Install
+      shell: bash
+      run: yarn --frozen-lockfile
+    - name: Set base branch
+      shell: bash
+      run: |
+        export BRANCH_REF=${{ inputs.branch_ref }}
+        if [ $BRANCH_REF = 'refs/heads/main' ]; then
+          echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+        else
+          echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+        fi

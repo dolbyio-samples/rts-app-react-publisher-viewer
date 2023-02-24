@@ -1,4 +1,4 @@
-@multisource
+@multisource-streaming
 @publisher-viewer
 Feature: Publisher Multisource Streaming
     As a publisher
