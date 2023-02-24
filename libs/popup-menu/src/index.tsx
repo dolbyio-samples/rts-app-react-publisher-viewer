@@ -1,44 +1,48 @@
-import React from 'react';
 import { Menu, MenuButton, MenuList, MenuItem, Button, Box, Text } from '@chakra-ui/react';
+import React from 'react';
+
 import { IconAdd } from '@millicast-react/dolbyio-icons';
 
-type PopupMenuProps = {
-  buttonTitle: string;
-  items: {
-    icon: React.ReactNode;
-    text: string;
-    onClick: () => void;
-    isDisabled?: boolean;
-  }[];
-};
+import { PopupMenuProps } from './types';
 
-const PopupMenu = ({ buttonTitle, items }: PopupMenuProps) => {
+const PopupMenu = ({ buttonTitle, disabled = false, items }: PopupMenuProps) => {
   return (
     <Menu placement="top" gutter={14} autoSelect={false}>
       <MenuButton
-        as={Button}
-        textTransform="uppercase"
-        size="sm"
-        bg="transparent"
-        border="2px solid"
-        leftIcon={<IconAdd width="20px" />}
-        iconSpacing={1}
-        lineHeight="20px"
-        fontSize="12px"
-        _hover={{
-          borderColor: 'dolbyPurple.500',
-          bg: 'dolbyPurple.500',
-        }}
         _active={{
           borderColor: 'dolbyPurple.500',
           bg: 'dolbyPurple.500',
         }}
+        _hover={{
+          borderColor: 'dolbyPurple.500',
+          bg: 'dolbyPurple.500',
+        }}
+        as={Button}
+        bg="transparent"
+        border="2px solid"
+        disabled={disabled}
+        fontSize="12px"
+        iconSpacing={1}
+        leftIcon={<IconAdd width="20px" />}
+        lineHeight="20px"
+        size="sm"
+        test-id="addSourceButton"
+        textTransform="uppercase"
       >
         {buttonTitle}
       </MenuButton>
-      <MenuList bg="dolbyNeutral.800" w="200px" color="white" border="none" p="0" overflow="hidden">
+      <MenuList
+        data-id="addSourceMenu"
+        bg="dolbyNeutral.800"
+        w="200px"
+        color="white"
+        border="none"
+        p="0"
+        overflow="hidden"
+      >
         {items.map(({ icon, text, onClick, isDisabled }) => (
           <MenuItem
+            test-id={text.replace(/\s/g, '')}
             key={text}
             onClick={onClick}
             bg="dolbyNeutral.800"
@@ -62,4 +66,5 @@ const PopupMenu = ({ buttonTitle, items }: PopupMenuProps) => {
   );
 };
 
+export * from './types';
 export default PopupMenu;

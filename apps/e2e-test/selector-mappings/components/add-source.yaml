@@ -1,0 +1,21 @@
+add source button: '[test-id=addSourceButton]'
+
+add source menu: '[data-id=addSourceMenu] button'
+share screen button: '[test-id=Sharescreen]'
+add cameras button: '[test-id=Addcameras]'
+local file button: '[test-id=Streamlocalfile]'
+
+camera source popup: '//*[@test-id="deviceSelectionTitle"]/ancestor::*[@role="dialog"]'
+camera source popup title: '[test-id=deviceSelectionTitle]'
+camera source close popup: '[test-id=deviceSelectionClose]'
+camera source camera dropdown: '[test-id=camera-selectDefault]'
+camera source camera dropdown options: '[test-id=camera-selectOptions]'
+camera source microphone dropdown: '[test-id=microphone-selectDefault]'
+camera source microphone dropdown options: '[test-id=microphone-selectOptions]'
+camera source add button: '[test-id=addDevice]'
+
+local file popup: '//*[@test-id="addLocalFileTitle"]/ancestor::*[@role="dialog"]'
+local file popup title: '[test-id=addLocalFileTitle]'
+local file input: '[id=pickFile]'
+local file add streaming button: '[test-id=addStreamingFile]'
+local file close popup: '[test-id=localFileClose]'

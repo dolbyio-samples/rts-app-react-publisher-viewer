@@ -1,0 +1,8 @@
+COMPONENTS: 
+  - 'header-footer'
+  - 'stream-views'
+  - 'add-source'
+  - 'settings'
+  - 'stream-stats'
+validation: 'stop button:displayed'
+stop button: '//button[@test-id="stop-all-live-indicator" and not(@data-loading)]'

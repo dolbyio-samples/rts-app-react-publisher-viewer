@@ -4,6 +4,7 @@ import Heading from './styles/Heading';
 import Text from './styles/Text';
 import Tooltip from './styles/Tooltip';
 import Alert from './styles/Alert';
+import Modal from './styles/Modal';
 
 const dolbyioTheme = extendTheme({
   fonts: {
@@ -13,6 +14,7 @@ const dolbyioTheme = extendTheme({
   },
   colors: {
     background: '#14141A',
+    backgroundTranslucent: '#14141A80',
     dolbyPurple: {
       400: '#AA33FF',
       500: '#8829CC',
@@ -32,6 +34,7 @@ const dolbyioTheme = extendTheme({
     },
     dolbySecondary: {
       200: '#B9B9BA',
+      500: '#6A6A6D',
     },
     dolbyEmerald: {
       100: '#CFFEEB',
@@ -52,6 +55,7 @@ const dolbyioTheme = extendTheme({
     Text,
     Tooltip,
     Alert,
+    Modal,
   },
 });
 

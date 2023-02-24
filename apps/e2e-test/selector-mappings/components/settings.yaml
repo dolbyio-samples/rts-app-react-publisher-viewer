@@ -1,0 +1,49 @@
+settings popup: '//*[@test-id="streamSettingsPopoverHeading"]/parent::*'
+settings title: '[test-id=streamSettingsPopoverHeading]'
+settings dropdowns:
+  - '$ref: settings popup'
+  - '[test-id*=SelectDefault]'
+source name label:
+  - '$ref: settings popup'
+  - '[test-id=sourceName] label'
+source name input:
+  - '$ref: settings popup'
+  - '[test-id=sourceName] input'
+codec dropdown:
+  - '$ref: settings popup'
+  - '[test-id=codecSelectDefault]'
+codec dropdown default: '$ref: codec dropdown'
+codec dropdown options:
+  - '$ref: settings popup'
+  - '[test-id=codecSelectOptions]'
+resolution dropdown:
+  - '$ref: settings popup'
+  - '[test-id=resolutionSelectDefault]'
+resolution dropdown default: '$ref: resolution dropdown'
+resolution dropdown options:
+  - '$ref: settings popup'  
+  - '[test-id=resolutionSelectOptions]'
+bitrate dropdown:
+  - '$ref: settings popup'
+  - '[test-id=bitrateSelectDefault]'
+bitrate dropdown default: '$ref: bitrate dropdown'
+bitrate dropdown options:
+  - '$ref: settings popup'
+  - '[test-id=bitrateSelectOptions]'
+quality dropdown:
+  - '$ref: settings popup'
+  - '[test-id=qualitySelectDefault]'
+quality dropdown default: '$ref: quality dropdown'
+quality dropdown options:
+  - '$ref: settings popup'
+  - '[test-id=qualitySelectOptions]'
+simulcast label:
+  - '$ref: settings popup'
+  - '[test-id=simulcastToggle] p'
+simulcast switch:
+  - '$ref: settings popup'
+  - '[test-id=simulcastToggle] input'
+simulcast: '$ref: simulcast switch'
+settings close button:
+  - '$ref: settings popup'
+  - '[test-id=streamSettingsPopoverCloseButton]'  

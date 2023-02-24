@@ -27,9 +27,10 @@ cucumber_report.json*
 
 # Secrets and tokens
 .env.local
+.test.env
 
 # Local Netlify folder
 .netlify
 
 # test report
-tests/bdd-atf/reports/
+tests/e2e-atf/reports/

@@ -1,6 +1,6 @@
 {
   "name": "millicast-react",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
@@ -14,17 +14,24 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@millicast/sdk": "^0.1.35",
-    "@playwright/test": "^1.27.1",
+    "@playwright/test": "^1.31.0",
+    "@types/js-yaml": "^4.0.5",
+    "@types/pixelmatch": "^5.2.4",
+    "@types/pngjs": "^6.0.1",
+    "assertion": "^1.3.35",
     "clipboardy": "^2.3.0",
     "core-js": "^3.6.5",
     "cucumber-html-reporter": "^5.5.0",
     "framer-motion": "^7",
-    "playwright": "^1.27.1",
+    "js-yaml": "^4.1.0",
+    "pixelmatch": "^5.3.0",
+    "playwright": "^1.31.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-usestateref": "^1.0.8",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
@@ -50,8 +57,10 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@vitejs/plugin-react": "^2.2.0",
+    "@vitest/ui": "^0.9.3",
     "babel-jest": "^29.3.1",
     "babel-loader": "^9.1.0",
+    "c8": "^7.12.0",
     "eslint": "^8.28.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -69,11 +78,14 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
+    "tslog": "^4.4.4",
     "typescript": "~4.8.2",
     "url-loader": "^4.1.0",
-    "vite": "^3.0.5",
+    "vite": "^3.1.8",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-tsconfig-paths": "^3.5.2"
+    "vite-tsconfig-paths": "^3.5.2",
+    "vitest": "^0.24.3",
+    "vitest-preview": "latest"
   },
   "resolutions": {
     "**/trim": "^1.0.0",

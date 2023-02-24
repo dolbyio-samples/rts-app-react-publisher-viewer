@@ -1,191 +1,170 @@
-import React, { memo, useRef, useEffect, useState, ReactNode } from 'react';
-import { Flex, IconButton, Spacer, BoxProps, Spinner, Center, Stack, Box } from '@chakra-ui/react';
+import { Box, Center, Flex, HStack, Spinner } from '@chakra-ui/react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { IconFullScreen, IconFullScreenExit } from '@millicast-react/dolbyio-icons';
-// import StatisticsInfo from '@millicast-react/statistics-info';
 import InfoLabel from '@millicast-react/info-label';
-import type { StreamStats } from '@millicast/sdk';
 
-export type VideoViewProps = {
-  width: string;
-  height: string;
-  mirrored?: boolean;
-  muted?: boolean;
-  displayVideo?: boolean;
-  displayMuteButton?: boolean;
-  displayFullscreenButton?: boolean;
-  mediaStream?: MediaStream;
-  statistics?: StreamStats;
-  label?: string;
-  placeholderNode?: ReactNode;
-  onClick?: BoxProps['onClick'];
-  showDotIndicator?: boolean;
-  volume?: number;
-};
+import { HTMLVideoElementWithCaptureStream, VideoViewProps } from './types';
 
 const VideoView = ({
-  width,
-  height,
-  mirrored = false,
-  muted = true, // Has to be true for AutoPlay in chromium
   displayVideo = true,
-  displayFullscreenButton = true,
-  mediaStream,
-  // statistics,
+  height,
   label,
-  placeholderNode,
+  mediaStream,
+  mirrored,
+  muted = true, // Has to be true for AutoPlay in chromium
   onClick,
+  onError,
+  onSrcMediaStreamClose: handleSrcMediaStreamClose,
+  onSrcMediaStreamReady: handleSrcMediaStreamReady,
+  placeholderNode,
+  paused = false,
   showDotIndicator,
+  src,
   volume = 1,
+  width,
 }: VideoViewProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(true);
-  // const [showStatisticsInfo, setShowStatisticsInfo] = useState(false);
 
+  const [loadingVideo, setLoadingVideo] = useState(true);
+  const [streamId, setStreamId] = useState<string>();
+
+  // Initialise video
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = mediaStream ?? null;
+      if (src) {
+        videoRef.current.srcObject = null;
+        videoRef.current.src = src;
+      } else if (mediaStream) {
+        videoRef.current.srcObject = mediaStream;
+      }
     }
-  }, [mediaStream]);
+  }, [src]);
 
+  // Toggle mute
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted;
+
+      if (!muted) {
+        videoRef.current.volume = volume;
+      }
+    }
+  }, [muted]);
+
+  // Toggle playback
+  useEffect(() => {
+    if (videoRef.current) {
+      if (!paused) {
+        videoRef.current.play().catch(() => null);
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [paused]);
+
+  // Change volume
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.volume = volume;
     }
   }, [volume]);
 
-  const componentElementsStyle = {
-    '.video': {
-      transform: `${mirrored ? 'scaleX(-1)' : ''}`,
-      display: `${displayVideo ? 'block' : 'none'}`,
-      overflow: 'hidden',
-      width: '100%',
-      height: '100%',
-      objectFit: 'contain',
-    },
-    '.icon-button, .icon-button: hover': {
-      padding: '10px',
-      background: 'rgba(0,0,0,0.6)',
-      borderRadius: '0',
-      border: '1px solid transparent',
-      width: 'min-content',
-      boxShadow: 'unset',
-    },
+  // Clean up
+  useEffect(() => {
+    return () => {
+      if (streamId) {
+        handleSrcMediaStreamClose?.(streamId);
+      }
+    };
+  }, [streamId]);
+
+  const onCanPlay = () => {
+    if (videoRef.current && !mediaStream) {
+      // Custom type as captureStream is not defined in HTMLVideoElement by default
+      const capturedMediaStream = (videoRef.current as HTMLVideoElementWithCaptureStream).captureStream();
+
+      handleSrcMediaStreamReady?.(capturedMediaStream);
+      setStreamId(capturedMediaStream.id);
+    }
   };
 
   return (
     <Flex
-      test-id="video-view-wrapper"
-      sx={componentElementsStyle}
-      pos={isFullScreen ? 'fixed' : 'relative'}
-      bg="dolbyNeutral.800"
-      overflow="hidden"
-      borderRadius="8px"
-      top="0"
-      right="0"
-      bottom="0"
-      left="0"
-      width={isFullScreen ? '100vw' : width}
-      height={isFullScreen ? '100vh' : height}
-      zIndex={isFullScreen ? '1' : '0'}
-      onClick={onClick}
-      color="white"
-      justifyContent="center"
       alignItems="center"
+      background="dolbyNeutral.800"
+      borderRadius="8px"
+      bottom="0"
+      color="white"
+      height={height ?? '100%'}
+      justifyContent="center"
+      left="0"
+      margin="0 auto"
+      onClick={onClick}
+      overflow="hidden"
+      position="relative"
+      right="0"
+      test-id="videoViewWrapper"
+      top="0"
+      width={width ?? '100%'}
     >
       {loadingVideo && displayVideo && (
-        <Center w="100%" h="100%" position="absolute">
+        <Center h="100%" position="absolute" w="100%">
           <Spinner size="lg" />
         </Center>
       )}
-      {showDotIndicator && (
-        <Box position="absolute" top={5} right={4} w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" />
-      )}
-
-      {!displayVideo && placeholderNode}
       <video
-        className="video"
         autoPlay
-        playsInline
+        className="video"
         crossOrigin="anonymous"
-        ref={videoRef}
+        loop={src ? true : false}
         muted={muted}
-        onWaiting={() => setLoadingVideo(true)}
+        onCanPlay={onCanPlay}
+        onError={() => {
+          onError && videoRef.current?.error
+            ? onError(videoRef.current.error)
+            : console.error(`Video player error: ${videoRef.current?.error}`);
+        }}
         onLoadStart={() => setLoadingVideo(true)}
         onPlaying={() => setLoadingVideo(false)}
         onStalled={() => {
-          console.error('video is on stalled');
+          console.error('Video is on stalled');
         }}
-        onError={() => {
-          console.error(`video player error: ${videoRef.current?.error}`);
+        onWaiting={() => setLoadingVideo(true)}
+        playsInline
+        ref={videoRef}
+        style={{
+          height: '100%',
+          objectFit: 'contain',
+          overflow: 'hidden',
+          transform: mirrored ? 'scaleX(-1)' : '',
+          width: '100%',
         }}
         // eslint-disable-next-line react/no-unknown-property
-        test-id="video-view"
+        test-id="videoView"
       />
-      {label && (
-        <InfoLabel
-          text={label}
-          color="dolbySecondary.200"
-          bg="dolbyNeutral.700"
-          position="absolute"
-          top="4"
-          left="4"
-          fontWeight="600"
-          textTransform="capitalize"
-        />
-      )}
-      {/* {showStatisticsInfo && <StatisticsInfo statistics={statistics} />} */}
-      <Stack
-        position="absolute"
-        direction="row"
-        width="100%"
-        bottom={isFullScreen ? ['120px', '120px', 0] : 0}
-        right="0"
-        spacing="0"
-      >
-        {/* {displayMuteButton && (
-          <IconButton
-            test-id="muteSpeakerButton"
-            aria-label="Mute button"
-            className="icon-button"
-            size="md"
-            icon={videoRef.current?.muted ? <IconSpeakerOff fill="white" /> : <IconSpeaker fill="white" />}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (videoRef.current) videoRef.current.muted = !videoRef.current.muted;
-            }}
+      {!displayVideo ? placeholderNode : undefined}
+      <HStack left="16px" maxWidth="100%" position="absolute" top="16px" width="100%">
+        {label ? (
+          <InfoLabel
+            background="dolbyNeutral.700"
+            color="dolbySecondary.200"
+            fontWeight="600"
+            maxWidth="90%"
+            overflow="hidden"
+            test-id="sourceName"
+            text={label}
+            textOverflow="ellipsis"
+            textTransform="capitalize"
+            whiteSpace="nowrap"
           />
-        )} */}
-        <Spacer />
-        {displayFullscreenButton && (
-          <IconButton
-            test-id="fullScreenButton"
-            aria-label="Full screen"
-            size="md"
-            className="icon-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFullScreen(!isFullScreen);
-            }}
-            icon={isFullScreen ? <IconFullScreenExit fill="white" /> : <IconFullScreen fill="white" />}
-          />
-        )}
-        {/* Disable it temporarily, will bring it back in next release
-         <IconButton
-          test-id="streamInfoButton"
-          aria-label="Stream Information"
-          size="md"
-          className="icon-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowStatisticsInfo(!showStatisticsInfo);
-          }}
-          icon={<IconInfo fill="white" />}
-        /> */}
-      </Stack>
+        ) : undefined}
+        {showDotIndicator ? (
+          <Box background="dolbyRed.500" borderRadius="50%" height="8px" marginLeft="8px" width="8px" />
+        ) : undefined}
+      </HStack>
     </Flex>
   );
 };
 
+export * from './types';
 export default memo(VideoView);

@@ -1,0 +1,8 @@
+COMPONENTS: 
+  - 'header-footer'
+  - 'stream-views'
+  - 'add-source'
+  - 'settings'
+  - 'stream-stats'
+validation: 'go live button:displayed'
+go live button: '[test-id=start-all-live-indicator]'

@@ -1,0 +1,45 @@
+name: Execute Test Suite
+
+on:
+  workflow_call:
+    inputs:
+      suite_name:
+        required: true
+        type: string
+      branch_ref:
+        required: true
+        type: string
+    secrets:
+      publishing_token:
+        required: true
+      account_id:
+        required: true
+
+jobs:
+  test-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+        with:
+          branch_ref: ${{inputs.branch_ref}}
+      - name: Execute ${{inputs.suite_name}} suite
+        run: |
+          export VITE_RTS_STREAM_PUBLISHING_TOKEN=${{secrets.publishing_token}}
+          export VITE_RTS_ACCOUNT_ID=${{secrets.account_id}}
+          export VITE_RTS_STREAM_NAME=${{inputs.suite_name}}-${{ github.run_id }}
+          yarn nx launch-server e2e-test --skip-nx-cache
+          yarn nx ${{inputs.suite_name}} e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/${{inputs.suite_name}}/
+          rm -rf dist
+          unset VITE_RTS_STREAM_NAME
+      - name: Generate Test Report
+        if: always()
+        run: |
+          yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/${{inputs.suite_name}}/
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-artifacts
+          path: ./apps/e2e-test/reports/${{inputs.suite_name}}/
+          retention-days: 2

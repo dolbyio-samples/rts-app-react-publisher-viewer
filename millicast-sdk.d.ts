@@ -2,7 +2,7 @@ declare namespace millicast {
   type Event = 'active' | 'inactive' | 'stopped' | 'vad' | 'layers' | 'migrate' | 'viewercount';
   type ViewEvent = 'active' | 'inactive' | 'vad' | 'layers' | 'viewercount';
   type CapabilityKind = 'audio' | 'video';
-  type VideoCodec = 'VP8' | 'VP9' | 'H264' | 'AV1';
+  type VideoCodec = 'av1' | 'h264' | 'vp8' | 'vp9';
 
   interface Capabilities {
     codecs: Array<CodecInfo>;
@@ -29,12 +29,12 @@ declare namespace millicast {
   }
 
   interface BroadcastOptions {
-    mediaStream: MediaStream | MediaStreamTrack[];
+    mediaStream: MediaStream;
+    sourceId: string;
     events?: Event[];
-    sourceId?: string;
     simulcast?: boolean;
     codec?: VideoCodec;
-    bandwidth?: number; // 0 means unlimited
+    bandwidth?: number; // bitrate restriction, 0 means unlimited
   }
 
   interface CodecInfo {
@@ -123,8 +123,8 @@ declare namespace millicast {
   };
 
   type StreamAudioStats = {
-    inbounds: StreamAudioInboundsStats[];
-    outbounds: StreamAudioOutboundsStats[];
+    inbounds?: StreamAudioInboundsStats[];
+    outbounds?: StreamAudioOutboundsStats[];
   };
 
   type StreamVideoOutboundsStats = {
@@ -158,8 +158,8 @@ declare namespace millicast {
   };
 
   type StreamVideoStats = {
-    inbounds: StreamVideoInboundsStats[];
-    outbounds: StreamVideoOutboundsStats[];
+    inbounds?: StreamVideoInboundsStats[];
+    outbounds?: StreamVideoOutboundsStats[];
   };
 
   type StreamStats = {
@@ -167,7 +167,7 @@ declare namespace millicast {
     availableOutgoingBitrate?: number;
     candidateType?: string;
     currentRoundTripTime?: number;
-    raw: {
+    raw?: {
       size: number;
     };
     totalRoundTripTime?: number;
@@ -196,9 +196,9 @@ declare namespace millicast {
   }
 
   interface ViewProjectSourceMapping {
-    trackId?: string;
-    mediaId?: string;
     media?: string;
+    mediaId?: string;
+    trackId?: string;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -217,8 +217,8 @@ declare namespace millicast {
   }
 
   type ViewOptions = {
-    pinnedSourceId?: string;
-    events?: Event[];
+    pinnedSourceId?: string; // Id of the main source that will be received by the default MediaStream
+    events?: Event[]; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
   };
 
   interface PeerConnection extends EventEmitter {}
