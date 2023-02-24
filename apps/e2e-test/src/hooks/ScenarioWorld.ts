@@ -5,6 +5,7 @@ import { ScenarioData, TestOptions } from '../utils/types';
 import { GlobalData } from './GlobalData';
 
 export class ScenarioWorld extends World {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentPage!: any;
 
   currentPageName!: string;
