@@ -38,55 +38,31 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-publisher
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   test-viewer:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-viewer
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   test-camera-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-camera-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   test-local-file-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-local-file-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   test-screen-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-screen-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   test-multisource-streaming:
     needs: lint-check
     uses: ./.github/workflows/test-suite.yml
     with:
       suite_name: test-multisource-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   deploy:
     needs:
       [
@@ -108,5 +84,5 @@ jobs:
             replace='https://dp-'${PR_NUM}'--'
             export VITE_RTS_VIEWER_BASE_URL=${VITE_RTS_VIEWER_BASE_URL/$search/$replace}
           fi
-          eval "yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3"
-          eval "yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy"
+          yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3
+          yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy
