@@ -25,6 +25,13 @@ jobs:
   lint-check:
     runs-on: ubuntu-latest
     steps:
+      - name: set base branch
+        run: |
+          if [ $BRANCH_REF = 'refs/heads/main' ]; then
+            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+          else
+            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+          fi
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: lint & check
@@ -108,5 +115,5 @@ jobs:
             replace='https://dp-'${PR_NUM}'--'
             export VITE_RTS_VIEWER_BASE_URL=${VITE_RTS_VIEWER_BASE_URL/$search/$replace}
           fi
-          yarn nx affected --target=build --base=${{ env.BASE_BRANCH }} --parallel=3
-          yarn nx affected --base=${{ env.BASE_BRANCH }} --target=deploy
+          yarn nx run-many --target=build --parallel=3
+          yarn nx run-many --target=deploy
