@@ -309,7 +309,7 @@ const Content = () => {
                             mediaStream={source.mediaStream}
                             volume={attributes?.volume}
                             displayVideo={attributes?.displayVideo}
-                            muted={attributes?.volume === 0}
+                            muted={attributes?.muteAudio || attributes?.volume === 0}
                             displayMuteButton={true}
                           />
                           <ControlBar
