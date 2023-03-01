@@ -44,7 +44,7 @@ yarn
 
 ### RTS Tokens
 
-In order for this application to work, you need three tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the  <ins>**Streaming**</ins> tab for a given token.
+In order for this application to work, you need three tokens - `stream name`, `stream account id` and `stream publishing token`. These tokens can be found in your [Dolby.io dashboard](https://streaming.dolby.io/#/tokens), under the <ins>**Streaming**</ins> tab for a given token.
 
 ![token create](docs/img/setup_create_new.png)
 
