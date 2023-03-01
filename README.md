@@ -135,7 +135,7 @@ Please report any issues under `Issues` on our [GitHub](https://github.com/dolby
 
 ### Browser compatibility
 
-While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend Chromium based browsers or Safari as the best means to test out these applications. Features such as simulcast only work on Chromium based browsers, for example. 
+While utmost care has been taken to ensure this works across all browsers, please note that there are some limitations and therefore, we recommend Chromium based browsers or Safari as the best means to test out these applications. Features such as simulcast only work on Chromium based browsers, for example.
 
 Generally speaking, our app has been tested to work on the following browser versions:
 
