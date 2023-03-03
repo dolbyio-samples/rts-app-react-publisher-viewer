@@ -453,6 +453,8 @@ const App = () => {
                 onClick: handleOpenDeviceSelection,
                 text: 'Add cameras',
               },
+              // It is not possible to stream local files if HTMLMediaElement.captureStream is not available
+              // e.g. on Safari https://caniuse.com/?search=captureStream
               ...('captureStream' in HTMLMediaElement
                 ? [
                     {
