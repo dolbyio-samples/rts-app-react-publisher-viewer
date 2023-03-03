@@ -76,16 +76,7 @@ const App = () => {
     if (!mainSourceId) {
       return;
     }
-
-    const { quality } = remoteTrackSources.get(mainSourceId) ?? {};
-    const streamQualities = mainQualityOptions.map(({ streamQuality }) => streamQuality);
-
-    if (!quality || !streamQualities?.includes(quality)) {
-      // Must reproject before resetting quality
-      projectToMainStream(mainSourceId).then(() => {
-        setSourceQuality(mainSourceId);
-      });
-    }
+    setSourceQuality(mainSourceId);
   }, [mainQualityOptions.length]);
 
   const changeMainSource = async (newMainSourceId: string) => {
