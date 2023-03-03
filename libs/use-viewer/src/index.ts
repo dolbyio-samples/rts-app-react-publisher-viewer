@@ -72,7 +72,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    const { sourceId = new Date().valueOf().toString(), tracks } = event.data as MediaStreamSource;
+    const { sourceId, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
       case 'active':
@@ -84,20 +84,16 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
           dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
 
-          try {
-            // Project to main stream if there are currently no remote tracks and it is the first active event
-            if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
-              await projectToStream(
-                viewer,
-                newRemoteTrackSource,
-                mainAudioMappingRef.current,
-                mainVideoMappingRef.current
-              );
-            } else {
-              await viewer.project(sourceId, newRemoteTrackSource.projectMapping);
-            }
-          } catch (error) {
-            handleInternalError(error);
+          // Project to main stream if there are currently no remote tracks and it is the first active event
+          if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
+            await projectToStream(
+              viewer,
+              newRemoteTrackSource,
+              mainAudioMappingRef.current,
+              mainVideoMappingRef.current
+            );
+          } else {
+            await viewer.project(sourceId, newRemoteTrackSource.projectMapping);
           }
         } catch (error) {
           handleInternalError(error);

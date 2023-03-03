@@ -203,10 +203,10 @@ const usePublisher = ({
     }
 
     // Validate source id for duplicates
-    if (broadcastOptions.sourceId) {
+    if ('sourceId' in broadcastOptions) {
       const allSourceIds = Array.from(sources).map(([, { broadcastOptions }]) => broadcastOptions.sourceId);
 
-      const dedupedSourceId = adjustDuplicateSourceIds(broadcastOptions.sourceId, allSourceIds);
+      const dedupedSourceId = adjustDuplicateSourceIds(broadcastOptions.sourceId || 'Untitled', allSourceIds);
 
       dispatch({
         broadcastOptions: { ...broadcastOptions, sourceId: dedupedSourceId },
