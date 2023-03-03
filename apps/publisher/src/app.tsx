@@ -453,11 +453,16 @@ const App = () => {
                 onClick: handleOpenDeviceSelection,
                 text: 'Add cameras',
               },
-              {
-                icon: <IconStreamLocal />,
-                onClick: onFileSelectModalOpen,
-                text: 'Stream local file',
-              },
+              ...('captureStream' in HTMLMediaElement
+                ? [
+                    {
+                      icon: <IconStreamLocal />,
+                      isDisabled: !('captureStream' in HTMLMediaElement),
+                      onClick: onFileSelectModalOpen,
+                      text: 'Stream local file',
+                    },
+                  ]
+                : []),
             ]}
           />
           <DeviceSelection
