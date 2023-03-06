@@ -107,7 +107,7 @@ const App = () => {
         value: quality ?? '',
       },
     };
-  }, [mainQualityOptions, mainSourceId]);
+  }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
 
   const hasMultiStream = remoteTrackSources.size > 1;
   const isStreaming = remoteTrackSources.size > 0;
