@@ -22,7 +22,7 @@ export const createStream = async ({
       return {
         id: mediaStream.id,
         stream: {
-          label: mediaStream.getVideoTracks()[0].label,
+          label: mediaStream.getVideoTracks()[0].label || 'Screenshare',
           mediaStream,
           type,
         } as Stream,
@@ -37,7 +37,7 @@ export const createStream = async ({
       return {
         id: objectUrl,
         stream: {
-          label,
+          label: label || 'Local file',
           objectUrl,
           type,
         } as Stream,
@@ -76,7 +76,7 @@ export const createStream = async ({
       return {
         id: mediaStream.id,
         stream: {
-          label: videoTrack.label,
+          label: videoTrack.label || 'Media device',
           mediaStream,
           resolutions,
           type,
