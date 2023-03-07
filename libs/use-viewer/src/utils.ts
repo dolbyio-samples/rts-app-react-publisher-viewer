@@ -3,7 +3,7 @@ import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
 export const addRemoteTrack = async (
   viewer: View,
-  sourceId: string | null,
+  sourceId?: string,
   trackInfo?: MediaTrackInfo[]
 ): Promise<RemoteTrackSource> => {
   const mapping: ViewProjectSourceMapping[] = [];
@@ -100,5 +100,5 @@ export const projectToStream = async (
     mapping.push(videoMapping);
   }
 
-  await viewer.project(source.sourceId ?? undefined, mapping);
+  await viewer.project(source.sourceId, mapping);
 };
