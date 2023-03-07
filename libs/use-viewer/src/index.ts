@@ -72,6 +72,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
+    // Due to CAPI platform limitations, only one source can be unnamed
+    // We can only handle one unnamed source here
     const { sourceId = null, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
