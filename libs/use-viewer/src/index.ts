@@ -72,8 +72,12 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    // Due to CAPI platform limitations, only one source can be unnamed
-    // We can only handle one unnamed source here
+    // Due to CAPI platform limitations, only one source can be unnamed (where sourceId is undefined)
+    // By default, the single unnamed source would be treated as the main source
+    // If there are multiple unnamed sources, we can not distinguish which events belong to which sources
+    // Although this is a known unclosed edge case:
+    // In Publisher app, validation is enforced to ensure all sources have a name
+    // In current dolby.io dashboard broadcast app, only one source can be published at a time
     const { sourceId, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
