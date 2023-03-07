@@ -9,7 +9,7 @@ export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
 export interface VideoViewProps {
   displayVideo?: boolean;
   height?: string;
-  label?: string;
+  label?: string | null;
   mediaStream?: MediaStream;
   mirrored?: boolean;
   muted?: boolean;

@@ -72,7 +72,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       return;
     }
 
-    const { sourceId, tracks } = event.data as MediaStreamSource;
+    const { sourceId = null, tracks } = event.data as MediaStreamSource;
 
     switch (event.name) {
       case 'active':
@@ -93,7 +93,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
               mainVideoMappingRef.current
             );
           } else {
-            await viewer.project(sourceId, newRemoteTrackSource.projectMapping);
+            await viewer.project(sourceId ?? undefined, newRemoteTrackSource.projectMapping);
           }
         } catch (error) {
           handleInternalError(error);
@@ -191,7 +191,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const projectToMainStream = async (sourceId: string): Promise<RemoteTrackSource | void> => {
+  const projectToMainStream = async (sourceId: string | null): Promise<RemoteTrackSource | void> => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
@@ -212,7 +212,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
-  const reprojectFromMainStream = async (sourceId: string) => {
+  const reprojectFromMainStream = async (sourceId: string | null) => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
@@ -223,14 +223,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
     if (remoteTrackSource) {
       try {
-        await viewer.project(sourceId, remoteTrackSource.projectMapping);
+        await viewer.project(sourceId ?? undefined, remoteTrackSource.projectMapping);
       } catch (error) {
         handleInternalError(error);
       }
     }
   };
 
-  const setSourceQuality = (sourceId: string, quality?: SimulcastQuality) => {
+  const setSourceQuality = (sourceId: string | null, quality?: SimulcastQuality) => {
     const { current: viewer } = viewerRef;
 
     if (!viewer) {
