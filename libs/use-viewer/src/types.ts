@@ -11,7 +11,7 @@ export interface RemoteTrackSource {
   mediaStream: MediaStream;
   projectMapping: ViewProjectSourceMapping[];
   quality?: StreamQuality;
-  sourceId: string;
+  sourceId?: string;
   videoMediaId?: string;
 }
 
@@ -28,10 +28,10 @@ export interface Viewer {
   mainMediaStream?: MediaStream;
   mainQualityOptions: SimulcastQuality[];
   mainStatistics?: StreamStats;
-  projectToMainStream: (sourceId: string) => Promise<RemoteTrackSource | void>;
+  projectToMainStream: (sourceId?: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
-  reprojectFromMainStream: (sourceId: string) => void;
-  setSourceQuality: (sourceId: string, quality?: SimulcastQuality) => void;
+  reprojectFromMainStream: (sourceId?: string) => void;
+  setSourceQuality: (sourceId?: string, quality?: SimulcastQuality) => void;
   startViewer: () => void;
   stopViewer: () => void;
   viewerCount: number;
@@ -40,11 +40,11 @@ export interface Viewer {
 export type ViewerAction =
   | {
       remoteTrackSource: RemoteTrackSource;
-      sourceId: string;
+      sourceId?: string;
       type: ViewerActionType.ADD_SOURCE;
     }
-  | { sourceId: string; type: ViewerActionType.REMOVE_SOURCE }
-  | { quality: StreamQuality; sourceId: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY };
+  | { sourceId?: string; type: ViewerActionType.REMOVE_SOURCE }
+  | { quality: StreamQuality; sourceId?: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY };
 
 export interface ViewerProps {
   handleError?: (error: string) => void;

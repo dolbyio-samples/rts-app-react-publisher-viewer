@@ -39,7 +39,7 @@ const App = () => {
 
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
-  const [mainSourceId, setMainSourceId] = useState<string>();
+  const [mainSourceId, setMainSourceId] = useState('');
 
   // Prevent closing the page
   useEffect(() => {
@@ -63,7 +63,7 @@ const App = () => {
 
   // Assign the first source as the initial main stream
   useEffect(() => {
-    if (remoteTrackSources.size && (!mainSourceId || !remoteTrackSources.get(mainSourceId))) {
+    if (remoteTrackSources.size && (mainSourceId === '' || !remoteTrackSources.get(mainSourceId))) {
       const [[firstSourceId]] = remoteTrackSources;
 
       setMainSourceId(firstSourceId);
@@ -73,14 +73,15 @@ const App = () => {
 
   // Reset main stream when layers change
   useEffect(() => {
-    if (!mainSourceId) {
+    if (mainSourceId === '') {
       return;
     }
+
     setSourceQuality(mainSourceId);
   }, [mainQualityOptions.length]);
 
   const changeMainSource = async (newMainSourceId: string) => {
-    if (mainSourceId) {
+    if (mainSourceId !== '') {
       reprojectFromMainStream(mainSourceId);
     }
 
@@ -92,7 +93,7 @@ const App = () => {
   };
 
   const mainSourceSettings = useMemo(() => {
-    if (!mainSourceId) {
+    if (mainSourceId === '') {
       return {};
     }
 
@@ -137,7 +138,7 @@ const App = () => {
         </Flex>
       </Box>
       <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-        {!isStreaming || !mainSourceId ? (
+        {!isStreaming || mainSourceId === '' ? (
           <VStack>
             <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
               Stream is not live
