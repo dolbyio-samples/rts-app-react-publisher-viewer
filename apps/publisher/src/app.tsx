@@ -36,6 +36,7 @@ import useNotification from '@millicast-react/use-notification';
 import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
 
 import PublisherVideoView from './components/publisher-video-view';
+import useCanCaptureStream from './hooks/useCanCaptureStream';
 
 import './styles/font.css';
 
@@ -63,6 +64,8 @@ const App = () => {
   const [newMicrophone, setNewMicrophone] = useState<InputDeviceInfo>();
 
   const { showError } = useNotification();
+
+  const canCaptureStream = useCanCaptureStream();
 
   const { addStream, applyConstraints, cameraList, initDefaultStream, microphoneList, removeStream, streams } =
     useMultiMediaStreams();
@@ -453,11 +456,18 @@ const App = () => {
                 onClick: handleOpenDeviceSelection,
                 text: 'Add cameras',
               },
-              {
-                icon: <IconStreamLocal />,
-                onClick: onFileSelectModalOpen,
-                text: 'Stream local file',
-              },
+              // It is not possible to stream local files if HTMLMediaElement.captureStream is not available
+              // e.g. on Safari https://caniuse.com/?search=captureStream
+              ...(canCaptureStream
+                ? [
+                    {
+                      icon: <IconStreamLocal />,
+                      isDisabled: !canCaptureStream,
+                      onClick: onFileSelectModalOpen,
+                      text: 'Stream local file',
+                    },
+                  ]
+                : []),
             ]}
           />
           <DeviceSelection
