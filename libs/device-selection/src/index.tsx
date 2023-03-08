@@ -40,8 +40,8 @@ const DeviceSelection = ({
   }, [camera]);
 
   const handleSubmit = () => {
-    onSubmit();
     resetMediaStream();
+    onSubmit();
   };
 
   const resetMediaStream = () => {
@@ -56,9 +56,7 @@ const DeviceSelection = ({
 
   const updateVideoStream = async (camera: InputDeviceInfo) => {
     const constraints = {
-      video: {
-        deviceId: { exact: camera.deviceId },
-      },
+      video: { deviceId: { exact: camera.deviceId } },
     };
 
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -92,7 +90,7 @@ const DeviceSelection = ({
               </Box>
               {mediaStream ? (
                 <Box>
-                  <VideoView mediaStream={mediaStream} />{' '}
+                  <VideoView mediaStream={mediaStream} />
                 </Box>
               ) : undefined}
               <Box width="100%">
