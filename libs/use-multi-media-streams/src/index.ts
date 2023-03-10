@@ -84,7 +84,7 @@ const useMultiMediaStreams = ({ localFiles, mediaDevices, screenShare }: UseMult
     }
   };
 
-  // Remove streams that no longer accounted for
+  // Remove streams that are no longer accounted for
   const cleanUpStreams = () => {
     const ids = [
       ...(localFiles?.map(({ objectUrl }) => objectUrl) ?? []),
