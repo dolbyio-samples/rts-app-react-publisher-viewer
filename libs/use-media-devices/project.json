@@ -1,0 +1,16 @@
+{
+  "name": "use-media-devices",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/use-media-devices/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/use-media-devices/**/*.{ts,js}"]
+      }
+    }
+  }
+}

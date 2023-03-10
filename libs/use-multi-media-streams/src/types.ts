@@ -4,30 +4,10 @@ export interface ApplyConstraintsOptions {
 }
 
 export interface CreateStreamOptions {
-  audioConstraints?: MediaTrackConstraints;
-  camera?: InputDeviceInfo;
   label?: string;
-  microphone?: InputDeviceInfo;
+  mediaStream?: MediaStream;
   objectUrl?: string;
   type: StreamTypes;
-  videoConstraints?: MediaTrackConstraints;
-}
-
-export interface MediaDevices {
-  addStream: (options: CreateStreamOptions) => Promise<void>;
-  applyConstraints: (id: string, options: ApplyConstraintsOptions) => Promise<void>;
-  cameraList: InputDeviceInfo[];
-  initDefaultStream: () => void;
-  streams: StreamsMap;
-  microphoneList: InputDeviceInfo[];
-  removeStream: (id: string) => void;
-  reset: () => void;
-  updateStream: (id: string, stream: Partial<Stream>) => void;
-}
-
-export interface MediaDevicesLists {
-  cameraList: InputDeviceInfo[];
-  microphoneList: InputDeviceInfo[];
 }
 
 export interface Resolution {
@@ -78,7 +58,11 @@ export enum StreamTypes {
   MEDIA = 'MEDIA',
 }
 
-export interface UseMediaDevicesProps {
-  filterOutUsedDevices?: boolean;
-  handleError?: (error: string) => void;
+export interface UseMultiMediaStreams {
+  localFiles?: {
+    label: string;
+    objectUrl: string;
+  }[];
+  mediaDevices?: MediaStream[];
+  screenShare?: MediaStream[];
 }

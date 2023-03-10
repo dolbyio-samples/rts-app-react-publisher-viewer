@@ -1,56 +1,56 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
-import { idealCameraConfig } from './constants';
 import reducer from './reducer';
 import {
   ApplyConstraintsOptions,
   CreateStreamOptions,
-  MediaDevices,
-  MediaDevicesLists,
   Stream,
-  StreamTypes,
   StreamsActionType,
-  UseMediaDevicesProps,
+  StreamsMap,
+  StreamTypes,
+  UseMultiMediaStreams,
 } from './types';
-import { createStream, isUniqueDevice, stopTracks } from './utils';
+import { createStream } from './utils';
 
-const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaDevicesProps = {}): MediaDevices => {
+/**
+ * Manage state of mediastreams and object URLsz from multiple input types including
+ * devices (webcam, cameras, microphones), screenshare, and local file uploads
+ */
+const useMultiMediaStreams = ({ localFiles, mediaDevices, screenShare }: UseMultiMediaStreams = {}) => {
   const [streams, dispatch] = useReducer(reducer, new Map());
 
-  const [cameraList, setCameraList] = useState<InputDeviceInfo[]>([]);
-  const [microphoneList, setMicrophoneList] = useState<InputDeviceInfo[]>([]);
-  const [rootCameraList, setRootCameraList] = useState<InputDeviceInfo[]>([]);
-  const [rootMicrophoneList, setRootMicrophoneList] = useState<InputDeviceInfo[]>([]);
-
-  // Handle internal list of devices
-  useEffect(() => {
-    getDevicesList();
-  }, []);
+  const streamsRef = useRef<StreamsMap>(streams);
+  streamsRef.current = streams;
 
   useEffect(() => {
-    if (filterOutUsedDevices && (rootCameraList.length || rootMicrophoneList.length)) {
-      const usedDevices = new Set();
+    localFiles?.forEach((localFile) => {
+      if (!streamsRef.current.has(localFile.objectUrl)) {
+        addStream({ ...localFile, type: StreamTypes.LOCAL });
+      }
+    });
 
-      streams.forEach(({ mediaStream, type }) => {
-        if (mediaStream && type === StreamTypes.MEDIA) {
-          const [audioTrack] = mediaStream.getAudioTracks();
-          const [videoTrack] = mediaStream.getVideoTracks();
+    cleanUpStreams();
+  }, [localFiles?.length]);
 
-          const { deviceId: audioDeviceId } = audioTrack.getCapabilities();
-          const { deviceId: videoDeviceId } = videoTrack.getCapabilities();
+  useEffect(() => {
+    mediaDevices?.forEach((mediaStream) => {
+      if (!streamsRef.current.has(mediaStream.id)) {
+        addStream({ mediaStream, type: StreamTypes.MEDIA });
+      }
+    });
 
-          usedDevices.add(audioDeviceId);
-          usedDevices.add(videoDeviceId);
-        }
-      });
+    cleanUpStreams();
+  }, [mediaDevices?.length]);
 
-      setCameraList(rootCameraList.filter((device) => !usedDevices.has(device.deviceId)));
-      setMicrophoneList(rootMicrophoneList.filter((device) => !usedDevices.has(device.deviceId)));
-    } else {
-      setCameraList(rootCameraList);
-      setMicrophoneList(rootMicrophoneList);
-    }
-  }, [filterOutUsedDevices, streams, rootCameraList, rootMicrophoneList]);
+  useEffect(() => {
+    screenShare?.forEach((mediaStream) => {
+      if (!streamsRef.current.has(mediaStream.id)) {
+        addStream({ mediaStream, type: StreamTypes.DISPLAY });
+      }
+    });
+
+    cleanUpStreams();
+  }, [screenShare?.length]);
 
   const addStream = async (options: CreateStreamOptions) => {
     const newStream = await createStream(options);
@@ -84,58 +84,25 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
     }
   };
 
-  const getDevicesList = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: idealCameraConfig,
-      });
+  // Remove streams that no longer accounted for
+  const cleanUpStreams = () => {
+    const ids = [
+      ...(localFiles?.map(({ objectUrl }) => objectUrl) ?? []),
+      ...(mediaDevices?.map(({ id }) => id) ?? []),
+      ...(screenShare?.map(({ id }) => id) ?? []),
+    ];
 
-      if (stream) {
-        stopTracks(stream);
+    const streamsToRemove = new Map(streamsRef.current);
 
-        await getMediaDevicesLists();
-      } else {
-        handleInternalError(`Cannot get user's media stream`);
+    ids.forEach((id) => {
+      if (streamsToRemove.has(id)) {
+        streamsToRemove.delete(id);
       }
-    } catch (error: unknown) {
-      handleInternalError(error);
-    }
-  };
+    });
 
-  const getMediaDevicesLists = async (): Promise<MediaDevicesLists> => {
-    const microphoneList: InputDeviceInfo[] = [];
-    const cameraList: InputDeviceInfo[] = [];
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      devices.forEach((device) => {
-        if (device.kind === 'audioinput' && isUniqueDevice(microphoneList, device)) microphoneList.push(device);
-        else if (device.kind === 'videoinput' && isUniqueDevice(cameraList, device)) cameraList.push(device);
-      });
-      setRootCameraList(cameraList);
-      setRootMicrophoneList(microphoneList);
-    } catch (error: unknown) {
-      handleInternalError(error);
-    }
-    return Promise.resolve({ cameraList, microphoneList });
-  };
-
-  const handleInternalError = (error: unknown) => {
-    if (error instanceof Error) {
-      handleError?.(error.message);
-    } else {
-      handleError?.(`${error}`);
-    }
-  };
-
-  const initDefaultStream = () => {
-    if (microphoneList.length && cameraList.length) {
-      addStream({
-        camera: cameraList[0],
-        microphone: microphoneList[0],
-        type: StreamTypes.MEDIA,
-      });
-    }
+    Array.from(streamsToRemove).forEach(([id]) => {
+      removeStream(id);
+    });
   };
 
   const removeStream = (id: string) => {
@@ -153,9 +120,6 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
   return {
     addStream,
     applyConstraints,
-    cameraList,
-    initDefaultStream,
-    microphoneList,
     removeStream,
     reset,
     streams,
@@ -165,4 +129,4 @@ const useMediaDevices = ({ filterOutUsedDevices = true, handleError }: UseMediaD
 
 export * from './constants';
 export * from './types';
-export default useMediaDevices;
+export default useMultiMediaStreams;
