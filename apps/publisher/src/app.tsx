@@ -117,7 +117,7 @@ const App = () => {
     const [initAudioDevice] = mediaDevices.audioDevices;
     const [initVideoDevice] = mediaDevices.videoDevices;
 
-    if (initAudioDevice || initVideoDevice) {
+    if (initAudioDevice && initVideoDevice) {
       mediaDevices.startMediaDevice({
         audioDeviceId: initAudioDevice.deviceId,
         videoDeviceId: initVideoDevice.deviceId,
