@@ -1,3 +1,4 @@
+import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
 import {
   BroadcastEvent,
   BroadcastOptions,
@@ -5,16 +6,18 @@ import {
   Event,
   PeerConnection,
   Publish,
-  StreamStats,
   VideoCodec,
   ViewerCount,
 } from '@millicast/sdk';
+
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { bitrateList } from './constants';
 
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
 import { adjustDuplicateSourceIds } from './utils';
+
+const GET_STATS_INTERVAL = 1000;
 
 const usePublisher = ({
   handleError,
@@ -63,8 +66,18 @@ const usePublisher = ({
 
       const publish = new Publish(streamName, tokenGenerator, true);
 
+      const collection = new WebRTCStats({
+        getStatsInterval: GET_STATS_INTERVAL,
+        getStats: () => publish.webRTCPeer?.getRTCPeer().getStats(),
+      });
+
+      collection.on('stats', (event: OnStats) => {
+        handleStats(streamId, event);
+      });
+
       const newSource: PublisherSource = {
         broadcastOptions,
+        collection,
         publish,
         state: 'ready',
       };
@@ -104,7 +117,7 @@ const usePublisher = ({
     }
   };
 
-  const handleStats = (id: string) => (statistics: StreamStats) => {
+  const handleStats = (id: string, statistics: OnStats) => {
     dispatch({ id, statistics, type: PublisherActionType.UPDATE_SOURCE_STATISTICS });
   };
 
@@ -131,8 +144,7 @@ const usePublisher = ({
 
       dispatch({ id, state: 'streaming', type: PublisherActionType.UPDATE_SOURCE_STATE });
 
-      source.publish.webRTCPeer?.initStats();
-      source.publish.webRTCPeer?.addListener('stats', handleStats(id));
+      source.collection.start();
 
       if (!viewerCountIdRef.current) {
         viewerCountIdRef.current = id;
@@ -153,8 +165,7 @@ const usePublisher = ({
       return;
     }
 
-    source.publish.webRTCPeer?.stopStats();
-    source.publish.webRTCPeer?.removeAllListeners('stats');
+    source.collection.stop();
     source.publish.stop();
 
     dispatch({ id, state: 'ready', type: PublisherActionType.UPDATE_SOURCE_STATE });

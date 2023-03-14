@@ -2149,6 +2149,13 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
+"@dolbyio/webrtc-stats@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@dolbyio/webrtc-stats/-/webrtc-stats-0.1.0.tgz#1fb2da6ea4233dd03c8585c63d18909712bb89f1"
+  integrity sha512-gUF0e4MNT04sBCYPzKabJ6REw87yskc/bXdcMobcji8eeCWM1ZJd3kLx5ooHFGX+3muk0axQalLOaNtgRF5S9w==
+  dependencies:
+    js-logger "^1.6.1"
+
 "@emotion/babel-plugin@^11.10.5":
   version "11.10.5"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.10.5.tgz"

@@ -8,14 +8,21 @@ import StatisticsInfo from './components/statistics-info';
 import { StatisticsPopoverProps, TabQualities } from './types';
 
 const StatisticsPopover = ({ iconProps, statistics }: StatisticsPopoverProps) => {
-  const { inbounds: audioIn, outbounds: audioOut } = statistics?.audio ?? {};
-  const { inbounds: videoIn, outbounds: videoOut } = statistics?.video ?? {};
+  const { audio: audioIn, video: videoIn } = statistics?.input ?? {};
+  const { audio: audioOut, video: videoOut } = statistics?.output ?? {};
 
   const [audio] = audioIn?.length ? audioIn : audioOut?.length ? audioOut : [];
-  const video = videoIn?.length ? videoIn : videoOut?.length ? videoOut : [];
+  const videos = videoIn?.length ? videoIn : videoOut?.length ? videoOut : [];
+
+  Array.from(videos)
+    .filter(({ bitrate }) => bitrate)
+    .sort((a, b) => (b.bitrate as number) - (a.bitrate as number));
 
   const tabs = useMemo(() => {
-    const streamVideoStats = [...video].filter((v) => v.bitrate > 0).sort((a, b) => b.bitrate - a.bitrate);
+    const streamVideoStats = Array.from(videos)
+      .filter(({ bitrate }) => bitrate)
+      .sort((a, b) => (b.bitrate as number) - (a.bitrate as number));
+
     const qualities: TabQualities = [];
 
     switch (streamVideoStats.length) {
@@ -56,7 +63,7 @@ const StatisticsPopover = ({ iconProps, statistics }: StatisticsPopoverProps) =>
         tabs.length ? (
           <Tabs tabs={tabs} />
         ) : (
-          <StatisticsInfo statistics={{ ...statistics, audio, video: video[0] }} />
+          <StatisticsInfo statistics={{ ...statistics, audio, video: videos[0] }} />
         )
       ) : undefined}
     </Popover>

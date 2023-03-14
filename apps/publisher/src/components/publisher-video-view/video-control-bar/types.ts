@@ -1,5 +1,5 @@
 import { StackProps } from '@chakra-ui/react';
-import { StreamStats } from '@millicast/sdk';
+import { OnStats } from '@dolbyio/webrtc-stats';
 
 import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 
@@ -20,6 +20,6 @@ export interface VideoControlBarProps extends StackProps {
   onTogglePlayback?: () => void;
   onToggleVideo?: () => void;
   settings?: SettingsPopoverProps;
-  statistics?: StreamStats;
+  statistics?: OnStats;
   streamType?: StreamTypes;
 }

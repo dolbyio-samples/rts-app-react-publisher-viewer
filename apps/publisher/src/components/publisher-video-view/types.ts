@@ -1,4 +1,4 @@
-import { StreamStats } from '@millicast/sdk';
+import { OnStats } from '@dolbyio/webrtc-stats';
 
 import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 import { VideoViewProps } from '@millicast-react/video-view';
@@ -13,7 +13,7 @@ export interface PublisherVideoViewProps {
   onStartLive: () => void;
   onStopLive: () => void;
   settings?: SettingsPopoverProps;
-  statistics?: StreamStats;
+  statistics?: OnStats;
   streamType?: StreamTypes;
   videoProps: VideoViewProps;
 }
