@@ -35,9 +35,6 @@ export type StreamsAction =
       id: string;
     }
   | {
-      type: StreamsActionType.RESET;
-    }
-  | {
       stream: Partial<Stream>;
       type: StreamsActionType.UPDATE_STREAM;
       id: string;
@@ -46,7 +43,6 @@ export type StreamsAction =
 export enum StreamsActionType {
   ADD_STREAM = 'ADD_STREAM',
   REMOVE_STREAM = 'REMOVE_STREAM',
-  RESET = 'RESET',
   UPDATE_STREAM = 'UPDATE_STREAM',
 }
 

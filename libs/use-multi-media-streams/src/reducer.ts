@@ -29,16 +29,6 @@ const reducer = (state: StreamsMap, action: StreamsAction) => {
       return newState;
     }
 
-    case StreamsActionType.RESET: {
-      state.forEach(({ mediaStream }) => {
-        if (mediaStream) {
-          stopTracks(mediaStream);
-        }
-      });
-
-      return new Map<string, Stream>();
-    }
-
     case StreamsActionType.UPDATE_STREAM: {
       const newState = new Map(state);
       const prevMediaStream = state.get(action.id);
