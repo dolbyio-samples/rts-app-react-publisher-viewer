@@ -63,12 +63,7 @@ const useMediaDevices = ({ filterUsedDevices = true, handleError }: useMediaDevi
     }
   };
 
-  const startMediaDevice = async ({
-    audioConstraints,
-    audioDeviceId,
-    videoConstraints,
-    videoDeviceId,
-  }: StartDeviceProps) => {
+  const start = async ({ audioConstraints, audioDeviceId, videoConstraints, videoDeviceId }: StartDeviceProps) => {
     if (!audioDeviceId && !videoDeviceId) {
       return;
     }
@@ -118,7 +113,7 @@ const useMediaDevices = ({ filterUsedDevices = true, handleError }: useMediaDevi
     }
   };
 
-  const stopMediaDevice = (mediaStreamId: string) => {
+  const stop = (mediaStreamId: string) => {
     const mediaStream = mediaStreams.find(({ id }) => id === mediaStreamId);
 
     if (mediaStream) {
@@ -133,8 +128,8 @@ const useMediaDevices = ({ filterUsedDevices = true, handleError }: useMediaDevi
   return {
     audioDevices,
     mediaStreams,
-    startMediaDevice,
-    stopMediaDevice,
+    start,
+    stop,
     videoDevices,
   };
 };

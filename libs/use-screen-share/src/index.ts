@@ -13,7 +13,7 @@ const useScreenShare = ({ handleError }: useScreenShare = {}) => {
     }
   };
 
-  const startDisplayCapture = async () => {
+  const start = async () => {
     const constraints = {
       audio: true,
       video: { cursor: 'always' },
@@ -28,7 +28,7 @@ const useScreenShare = ({ handleError }: useScreenShare = {}) => {
     }
   };
 
-  const stopDisplayCapture = (mediaStreamId: string) => {
+  const stop = (mediaStreamId: string) => {
     const mediaStream = mediaStreams.find(({ id }) => id === mediaStreamId);
 
     if (mediaStream) {
@@ -40,7 +40,7 @@ const useScreenShare = ({ handleError }: useScreenShare = {}) => {
     }
   };
 
-  return { mediaStreams, startDisplayCapture, stopDisplayCapture };
+  return { mediaStreams, start, stop };
 };
 
 export * from './types';

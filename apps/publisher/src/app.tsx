@@ -118,7 +118,7 @@ const App = () => {
     const [initVideoDevice] = mediaDevices.videoDevices;
 
     if (initAudioDevice && initVideoDevice) {
-      mediaDevices.startMediaDevice({
+      mediaDevices.start({
         audioDeviceId: initAudioDevice.deviceId,
         videoDeviceId: initVideoDevice.deviceId,
       });
@@ -153,7 +153,7 @@ const App = () => {
     }
 
     if (sources.size < MAX_SOURCES) {
-      mediaDevices.startMediaDevice({ audioDeviceId: newMicrophone.deviceId, videoDeviceId: newCamera.deviceId });
+      mediaDevices.start({ audioDeviceId: newMicrophone.deviceId, videoDeviceId: newCamera.deviceId });
 
       handleCloseDeviceSelection();
 
@@ -179,15 +179,15 @@ const App = () => {
 
     switch (stream?.type) {
       case StreamTypes.DISPLAY:
-        screenShare.stopDisplayCapture(id);
+        screenShare.stop(id);
         break;
 
       case StreamTypes.LOCAL:
-        localFiles.removeLocalFile(id);
+        localFiles.remove(id);
         break;
 
       case StreamTypes.MEDIA:
-        mediaDevices.stopMediaDevice(id);
+        mediaDevices.stop(id);
         break;
     }
   };
@@ -234,7 +234,7 @@ const App = () => {
 
   const handleStartDisplayCapture = async () => {
     if (sources.size < MAX_SOURCES) {
-      screenShare.startDisplayCapture();
+      screenShare.start();
     }
   };
 
@@ -271,7 +271,9 @@ const App = () => {
 
     const { file } = Object.fromEntries(data.entries());
 
-    localFiles.addLocalFile(file);
+    if (file && file instanceof File) {
+      localFiles.add(file);
+    }
 
     onFileSelectModalClose();
   };
