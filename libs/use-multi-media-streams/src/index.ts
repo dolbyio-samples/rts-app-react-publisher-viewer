@@ -13,8 +13,12 @@ import {
 import { createStream } from './utils';
 
 /**
- * Manage state of mediastreams and object URLsz from multiple input types including
- * devices (webcam, cameras, microphones), screenshare, and local file uploads
+ * This hook manages the state of mediastreams and object URLs from multiple input types including media
+ * devices (e.g. cameras, microphones), screenshare instances, and locally uploaded media files. The hook
+ * provides enhanced functionality such as the ability to adjust mediastream constraints, as well as
+ * supplementary information for each item stored in state (e.g. the source type, the user-designated label,
+ * and a list of valid resolutions to reconstrain to). This hook to work with and manage the mediastreams
+ * of useMediaDevice, useScreenShare, and useLocalFile.
  */
 const useMultiMediaStreams = ({ localFiles, mediaDevices, screenShare }: UseMultiMediaStreams = {}) => {
   const [streams, dispatch] = useReducer(reducer, new Map());

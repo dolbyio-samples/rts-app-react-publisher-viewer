@@ -4,6 +4,11 @@ import { idealCameraConfig } from './constants';
 import { StartDeviceProps, useMediaDevicesProps } from './types';
 import { isUniqueDevice } from './utils';
 
+/**
+ * This hook manages all currently available media devices such as cameras and microphones. A list of connected
+ * and usable audio/video devices can be read. The user can start or stop the real-time capture of any valid media
+ * device's content. All currently active mediastreams are subsequently stored in state and can be read.
+ */
 const useMediaDevices = ({ filterUsedDevices = true, handleError }: useMediaDevicesProps = {}) => {
   const [audioDevices, setAudioDevices] = useState<InputDeviceInfo[]>([]);
   const [mediaStreams, setMediaStreams] = useState<MediaStream[]>([]);
