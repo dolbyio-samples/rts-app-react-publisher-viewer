@@ -4,12 +4,12 @@ import { ReactNode } from 'react';
 export interface TabsProps {
   tabListProps?: TabListProps;
   tabPanelProps?: TabPanelProps;
-  tabsProps?: Omit<ChakraTabsProps, 'children'>;
   tabs: {
+    children: ReactNode;
     heading: string;
     id: string | number;
-    children: ReactNode;
     tabPanelProps?: TabPanelProps;
     tabProps?: TabProps;
   }[];
+  tabsProps?: Omit<ChakraTabsProps, 'children'>;
 }

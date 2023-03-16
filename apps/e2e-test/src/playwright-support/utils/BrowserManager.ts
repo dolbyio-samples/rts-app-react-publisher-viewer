@@ -106,7 +106,7 @@ export class BrowserManager {
     if (!contextOptions?.recordVideo && this.options.video !== 'off') {
       contextOptions.recordVideo = {
         dir: `${this.options.reportPath}/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
-        size: { width: 1280, height: 1024 },
+        size: { height: 1024, width: 1280 },
       };
     }
     return contextOptions;

@@ -31,13 +31,13 @@ export type StreamsAction =
       type: StreamsActionType.ADD_STREAM;
     }
   | {
-      type: StreamsActionType.REMOVE_STREAM;
       id: string;
+      type: StreamsActionType.REMOVE_STREAM;
     }
   | {
+      id: string;
       stream: Partial<Stream>;
       type: StreamsActionType.UPDATE_STREAM;
-      id: string;
     };
 
 export enum StreamsActionType {

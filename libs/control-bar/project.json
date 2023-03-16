@@ -1,24 +1,24 @@
 {
-  "name": "control-bar",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/control-bar/src",
+  "name": "control-bar",
   "projectType": "library",
+  "sourceRoot": "libs/control-bar/src",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/control-bar/**/*.{ts,js}"]
-      }
+      },
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/control-bar/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     }
   }
 }

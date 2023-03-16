@@ -91,9 +91,9 @@ const App = () => {
     viewerCount,
   } = usePublisher({
     handleError: showError,
+    streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     streamNameId: VITE_RTS_ACCOUNT_ID,
     streams,
-    streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     token: VITE_RTS_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_RTS_VIEWER_BASE_URL,
   });
@@ -519,10 +519,10 @@ const App = () => {
             <ModalBody>
               <VStack>
                 <form onSubmit={handleSubmitLocalFile}>
-                  <Heading test-id="addLocalFileTitle" as="h4" size="md">
+                  <Heading as="h4" size="md" test-id="addLocalFileTitle">
                     Add local media file
                   </Heading>
-                  <Text test-id="addLocalFileDesc" fontSize="md">
+                  <Text fontSize="md" test-id="addLocalFileDesc">
                     Pick a local file
                   </Text>
                   <Center pb="32px" pt="16px" sx={{ '#pickFile': { color: 'white' } }} width="100%">

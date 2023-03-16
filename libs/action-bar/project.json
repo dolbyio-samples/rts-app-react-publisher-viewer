@@ -1,24 +1,24 @@
 {
-  "name": "action-bar",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/action-bar/src",
+  "name": "action-bar",
   "projectType": "library",
+  "sourceRoot": "libs/action-bar/src",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/action-bar/**/*.{ts,js}"]
-      }
+      },
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/action-bar/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     }
   }
 }

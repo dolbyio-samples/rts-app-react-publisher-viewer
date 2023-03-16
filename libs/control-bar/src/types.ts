@@ -12,6 +12,6 @@ export interface ControlButtonProps extends IconButtonProps {
 }
 
 export interface ControlElement {
-  node: ReactNode;
   key: string;
+  node: ReactNode;
 }

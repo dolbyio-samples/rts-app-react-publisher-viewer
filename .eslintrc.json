@@ -3,16 +3,27 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jsonc/recommended-with-jsonc",
+    "plugin:react/recommended",
+    "prettier"
+  ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "react", "sort-keys-fix", "typescript-sort-keys"],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "jsonc/sort-keys": "warn",
+    "react/jsx-sort-props": "warn",
+    "react/react-in-jsx-scope": "off",
+    "sort-keys-fix/sort-keys-fix": "warn",
+    "typescript-sort-keys/interface": "warn",
+    "typescript-sort-keys/string-enum": "warn"
   },
   "settings": {
     "react": {

@@ -22,13 +22,13 @@ export interface Publisher {
   startStreamingToSource: (id: string, mediaStream?: MediaStream) => Promise<void>;
   // stopStreamingToSource will remove an existing stream from publisher
   stopStreamingToSource: (id: string) => void;
-  updateSourceMediaStream: (id: string, mediaStream: MediaStream) => void;
   updateSourceBroadcastOptions: (id: string, broadcastOptions: Partial<BroadcastOptions>) => void;
+  updateSourceMediaStream: (id: string, mediaStream: MediaStream) => void;
   viewerCount: number;
 }
 
 export type PublisherAction =
-  | { source: PublisherSource; id: string; type: PublisherActionType.ADD_SOURCE }
+  | { id: string; source: PublisherSource; type: PublisherActionType.ADD_SOURCE }
   | { id: string; type: PublisherActionType.REMOVE_SOURCE }
   | {
       broadcastOptions: Partial<BroadcastOptions>;
@@ -41,9 +41,9 @@ export type PublisherAction =
 
 export interface PublisherProps {
   handleError?: (error: string) => void;
+  streamName: string;
   streamNameId: string;
   streams: Map<string, { label?: string; mediaStream?: MediaStream }>;
-  streamName: string;
   token: string;
   viewerAppBaseUrl?: string;
 }

@@ -2,25 +2,25 @@ import { Box, Flex, FlexProps, Heading } from '@chakra-ui/react';
 import React from 'react';
 
 type ActionBarProps = FlexProps & {
-  title: string;
   actionNode?: React.ReactNode;
+  title: string;
 };
 
 const ActionBar = ({ title, backgroundColor = 'dolbyNeutral.800', actionNode, ...flexProps }: ActionBarProps) => {
   return (
     <Flex
-      test-id="actionBar"
-      bgColor={backgroundColor}
       alignItems="center"
-      justifyContent="space-between"
+      bgColor={backgroundColor}
       borderRadius="8px"
-      w="100%"
-      py="2"
-      px="4"
       h="48px"
+      justifyContent="space-between"
+      px="4"
+      py="2"
+      test-id="actionBar"
+      w="100%"
       {...flexProps}
     >
-      <Heading test-id="headingName" as="h3" fontSize="16px" fontWeight={600}>
+      <Heading as="h3" fontSize="16px" fontWeight={600} test-id="headingName">
         {title}
       </Heading>
       <Box>{actionNode}</Box>

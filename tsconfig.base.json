@@ -1,20 +1,15 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
+    "baseUrl": ".",
     "declaration": false,
-    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2017", "dom", "DOM.Iterable"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
     "jsx": "react",
-    "baseUrl": ".",
+    "lib": ["es2017", "dom", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "node",
     "paths": {
       "@millicast-react/action-bar": ["libs/action-bar/src/index.tsx"],
       "@millicast-react/alert": ["libs/alert/src/index.tsx"],
@@ -37,14 +32,19 @@
       "@millicast-react/tabs": ["libs/tabs/src/index.tsx"],
       "@millicast-react/timer": ["libs/timer/src/index.tsx"],
       "@millicast-react/toggle-button": ["libs/toggle-button/src/index.tsx"],
-      "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-local-files": ["libs/use-local-files/src/index.ts"],
-      "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
+      "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
+      "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
       "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]
-    }
+    },
+    "rootDir": ".",
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "es2015"
   },
   "exclude": ["node_modules", "tmp"]
 }

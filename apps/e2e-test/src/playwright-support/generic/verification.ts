@@ -76,7 +76,7 @@ function imageCompare(actualImage: string, expectedImage: string, diffOutput: st
   const expectedImg = PNG.sync.read(fs.readFileSync(expectedImage));
 
   const { width, height } = expectedImg;
-  const diff = new PNG({ width, height });
+  const diff = new PNG({ height, width });
 
   const numDiffPixels = pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
     threshold: threshold,

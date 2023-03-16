@@ -26,26 +26,26 @@ Default.args = {
   tabPanelProps: {},
   tabs: [
     {
-      heading: 'Tab 1',
-      id: 0,
       children:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc molestie justo ac urna finibus finibus. Vivamus elementum nunc at dolor ornare luctus. Curabitur eget risus neque. Nullam dapibus quis mauris eu efficitur. Vestibulum pulvinar, elit quis bibendum tristique, augue leo euismod lacus, a rutrum orci sem vitae nisi.',
+      heading: 'Tab 1',
+      id: 0,
       tabPanelProps: { color: 'red' },
       tabProps: {},
     },
     {
-      heading: 'Tab 2',
-      id: 1,
       children:
         'Nam cursus aliquam urna, vel suscipit diam. Maecenas dapibus eros et risus imperdiet, et blandit nisi porta. Ut vitae dictum magna. Duis quis sodales nibh. Nunc vitae commodo mi. Duis et aliquet ante. Quisque purus purus, efficitur ut elit tincidunt, rutrum iaculis nulla. Nulla elementum quis dui eget efficitur.',
+      heading: 'Tab 2',
+      id: 1,
       tabPanelProps: { color: 'green' },
       tabProps: {},
     },
     {
-      heading: 'Tab 3',
-      id: 1,
       children:
         'Cras ornare facilisis tristique. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed et rhoncus libero, et auctor nulla. Nulla aliquam, metus aliquam lobortis porttitor, nulla eros tempor massa, vel molestie diam augue nec eros. Sed augue ante, tristique a erat sed, congue laoreet nibh.',
+      heading: 'Tab 3',
+      id: 1,
       tabPanelProps: { color: 'blue' },
       tabProps: {},
     },

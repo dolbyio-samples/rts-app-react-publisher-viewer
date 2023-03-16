@@ -17,8 +17,8 @@ export interface VideoViewProps {
   onError?: (error: MediaError) => void;
   onSrcMediaStreamClose?: (id: string) => void;
   onSrcMediaStreamReady?: (value: MediaStream) => void;
-  placeholderNode?: ReactNode;
   paused?: boolean;
+  placeholderNode?: ReactNode;
   showDotIndicator?: boolean;
   src?: string;
   statistics?: StreamStats;

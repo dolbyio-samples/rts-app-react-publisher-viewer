@@ -3,10 +3,10 @@ import React from 'react';
 
 const SvgClose = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width="100%"
+    fill={props.fill || 'currentColor'}
     height="100%"
     viewBox="0 0 16 16"
-    fill={props.fill || 'currentColor'}
+    width="100%"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >

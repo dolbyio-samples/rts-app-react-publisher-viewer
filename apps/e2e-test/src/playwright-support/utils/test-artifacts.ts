@@ -69,9 +69,9 @@ async function video(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
     const videoFile = getData(scenarioWorld, `${apps[0]}VideoFile`) as string;
     const videoDir = path.dirname(videoFile);
 
-    fs.rmSync(videoDir, { recursive: true, force: true });
+    fs.rmSync(videoDir, { force: true, recursive: true });
     if (fs.readdirSync(path.dirname(videoDir)).length === 0) {
-      fs.rmSync(path.dirname(videoDir), { recursive: true, force: true });
+      fs.rmSync(path.dirname(videoDir), { force: true, recursive: true });
     }
   } else {
     for (const app of apps) {

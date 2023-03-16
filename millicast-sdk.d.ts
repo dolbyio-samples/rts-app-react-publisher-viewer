@@ -5,7 +5,15 @@ declare namespace millicast {
   type VideoCodec = 'av1' | 'h264' | 'vp8' | 'vp9';
 
   interface Capabilities {
+    /**
+     * - Only for audio, the number of audio channels supported.
+     */
+    channels?: number;
     codecs: Array<CodecInfo>;
+    /**
+     * - An array specifying the URI of the header extension, as described in RFC 5285.
+     */
+    headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
     // /**
     //  * - Audio or video codec name.
     //  */
@@ -18,23 +26,15 @@ declare namespace millicast {
      * - In case of SVC support, a list of scalability modes supported.
      */
     scalabilityModes?: Array<string>;
-    /**
-     * - Only for audio, the number of audio channels supported.
-     */
-    channels?: number;
-    /**
-     * - An array specifying the URI of the header extension, as described in RFC 5285.
-     */
-    headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
   }
 
   interface BroadcastOptions {
-    mediaStream: MediaStream;
-    sourceId: string;
-    events?: Event[];
-    simulcast?: boolean;
+    bandwidth?: number;
     codec?: VideoCodec;
-    bandwidth?: number; // bitrate restriction, 0 means unlimited
+    events?: Event[];
+    mediaStream: MediaStream;
+    simulcast?: boolean;
+    sourceId: string; // bitrate restriction, 0 means unlimited
   }
 
   interface CodecInfo {
@@ -47,12 +47,12 @@ declare namespace millicast {
   }
 
   interface MediaTrackInfo {
-    trackId: string;
     media: 'audio' | 'video';
+    trackId: string;
   }
   interface MediaStreamSource {
-    readonly streamId: string;
     sourceId: string;
+    readonly streamId: string;
     readonly tracks: MediaTrackInfo[];
   }
 
@@ -67,67 +67,70 @@ declare namespace millicast {
   }
 
   interface MediaLayer {
-    id: string;
     bitrate: number;
-    simulcastIdx: number;
+    id: string;
     layers: LayerInfo[];
+    simulcastIdx: number;
   }
 
   interface LayerInfo {
-    encodingId: string; // map to 'id' in Medialayer
+    // map to 'id' in Medialayer
     bitrate?: number;
+    encodingId: string;
     simulcastIdx?: number;
     spatialLayerId?: number;
     temporalLayerId?: number;
   }
 
   interface BroadcastEvent {
-    type: string;
-    name: Event;
     data: string | Date | ViewerCount | MediaStreamSource | MediaStreamLayers;
+    name: Event;
+    type: string;
   }
 
   type TokenGeneratorCallback = () => Promise<DirectorResponse>;
+
   type EventEmitter = import('events').EventEmitter;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Publish extends EventEmitter {}
   class Publish {
     constructor(streamName: string, tokenGenerator: TokenGeneratorCallback, autoReconnect: boolean);
     connect(options: BroadcastOptions): Promise<void>;
-    stop(): void;
     isActive(): boolean;
+    stop(): void;
     webRTCPeer: PeerConnection | undefined;
   }
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface Publish extends EventEmitter {}
 
-  type StreamAudioOutboundsStats = {
+  interface StreamAudioOutboundsStats {
     bitrate: number;
     id: string;
     mid: string;
     mimeType: string;
     timestamp: number;
     totalBytesSent: number;
-  };
+  }
 
-  type StreamAudioInboundsStats = {
+  interface StreamAudioInboundsStats {
     bitrate: number;
     id: string;
     jitter: number;
     mid: string;
     mimeType: string;
-    timestamp: number;
     packetsLostDeltaPerSecond: number;
     packetsLostRatioPerSecond: number;
+    timestamp: number;
     totalBytesReceived: number;
-    totalPacketsReceived: number;
     totalPacketsLost: number;
-  };
+    totalPacketsReceived: number;
+  }
 
-  type StreamAudioStats = {
+  interface StreamAudioStats {
     inbounds?: StreamAudioInboundsStats[];
     outbounds?: StreamAudioOutboundsStats[];
-  };
+  }
 
-  type StreamVideoOutboundsStats = {
+  interface StreamVideoOutboundsStats {
     bitrate: number;
     frameHeight: number;
     frameWidth: number;
@@ -138,31 +141,31 @@ declare namespace millicast {
     qualityLimitationReason: string;
     timestamp: number;
     totalBytesSent: number;
-  };
+  }
 
-  type StreamVideoInboundsStats = {
+  interface StreamVideoInboundsStats {
     bitrate: number;
     frameHeight: number;
     frameWidth: number;
     framesPerSecond?: number;
-    jitter: number;
     id: string;
+    jitter: number;
     mid: string;
     mimeType: string;
     packetsLostDeltaPerSecond: number;
     packetsLostRatioPerSecond: number;
+    timestamp: number;
     totalBytesReceived: number;
     totalPacketsLost: number;
     totalPacketsReceived: number;
-    timestamp: number;
-  };
+  }
 
-  type StreamVideoStats = {
+  interface StreamVideoStats {
     inbounds?: StreamVideoInboundsStats[];
     outbounds?: StreamVideoOutboundsStats[];
-  };
+  }
 
-  type StreamStats = {
+  interface StreamStats {
     audio: StreamAudioStats;
     availableOutgoingBitrate?: number;
     candidateType?: string;
@@ -172,24 +175,24 @@ declare namespace millicast {
     };
     totalRoundTripTime?: number;
     video: StreamVideoStats;
-  };
+  }
 
-  type DirectorResponse = {
-    urls: string[];
-    jwt: string;
+  interface DirectorResponse {
     iceServers: RTCIceServer[];
-  };
+    jwt: string;
+    urls: string[];
+  }
 
-  type DirectorPublisherOptions = {
+  interface DirectorPublisherOptions {
+    streamName: string;
     token: string;
-    streamName: string;
-  };
+  }
 
-  type DirectorSubscriberOptions = {
-    streamName: string;
+  interface DirectorSubscriberOptions {
     streamAccountId: string;
+    streamName: string;
     subscriberToken?: string;
-  };
+  }
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
     static getSubscriber(options: DirectorSubscriberOptions): Promise<DirectorResponse>;
@@ -205,22 +208,24 @@ declare namespace millicast {
   interface View extends EventEmitter {}
   class View {
     constructor(streamName: string, tokenGenerator: TokenGeneratorCallback);
-    stop(): void;
-    isActive(): boolean;
-    connect(options?: ViewOptions): Promise<void>;
-    reconnect();
-    project(sourceId?: string, mapping?: ViewProjectSourceMapping[]): Promise<void>;
-    unproject(mediaIds: string[]): Promise<void>;
     addRemoteTrack(mediaType: 'audio' | 'video', streams: MediaStream[]): Promise<RTCRtpTransceiver>;
+    connect(options?: ViewOptions): Promise<void>;
+    isActive(): boolean;
+    project(sourceId?: string, mapping?: ViewProjectSourceMapping[]): Promise<void>;
+    reconnect();
     select(layer: LayerInfo | unknown): Promise<void>;
+    stop(): void;
+    unproject(mediaIds: string[]): Promise<void>;
     webRTCPeer: PeerConnection | undefined;
   }
 
-  type ViewOptions = {
-    pinnedSourceId?: string; // Id of the main source that will be received by the default MediaStream
-    events?: Event[]; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
-  };
+  interface ViewOptions {
+    // Id of the main source that will be received by the default MediaStream
+    events?: Event[];
+    pinnedSourceId?: string; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
+  }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface PeerConnection extends EventEmitter {}
   /**
    * @class PeerConnection
@@ -231,20 +236,18 @@ declare namespace millicast {
    */
   class PeerConnection {
     /**
-     * Replace current audio or video track that is being broadcasted.
-     * @param {MediaStreamTrack} mediaStreamTrack - New audio or video track to replace the current one.
-     */
-    replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
-    initStats(): void;
-    stopStats(): void;
-    on: (event: string, listener: (stats: StreamStats) => void) => void;
-
-    /**
      * Get sender tracks
      * @returns {Array<MediaStreamTrack>} An array with all tracks in sender peer.
      */
     getTracks(): MediaStreamTrack[];
-
+    initStats(): void;
+    on: (event: string, listener: (stats: StreamStats) => void) => void;
+    /**
+     * Replace current audio or video track that is being broadcasted.
+     * @param {MediaStreamTrack} mediaStreamTrack - New audio or video track to replace the current one.
+     */
+    replaceTrack(mediaStreamTrack: MediaStreamTrack): void;
+    stopStats(): void;
     /**
      * Set SDP information to remote peer with bandwidth restriction.
      * @param {Number} bitrate - New bitrate value in kbps or 0 unlimited bitrate.
@@ -255,10 +258,10 @@ declare namespace millicast {
     static getCapabilities(kind: CapabilityKind): Capabilities;
   }
 
-  type LogLevel = {
+  interface LogLevel {
     name: string;
     value: number;
-  };
+  }
 
   interface Logger {
     // TODO: add methods for instance here
@@ -269,13 +272,13 @@ declare namespace millicast {
     static getHistory(): string[];
     static getLevel(): LogLevel;
     static setLevel(level: LogLevel): void;
-    static get TRACE(): LogLevel;
     static get DEBUG(): LogLevel;
-    static get INFO(): LogLevel;
-    static get TIME(): LogLevel;
-    static get WARN(): LogLevel;
     static get ERROR(): LogLevel;
+    static get INFO(): LogLevel;
     static get OFF(): LogLevel;
+    static get TIME(): LogLevel;
+    static get TRACE(): LogLevel;
+    static get WARN(): LogLevel;
   }
 }
 

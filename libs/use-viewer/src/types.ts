@@ -17,10 +17,10 @@ export interface RemoteTrackSource {
 
 export type RemoteTrackSources = Map<string, RemoteTrackSource>;
 
-export type SimulcastQuality = {
+export interface SimulcastQuality {
   simulcastLayer?: LayerInfo; // Auto has an idx of null
   streamQuality: StreamQuality;
-};
+}
 
 export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 

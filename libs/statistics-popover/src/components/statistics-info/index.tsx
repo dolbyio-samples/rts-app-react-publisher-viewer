@@ -46,7 +46,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
         <TableContainer>
           <Table sx={{ tableLayout: 'fixed' }} variant="unstyled" width="100%">
             <Thead color="dolbyNeutral.100">
-              <Tr sx={{ '&>th': { p: '0 0 8px', fontSize: '13px', textTransform: 'none' } }}>
+              <Tr sx={{ '&>th': { fontSize: '13px', p: '0 0 8px', textTransform: 'none' } }}>
                 <Th>Name</Th>
                 <Th>Value</Th>
               </Tr>

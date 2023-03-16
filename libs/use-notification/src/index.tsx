@@ -8,11 +8,11 @@ const useNotification = () => {
   const showError = (error: string) => {
     if (!toast.isActive(error)) {
       toast({
-        id: error,
         duration: 5000,
+        id: error,
         isClosable: true,
         position: 'top',
-        render: ({ onClose }) => <Alert status="error" message={error} onClose={onClose} />,
+        render: ({ onClose }) => <Alert message={error} onClose={onClose} status="error" />,
       });
     }
   };

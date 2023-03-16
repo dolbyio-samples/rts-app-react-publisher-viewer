@@ -6,9 +6,9 @@ let startTime = 0;
 let currentTime = 0;
 let interval: ReturnType<typeof setTimeout>;
 
-export type TimerProps = {
+export interface TimerProps {
   isActive: boolean;
-};
+}
 
 const formatTime = (time: number) => {
   return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
@@ -43,11 +43,11 @@ const Timer = ({ isActive = false }: TimerProps) => {
   }, [isActive]);
 
   return (
-    <Flex test-id="timer" alignItems="center">
+    <Flex alignItems="center" test-id="timer">
       <Text fontSize="32px" lineHeight="1">
         {sessionTime}
       </Text>
-      {isActive && <Box test-id="streamStatus" w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
+      {isActive && <Box bg="dolbyRed.500" borderRadius="50%" h="8px" ml="2.5" test-id="streamStatus" w="8px" />}
     </Flex>
   );
 };

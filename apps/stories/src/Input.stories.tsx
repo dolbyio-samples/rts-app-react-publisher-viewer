@@ -25,11 +25,11 @@ Default.args = {
   disabled: false,
   error: '',
   errorProps: {},
-  label: 'Input label',
-  labelProps: {},
   helper: '',
   helperProps: {},
   inputProps: {},
+  label: 'Input label',
+  labelProps: {},
   placeholder: '',
   required: true,
 };

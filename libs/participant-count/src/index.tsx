@@ -2,9 +2,9 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { IconEye } from '@millicast-react/dolbyio-icons';
 import React from 'react';
 
-export type ParticipantCountProps = {
+export interface ParticipantCountProps {
   count: string | number;
-};
+}
 
 const ParticipantCount = ({ count }: ParticipantCountProps) => {
   const formatText = (count: string | number): string => {
@@ -16,7 +16,7 @@ const ParticipantCount = ({ count }: ParticipantCountProps) => {
   };
 
   return (
-    <Flex test-id="participantCountView" color="dolbySecondary.200" alignItems="center">
+    <Flex alignItems="center" color="dolbySecondary.200" test-id="participantCountView">
       <Box boxSize={6}>
         <IconEye />
       </Box>

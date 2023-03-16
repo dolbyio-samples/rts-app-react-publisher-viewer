@@ -25,8 +25,8 @@ export const Default: Story = (args: Omit<DrawerProps, 'isOpen' | 'onClose'>) =>
             isRound
             onClick={handleOpen}
             position="absolute"
-            right="18px"
             reversed
+            right="18px"
             size="sm"
             testId="drawerOpenButton"
             tooltipProps={{ label: 'Drawer' }}

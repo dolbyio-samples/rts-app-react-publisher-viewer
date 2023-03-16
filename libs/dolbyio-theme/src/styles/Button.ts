@@ -2,54 +2,54 @@ import { defineStyleConfig } from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
-    letterSpacing: '1px',
     _loading: {
       _hover: {
         bg: 'dolbyPurple.500',
       },
     },
+    letterSpacing: '1px',
   },
   variants: {
-    solid: {
-      color: 'white',
+    icon: {
+      _active: { bg: 'dolbyNeutral.500', color: 'white' },
+      bg: 'white',
+
+      color: 'dolbyPurple.400',
+    },
+    iconReversed: {
+      _active: { bg: 'white', color: 'dolbyPurple.400' },
       _hover: {
-        bg: 'dolbyPurple.500',
-        boxShadow: '0 8px 14px rgba(106, 106, 109, 0.28)',
+        bg: 'dolbyNeutral.500',
       },
-      _focus: {
-        boxShadow: 'none',
-      },
-      bg: 'dolbyPurple.400',
+      bg: 'dolbyNeutral.500',
+      color: 'white',
+    },
+    link: {
+      color: 'white',
     },
     outline: {
       borderColor: 'dolbyPurple.400',
     },
-    iconReversed: {
+    solid: {
+      _focus: {
+        boxShadow: 'none',
+      },
+      _hover: {
+        bg: 'dolbyPurple.500',
+        boxShadow: '0 8px 14px rgba(106, 106, 109, 0.28)',
+      },
+      bg: 'dolbyPurple.400',
       color: 'white',
-      bg: 'dolbyNeutral.500',
+    },
+    transparent: {
       _hover: {
         bg: 'dolbyNeutral.500',
       },
-      _active: { bg: 'white', color: 'dolbyPurple.400' },
-    },
-    icon: {
-      bg: 'white',
-      color: 'dolbyPurple.400',
-
-      _active: { color: 'white', bg: 'dolbyNeutral.500' },
-    },
-    transparent: {
-      color: 'white',
       bg: 'transparent',
+      color: 'white',
       fontSize: '14px',
       px: '2',
       size: 'sm',
-      _hover: {
-        bg: 'dolbyNeutral.500',
-      },
-    },
-    link: {
-      color: 'white',
     },
   },
 });

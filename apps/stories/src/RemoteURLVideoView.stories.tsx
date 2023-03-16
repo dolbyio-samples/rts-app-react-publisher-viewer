@@ -26,15 +26,15 @@ export const Default: Story = () => {
       <ChakraProvider theme={dolbyioTheme}>
         <VStack>
           <VideoView
+            height="auto"
+            onError={(e) => console.log(e)}
+            onSrcMediaStreamClose={removeMediaStream}
+            onSrcMediaStreamReady={setMediaStream}
             src="http://localhost:8010/proxy/lipsynctest.333c28e3.mp4"
             width="400px"
-            height="auto"
-            onSrcMediaStreamReady={setMediaStream}
-            onSrcMediaStreamClose={removeMediaStream}
-            onError={(e) => console.log(e)}
           />
           {mediaStreams.map((stream) => (
-            <Text key={stream.id} color="black">
+            <Text color="black" key={stream.id}>
               Video track id: {stream.getVideoTracks()[0].id} in MediaStream from VideoView
             </Text>
           ))}
