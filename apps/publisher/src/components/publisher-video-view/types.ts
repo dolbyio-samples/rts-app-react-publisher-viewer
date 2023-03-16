@@ -1,7 +1,7 @@
 import { StreamStats } from '@millicast/sdk';
 
-import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 import { VideoViewProps } from '@millicast-react/video-view';
+import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
 
 import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 

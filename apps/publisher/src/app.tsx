@@ -33,12 +33,13 @@ import ShareLinkButton from '@millicast-react/share-link-button';
 import Timer from '@millicast-react/timer';
 import useLocalFiles from '@millicast-react/use-local-files';
 import useMediaDevices from '@millicast-react/use-media-devices';
-import useMultiMediaStreams, { Resolution, StreamTypes } from '@millicast-react/use-multi-media-streams';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
 import useScreenShare from '@millicast-react/use-screen-share';
+
 import PublisherVideoView from './components/publisher-video-view';
-import useCanCaptureStream from './hooks/useCanCaptureStream';
+import useCanCaptureStream from './hooks/use-can-capture-stream';
+import useMultiMediaStreams, { Resolution, StreamTypes } from './hooks/use-multi-media-streams';
 
 import './styles/font.css';
 

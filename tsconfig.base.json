@@ -39,7 +39,6 @@
       "@millicast-react/toggle-button": ["libs/toggle-button/src/index.tsx"],
       "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-local-files": ["libs/use-local-files/src/index.ts"],
-      "@millicast-react/use-multi-media-streams": ["libs/use-multi-media-streams/src/index.ts"],
       "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
       "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],

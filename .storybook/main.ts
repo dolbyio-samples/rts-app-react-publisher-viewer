@@ -27,10 +27,6 @@ export const rootMain: StorybookViteConfig = {
           '@millicast-react/toggle-button': path.resolve(__dirname, '../libs/toggle-button/src/index.tsx'),
           '@millicast-react/use-media-devices': path.resolve(__dirname, '../libs/use-media-devices/src/index.ts'),
           '@millicast-react/use-local-files': path.resolve(__dirname, '../libs/use-local-files/src/index.ts'),
-          '@millicast-react/use-multi-media-streams': path.resolve(
-            __dirname,
-            '../libs/use-multi-media-streams/src/index.ts'
-          ),
           '@millicast-react/use-screen-share': path.resolve(__dirname, '../libs/use-screen-share/src/index.ts'),
           '@millicast-react/video-view': path.resolve(__dirname, '../libs/video-view/src/index.tsx'),
         },

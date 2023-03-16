@@ -12,12 +12,12 @@ import {
   IconSoundOn,
 } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
+import LiveIndicator from '@millicast-react/live-indicator';
 import StatisticsPopover from '@millicast-react/statistics-popover';
+import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
 
 import { VideoControlBarProps } from './types';
 import SettingsPopover from './settings-popover';
-import LiveIndicator from '@millicast-react/live-indicator';
-import { StreamTypes } from '@millicast-react/use-multi-media-streams';
 
 const VideoControlBar = ({
   activeAudio,
