@@ -1,8 +1,8 @@
 import { IconButtonProps } from '@chakra-ui/react';
 import { VideoCodec } from '@millicast/sdk';
 
-import { Resolution } from '@millicast-react/use-multi-media-streams';
 import { Bitrate } from '@millicast-react/use-publisher';
+import { Resolution } from 'apps/publisher/src/hooks/use-multi-media-streams';
 
 export interface SettingsPopoverProps {
   bitrate?: {

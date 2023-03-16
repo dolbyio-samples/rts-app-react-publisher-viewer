@@ -31,12 +31,15 @@ import ParticipantCount from '@millicast-react/participant-count';
 import PopupMenu from '@millicast-react/popup-menu';
 import ShareLinkButton from '@millicast-react/share-link-button';
 import Timer from '@millicast-react/timer';
-import useMultiMediaStreams, { Resolution, StreamTypes } from '@millicast-react/use-multi-media-streams';
+import useLocalFiles from '@millicast-react/use-local-files';
+import useMediaDevices from '@millicast-react/use-media-devices';
 import useNotification from '@millicast-react/use-notification';
 import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
+import useScreenShare from '@millicast-react/use-screen-share';
 
 import PublisherVideoView from './components/publisher-video-view';
-import useCanCaptureStream from './hooks/useCanCaptureStream';
+import useCanCaptureStream from './hooks/use-can-capture-stream';
+import useMultiMediaStreams, { Resolution, StreamTypes } from './hooks/use-multi-media-streams';
 
 import './styles/font.css';
 
@@ -67,8 +70,15 @@ const App = () => {
 
   const canCaptureStream = useCanCaptureStream();
 
-  const { addStream, applyConstraints, cameraList, initDefaultStream, microphoneList, removeStream, streams } =
-    useMultiMediaStreams();
+  const localFiles = useLocalFiles();
+  const mediaDevices = useMediaDevices({ handleError: showError });
+  const screenShare = useScreenShare({ handleError: showError });
+
+  const { applyConstraints, streams } = useMultiMediaStreams({
+    localFiles: localFiles.files,
+    mediaDevices: mediaDevices.mediaStreams,
+    screenShare: screenShare.mediaStreams,
+  });
 
   const {
     codecList,
@@ -99,20 +109,30 @@ const App = () => {
     };
   }, []);
 
-  // Initialise default media device if no streams
+  // Initialise first media device if no streams
   useEffect(() => {
-    if (!streams.size) {
-      initDefaultStream();
+    if (streams.size) {
+      return;
     }
-  }, [cameraList.length, microphoneList.length, streams.size]);
+
+    const [initAudioDevice] = mediaDevices.audioDevices;
+    const [initVideoDevice] = mediaDevices.videoDevices;
+
+    if (initAudioDevice && initVideoDevice) {
+      mediaDevices.start({
+        audioDeviceId: initAudioDevice.deviceId,
+        videoDeviceId: initVideoDevice.deviceId,
+      });
+    }
+  }, [mediaDevices.videoDevices.length, mediaDevices.audioDevices.length, streams.size]);
 
   // Update default device selection values
   useEffect(() => {
-    if (isDeviceSelectionOpen && cameraList.length > 0 && microphoneList.length > 0) {
-      setNewCamera(cameraList[0]);
-      setNewMicrophone(microphoneList[0]);
+    if (isDeviceSelectionOpen && mediaDevices.videoDevices.length > 0 && mediaDevices.audioDevices.length > 0) {
+      setNewCamera(mediaDevices.videoDevices[0]);
+      setNewMicrophone(mediaDevices.audioDevices[0]);
     }
-  }, [isDeviceSelectionOpen, cameraList, microphoneList]);
+  }, [isDeviceSelectionOpen, mediaDevices.videoDevices, mediaDevices.audioDevices]);
 
   useEffect(() => {
     if (allStreamsLive) {
@@ -134,12 +154,7 @@ const App = () => {
     }
 
     if (sources.size < MAX_SOURCES) {
-      await addStream({
-        camera: newCamera,
-        label: newCamera.label,
-        microphone: newMicrophone,
-        type: StreamTypes.MEDIA,
-      });
+      mediaDevices.start({ audioDeviceId: newMicrophone.deviceId, videoDeviceId: newCamera.deviceId });
 
       handleCloseDeviceSelection();
 
@@ -160,7 +175,22 @@ const App = () => {
 
   const handleRemove = (id: string) => {
     stopStreamingToSource(id);
-    removeStream(id);
+
+    const stream = streams.get(id);
+
+    switch (stream?.type) {
+      case StreamTypes.DISPLAY:
+        screenShare.stop(id);
+        break;
+
+      case StreamTypes.LOCAL:
+        localFiles.remove(id);
+        break;
+
+      case StreamTypes.MEDIA:
+        mediaDevices.stop(id);
+        break;
+    }
   };
 
   const handleSelectBitrate = (id: string, bitrate: number) => {
@@ -205,7 +235,7 @@ const App = () => {
 
   const handleStartDisplayCapture = async () => {
     if (sources.size < MAX_SOURCES) {
-      await addStream({ type: StreamTypes.DISPLAY });
+      screenShare.start();
     }
   };
 
@@ -243,9 +273,7 @@ const App = () => {
     const { file } = Object.fromEntries(data.entries());
 
     if (file && file instanceof File) {
-      const objectUrl = URL.createObjectURL(file);
-
-      addStream({ label: file.name, objectUrl, type: StreamTypes.LOCAL });
+      localFiles.add(file);
     }
 
     onFileSelectModalClose();
@@ -452,7 +480,7 @@ const App = () => {
               },
               {
                 icon: <IconAddCamera />,
-                isDisabled: cameraList.length === 0 || microphoneList.length === 0,
+                isDisabled: mediaDevices.videoDevices.length === 0 || mediaDevices.audioDevices.length === 0,
                 onClick: handleOpenDeviceSelection,
                 text: 'Add cameras',
               },
@@ -472,10 +500,10 @@ const App = () => {
           />
           <DeviceSelection
             camera={newCamera}
-            cameraList={cameraList}
+            cameraList={mediaDevices.videoDevices}
             isOpen={isDeviceSelectionOpen}
             microphone={newMicrophone}
-            microphoneList={microphoneList}
+            microphoneList={mediaDevices.audioDevices}
             onClose={handleCloseDeviceSelection}
             onSelectCamera={setNewCamera}
             onSelectMicrophone={setNewMicrophone}
@@ -497,14 +525,7 @@ const App = () => {
                   <Text test-id="addLocalFileDesc" fontSize="md">
                     Pick a local file
                   </Text>
-                  <Center
-                    pb="32px"
-                    pt="16px"
-                    sx={{
-                      '#pickFile': { color: 'white' },
-                    }}
-                    width="100%"
-                  >
+                  <Center pb="32px" pt="16px" sx={{ '#pickFile': { color: 'white' } }} width="100%">
                     <input accept="video/*" id="pickFile" multiple={false} name="file" type="file" />
                   </Center>
                   <Button test-id="addStreamingFile" type="submit">
