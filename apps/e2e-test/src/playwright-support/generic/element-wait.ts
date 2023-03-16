@@ -42,7 +42,7 @@ export const waitFor = async <T>(
 export const waitForSelector = async (
   page: Page,
   selector: string,
-  options?: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; strict?: boolean, timeout?: number; }
+  options?: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; strict?: boolean; timeout?: number }
 ): Promise<boolean> => {
   try {
     const { state = 'visible', timeout = 30, strict = false } = options || {};
