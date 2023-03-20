@@ -1,13 +1,18 @@
 /* eslint-disable no-await-in-loop */
 import { Page } from 'playwright';
 
-import { logger } from '../../logger';
-import { delay } from '../../utils/helper';
-import { TargetSelector } from '../../utils/selector-mapper';
-import { Screen, State, Status } from '../../utils/types';
-import { click } from '../generic/element-action';
-import { getLocator } from '../generic/element-helper';
-import { getElementCount, getElementState, getElementText, getTableData } from '../generic/element-read';
+import { logger } from '#e2e-test/src/logger';
+import { click } from '#e2e-test/src/playwright-support/generic/element-action';
+import { getLocator } from '#e2e-test/src/playwright-support/generic/element-helper';
+import {
+  getElementCount,
+  getElementState,
+  getElementText,
+  getTableData,
+} from '#e2e-test/src/playwright-support/generic/element-read';
+import { delay } from '#e2e-test/src/utils/helper';
+import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
+import { Screen, State, Status } from '#e2e-test/src/utils/types';
 
 export const getViewScreenSize = async (page: Page, selector: TargetSelector, index?: number): Promise<Screen> => {
   logger.trace(`Get view screen size`);

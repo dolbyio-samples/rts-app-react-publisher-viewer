@@ -1,8 +1,8 @@
 import { Flex, Heading, Slide, Stack } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconClose } from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
+import { IconClose } from '#millicast-react/dolbyio-icons';
+import IconButton from '#millicast-react/icon-button';
 
 import { DrawerProps } from './types';
 

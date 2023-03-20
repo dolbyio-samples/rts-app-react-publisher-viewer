@@ -1,18 +1,19 @@
 /* eslint-disable func-names */
 import { DataTable, Then } from '@cucumber/cucumber';
 
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData } from '../../hooks/utils';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { getData } from '#e2e-test/src/hooks/utils';
 import {
   verifyDeviceStatus,
   verifyOptions,
   verifyOptionsContains,
   verifyViewScreenSize,
-} from '../../playwright-support/app-specific/element-verification';
-import { verifyElementState } from '../../playwright-support/generic/element-verification';
-import { waitFor } from '../../playwright-support/generic/element-wait';
-import { Screen, Status } from '../../utils/types';
-import { arrayContainsAll } from '../generic/utils';
+} from '#e2e-test/src/playwright-support/app-specific/element-verification';
+import { verifyElementState } from '#e2e-test/src/playwright-support/generic/element-verification';
+import { waitFor } from '#e2e-test/src/playwright-support/generic/element-wait';
+import { arrayContainsAll } from '#e2e-test/src/steps/generic/utils';
+import { Screen, Status } from '#e2e-test/src/utils/types';
+
 import { verifyFooterData, verifyHeaderData, verifySettings, verifyStats, verifyView } from './workflow/workflow';
 import {
   getDefaultFooterData,

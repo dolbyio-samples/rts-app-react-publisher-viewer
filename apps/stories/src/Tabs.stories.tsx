@@ -1,9 +1,9 @@
 import { Box, Center, ChakraProvider } from '@chakra-ui/react';
-import React from 'react';
 import { Meta, Story } from '@storybook/react';
+import React from 'react';
 
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import Tabs, { TabsProps } from '@millicast-react/tabs';
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import Tabs, { TabsProps } from '#millicast-react/tabs';
 
 export default {
   component: Tabs,

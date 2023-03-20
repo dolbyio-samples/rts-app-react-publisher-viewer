@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+
 /* eslint-disable func-names */
 import {
   Before,
@@ -11,16 +12,20 @@ import {
 } from '@cucumber/cucumber';
 import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
-import { options } from '../../test.config';
-import { selectorMappingPath } from '../config/defaults';
-import { logger } from '../logger';
-import { closePages, consoleLogsVerification, openPages } from '../playwright-support/app-specific/browser-actions';
-import { BrowserManager } from '../playwright-support/utils/BrowserManager';
-import { captureArtifacts } from '../playwright-support/utils/test-artifacts';
-import { formatURL } from '../utils/helper';
-import { SelectorMapper } from '../utils/selector-mapper';
-import { GlobalData } from './GlobalData';
+import { selectorMappingPath } from '#e2e-test/src/config/defaults';
+import { logger } from '#e2e-test/src/logger';
+import {
+  openPages,
+  consoleLogsVerification,
+  closePages,
+} from '#e2e-test/src/playwright-support/app-specific/browser-actions';
+import { BrowserManager } from '#e2e-test/src/playwright-support/utils/BrowserManager';
+import { captureArtifacts } from '#e2e-test/src/playwright-support/utils/test-artifacts';
+import { formatURL } from '#e2e-test/src/utils/helper';
+import { SelectorMapper } from '#e2e-test/src/utils/selector-mapper';
+import { options } from '#e2e-test/test.config';
 
+import { GlobalData } from './GlobalData';
 import { ScenarioWorld } from './ScenarioWorld';
 import { saveData } from './utils';
 

@@ -1,6 +1,6 @@
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData } from '../../hooks/utils';
-import { SelectorMapper, TargetSelector } from '../../utils/selector-mapper';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { getData } from '#e2e-test/src/hooks/utils';
+import { SelectorMapper, TargetSelector } from '#e2e-test/src/utils/selector-mapper';
 
 export function replacePlaceholder(text: string, dataSource: ScenarioWorld): string {
   const replaceRegEx = /\$\{(.*?)\}/g;

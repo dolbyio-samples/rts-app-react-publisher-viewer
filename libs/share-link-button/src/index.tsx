@@ -1,6 +1,7 @@
 import { Button, Tooltip, TooltipProps, useClipboard } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
-import { IconCopy } from '@millicast-react/dolbyio-icons';
+
+import { IconCopy } from '#millicast-react/dolbyio-icons';
 
 export interface ShareLinkButtonProps {
   linkText: string;

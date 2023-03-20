@@ -1,9 +1,10 @@
-import { Meta, Story } from '@storybook/react';
 import { ChakraProvider, Center } from '@chakra-ui/react';
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import InfoLabel from '@millicast-react/info-label';
-import type { InfoLabelProps } from '@millicast-react/info-label';
+import { Meta, Story } from '@storybook/react';
 import * as React from 'react';
+
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import InfoLabel from '#millicast-react/info-label';
+import { InfoLabelProps } from '#millicast-react/info-label';
 
 export default {
   component: InfoLabel,

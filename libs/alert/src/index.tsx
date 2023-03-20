@@ -1,4 +1,3 @@
-import React, { SVGProps } from 'react';
 import {
   Alert as ChakraAlert,
   AlertProps as ChakraAlertProps,
@@ -6,8 +5,9 @@ import {
   AlertIcon,
   CloseButton,
 } from '@chakra-ui/react';
+import React, { SVGProps } from 'react';
 
-import { IconClose, IconWarning } from '@millicast-react/dolbyio-icons';
+import { IconClose, IconWarning } from '#millicast-react/dolbyio-icons';
 
 type AlertProps = ChakraAlertProps & {
   message: string;

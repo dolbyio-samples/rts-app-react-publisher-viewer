@@ -1,13 +1,15 @@
 /* eslint-disable no-return-await */
+
 /* eslint-disable no-await-in-loop */
+
 /* eslint-disable no-restricted-syntax */
 import playwright, { Browser, BrowserContext, BrowserContextOptions, LaunchOptions, Page } from 'playwright';
 
-import { options } from '../../../test.config';
-import { defaultExecutionTimeout } from '../../config/defaults';
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { logger } from '../../logger';
-import { TestOptions } from '../../utils/types';
+import { defaultExecutionTimeout } from '#e2e-test/src/config/defaults';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { logger } from '#e2e-test/src/logger';
+import { TestOptions } from '#e2e-test/src/utils/types';
+import { options } from '#e2e-test/test.config';
 
 export class BrowserManager {
   options: TestOptions;

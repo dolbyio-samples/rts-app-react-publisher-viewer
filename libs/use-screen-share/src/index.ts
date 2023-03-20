@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { useScreenShare } from './types';
+import { UseScreenShareProps } from './types';
 
 /**
  * This hook handles screensharing and display capturing. Depending on the browser, an end user may
  * start or stop an arbitrary number of screenshare instances which are managed by this hook. All
  * currently active mediastreams are subsequently stored in state and can be read.
  */
-const useScreenShare = ({ handleError }: useScreenShare = {}) => {
+const useScreenShare = ({ handleError }: UseScreenShareProps = {}) => {
   const [mediaStreams, setMediaStreams] = useState<MediaStream[]>([]);
 
   const handleInternalError = (error: unknown) => {

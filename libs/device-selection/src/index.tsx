@@ -11,9 +11,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-import VideoView from '@millicast-react/video-view';
-import Dropdown from '@millicast-react/dropdown';
-import { IconCameraOn, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
+
+import { IconCameraOn, IconMicrophoneOn } from '#millicast-react/dolbyio-icons';
+import Dropdown from '#millicast-react/dropdown';
+import VideoView from '#millicast-react/video-view';
 
 import { DeviceSelectionProps } from './types';
 import { deviceElementResolver } from './utils';

@@ -1,9 +1,9 @@
 import { Box, ChakraProvider } from '@chakra-ui/react';
-import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
+import React, { useState } from 'react';
 
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import Input, { InputProps } from '@millicast-react/input';
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import Input, { InputProps } from '#millicast-react/input';
 
 export default {
   component: Input,

@@ -1,12 +1,12 @@
 /* eslint-disable func-names */
 import { Given, When } from '@cucumber/cucumber';
 
-import { options } from '../../../test.config';
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData, hasData, saveData } from '../../hooks/utils';
-import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';
-import { getElementText } from '../../playwright-support/generic/element-read';
-import { formatURL } from '../../utils/helper';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { getData, hasData, saveData } from '#e2e-test/src/hooks/utils';
+import { bringToFront, goToURL } from '#e2e-test/src/playwright-support/generic/browser-actions';
+import { getElementText } from '#e2e-test/src/playwright-support/generic/element-read';
+import { formatURL } from '#e2e-test/src/utils/helper';
+import { options } from '#e2e-test/test.config';
 
 Given(/^a publisher is on the "(preview)" page$/, async function (this: ScenarioWorld, pageName: string) {
   this.currentPageName = pageName;

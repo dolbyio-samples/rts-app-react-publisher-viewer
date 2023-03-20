@@ -1,11 +1,11 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconBitrate, IconCodec, IconResolution, IconSettings, IconSimulcast } from '@millicast-react/dolbyio-icons';
-import Dropdown from '@millicast-react/dropdown';
-import Input from '@millicast-react/input';
-import Popover from '@millicast-react/popover';
-import ToggleButton from '@millicast-react/toggle-button';
+import { IconBitrate, IconCodec, IconResolution, IconSettings, IconSimulcast } from '#millicast-react/dolbyio-icons';
+import Dropdown from '#millicast-react/dropdown';
+import Input from '#millicast-react/input';
+import Popover from '#millicast-react/popover';
+import ToggleButton from '#millicast-react/toggle-button';
 
 import { SettingsPopoverProps } from './types';
 import { bitrateElementResolver, codecElementResolver, resolutionElementResolver } from './utils';

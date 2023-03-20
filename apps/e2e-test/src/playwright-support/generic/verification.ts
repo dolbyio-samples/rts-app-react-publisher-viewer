@@ -1,8 +1,9 @@
-import { logger } from '../../logger';
 import assert from 'assertion';
 import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+
+import { logger } from '#e2e-test/src/logger';
 
 export const verifyMatch = (actual: string, expPattern: string, message?: string): void => {
   message = `${message || ''}\n\tExpected RegEx: ${expPattern}\n\tActual: ${actual}`;

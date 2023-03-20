@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { IconEye } from '@millicast-react/dolbyio-icons';
 import React from 'react';
+
+import { IconEye } from '#millicast-react/dolbyio-icons';
 
 export interface ParticipantCountProps {
   count: string | number;

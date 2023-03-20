@@ -1,18 +1,19 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
-import { defaultReportPath } from '../../config/defaults';
 
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
+import { defaultReportPath } from '#e2e-test/src/config/defaults';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
 import {
   verifyElementContainsText,
   verifyElementCount,
   verifyElementState,
   verifyElementText,
   verifyElementValue,
-} from '../../playwright-support/generic/element-verification';
-import { waitFor } from '../../playwright-support/generic/element-wait';
-import { verifyImageEqual, verifyImageNotEqual } from '../../playwright-support/generic/verification';
-import { State } from '../../utils/types';
+} from '#e2e-test/src/playwright-support/generic/element-verification';
+import { waitFor } from '#e2e-test/src/playwright-support/generic/element-wait';
+import { verifyImageEqual, verifyImageNotEqual } from '#e2e-test/src/playwright-support/generic/verification';
+import { State } from '#e2e-test/src/utils/types';
+
 import { replaceAttributeTargetSelector } from './utils';
 
 Then(

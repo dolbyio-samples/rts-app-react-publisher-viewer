@@ -22,25 +22,24 @@ import {
 import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 
-import ActionBar from '@millicast-react/action-bar';
-import DeviceSelection from '@millicast-react/device-selection';
-import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '@millicast-react/dolbyio-icons';
-import InfoLabel from '@millicast-react/info-label';
-import LiveIndicator from '@millicast-react/live-indicator';
-import ParticipantCount from '@millicast-react/participant-count';
-import PopupMenu from '@millicast-react/popup-menu';
-import ShareLinkButton from '@millicast-react/share-link-button';
-import Timer from '@millicast-react/timer';
-import useLocalFiles from '@millicast-react/use-local-files';
-import useMediaDevices from '@millicast-react/use-media-devices';
-import useNotification from '@millicast-react/use-notification';
-import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
-import useScreenShare from '@millicast-react/use-screen-share';
+import ActionBar from '#millicast-react/action-bar';
+import DeviceSelection from '#millicast-react/device-selection';
+import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '#millicast-react/dolbyio-icons';
+import InfoLabel from '#millicast-react/info-label';
+import LiveIndicator from '#millicast-react/live-indicator';
+import ParticipantCount from '#millicast-react/participant-count';
+import PopupMenu from '#millicast-react/popup-menu';
+import ShareLinkButton from '#millicast-react/share-link-button';
+import Timer from '#millicast-react/timer';
+import useLocalFiles from '#millicast-react/use-local-files';
+import useMediaDevices from '#millicast-react/use-media-devices';
+import useNotification from '#millicast-react/use-notification';
+import usePublisher, { bitrateList } from '#millicast-react/use-publisher';
+import useScreenShare from '#millicast-react/use-screen-share';
 
 import PublisherVideoView from './components/publisher-video-view';
 import useCanCaptureStream from './hooks/use-can-capture-stream';
 import useMultiMediaStreams, { Resolution, StreamTypes } from './hooks/use-multi-media-streams';
-
 import './styles/font.css';
 
 const MAX_SOURCES = 4;

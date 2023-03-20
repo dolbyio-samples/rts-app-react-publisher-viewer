@@ -1,10 +1,11 @@
 import { extendTheme } from '@chakra-ui/react';
+
+import Alert from './styles/Alert';
 import Button from './styles/Button';
 import Heading from './styles/Heading';
+import Modal from './styles/Modal';
 import Text from './styles/Text';
 import Tooltip from './styles/Tooltip';
-import Alert from './styles/Alert';
-import Modal from './styles/Modal';
 
 const dolbyioTheme = extendTheme({
   colors: {

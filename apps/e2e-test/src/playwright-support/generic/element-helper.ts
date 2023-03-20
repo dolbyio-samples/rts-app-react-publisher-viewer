@@ -1,6 +1,6 @@
 import { Locator, Page } from 'playwright';
 
-import { TargetSelector } from '../../utils/selector-mapper';
+import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
 
 export const getLocator = async (page: Page, selector: TargetSelector, index?: number): Promise<Locator> => {
   let targetLocator: Locator;

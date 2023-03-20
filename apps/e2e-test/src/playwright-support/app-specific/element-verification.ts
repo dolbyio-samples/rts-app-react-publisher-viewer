@@ -1,9 +1,10 @@
 import { expect } from '@playwright/test';
-import { Page } from 'playwright';
 import assert from 'assertion';
-import { logger } from '../../logger';
-import { TargetSelector } from '../../utils/selector-mapper';
-import { Screen, Status } from '../../utils/types';
+import { Page } from 'playwright';
+
+import { logger } from '#e2e-test/src/logger';
+import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
+import { Screen, Status } from '#e2e-test/src/utils/types';
 
 import { getDeviceStatus, getOptions, getViewScreenSize } from './element-read';
 

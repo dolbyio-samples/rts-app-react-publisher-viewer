@@ -1,15 +1,15 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-import fs from 'fs';
-import path from 'path';
 
+/* eslint-disable no-restricted-syntax */
 import { Status } from '@cucumber/cucumber';
 import { ITestCaseHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
+import fs from 'fs';
+import path from 'path';
 import { BrowserContext, Page } from 'playwright';
 
-import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { logger } from '../../logger';
-import { getData } from '../../hooks/utils';
+import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { getData } from '#e2e-test/src/hooks/utils';
+import { logger } from '#e2e-test/src/logger';
 
 export async function captureArtifacts(
   scenarioWorld: ScenarioWorld,

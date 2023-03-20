@@ -1,6 +1,7 @@
-import React from 'react';
 import { useToast } from '@chakra-ui/react';
-import Alert from '@millicast-react/alert';
+import React from 'react';
+
+import Alert from '#millicast-react/alert';
 
 const useNotification = () => {
   const toast = useToast();

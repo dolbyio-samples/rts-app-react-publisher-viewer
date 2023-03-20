@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import React, { memo, useEffect, useState } from 'react';
 
 const initialSessionTime = '00:00:00';
 let startTime = 0;

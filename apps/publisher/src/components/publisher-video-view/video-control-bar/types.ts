@@ -1,7 +1,7 @@
 import { StackProps } from '@chakra-ui/react';
 import { StreamStats } from '@millicast/sdk';
 
-import { StreamTypes } from '@millicast-react/use-multi-media-streams';
+import { StreamTypes } from '#publisher/src/hooks/use-multi-media-streams';
 
 import { SettingsPopoverProps } from './settings-popover';
 

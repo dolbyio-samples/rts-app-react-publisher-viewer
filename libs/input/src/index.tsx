@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import React, { ChangeEvent } from 'react';
 
-import { IconClose } from '@millicast-react/dolbyio-icons';
+import { IconClose } from '#millicast-react/dolbyio-icons';
 
 import { InputProps } from './types';
 
