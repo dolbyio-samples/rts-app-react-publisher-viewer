@@ -40,6 +40,7 @@ import useScreenShare from '#millicast-react/use-screen-share';
 import PublisherVideoView from './components/publisher-video-view';
 import useCanCaptureStream from './hooks/use-can-capture-stream';
 import useMultiMediaStreams, { Resolution, StreamTypes } from './hooks/use-multi-media-streams';
+
 import './styles/font.css';
 
 const MAX_SOURCES = 4;

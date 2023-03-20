@@ -4,7 +4,7 @@
   "importOrder": [
     "^@?([a-zA-Z0-9-_]+/*)+$(?!(css))",
     "^#[a-zA-Z0-9-_\\/]+[a-zA-Z0-9-_.]+?$",
-    "^[./]+([a-zA-Z0-9-_]+/*)+[a-zA-Z0-9-_.]+?$(?!(css))",
+    "^[./]+([a-zA-Z0-9-_]+/*)+[a-zA-Z0-9-_]+?$(?!(css))",
     "^(.*)css$"
   ],
   "importOrderSeparation": true,
