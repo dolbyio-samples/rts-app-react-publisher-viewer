@@ -32,7 +32,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@only and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"@only and not @ignore\""
         ]
       }
     },
@@ -47,7 +47,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --config ./apps/e2e-test/cucumber.ts --tags \"not @ignore\""
         ]
       }
     },
@@ -56,7 +56,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@camera-streaming and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@camera-streaming and not @ignore\""
         ],
         "parallel": false
       }
@@ -66,7 +66,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@local-file-streaming and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@local-file-streaming and not @ignore\""
         ],
         "parallel": false
       }
@@ -76,7 +76,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@multisource-streaming and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@multisource-streaming and not @ignore\""
         ],
         "parallel": false
       }
@@ -86,7 +86,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@publisher and not @local and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@publisher and not @local and not @ignore\""
         ]
       }
     },
@@ -103,7 +103,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@screen-share-streaming and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@screen-share-streaming and not @ignore\""
         ],
         "parallel": false
       }
@@ -113,7 +113,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local and not @ignore\""
+          "if [ {args.report} != undefined ]; then mkdir -p {args.report}; export REPORT_PATH={args.report}; fi; export TS_NODE_PROJECT=apps/e2e-test/tsconfig.json; cucumber-js --retry 2 --config ./apps/e2e-test/cucumber.ts --tags \"@viewer and not @local and not @ignore\""
         ]
       }
     }

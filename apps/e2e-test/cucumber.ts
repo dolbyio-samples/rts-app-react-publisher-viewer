@@ -3,6 +3,7 @@ const reportPath = process.env.REPORT_PATH || './apps/e2e-test/reports';
 const all = [
   './apps/e2e-test/features/**/*.feature',
   '--require-module ts-node/register',
+  '--require-module tsconfig-paths/register',
   '--require ./apps/e2e-test/src/hooks/**/*.ts',
   '--require ./apps/e2e-test/src/steps/**/*.step.ts',
   `-f json:${reportPath}/cucumber_report.json`,
