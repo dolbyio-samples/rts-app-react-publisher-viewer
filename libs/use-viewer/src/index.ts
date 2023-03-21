@@ -1,9 +1,9 @@
+import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
 import {
   BroadcastEvent,
   Director,
   MediaStreamLayers,
   MediaStreamSource,
-  StreamStats,
   View,
   ViewerCount,
   ViewProjectSourceMapping,
@@ -21,7 +21,10 @@ import {
 } from './types';
 import { addRemoteTrack, buildQualityOptions, projectToStream, unprojectFromStream } from './utils';
 
+const GET_STATS_INTERVAL = 1000;
+
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
+  const collectionRef = useRef<WebRTCStats>();
   const viewerRef = useRef<View>();
 
   const [remoteTrackSources, dispatch] = useReducer(reducer, new Map() as RemoteTrackSources);
@@ -36,7 +39,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
   const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>(buildQualityOptions());
-  const [mainStatistics, setMainStatistics] = useState<StreamStats>();
+  const [mainStatistics, setMainStatistics] = useState<OnStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
 
   const handleInternalError = (error: unknown) => {
@@ -149,30 +152,25 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   };
 
   const handleConnectionStateChange = (event: string) => {
-    const { current: viewer } = viewerRef;
-
-    if (!viewer) {
-      return;
-    }
+    const { current: collection } = collectionRef;
 
     if (event === 'closed') {
-      viewer.webRTCPeer?.removeAllListeners('stats');
-      viewer.webRTCPeer?.stopStats();
+      collection?.stop();
     }
 
     if (event === 'connected') {
-      viewer.webRTCPeer?.initStats();
-      viewer.webRTCPeer?.on('stats', handleStats);
+      collection?.stop();
+      collection?.start();
     }
   };
 
-  const handleStats = (statistics: StreamStats) => {
-    const { audio, video } = statistics;
+  const handleStats = (statistics: OnStats) => {
+    const { audio, video } = statistics.input;
 
-    const audioIn = audio.inbounds?.filter(({ mid }) => mid === mainAudioMappingRef.current?.mediaId) ?? [];
-    const videoIn = video.inbounds?.filter(({ mid }) => mid === mainVideoMappingRef.current?.mediaId) ?? [];
+    const mainAudio = audio.filter(({ mid }) => mid === mainAudioMappingRef.current?.mediaId) ?? [];
+    const mainVideo = video.filter(({ mid }) => mid === mainVideoMappingRef.current?.mediaId) ?? [];
 
-    setMainStatistics({ ...statistics, audio: { inbounds: audioIn }, video: { inbounds: videoIn } });
+    setMainStatistics({ ...statistics, input: { audio: mainAudio, video: mainVideo } });
   };
 
   // Get the audio/video media IDs for the main stream from the track event
@@ -261,13 +259,21 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const startViewer = async () => {
     if (!viewerRef.current?.isActive()) {
       try {
-        const newViewer = new View(streamName, tokenGenerator);
+        const viewer = new View(streamName, tokenGenerator);
 
-        newViewer.on('broadcastEvent', handleBroadcastEvent);
-        newViewer.on('connectionStateChange', handleConnectionStateChange);
-        newViewer.on('track', handleTrack);
+        viewer.on('broadcastEvent', handleBroadcastEvent);
+        viewer.on('connectionStateChange', handleConnectionStateChange);
+        viewer.on('track', handleTrack);
 
-        viewerRef.current = newViewer;
+        const collection = new WebRTCStats({
+          getStatsInterval: GET_STATS_INTERVAL,
+          getStats: () => viewer.webRTCPeer?.getRTCPeer().getStats(),
+        });
+
+        collection.on('stats', handleStats);
+
+        collectionRef.current = collection;
+        viewerRef.current = viewer;
 
         connect();
       } catch (error) {
@@ -278,11 +284,11 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   const stopViewer = () => {
     const { current: viewer } = viewerRef;
+    const { current: collection } = collectionRef;
 
     if (viewer) {
       viewer.removeAllListeners('broadcastEvent');
-      viewer.webRTCPeer?.removeAllListeners('stats');
-      viewer.webRTCPeer?.stopStats();
+      collection?.stop();
       viewer.stop();
 
       viewerRef.current = undefined;

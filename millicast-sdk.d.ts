@@ -99,64 +99,6 @@ declare namespace millicast {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
 
-  type StreamAudioOutboundsStats = {
-    bitrate: number;
-    id: string;
-    mid: string;
-    mimeType: string;
-    timestamp: number;
-    totalBytesSent: number;
-  };
-
-  type StreamAudioInboundsStats = {
-    bitrate: number;
-    id: string;
-    jitter: number;
-    mid: string;
-    mimeType: string;
-    timestamp: number;
-    packetsLostDeltaPerSecond: number;
-    packetsLostRatioPerSecond: number;
-    totalBytesReceived: number;
-    totalPacketsReceived: number;
-    totalPacketsLost: number;
-  };
-
-  type StreamAudioStats = {
-    inbounds?: StreamAudioInboundsStats[];
-    outbounds?: StreamAudioOutboundsStats[];
-  };
-
-  type StreamVideoOutboundsStats = {
-    bitrate: number;
-    frameHeight: number;
-    frameWidth: number;
-    framesPerSecond: number;
-    id: string;
-    mid: string;
-    mimeType: string;
-    qualityLimitationReason: string;
-    timestamp: number;
-    totalBytesSent: number;
-  };
-
-  type StreamVideoInboundsStats = {
-    bitrate: number;
-    frameHeight: number;
-    frameWidth: number;
-    framesPerSecond?: number;
-    jitter: number;
-    id: string;
-    mid: string;
-    mimeType: string;
-    packetsLostDeltaPerSecond: number;
-    packetsLostRatioPerSecond: number;
-    totalBytesReceived: number;
-    totalPacketsLost: number;
-    totalPacketsReceived: number;
-    timestamp: number;
-  };
-
   type StreamVideoStats = {
     inbounds?: StreamVideoInboundsStats[];
     outbounds?: StreamVideoOutboundsStats[];

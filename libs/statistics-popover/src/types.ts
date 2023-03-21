@@ -1,9 +1,9 @@
 import { IconButtonProps } from '@chakra-ui/react';
-import { StreamStats } from '@millicast/sdk';
+import { OnStats } from '@dolbyio/webrtc-stats';
 
 export interface StatisticsPopoverProps {
   iconProps?: Omit<IconButtonProps, 'aria-label'>;
-  statistics?: StreamStats;
+  statistics?: OnStats;
 }
 
 export type TabQualities = Array<'High' | 'Medium' | 'Low'>;

@@ -1,13 +1,8 @@
-import {
-  StreamAudioInboundsStats,
-  StreamAudioOutboundsStats,
-  StreamVideoInboundsStats,
-  StreamVideoOutboundsStats,
-} from '@millicast/sdk';
+import { InputAudio, InputVideo, OutputAudio, OutputVideo } from '@dolbyio/webrtc-stats';
 
 export interface StatisticsInfoProps {
   statistics?: {
-    audio?: StreamAudioInboundsStats | StreamAudioOutboundsStats;
+    audio?: InputAudio | OutputAudio;
     availableOutgoingBitrate?: number;
     candidateType?: string;
     currentRoundTripTime?: number;
@@ -15,6 +10,6 @@ export interface StatisticsInfoProps {
       size: number;
     };
     totalRoundTripTime?: number;
-    video?: StreamVideoInboundsStats | StreamVideoOutboundsStats;
+    video?: InputVideo | OutputVideo;
   };
 }

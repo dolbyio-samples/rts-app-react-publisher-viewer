@@ -1,10 +1,5 @@
 import { Box, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import {
-  StreamAudioInboundsStats,
-  StreamAudioOutboundsStats,
-  StreamVideoInboundsStats,
-  StreamVideoOutboundsStats,
-} from '@millicast/sdk';
+import { InputAudio, InputVideo, OutputAudio, OutputVideo } from '@dolbyio/webrtc-stats';
 import React, { memo, useMemo } from 'react';
 
 import { StatisticsInfoProps } from './types';
@@ -22,10 +17,10 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
     }
 
     if (isAudioInbound) {
-      return (audio as StreamAudioInboundsStats).totalBytesReceived;
+      return (audio as InputAudio).totalBytesReceived;
     }
 
-    return (audio as StreamAudioOutboundsStats).totalBytesSent;
+    return (audio as OutputAudio).totalBytesSent;
   }, [audio]);
 
   const videoTotal = useMemo(() => {
@@ -34,10 +29,10 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
     }
 
     if (isVideoInbound) {
-      return (video as StreamVideoInboundsStats).totalBytesReceived;
+      return (video as InputVideo).totalBytesReceived;
     }
 
-    return (video as StreamVideoOutboundsStats).totalBytesSent;
+    return (video as OutputVideo).totalBytesSent;
   }, [video]);
 
   return (
@@ -82,26 +77,27 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                     <Th>Video resolution:</Th>
                     <Td>{`${video.frameWidth}x${video.frameHeight}`}</Td>
                   </Tr>
+                  {/* Dolby.io WebRTC Statistics library doesn't seem to provide this at the moment */}
                   {'qualityLimitationReason' in video ? (
                     <Tr>
                       <Th>Quality limitation reason:</Th>
-                      <Td>{(video as StreamVideoOutboundsStats).qualityLimitationReason}</Td>
+                      <Td>{`${video.qualityLimitationReason}`}</Td>
                     </Tr>
                   ) : undefined}
                   <Tr>
                     <Th>Frames per second:</Th>
-                    <Td>{video ? video.framesPerSecond || 0 : ''}</Td>
+                    <Td>{video ? video.framesPerSecond : '0'}</Td>
                   </Tr>
                   <Tr>
                     <Th>Video bitrate:</Th>
-                    <Td>{video ? formatBitrate(video.bitrate) : ''}</Td>
+                    <Td>{formatBitrate(video.bitrate ?? 0)}</Td>
                   </Tr>
                 </>
               ) : undefined}
               {audio ? (
                 <Tr>
                   <Th>Audio bitrate:</Th>
-                  <Td>{audio ? formatBitrate(audio.bitrate) : ''}</Td>
+                  <Td>{formatBitrate(audio.bitrate ?? 0)}</Td>
                 </Tr>
               ) : undefined}
               {videoTotal ? (
@@ -119,13 +115,13 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               {video ? (
                 <Tr>
                   <Th>Codecs:</Th>
-                  <Td>{video ? `${video.mimeType}` + (audio ? `, ${audio.mimeType}` : '') : ''}</Td>
+                  <Td>{`${video.mimeType}` + (audio ? `, ${audio.mimeType}` : 'unknown')}</Td>
                 </Tr>
               ) : undefined}
               {video || audio ? (
                 <Tr>
                   <Th>Timestamp:</Th>
-                  <Td>{video ? formatTimestamp(video.timestamp) : ''}</Td>
+                  <Td>{formatTimestamp(video?.timestamp ?? audio?.timestamp)}</Td>
                 </Tr>
               ) : undefined}
             </Tbody>

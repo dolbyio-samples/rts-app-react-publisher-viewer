@@ -1,4 +1,5 @@
-import { LayerInfo, StreamStats, ViewProjectSourceMapping } from '@millicast/sdk';
+import { OnStats } from '@dolbyio/webrtc-stats';
+import { LayerInfo, ViewProjectSourceMapping } from '@millicast/sdk';
 
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
@@ -27,7 +28,7 @@ export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 export interface Viewer {
   mainMediaStream?: MediaStream;
   mainQualityOptions: SimulcastQuality[];
-  mainStatistics?: StreamStats;
+  mainStatistics?: OnStats;
   projectToMainStream: (sourceId?: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
   reprojectFromMainStream: (sourceId?: string) => void;
