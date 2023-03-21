@@ -86,18 +86,18 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                   ) : undefined}
                   <Tr>
                     <Th>Frames per second:</Th>
-                    <Td>{video ? video.framesPerSecond || 0 : ''}</Td>
+                    <Td>{video ? video.framesPerSecond : '0'}</Td>
                   </Tr>
                   <Tr>
                     <Th>Video bitrate:</Th>
-                    <Td>{video.bitrate ? formatBitrate(video.bitrate) : ''}</Td>
+                    <Td>{formatBitrate(video.bitrate ?? 0)}</Td>
                   </Tr>
                 </>
               ) : undefined}
               {audio ? (
                 <Tr>
                   <Th>Audio bitrate:</Th>
-                  <Td>{audio.bitrate ? formatBitrate(audio.bitrate) : ''}</Td>
+                  <Td>{formatBitrate(audio.bitrate ?? 0)}</Td>
                 </Tr>
               ) : undefined}
               {videoTotal ? (
@@ -115,7 +115,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               {video ? (
                 <Tr>
                   <Th>Codecs:</Th>
-                  <Td>{`${video.mimeType}` + (audio ? `, ${audio.mimeType}` : '')}</Td>
+                  <Td>{`${video.mimeType}` + (audio ? `, ${audio.mimeType}` : 'unknown')}</Td>
                 </Tr>
               ) : undefined}
               {video || audio ? (
