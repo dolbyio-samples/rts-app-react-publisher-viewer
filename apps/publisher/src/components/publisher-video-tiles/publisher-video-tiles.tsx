@@ -9,8 +9,6 @@ import VideoTile from './video-tile';
 import { Resolution, StreamTypes } from '../../hooks/use-multi-media-streams';
 import { PublisherVideoTilesProps } from './types';
 
-import '../../styles/font.css';
-
 const PublisherVideoTiles = ({
   allSourcesLive,
   applyConstraints,

@@ -10,7 +10,6 @@ import useViewer from '@millicast-react/use-viewer';
 import ViewerVideoTiles from './components/viewer-video-tiles';
 
 import './styles/app.css';
-import './styles/font.css';
 
 const App = () => {
   const href = new URL(window.location.href);

@@ -8,8 +8,6 @@ import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
 
-import '../../styles/font.css';
-
 const MAX_SOURCES = 4;
 
 const ViewerVideoTiles = ({
