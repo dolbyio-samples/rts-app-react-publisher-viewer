@@ -54,9 +54,8 @@ const App = () => {
               bgColor="dolbyNeutral.300"
               color="white"
               fontWeight="600"
-              h="auto"
-              ml="2.5"
-              py="5px"
+              height="auto"
+              padding="6px 18px"
               test-id="multiSource"
               text="Multi–stream view"
             />

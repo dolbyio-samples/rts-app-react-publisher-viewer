@@ -161,11 +161,10 @@ const App = () => {
               bgColor="dolbyNeutral.300"
               color="white"
               fontWeight="600"
-              h="auto"
-              ml="2.5"
-              py="5px"
+              height="auto"
+              padding="6px 8px"
               test-id="multiSource"
-              text="Multi–stream view"
+              text="Multisource enabled"
             />
           </Flex>
         ) : undefined}
