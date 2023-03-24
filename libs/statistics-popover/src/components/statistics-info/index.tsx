@@ -77,16 +77,15 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
                     <Th>Video resolution:</Th>
                     <Td>{`${video.frameWidth}x${video.frameHeight}`}</Td>
                   </Tr>
-                  {/* Dolby.io WebRTC Statistics library doesn't seem to provide this at the moment */}
                   {'qualityLimitationReason' in video ? (
                     <Tr>
                       <Th>Quality limitation reason:</Th>
-                      <Td>{`${video.qualityLimitationReason}`}</Td>
+                      <Td>{video.qualityLimitationReason}</Td>
                     </Tr>
                   ) : undefined}
                   <Tr>
                     <Th>Frames per second:</Th>
-                    <Td>{video ? video.framesPerSecond : '0'}</Td>
+                    <Td>{video.framesPerSecond ?? 0}</Td>
                   </Tr>
                   <Tr>
                     <Th>Video bitrate:</Th>
