@@ -57,6 +57,7 @@ const App = () => {
               h="auto"
               ml="2.5"
               py="5px"
+              test-id="multiSource"
               text="Multi–stream view"
             />
           </Flex>

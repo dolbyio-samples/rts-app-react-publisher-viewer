@@ -48,11 +48,11 @@ const App = () => {
     viewerCount,
   } = usePublisher({
     handleError: showError,
-    streamNameId: VITE_RTS_ACCOUNT_ID,
-    streams,
     streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
+    streamNameId: VITE_RTS_ACCOUNT_ID,
     token: VITE_RTS_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_RTS_VIEWER_BASE_URL,
+    streams,
   });
 
   // Initialise first media device if no streams
@@ -164,6 +164,7 @@ const App = () => {
               h="auto"
               ml="2.5"
               py="5px"
+              test-id="multiSource"
               text="Multi–stream view"
             />
           </Flex>
