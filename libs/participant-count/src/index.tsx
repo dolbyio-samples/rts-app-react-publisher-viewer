@@ -9,10 +9,10 @@ export interface ParticipantCountProps {
 const ParticipantCount = ({ count = 0 }: ParticipantCountProps) => {
   const participantCountText = useMemo(() => {
     if (Number(count) === 1) {
-      return '1 viewer';
+      return '1 Viewer';
     }
 
-    return `${count} viewers`;
+    return `${count} Viewers`;
   }, [count]);
 
   return (

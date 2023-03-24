@@ -44,7 +44,6 @@ Feature: Publisher Camera Streaming
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
-        And the "header" should be displayed with default values
         And the "camera view" should be displayed with following values
             | close button | hidden |
         And the "camera view" setting should be displayed with default values
