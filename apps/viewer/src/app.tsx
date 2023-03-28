@@ -1,13 +1,13 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import ActionBar from '#millicast-react/action-bar';
-import { IconProfile } from '#millicast-react/dolbyio-icons';
-import InfoLabel from '#millicast-react/info-label';
-import ParticipantCount from '#millicast-react/participant-count';
-import Timer from '#millicast-react/timer';
-import useNotification from '#millicast-react/use-notification';
-import useViewer, { SimulcastQuality } from '#millicast-react/use-viewer';
+import ActionBar from '@millicast-react/action-bar';
+import { IconProfile } from '@millicast-react/dolbyio-icons';
+import InfoLabel from '@millicast-react/info-label';
+import ParticipantCount from '@millicast-react/participant-count';
+import Timer from '@millicast-react/timer';
+import useNotification from '@millicast-react/use-notification';
+import useViewer, { SimulcastQuality } from '@millicast-react/use-viewer';
 
 import ViewerVideoView from './components/viewer-video-view';
 import usePlaybackControl from './hooks/use-playback-control';

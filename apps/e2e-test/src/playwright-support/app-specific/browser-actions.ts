@@ -1,15 +1,12 @@
 /* eslint-disable no-await-in-loop */
-
 /* eslint-disable no-restricted-syntax */
-
 /* eslint-disable no-param-reassign */
 import { expect } from '@playwright/test';
 import { BrowserContext } from 'playwright';
-
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { getData, saveData } from '#e2e-test/src/hooks/utils';
-import { logger } from '#e2e-test/src/logger';
-import { BrowserManager } from '#e2e-test/src/playwright-support/utils/BrowserManager';
+import { ScenarioWorld } from '../../hooks/ScenarioWorld';
+import { getData, saveData } from '../../hooks/utils';
+import { logger } from '../../logger';
+import { BrowserManager } from '../utils/BrowserManager';
 
 export async function openPages(
   scenarioWorld: ScenarioWorld,

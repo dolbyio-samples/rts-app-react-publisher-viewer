@@ -1,9 +1,9 @@
 /* eslint-disable no-return-await */
 import { Page } from 'playwright';
 
-import { logger } from '#e2e-test/src/logger';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
-import { State } from '#e2e-test/src/utils/types';
+import { logger } from '../../logger';
+import { TargetSelector } from '../../utils/selector-mapper';
+import { State } from '../../utils/types';
 
 import { getLocator } from './element-helper';
 

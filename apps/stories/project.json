@@ -1,47 +1,47 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "stories",
-  "projectType": "application",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/stories/src",
-  "tags": [],
+  "projectType": "application",
   "targets": {
-    "build-storybook": {
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      },
-      "executor": "@nrwl/storybook:build",
-      "options": {
-        "config": {
-          "configFolder": "apps/stories/.storybook"
-        },
-        "outputPath": "dist/storybook/stories",
-        "uiFramework": "@storybook/react"
-      },
-      "outputs": ["{options.outputPath}"]
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/stories/**/*.{ts,js,tsx,jsx}"]
-      },
-      "outputs": ["{options.outputFile}"]
+      }
     },
     "storybook": {
+      "executor": "@nrwl/storybook:storybook",
+      "options": {
+        "uiFramework": "@storybook/react",
+        "port": 4400,
+        "config": {
+          "configFolder": "apps/stories/.storybook"
+        }
+      },
       "configurations": {
         "ci": {
           "quiet": true
         }
-      },
-      "executor": "@nrwl/storybook:storybook",
+      }
+    },
+    "build-storybook": {
+      "executor": "@nrwl/storybook:build",
+      "outputs": ["{options.outputPath}"],
       "options": {
+        "uiFramework": "@storybook/react",
+        "outputPath": "dist/storybook/stories",
         "config": {
           "configFolder": "apps/stories/.storybook"
-        },
-        "port": 4400,
-        "uiFramework": "@storybook/react"
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
       }
     }
-  }
+  },
+  "tags": []
 }

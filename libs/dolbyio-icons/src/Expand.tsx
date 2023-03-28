@@ -1,4 +1,5 @@
-import React, { SVGProps } from 'react';
+import type { SVGProps } from 'react';
+import React from 'react';
 
 const SvgPlay = ({ fill, ...rest }: SVGProps<SVGSVGElement>) => (
   <svg

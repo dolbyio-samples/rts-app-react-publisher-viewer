@@ -1,6 +1,6 @@
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { getData } from '#e2e-test/src/hooks/utils';
-import { SelectorMapper, TargetSelector } from '#e2e-test/src/utils/selector-mapper';
+import { ScenarioWorld } from '../../hooks/ScenarioWorld';
+import { getData } from '../../hooks/utils';
+import { SelectorMapper, TargetSelector } from '../../utils/selector-mapper';
 
 export function replacePlaceholder(text: string, dataSource: ScenarioWorld): string {
   const replaceRegEx = /\$\{(.*?)\}/g;
@@ -26,8 +26,8 @@ export function getValidationCondition(selectorMap: SelectorMapper, pageName: st
   const validationCondition = selectorMap.getSelector(pageName, 'validation') as string;
   const validationArray = validationCondition.split(':');
   return {
-    condition: validationArray.length > 1 ? validationArray[1] : 'displayed',
     selector: validationArray[0],
+    condition: validationArray.length > 1 ? validationArray[1] : 'displayed',
   };
 }
 

@@ -1,5 +1,4 @@
 import { MediaLayer, MediaTrackInfo, View, ViewProjectSourceMapping } from '@millicast/sdk';
-
 import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
 export const addRemoteTrack = async (

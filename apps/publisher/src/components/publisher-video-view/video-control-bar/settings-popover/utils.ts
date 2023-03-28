@@ -1,7 +1,7 @@
 import { VideoCodec } from '@millicast/sdk';
 
-import { Bitrate } from '#millicast-react/use-publisher';
-import { Resolution } from '#publisher/src/hooks/use-multi-media-streams';
+import { Resolution } from '@millicast-react/use-multi-media-streams';
+import { Bitrate } from '@millicast-react/use-publisher';
 
 export const bitrateElementResolver = (element: unknown) => {
   const bitrateElement = element as Bitrate;

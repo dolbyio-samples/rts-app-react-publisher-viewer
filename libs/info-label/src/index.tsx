@@ -8,17 +8,17 @@ export type InfoLabelProps = FlexProps & {
 const InfoLabel = ({ text, color = 'dolbyPurple.400', bgColor = 'white', ...rest }: InfoLabelProps) => {
   return (
     <Flex
-      alignItems="center"
-      backdropBlur="4px"
-      backdropFilter="auto"
       bgColor={bgColor}
+      backdropFilter="auto"
+      backdropBlur="4px"
+      alignItems="center"
+      py="2px"
+      px="8px"
+      h="20px"
       borderRadius="4px"
       fontSize="12px"
-      h="20px"
-      lineHeight="16px"
-      px="8px"
-      py="2px"
       textColor={color}
+      lineHeight="16px"
       {...rest}
     >
       {text}

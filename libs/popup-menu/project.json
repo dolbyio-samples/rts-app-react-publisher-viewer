@@ -1,24 +1,24 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "popup-menu",
-  "projectType": "library",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/popup-menu/src",
+  "projectType": "library",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/popup-menu/**/*.{ts,js}"]
-      },
-      "outputs": ["{options.outputFile}"]
+      }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/popup-menu/jest.config.ts",
         "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+      }
     }
   }
 }

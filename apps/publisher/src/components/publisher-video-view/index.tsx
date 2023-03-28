@@ -1,8 +1,8 @@
 import { Box, CloseButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
-import VideoView from '#millicast-react/video-view';
-import { StreamTypes } from '#publisher/src/hooks/use-multi-media-streams';
+import VideoView from '@millicast-react/video-view';
+import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
 
 import { PublisherVideoViewProps } from './types';
 import VideoControlBar from './video-control-bar';

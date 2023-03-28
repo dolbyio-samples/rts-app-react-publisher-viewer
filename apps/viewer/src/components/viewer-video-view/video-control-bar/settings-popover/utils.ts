@@ -1,4 +1,4 @@
-import { SimulcastQuality } from '#millicast-react/use-viewer';
+import { SimulcastQuality } from '@millicast-react/use-viewer';
 
 export const qualityElementResolver = (element: unknown) => {
   const quality = element as SimulcastQuality;

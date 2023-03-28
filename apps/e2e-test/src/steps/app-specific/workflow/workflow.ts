@@ -1,18 +1,16 @@
-import fs from 'fs';
+import { getElementText } from '../../../playwright-support/generic/element-read';
+import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
+import { logger } from '../../../logger';
+import { selectSettingDropdown, toogleSimulcast } from '../../../playwright-support/app-specific/element-action';
+import { getStreamStats } from '../../../playwright-support/app-specific/element-read';
+import { verifyViewScreenSize } from '../../../playwright-support/app-specific/element-verification';
+import { clearText, click, enterText } from '../../../playwright-support/generic/element-action';
 
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { logger } from '#e2e-test/src/logger';
-import { selectSettingDropdown, toogleSimulcast } from '#e2e-test/src/playwright-support/app-specific/element-action';
-import { getStreamStats } from '#e2e-test/src/playwright-support/app-specific/element-read';
-import { verifyViewScreenSize } from '#e2e-test/src/playwright-support/app-specific/element-verification';
-import { clearText, click, enterText } from '#e2e-test/src/playwright-support/generic/element-action';
-import { getElementText } from '#e2e-test/src/playwright-support/generic/element-read';
-import { waitFor } from '#e2e-test/src/playwright-support/generic/element-wait';
-import { verifyArrayContains, verifyEqualTo } from '#e2e-test/src/playwright-support/generic/verification';
-import { replaceAttributeTargetSelector } from '#e2e-test/src/steps/generic/utils';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
-import { State, Status, Screen } from '#e2e-test/src/utils/types';
-
+import { waitFor } from '../../../playwright-support/generic/element-wait';
+import { verifyArrayContains, verifyEqualTo } from '../../../playwright-support/generic/verification';
+import { TargetSelector } from '../../../utils/selector-mapper';
+import { State, Status, Screen } from '../../../utils/types';
+import { replaceAttributeTargetSelector } from '../../generic/utils';
 import {
   addCamera,
   addLocalFile,
@@ -24,6 +22,7 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
+import fs from 'fs';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,

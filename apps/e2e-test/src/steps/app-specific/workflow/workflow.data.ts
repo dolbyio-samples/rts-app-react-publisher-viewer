@@ -1,33 +1,33 @@
-type ViewData = Record<string, string>;
+type ViewData = { [key: string]: string };
 
 const ViewDefaultData: ViewData = {
-  'audio button': 'displayed|enabled',
-  'audio button status': 'On',
-  'close button': 'displayed|enabled',
-  'full screen button': 'hidden',
-  'setting button': 'displayed|enabled',
   size: 'Normal',
   'source name': 'displayed',
+  'setting button': 'displayed|enabled',
+  'audio button': 'displayed|enabled',
+  'audio button status': 'On',
   'video button': 'displayed|enabled',
   'video button status': 'On',
+  'full screen button': 'hidden',
+  'close button': 'displayed|enabled',
 };
 
 const previewViewDefaultData: ViewData = {
   ...ViewDefaultData,
+  'stream info button': 'hidden',
   'go live button': 'displayed|enabled',
   'go live button text': 'GO LIVE',
   'stop button': 'hidden',
   'stop button text': 'ignore: ',
-  'stream info button': 'hidden',
 };
 
 const streamingViewDefaultData: ViewData = {
   ...ViewDefaultData,
+  'stream info button': 'displayed|enabled',
   'go live button': 'hidden',
   'go live button text': 'ignore: ',
   'stop button': 'displayed|enabled',
   'stop button text': 'STOP',
-  'stream info button': 'displayed|enabled',
 };
 
 const publisherPreviewCameraViewDefaultData: ViewData = {
@@ -52,88 +52,88 @@ const publisherStreamingScreenViewDefaultData: ViewData = {
 
 const publisherPreviewLocalFileViewDefaultData: ViewData = {
   ...previewViewDefaultData,
+  'source name text': 'contains: local-file.mp4',
   'playback button': 'displayed|enabled',
   'playback button status': 'On',
-  'source name text': 'contains: local-file.mp4',
 };
 
 const publisherStreamingLocalFileViewDefaultData: ViewData = {
   ...streamingViewDefaultData,
+  'source name text': 'contains: local-file.mp4',
   'playback button': 'displayed|enabled',
   'playback button status': 'On',
-  'source name text': 'contains: local-file.mp4',
 };
 
 const viewerStreamingMainViewDefaultData: ViewData = {
   ...ViewDefaultData,
+  'source name text': 'ignore: ',
   'audio button': 'displayed|enabled',
   'audio button status': 'Off',
-  'close button': 'hidden',
-  'full screen button': 'displayed|enabled',
-  'go live button': 'hidden',
-  'go live button text': 'ignore: ',
   'playback button': 'displayed|enabled',
   'playback button status': 'On',
-  'source name text': 'ignore: ',
+  'full screen button': 'displayed|enabled',
+  'stream info button': 'displayed|enabled',
+  'go live button': 'hidden',
+  'go live button text': 'ignore: ',
   'stop button': 'hidden',
   'stop button text': 'ignore: ',
-  'stream info button': 'displayed|enabled',
+  'close button': 'hidden',
 };
 
 const headerData: ViewData = {
   'company name': 'displayed',
   'company name text': 'Company name',
+  timer: 'displayed',
   'multi source label': 'hidden',
   'multi source label text': 'ignore: ',
-  timer: 'displayed',
 };
 
 const publisherPreviewHeaderData: ViewData = {
   ...headerData,
-  'go live button': 'displayed|enabled',
-  'go live button text': 'GO LIVE',
+  'timer text': '00:00:00',
   'invite button': 'displayed|enabled',
   'invite button text': 'Invite viewers',
-  'page description': 'displayed',
-  'page description text': 'Setup your audio and video before going live.',
   'page header': 'displayed',
   'page header text': 'Get started',
+  'page description': 'displayed',
+  'page description text': 'Setup your audio and video before going live.',
   'streaming status dot': 'hidden',
-  'timer text': '00:00:00',
   'viewers count': 'hidden',
+  'go live button': 'displayed|enabled',
+  'go live button text': 'GO LIVE',
 };
 
 const publisherStreamingHeaderData: ViewData = {
   ...headerData,
+  'timer text': 'regex: ^((?!00:00:00).)*$',
   'invite button': 'displayed|enabled',
   'invite button text': 'Invite viewers',
-  'page description': 'hidden',
   'page header': 'hidden',
-  'stop button': 'displayed|enabled',
-  'stop button text': 'STOP',
+  'page description': 'hidden',
   'streaming status dot': 'displayed',
-  'timer text': 'regex: ^((?!00:00:00).)*$',
   'viewers count': 'displayed',
   'viewers count text': '0 Viewers',
+  'stop button': 'displayed|enabled',
+  'stop button text': 'STOP',
 };
 
 const viewerWaitingRoomHeaderData: ViewData = {
   ...headerData,
-  'page description': 'displayed',
-  'page description text': 'Please wait for livestream to begin.',
+  'timer text': '00:00:00',
   'page header': 'displayed',
   'page header text': 'Stream is not live',
+  'page description': 'displayed',
+  'page description text': 'Please wait for livestream to begin.',
   'streaming status dot': 'hidden',
-  'timer text': '00:00:00',
   'viewers count': 'hidden',
 };
 
 const viewerStreamingHeaderData: ViewData = {
   ...headerData,
-  'page description': 'hidden',
-  'page header': 'hidden',
-  'streaming status dot': 'displayed',
   'timer text': 'regex: ^((?!00:00:00).)*$',
+  'page header': 'hidden',
+  'page description': 'hidden',
+  'streaming status dot': 'displayed',
   'viewers count': 'displayed',
   'viewers count text': '1 Viewer',
 };
@@ -156,10 +156,10 @@ const viewerWaitingRoomFooterData: ViewData = {
 const viewerStreamingFooterData: ViewData = viewerWaitingRoomFooterData;
 
 const viewConfigureSettings: ViewData = {
-  bitrate: 'Auto',
-  codec: 'h264',
-  simulcast: 'On',
   'source name': 'ignore: ',
+  bitrate: 'Auto',
+  simulcast: 'On',
+  codec: 'h264',
 };
 
 const publisherPreviewCameraViewConfigureSettings: ViewData = {
@@ -176,8 +176,8 @@ const publisherPreviewLocalFileViewConfigureSettings: ViewData = {
 };
 
 const publisherStreamingCameraViewConfigureSettings: ViewData = {
-  bitrate: 'Auto',
   resolution: '3840x2160',
+  bitrate: 'Auto',
 };
 
 const publisherStreamingScreenViewConfigureSettings: ViewData = {
@@ -194,19 +194,19 @@ const viewerStreamingMainViewConfigureSettings: ViewData = {
 
 const viewSettingsData: ViewData = {
   bitrate: 'Bitrate  - Auto',
-  codec: 'Codec  - h264',
   simulcast: 'On',
+  codec: 'Codec  - h264',
 };
 
 const publisherPreviewCameraViewSettingsData: ViewData = {
   ...viewSettingsData,
-  resolution: 'Resolution  - 3840x2160',
   'source name': 'contains: fake',
+  resolution: 'Resolution  - 3840x2160',
 };
 
 const publisherStreamingCameraViewSettingsData: ViewData = {
-  bitrate: 'Bitrate  - Auto',
   resolution: 'Resolution  - 3840x2160',
+  bitrate: 'Bitrate  - Auto',
 };
 
 const publisherPreviewScreenViewSettingsData: ViewData = {
@@ -232,42 +232,42 @@ const viewerStreamingMainViewSettingsData: ViewData = {
 };
 
 const viewStatsData: ViewData = {
-  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
-  'Candidate type:': 'regex: (srflx|prflx|relay)',
-  'Codecs:': 'video/H264, audio/opus',
-  'Current RTT:': 'regex: \\d{1,3} ms',
-  'Frames per second:': 'regex: \\d{1,2}',
   Name: 'Value',
+  'Current RTT:': 'regex: \\d{1,3} ms',
   'Outgoing bitrate:': 'regex: ([0-9]*[.])?[0-9]+ (kbps|Mbps)',
+  'Candidate type:': 'regex: (srflx|prflx|relay)',
+  'Video resolution:': 'regex: \\d{3,4}x\\d{3,4}',
   'Quality limitation reason:': 'regex: (bandwidth|cpu|none)',
+  'Frames per second:': 'regex: \\d{1,2}',
+  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
+  'Audio bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
+  'Codecs:': 'video/H264, audio/opus',
   'Timestamp:':
     'regex: (([1-9]|1[0-2])/([1-9]|0[1-9]|[1-2][0-9]|3[0-1])/[0-9]{4}\\s([1-9]|[1][0-2]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9])\\s[A|P]M)|((0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}\\s(2[0-3]|[01][0-9]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]))',
-  'Video bitrate:': 'regex: ([0-9]*[.])?[0-9]+(bps| kbps| Mbps)',
-  'Video resolution:': 'regex: \\d{3,4}x\\d{3,4}',
 };
 
 const publisherCameraViewStatsData: ViewData = {
   ...viewStatsData,
-  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
   'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 const publisherScreenViewStatsData: ViewData = {
   ...viewStatsData,
-  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
   'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 const publisherLocalFileViewStatsData: ViewData = {
   ...viewStatsData,
-  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
   'Video total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
+  'Audio total sent:': 'regex: ([0-9]*[.])?[0-9]+ (KB|MB)',
 };
 
 const viewerMainViewStatsData: ViewData = {
   ...viewStatsData,
-  'Audio total received:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
   'Video total received:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
+  'Audio total received:': 'regex: ([0-9]*[.])?[0-9]+ (kB|MB)',
 };
 
 export const getDefaultViewData = (viewName: string) => {

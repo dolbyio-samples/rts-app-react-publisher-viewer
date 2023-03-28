@@ -1,6 +1,5 @@
 import clipboard from 'clipboardy';
-
-import { logger } from '#e2e-test/src/logger';
+import { logger } from '../../logger';
 
 export const readClipboardText = () => {
   logger.trace(`Read the clipboard text`);

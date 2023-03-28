@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import { Page } from 'playwright';
 
-import { logger } from '#e2e-test/src/logger';
-import { getLocator } from '#e2e-test/src/playwright-support/generic/element-helper';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
-import { Status } from '#e2e-test/src/utils/types';
+import { logger } from '../../logger';
+import { TargetSelector } from '../../utils/selector-mapper';
+import { Status } from '../../utils/types';
+import { getLocator } from '../generic/element-helper';
 
 import { getDeviceStatus, getSimulcastStatus } from './element-read';
 

@@ -1,7 +1,7 @@
 import { Box, Center, Flex, HStack, Spinner } from '@chakra-ui/react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import InfoLabel from '#millicast-react/info-label';
+import InfoLabel from '@millicast-react/info-label';
 
 import { HTMLVideoElementWithCaptureStream, VideoViewProps } from './types';
 

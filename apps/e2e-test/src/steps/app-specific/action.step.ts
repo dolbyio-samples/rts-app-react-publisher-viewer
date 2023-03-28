@@ -1,15 +1,14 @@
 /* eslint-disable func-names */
 import { DataTable, When } from '@cucumber/cucumber';
 
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
+import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import {
   selectSettingDropdown,
   toogleDevice,
   toogleSimulcast,
-} from '#e2e-test/src/playwright-support/app-specific/element-action';
-import { arrayContainsAll } from '#e2e-test/src/steps/generic/utils';
-import { Status } from '#e2e-test/src/utils/types';
-
+} from '../../playwright-support/app-specific/element-action';
+import { Status } from '../../utils/types';
+import { arrayContainsAll } from '../generic/utils';
 import { addFileSource, addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
 import { getDefaultConfigureSettings } from './workflow/workflow.data';
 

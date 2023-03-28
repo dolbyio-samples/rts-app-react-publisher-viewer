@@ -10,8 +10,8 @@ import {
   ViewerCount,
 } from '@millicast/sdk';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-
 import { bitrateList } from './constants';
+
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
 import { adjustDuplicateSourceIds } from './utils';

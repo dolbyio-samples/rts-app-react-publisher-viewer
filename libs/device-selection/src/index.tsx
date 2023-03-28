@@ -11,10 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-
-import { IconCameraOn, IconMicrophoneOn } from '#millicast-react/dolbyio-icons';
-import Dropdown from '#millicast-react/dropdown';
-import VideoView from '#millicast-react/video-view';
+import VideoView from '@millicast-react/video-view';
+import Dropdown from '@millicast-react/dropdown';
+import { IconCameraOn, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
 
 import { DeviceSelectionProps } from './types';
 import { deviceElementResolver } from './utils';
@@ -75,7 +74,7 @@ const DeviceSelection = ({
               <Heading as="h4" size="md" test-id="deviceSelectionTitle">
                 Add Source
               </Heading>
-              <Text color="dolbyNeutral.300" size="md">
+              <Text size="md" color="dolbyNeutral.300">
                 Select a camera and a microphone
               </Text>
               <Box width="100%">
@@ -105,7 +104,7 @@ const DeviceSelection = ({
                   testId="microphone-select"
                 />
               </Box>
-              <Button isDisabled={!camera || !microphone} onClick={handleSubmit} test-id="addDevice">
+              <Button test-id="addDevice" isDisabled={!camera || !microphone} onClick={handleSubmit}>
                 ADD TO STREAM
               </Button>
             </VStack>

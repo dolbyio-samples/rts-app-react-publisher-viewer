@@ -1,16 +1,16 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "use-screen-share",
-  "projectType": "library",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/use-screen-share/src",
+  "projectType": "library",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/use-screen-share/**/*.{ts,js}"]
-      },
-      "outputs": ["{options.outputFile}"]
+      }
     }
   }
 }

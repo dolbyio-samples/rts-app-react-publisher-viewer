@@ -1,7 +1,7 @@
 import { Page, Locator } from 'playwright';
 
-import { logger } from '#e2e-test/src/logger';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
+import { logger } from '../../logger';
+import { TargetSelector } from '../../utils/selector-mapper';
 
 import { getLocator } from './element-helper';
 

@@ -1,12 +1,11 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
 
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { refresh } from '#e2e-test/src/playwright-support/generic/browser-actions';
-import { verifyElementState } from '#e2e-test/src/playwright-support/generic/element-verification';
-import { waitFor } from '#e2e-test/src/playwright-support/generic/element-wait';
-import { State } from '#e2e-test/src/utils/types';
-
+import { ScenarioWorld } from '../../hooks/ScenarioWorld';
+import { refresh } from '../../playwright-support/generic/browser-actions';
+import { verifyElementState } from '../../playwright-support/generic/element-verification';
+import { waitFor } from '../../playwright-support/generic/element-wait';
+import { State } from '../../utils/types';
 import { getValidationCondition } from './utils';
 
 Then(/^(?:the .*|I) should be navigated to "([^"]*)" page$/, async function (this: ScenarioWorld, pageName: string) {

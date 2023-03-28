@@ -1,24 +1,24 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "dolbyio-icons",
-  "projectType": "library",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dolbyio-icons/src",
+  "projectType": "library",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/dolbyio-icons/**/*.{ts,js}"]
-      },
-      "outputs": ["{options.outputFile}"]
+      }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/dolbyio-icons/jest.config.ts",
         "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+      }
     }
   }
 }

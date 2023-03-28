@@ -22,20 +22,20 @@ import {
 import { VideoCodec } from '@millicast/sdk';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 
-import ActionBar from '#millicast-react/action-bar';
-import DeviceSelection from '#millicast-react/device-selection';
-import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '#millicast-react/dolbyio-icons';
-import InfoLabel from '#millicast-react/info-label';
-import LiveIndicator from '#millicast-react/live-indicator';
-import ParticipantCount from '#millicast-react/participant-count';
-import PopupMenu from '#millicast-react/popup-menu';
-import ShareLinkButton from '#millicast-react/share-link-button';
-import Timer from '#millicast-react/timer';
-import useLocalFiles from '#millicast-react/use-local-files';
-import useMediaDevices from '#millicast-react/use-media-devices';
-import useNotification from '#millicast-react/use-notification';
-import usePublisher, { bitrateList } from '#millicast-react/use-publisher';
-import useScreenShare from '#millicast-react/use-screen-share';
+import ActionBar from '@millicast-react/action-bar';
+import DeviceSelection from '@millicast-react/device-selection';
+import { IconAddCamera, IconPresent, IconProfile, IconStreamLocal } from '@millicast-react/dolbyio-icons';
+import InfoLabel from '@millicast-react/info-label';
+import LiveIndicator from '@millicast-react/live-indicator';
+import ParticipantCount from '@millicast-react/participant-count';
+import PopupMenu from '@millicast-react/popup-menu';
+import ShareLinkButton from '@millicast-react/share-link-button';
+import Timer from '@millicast-react/timer';
+import useLocalFiles from '@millicast-react/use-local-files';
+import useMediaDevices from '@millicast-react/use-media-devices';
+import useNotification from '@millicast-react/use-notification';
+import usePublisher, { bitrateList } from '@millicast-react/use-publisher';
+import useScreenShare from '@millicast-react/use-screen-share';
 
 import PublisherVideoView from './components/publisher-video-view';
 import useCanCaptureStream from './hooks/use-can-capture-stream';
@@ -91,9 +91,9 @@ const App = () => {
     viewerCount,
   } = usePublisher({
     handleError: showError,
-    streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     streamNameId: VITE_RTS_ACCOUNT_ID,
     streams,
+    streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     token: VITE_RTS_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_RTS_VIEWER_BASE_URL,
   });
@@ -519,10 +519,10 @@ const App = () => {
             <ModalBody>
               <VStack>
                 <form onSubmit={handleSubmitLocalFile}>
-                  <Heading as="h4" size="md" test-id="addLocalFileTitle">
+                  <Heading test-id="addLocalFileTitle" as="h4" size="md">
                     Add local media file
                   </Heading>
-                  <Text fontSize="md" test-id="addLocalFileDesc">
+                  <Text test-id="addLocalFileDesc" fontSize="md">
                     Pick a local file
                   </Text>
                   <Center pb="32px" pt="16px" sx={{ '#pickFile': { color: 'white' } }} width="100%">

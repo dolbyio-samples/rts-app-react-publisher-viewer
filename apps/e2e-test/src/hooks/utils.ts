@@ -1,5 +1,4 @@
-import { logger } from '#e2e-test/src/logger';
-
+import { logger } from '../logger';
 import { GlobalData } from './GlobalData';
 import { ScenarioWorld } from './ScenarioWorld';
 

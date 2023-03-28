@@ -1,8 +1,8 @@
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { logger } from '#e2e-test/src/logger';
-import { selectSettingDropdown } from '#e2e-test/src/playwright-support/app-specific/element-action';
-import { verifyDeviceStatus } from '#e2e-test/src/playwright-support/app-specific/element-verification';
-import { click, fileUploadInput } from '#e2e-test/src/playwright-support/generic/element-action';
+import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
+import { logger } from '../../../logger';
+import { selectSettingDropdown } from '../../../playwright-support/app-specific/element-action';
+import { verifyDeviceStatus } from '../../../playwright-support/app-specific/element-verification';
+import { click, fileUploadInput } from '../../../playwright-support/generic/element-action';
 import {
   verifyElementContainsText,
   verifyElementContainsValue,
@@ -10,15 +10,11 @@ import {
   verifyElementState,
   verifyElementText,
   verifyElementValue,
-} from '#e2e-test/src/playwright-support/generic/element-verification';
-import { waitFor } from '#e2e-test/src/playwright-support/generic/element-wait';
-import {
-  verifyGreaterThanEqualTo,
-  verifyMatch,
-  verifyEqualTo,
-} from '#e2e-test/src/playwright-support/generic/verification';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
-import { State, Status } from '#e2e-test/src/utils/types';
+} from '../../../playwright-support/generic/element-verification';
+import { waitFor } from '../../../playwright-support/generic/element-wait';
+import { verifyGreaterThanEqualTo, verifyMatch, verifyEqualTo } from '../../../playwright-support/generic/verification';
+import { TargetSelector } from '../../../utils/selector-mapper';
+import { State, Status } from '../../../utils/types';
 
 export const validateState = async (
   scWorld: ScenarioWorld,

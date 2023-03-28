@@ -1,4 +1,5 @@
-import React, { SVGProps } from 'react';
+import type { SVGProps } from 'react';
+import React from 'react';
 
 const FullScreen = ({ fill, ...rest }: SVGProps<SVGSVGElement>) => (
   <svg fill={fill || 'currentColor'} height="100%" viewBox="0 0 24 24" width="100%" {...rest}>

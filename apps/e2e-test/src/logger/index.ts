@@ -1,4 +1,4 @@
-import { loggerLevel } from '#e2e-test/src/config/defaults';
+import { loggerLevel } from '../config/defaults';
 
 import { Logger } from './logger';
 

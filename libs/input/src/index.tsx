@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import React, { ChangeEvent } from 'react';
 
-import { IconClose } from '#millicast-react/dolbyio-icons';
+import { IconClose } from '@millicast-react/dolbyio-icons';
 
 import { InputProps } from './types';
 
@@ -67,8 +67,8 @@ const Input = ({
           maxHeight="48px"
           maxWidth="400px"
           onChange={handleChange}
-          padding="20px 12px"
           placeholder={placeholder}
+          padding="20px 12px"
           textAlign="left"
           value={value}
           width="100%"

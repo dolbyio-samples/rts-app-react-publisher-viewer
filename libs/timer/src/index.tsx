@@ -1,14 +1,14 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { memo, useEffect, useState } from 'react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
 const initialSessionTime = '00:00:00';
 let startTime = 0;
 let currentTime = 0;
 let interval: ReturnType<typeof setTimeout>;
 
-export interface TimerProps {
+export type TimerProps = {
   isActive: boolean;
-}
+};
 
 const formatTime = (time: number) => {
   return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
@@ -43,11 +43,11 @@ const Timer = ({ isActive = false }: TimerProps) => {
   }, [isActive]);
 
   return (
-    <Flex alignItems="center" test-id="timer">
+    <Flex test-id="timer" alignItems="center">
       <Text fontSize="32px" lineHeight="1">
         {sessionTime}
       </Text>
-      {isActive && <Box bg="dolbyRed.500" borderRadius="50%" h="8px" ml="2.5" test-id="streamStatus" w="8px" />}
+      {isActive && <Box test-id="streamStatus" w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
     </Flex>
   );
 };

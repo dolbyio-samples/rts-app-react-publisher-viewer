@@ -1,14 +1,15 @@
 import fs from 'fs';
-import { load } from 'js-yaml';
 import path from 'path';
 
-import { logger } from '#e2e-test/src/logger';
+import { load } from 'js-yaml';
+
+import { logger } from '../logger';
 
 export type TargetSelector = string | string[];
 type PageSelectorMap = Map<string, TargetSelector>;
-interface PageSelectorObject {
+type PageSelectorObject = {
   [key: string]: TargetSelector;
-}
+};
 type SelectorMap = Map<string, PageSelectorMap>;
 
 export class SelectorMapper {

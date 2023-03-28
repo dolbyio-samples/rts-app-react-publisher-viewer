@@ -1,10 +1,9 @@
-import { ChakraProvider, VStack, Text } from '@chakra-ui/react';
 import { Meta, Story } from '@storybook/react';
+import { ChakraProvider, VStack, Text } from '@chakra-ui/react';
+import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import * as React from 'react';
+import VideoView from '@millicast-react/video-view';
 import { useState } from 'react';
-
-import dolbyioTheme from '#millicast-react/dolbyio-theme';
-import VideoView from '#millicast-react/video-view';
 
 export default {} as Meta;
 
@@ -27,15 +26,15 @@ export const Default: Story = () => {
       <ChakraProvider theme={dolbyioTheme}>
         <VStack>
           <VideoView
-            height="auto"
-            onError={(e) => console.log(e)}
-            onSrcMediaStreamClose={removeMediaStream}
-            onSrcMediaStreamReady={setMediaStream}
             src="http://localhost:8010/proxy/lipsynctest.333c28e3.mp4"
             width="400px"
+            height="auto"
+            onSrcMediaStreamReady={setMediaStream}
+            onSrcMediaStreamClose={removeMediaStream}
+            onError={(e) => console.log(e)}
           />
           {mediaStreams.map((stream) => (
-            <Text color="black" key={stream.id}>
+            <Text key={stream.id} color="black">
               Video track id: {stream.getVideoTracks()[0].id} in MediaStream from VideoView
             </Text>
           ))}

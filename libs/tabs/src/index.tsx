@@ -29,7 +29,7 @@ const Tabs = ({ tabListProps = {}, tabPanelProps = {}, tabsProps = {}, tabs }: T
       </TabList>
       <TabPanels sx={{ '&>div': { padding: '12px 0 0' } }} {...tabPanelProps}>
         {tabs.map(({ id, children, tabPanelProps = {} }) => (
-          <TabPanel key={id} test-id={id} {...tabPanelProps}>
+          <TabPanel test-id={id} key={id} {...tabPanelProps}>
             {children}
           </TabPanel>
         ))}

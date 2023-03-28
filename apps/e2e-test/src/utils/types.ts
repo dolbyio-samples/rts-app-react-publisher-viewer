@@ -3,31 +3,31 @@ export type ScenarioData = Map<string, any>;
 
 export type BrowserName = 'chrome' | 'chromium' | 'firefox' | 'edge';
 
-export interface TestOptions {
-  baseURL?: string;
+export type TestOptions = {
   browserName: BrowserName;
-  browserOptions?: Record<string, unknown>;
-  dynamicStreamName: boolean;
+  timeout?: number;
   headless?: boolean;
+  viewport?: { width: number; height: number } | null;
+  video?: 'off' | 'on' | 'retain-on-failure';
+  screenshot?: 'off' | 'on' | 'only-on-failure';
+  trace?: 'off' | 'on' | 'retain-on-failure';
+  baseURL?: string;
+  publisherURL?: string;
+  viewerURL?: string;
   // eslint-disable-next-line no-unused-vars
   launchOptions?: { [K in BrowserName]?: Record<string, unknown> };
-  publisherURL?: string;
+  browserOptions?: Record<string, unknown>;
   reportPath?: string;
-  screenshot?: 'off' | 'on' | 'only-on-failure';
-  timeout?: number;
-  trace?: 'off' | 'on' | 'retain-on-failure';
-  video?: 'off' | 'on' | 'retain-on-failure';
-  viewerURL?: string;
-  viewport?: { height: number; width: number } | null;
-}
+  dynamicStreamName: boolean;
+};
 
-export interface SetupConfig {
-  cameraName?: string;
+export type SetupConfig = {
+  publisherName: string;
+  microphoneOn?: boolean;
   cameraOn?: boolean;
   microphoneName?: string;
-  microphoneOn?: boolean;
-  publisherName: string;
-}
+  cameraName?: string;
+};
 
 export type State =
   | 'visible'

@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-import { logger } from '#e2e-test/src/logger';
+import { logger } from '../../logger';
 
 export const goToURL = async (page: Page, appURL: string): Promise<void> => {
   logger.trace(`Go to URL: ${appURL}`);

@@ -14,19 +14,19 @@ const baseStyle = definePartsStyle((props) => {
   const { status } = props;
   return {
     container: {
-      backgroundColor: statusColors?.[status]?.backgroundColor,
+      width: '400px',
       borderRadius: '6px',
+      backgroundColor: statusColors?.[status]?.backgroundColor,
       padding: '3',
       paddingRight: '8',
-      width: '400px',
     },
     icon: {
       color: statusColors?.[status]?.color,
     },
     title: {
-      color: statusColors?.[status]?.color,
-      fontSize: '13px',
       lineHeight: '15px',
+      fontSize: '13px',
+      color: statusColors?.[status]?.color,
     },
   };
 });

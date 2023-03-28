@@ -1,11 +1,10 @@
 /* eslint-disable func-names */
 import { When } from '@cucumber/cucumber';
+import { defaultReportPath } from '../../config/defaults';
 
-import { defaultReportPath } from '#e2e-test/src/config/defaults';
-import { ScenarioWorld } from '#e2e-test/src/hooks/ScenarioWorld';
-import { check, click, hover, takeScreenshot, uncheck } from '#e2e-test/src/playwright-support/generic/element-action';
-import { TargetSelector } from '#e2e-test/src/utils/selector-mapper';
-
+import { ScenarioWorld } from '../../hooks/ScenarioWorld';
+import { check, click, hover, takeScreenshot, uncheck } from '../../playwright-support/generic/element-action';
+import { TargetSelector } from '../../utils/selector-mapper';
 import { replaceAttributeTargetSelector } from './utils';
 
 When(

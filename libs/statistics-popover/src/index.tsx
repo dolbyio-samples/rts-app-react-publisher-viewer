@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { IconInfo } from '#millicast-react/dolbyio-icons';
-import Popover from '#millicast-react/popover';
-import Tabs from '#millicast-react/tabs';
+import { IconInfo } from '@millicast-react/dolbyio-icons';
+import Popover from '@millicast-react/popover';
+import Tabs from '@millicast-react/tabs';
 
 import StatisticsInfo from './components/statistics-info';
 import { StatisticsPopoverProps, TabQualities } from './types';

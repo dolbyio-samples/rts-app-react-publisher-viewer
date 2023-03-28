@@ -1,4 +1,4 @@
-import { StreamsAction, StreamsActionType, StreamsMap } from './types';
+import { Stream, StreamsAction, StreamsActionType, StreamsMap } from './types';
 import { stopTracks } from './utils';
 
 const reducer = (state: StreamsMap, action: StreamsAction) => {
