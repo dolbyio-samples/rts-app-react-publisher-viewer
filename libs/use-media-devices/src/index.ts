@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
-
 import { idealCameraConfig } from './constants';
 import { StartDeviceProps, useMediaDevicesProps } from './types';
 import { isUniqueDevice } from './utils';
+import { useState, useEffect, useMemo } from 'react';
 
 /**
  * This hook manages all currently available media devices such as cameras and microphones. A list of connected
@@ -23,6 +22,7 @@ const useMediaDevices = ({ filterUsedDevices = true, handleError }: useMediaDevi
       const videoDeviceList: InputDeviceInfo[] = [];
 
       try {
+        await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
         const devices = await navigator.mediaDevices.enumerateDevices();
 
         devices.forEach((device) => {

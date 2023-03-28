@@ -18,7 +18,7 @@ const reportOptions: Options = {
   scenarioTimestamp: true,
   launchReport: false,
   metadata: {
-    'App Version': '2.0.1',
+    'App Version': '2.1.0',
     'Test Environment': 'DEV',
     Browser: `${browserMgr.options.browserName}`,
     Headless: `${browserMgr.options.headless}`,

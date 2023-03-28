@@ -142,7 +142,7 @@ const publisherPreviewFooterData: ViewData = {
   'add source button': 'displayed|enabled',
   'add source button text': 'Add Source',
   'app version': 'displayed',
-  'app version text': 'Version: 2.0.1',
+  'app version text': 'Version: 2.1.0',
 };
 
 const publisherStreamingFooterData: ViewData = publisherPreviewFooterData;
@@ -150,7 +150,7 @@ const publisherStreamingFooterData: ViewData = publisherPreviewFooterData;
 const viewerWaitingRoomFooterData: ViewData = {
   'add source button': 'hidden',
   'app version': 'displayed',
-  'app version text': 'Version: 2.0.1',
+  'app version text': 'Version: 2.1.0',
 };
 
 const viewerStreamingFooterData: ViewData = viewerWaitingRoomFooterData;
