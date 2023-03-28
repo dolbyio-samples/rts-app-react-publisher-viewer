@@ -13,10 +13,7 @@ export const rootMain: StorybookViteConfig = {
       resolve: {
         alias: {
           '@millicast-react/control-bar': path.resolve(__dirname, '../libs/control-bar/src/index.tsx'),
-          '@millicast-react/device-selection-modal': path.resolve(
-            __dirname,
-            '../libs/device-selection-modal/src/index.ts'
-          ),
+          '@millicast-react/device-selection': path.resolve(__dirname, '../libs/device-selection/src/index.ts'),
           '@millicast-react/dolbyio-icons': path.resolve(__dirname, '../libs/dolbyio-icons/src/index.ts'),
           '@millicast-react/dolbyio-theme': path.resolve(__dirname, '../libs/dolbyio-theme/src/index.ts'),
           '@millicast-react/drawer': path.resolve(__dirname, '../libs/drawer/src/index.tsx'),

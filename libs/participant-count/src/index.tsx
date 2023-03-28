@@ -1,27 +1,29 @@
-import { HStack, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { IconEye } from '@millicast-react/dolbyio-icons';
-import React, { useMemo } from 'react';
+import React from 'react';
 
-export interface ParticipantCountProps {
+export type ParticipantCountProps = {
   count: string | number;
-}
+};
 
-const ParticipantCount = ({ count = 0 }: ParticipantCountProps) => {
-  const participantCountText = useMemo(() => {
-    if (Number(count) === 1) {
-      return '1 Viewer';
+const ParticipantCount = ({ count }: ParticipantCountProps) => {
+  const formatText = (count: string | number): string => {
+    if (count == '1') {
+      return `${count} Viewer`;
+    } else {
+      return `${count} Viewers`;
     }
-
-    return `${count} Viewers`;
-  }, [count]);
+  };
 
   return (
-    <HStack alignItems="center" color="dolbySecondary.200" test-id="participantCountView">
-      <IconEye width="24px" />
-      <Text color="dolbySecondary.200" fontSize="14px" fontWeight={500}>
-        {participantCountText}
+    <Flex test-id="participantCountView" color="dolbySecondary.200" alignItems="center">
+      <Box boxSize={6}>
+        <IconEye />
+      </Box>
+      <Text color="dolbySecondary.200" fontSize="14px" ml="2">
+        {formatText(count)}
       </Text>
-    </HStack>
+    </Flex>
   );
 };
 
