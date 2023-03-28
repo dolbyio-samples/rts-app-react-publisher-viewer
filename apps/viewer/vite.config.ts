@@ -6,7 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [tsconfigPaths(), react(), eslint()],
   define: {
-    __APP_VERSION__: JSON.stringify('2.0.1'),
+    __APP_VERSION__: JSON.stringify('2.1.0'),
   },
   preview: {
     open: false,

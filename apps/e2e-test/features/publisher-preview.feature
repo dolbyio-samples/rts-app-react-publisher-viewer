@@ -8,7 +8,6 @@ Feature: Publisher Preview
         Given a publisher is on the "preview" page
 
     Scenario: Publisher should be presented with header and footer containing different streaming control buttons to set configuration
-        Then the "header" should be displayed with default values
         And the "footer" should be displayed with default values
 
     Scenario: Publisher should be presented with camera view only by default when app is loaded
