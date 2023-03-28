@@ -1,6 +1,8 @@
+import ActionBar from './components/action-bar';
+import PublisherVideoTiles from './components/publisher-video-tiles';
+import useMultiMediaStreams, { StreamTypes } from './hooks/use-multi-media-streams';
+import './styles/app.css';
 import { Box, Flex, Text, VStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-
 import InfoBar from '@millicast-react/info-bar';
 import InfoLabel from '@millicast-react/info-label';
 import useLocalFiles from '@millicast-react/use-local-files';
@@ -9,12 +11,7 @@ import useNotification from '@millicast-react/use-notification';
 import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
 import usePublisher from '@millicast-react/use-publisher';
 import useScreenShare from '@millicast-react/use-screen-share';
-
-import ActionBar from './components/action-bar';
-import PublisherVideoTiles from './components/publisher-video-tiles';
-import useMultiMediaStreams, { StreamTypes } from './hooks/use-multi-media-streams';
-
-import './styles/app.css';
+import React, { useEffect, useState } from 'react';
 
 const TIMESTAMP_STREAM_NAME = new Date().valueOf().toString();
 
@@ -65,6 +62,10 @@ const App = () => {
     const [initVideoDevice] = mediaDevices.videoDevices;
 
     if (initAudioDevice && initVideoDevice) {
+      console.log({
+        audioDeviceId: initAudioDevice.deviceId,
+        videoDeviceId: initVideoDevice.deviceId,
+      });
       mediaDevices.start({
         audioDeviceId: initAudioDevice.deviceId,
         videoDeviceId: initVideoDevice.deviceId,

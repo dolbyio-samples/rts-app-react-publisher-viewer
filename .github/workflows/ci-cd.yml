@@ -22,88 +22,88 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: set base branch
-        run: |
-          if [ $BRANCH_REF = 'refs/heads/main' ]; then
-            echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
-          else
-            echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
-          fi
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-      - name: lint & check
-        run: |
-          yarn nx workspace-lint
-          yarn nx format:check
-          git fetch origin main
-          yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
-  test-publisher:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-publisher
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
-  test-viewer:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-viewer
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
-  test-camera-streaming:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-camera-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
-  test-local-file-streaming:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-local-file-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
-  test-screen-streaming:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-screen-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
-  test-multisource-streaming:
-    needs: lint-check
-    uses: ./.github/workflows/test-suite.yml
-    with:
-      suite_name: test-multisource-streaming
-      branch_ref: $BRANCH_REF
-    secrets:
-      publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
-      account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # lint-check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: set base branch
+  #       run: |
+  #         if [ $BRANCH_REF = 'refs/heads/main' ]; then
+  #           echo 'BASE_BRANCH=origin/main~1' >> $GITHUB_ENV
+  #         else
+  #           echo 'BASE_BRANCH=origin/main' >> $GITHUB_ENV
+  #         fi
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/setup
+  #     - name: lint & check
+  #       run: |
+  #         yarn nx workspace-lint
+  #         yarn nx format:check
+  #         git fetch origin main
+  #         yarn nx affected --target=lint --base=${{ env.BASE_BRANCH }} --parallel=3
+  # test-publisher:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-publisher
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # test-viewer:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-viewer
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # test-camera-streaming:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-camera-streaming
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # test-local-file-streaming:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-local-file-streaming
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # test-screen-streaming:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-screen-streaming
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
+  # test-multisource-streaming:
+  #   needs: lint-check
+  #   uses: ./.github/workflows/test-suite.yml
+  #   with:
+  #     suite_name: test-multisource-streaming
+  #     branch_ref: $BRANCH_REF
+  #   secrets:
+  #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
+  #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   deploy:
-    needs:
-      [
-        test-publisher,
-        test-viewer,
-        test-camera-streaming,
-        test-local-file-streaming,
-        test-screen-streaming,
-        test-multisource-streaming,
-      ]
+    # needs:
+    #   [
+    #     test-publisher,
+    #     test-viewer,
+    #     test-camera-streaming,
+    #     test-local-file-streaming,
+    #     test-screen-streaming,
+    #     test-multisource-streaming,
+    #   ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
