@@ -32,7 +32,7 @@ Feature: Publisher Screen Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
 
         When the viewer projects main stream as source name containing "screen"
         Then the "main view" should be displayed with following values
@@ -71,7 +71,7 @@ Feature: Publisher Screen Streaming
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         Then the viewer should be navigated to "waiting-room" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
     Scenario: Stream duration is not zero when stream is live with screen share
@@ -624,7 +624,7 @@ Feature: Publisher Screen Streaming
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         Then the viewer should be navigated to "waiting-room" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
     @ignore #bug - 326
@@ -777,7 +777,7 @@ Feature: Publisher Screen Streaming
         And the "main view" setting should be displayed with default values
 
         When the viewer clicks on the "main view full screen button"
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: screen |
         And the "main view" stats should be displayed with default values

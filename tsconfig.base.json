@@ -16,10 +16,10 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@millicast-react/info-bar": ["libs/info-bar/src/index.tsx"],
+      "@millicast-react/action-bar": ["libs/action-bar/src/index.tsx"],
       "@millicast-react/alert": ["libs/alert/src/index.tsx"],
       "@millicast-react/control-bar": ["libs/control-bar/src/index.tsx"],
-      "@millicast-react/device-selection-modal": ["libs/device-selection-modal/src/index.tsx"],
+      "@millicast-react/device-selection": ["libs/device-selection/src/index.tsx"],
       "@millicast-react/dolbyio-icons": ["libs/dolbyio-icons/src/index.ts"],
       "@millicast-react/dolbyio-theme": ["libs/dolbyio-theme/src/index.ts"],
       "@millicast-react/drawer": ["libs/drawer/src/index.tsx"],
@@ -28,7 +28,6 @@
       "@millicast-react/info-label": ["libs/info-label/src/index.tsx"],
       "@millicast-react/input": ["libs/input/src/index.tsx"],
       "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
-      "@millicast-react/local-file-selection-modal": ["libs/local-file-selection-modal/src/index.tsx"],
       "@millicast-react/participant-count": ["libs/participant-count/src/index.tsx"],
       "@millicast-react/popover": ["libs/popover/src/index.tsx"],
       "@millicast-react/popup-menu": ["libs/popup-menu/src/index.tsx"],
@@ -42,7 +41,6 @@
       "@millicast-react/use-local-files": ["libs/use-local-files/src/index.ts"],
       "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
       "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
-      "@millicast-react/use-page-close-prompt": ["libs/use-page-close-prompt/src/index.ts"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
       "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]

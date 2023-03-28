@@ -13,7 +13,7 @@ Feature: Publisher Camera Streaming
         # Publisher App
         When the publisher clicks on the "go live button"
         Then the publisher should be navigated to "publisher-streaming" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "camera view" should be displayed with following values
             | close button | hidden |
         And the "camera view" setting should be displayed with default values
@@ -24,7 +24,7 @@ Feature: Publisher Camera Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
         And the "main view" stats should be displayed with default values
@@ -44,6 +44,7 @@ Feature: Publisher Camera Streaming
         And switch to "publisher-streaming" page on "publisher" app
         When the publisher clicks on the "stop button"
         Then the publisher should be navigated to "preview" page
+        And the "header" should be displayed with default values
         And the "camera view" should be displayed with following values
             | close button | hidden |
         And the "camera view" setting should be displayed with default values
@@ -53,7 +54,7 @@ Feature: Publisher Camera Streaming
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         Then the viewer should be navigated to "waiting-room" page
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
     Scenario: Stream duration is not zero when stream is live
@@ -506,7 +507,7 @@ Feature: Publisher Camera Streaming
         And switch to "viewer-streaming" page on "viewer" app
         Then the viewer should be navigated to "waiting-room" page
         And the "main view loading" should not be displayed
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
     @ignore #Bug - 326
@@ -650,7 +651,7 @@ Feature: Publisher Camera Streaming
         And the "main view" setting should be displayed with default values
 
         When the viewer clicks on the "main view full screen button"
-        # And the "header" should be displayed with default values
+        And the "header" should be displayed with default values
         And the "main view" should be displayed with following values
             | source name text  | contains: fake |
         And the "main view" stats should be displayed with default values
