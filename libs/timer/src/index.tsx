@@ -1,25 +1,35 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { memo, useEffect, useReducer, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useReducer, useRef } from 'react';
 
 export interface TimerProps {
   isActive: boolean;
 }
 
-const initialSessionTime = ['00', '00', '00'];
+interface TimeState {
+  hour: number;
+  minute: number;
+  second: number;
+}
 
-const reducer = (state: string[], action: { type: 'reset' | 'tick' }): string[] => {
-  const [hour, minute, second] = state.map(Number);
+const initialTime: TimeState = {
+  hour: 0,
+  minute: 0,
+  second: 0,
+};
+
+const reducer = (state: TimeState, action: { type: 'reset' | 'tick' }): TimeState => {
+  const { hour, minute, second } = state;
 
   switch (action.type) {
     case 'reset':
-      return initialSessionTime;
+      return initialTime;
 
     case 'tick': {
       const newSecond = second + 1;
       const newMinute = minute + (newSecond >= 60 ? 1 : 0);
       const newHour = hour + (newMinute >= 60 ? 1 : 0);
 
-      return [newHour, newMinute, newSecond].map((number) => `${number % 60}`.padStart(2, '0'));
+      return { hour: newHour % 60, minute: newMinute % 60, second: newSecond % 60 };
     }
   }
 };
@@ -27,7 +37,7 @@ const reducer = (state: string[], action: { type: 'reset' | 'tick' }): string[] 
 const Timer = ({ isActive = false }: TimerProps) => {
   const timerRef = useRef<NodeJS.Timer>();
 
-  const [sessionTime, dispatch] = useReducer(reducer, initialSessionTime);
+  const [time, dispatch] = useReducer(reducer, initialTime);
 
   useEffect(() => {
     if (!isActive) {
@@ -44,10 +54,16 @@ const Timer = ({ isActive = false }: TimerProps) => {
     };
   }, [isActive]);
 
+  const sessionTime = useMemo(() => {
+    const { hour, minute, second } = time;
+
+    return [hour, minute, second].map((number) => `${number}`.padStart(2, '0')).join(':');
+  }, [time]);
+
   return (
     <Flex test-id="timer" alignItems="center">
       <Text fontSize="32px" lineHeight="1">
-        {sessionTime.join(':')}
+        {sessionTime}
       </Text>
       <Box
         background="dolbyRed.500"
