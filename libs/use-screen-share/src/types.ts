@@ -1,3 +1,3 @@
-export interface useScreenShare {
+export interface useScreenShareProps {
   handleError?: (error: string) => void;
 }
