@@ -1,5 +1,3 @@
-import { DeviceSelectionProps } from './types';
-import { deviceElementResolver } from './utils';
 import {
   Box,
   Button,
@@ -12,10 +10,13 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
-import { IconCameraOn, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
-import Dropdown from '@millicast-react/dropdown';
-import VideoView from '@millicast-react/video-view';
 import React, { useState, useEffect } from 'react';
+import VideoView from '@millicast-react/video-view';
+import Dropdown from '@millicast-react/dropdown';
+import { IconCameraOn, IconMicrophoneOn } from '@millicast-react/dolbyio-icons';
+
+import { DeviceSelectionProps } from './types';
+import { deviceElementResolver } from './utils';
 
 const DeviceSelectionModal = ({
   camera,
@@ -62,8 +63,6 @@ const DeviceSelectionModal = ({
 
     setMediaStream(stream);
   };
-
-  console.log({ camera, cameraList, microphone, microphoneList });
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
