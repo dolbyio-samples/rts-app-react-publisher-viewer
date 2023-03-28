@@ -1,53 +1,80 @@
-import React, { memo, useEffect, useState } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import React, { memo, useEffect, useMemo, useReducer, useRef } from 'react';
 
-const initialSessionTime = '00:00:00';
-let startTime = 0;
-let currentTime = 0;
-let interval: ReturnType<typeof setTimeout>;
-
-export type TimerProps = {
+export interface TimerProps {
   isActive: boolean;
+}
+
+interface TimeState {
+  hour: number;
+  minute: number;
+  second: number;
+}
+
+const initialTime: TimeState = {
+  hour: 0,
+  minute: 0,
+  second: 0,
 };
 
-const formatTime = (time: number) => {
-  return time === 0 ? '00' : time.toLocaleString('en-US', { minimumIntegerDigits: 2 });
+const reducer = (state: TimeState, action: { type: 'reset' | 'tick' }): TimeState => {
+  const { hour, minute, second } = state;
+
+  switch (action.type) {
+    case 'reset':
+      return initialTime;
+
+    case 'tick': {
+      const newSecond = second + 1;
+      const newMinute = minute + (newSecond >= 60 ? 1 : 0);
+      const newHour = hour + (newMinute >= 60 ? 1 : 0);
+
+      return { hour: newHour % 60, minute: newMinute % 60, second: newSecond % 60 };
+    }
+  }
 };
 
 const Timer = ({ isActive = false }: TimerProps) => {
-  const [sessionTime, setSessionTime] = useState(initialSessionTime);
+  const timerRef = useRef<NodeJS.Timer>();
+
+  const [time, dispatch] = useReducer(reducer, initialTime);
 
   useEffect(() => {
-    if (isActive) {
-      const startTimer = () => {
-        currentTime = Math.floor((Date.now() - startTime) / 1000);
+    if (!isActive) {
+      clearInterval(timerRef.current);
+      dispatch({ type: 'reset' });
 
-        const hour = Math.floor(currentTime / 60 / 60);
-        const minute = Math.floor((currentTime / 60) % 60);
-        const second = Math.floor((currentTime % 60) % 60);
-
-        setSessionTime(`${formatTime(hour)}:${formatTime(minute)}:${formatTime(second)}`);
-      };
-
-      startTime = Date.now();
-      interval = setInterval(startTimer, 1000);
-    } else {
-      startTime = 0;
-      currentTime = 0;
-      setSessionTime(initialSessionTime);
+      return;
     }
 
+    timerRef.current = setInterval(() => dispatch({ type: 'tick' }), 1000);
+
     return () => {
-      clearInterval(interval);
+      clearInterval(timerRef.current);
     };
   }, [isActive]);
+
+  const sessionTime = useMemo(() => {
+    const { hour, minute, second } = time;
+
+    return [hour, minute, second].map((number) => `${number}`.padStart(2, '0')).join(':');
+  }, [time]);
 
   return (
     <Flex test-id="timer" alignItems="center">
       <Text fontSize="32px" lineHeight="1">
         {sessionTime}
       </Text>
-      {isActive && <Box test-id="streamStatus" w="8px" h="8px" borderRadius="50%" bg="dolbyRed.500" ml="2.5" />}
+      <Box
+        background="dolbyRed.500"
+        borderRadius="50%"
+        height="8px"
+        lineHeight="1.25"
+        marginLeft="2.5"
+        test-id="streamStatus"
+        visibility={isActive ? 'visible' : 'hidden'}
+        width="8px"
+      />
     </Flex>
   );
 };

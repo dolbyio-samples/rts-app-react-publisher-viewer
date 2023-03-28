@@ -1,4 +1,5 @@
-import { BroadcastOptions, Publish, StreamStats, VideoCodec } from '@millicast/sdk';
+import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
+import { BroadcastOptions, Publish, VideoCodec } from '@millicast/sdk';
 
 export interface Bitrate {
   name: string;
@@ -37,7 +38,7 @@ export type PublisherAction =
     }
   | { id: string; mediaStream: MediaStream; type: PublisherActionType.UPDATE_SOURCE_MEDIA_STREAM }
   | { id: string; state: SourceState; type: PublisherActionType.UPDATE_SOURCE_STATE }
-  | { id: string; statistics: StreamStats; type: PublisherActionType.UPDATE_SOURCE_STATISTICS };
+  | { id: string; statistics: OnStats; type: PublisherActionType.UPDATE_SOURCE_STATISTICS };
 
 export interface PublisherProps {
   handleError?: (error: string) => void;
@@ -50,9 +51,10 @@ export interface PublisherProps {
 
 export interface PublisherSource {
   broadcastOptions: Omit<BroadcastOptions, 'mediaStream'> & { mediaStream?: MediaStream };
+  collection: WebRTCStats;
   publish: Publish;
   state: SourceState;
-  statistics?: StreamStats;
+  statistics?: OnStats;
 }
 
 export type PublisherSources = Map<string, PublisherSource>;

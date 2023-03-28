@@ -1,5 +1,5 @@
 import { BoxProps } from '@chakra-ui/react';
-import { StreamStats } from '@millicast/sdk';
+import { OnStats } from '@dolbyio/webrtc-stats';
 import { ReactNode } from 'react';
 
 export interface HTMLVideoElementWithCaptureStream extends HTMLVideoElement {
@@ -21,7 +21,7 @@ export interface VideoViewProps {
   paused?: boolean;
   showDotIndicator?: boolean;
   src?: string;
-  statistics?: StreamStats;
+  statistics?: OnStats;
   volume?: number;
   width?: string;
 }

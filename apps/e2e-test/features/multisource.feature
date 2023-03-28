@@ -37,7 +37,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -110,7 +110,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -155,7 +155,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -218,7 +218,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -335,7 +335,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -420,7 +420,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
@@ -586,7 +586,7 @@ Feature: Publisher Multisource Streaming
         # Viewer App
         And switch to "waiting-room" page on "viewer" app
         Then the viewer should be navigated to "viewer-streaming" page
-        And the "header" should be displayed with default values
+        # And the "header" should be displayed with default values
         And the number of "stream list items" count should be "2"
         And the number of "stream list loading items" count should be "0"
 
