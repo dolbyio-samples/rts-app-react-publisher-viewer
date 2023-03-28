@@ -1,15 +1,15 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-import fs from 'fs';
-import path from 'path';
 
+/* eslint-disable no-restricted-syntax */
 import { Status } from '@cucumber/cucumber';
 import { ITestCaseHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
+import fs from 'fs';
+import path from 'path';
 import { BrowserContext, Page } from 'playwright';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { logger } from '../../logger';
 import { getData } from '../../hooks/utils';
+import { logger } from '../../logger';
 
 export async function captureArtifacts(
   scenarioWorld: ScenarioWorld,
@@ -69,9 +69,9 @@ async function video(scenarioWorld: ScenarioWorld, scenario: ITestCaseHookParame
     const videoFile = getData(scenarioWorld, `${apps[0]}VideoFile`) as string;
     const videoDir = path.dirname(videoFile);
 
-    fs.rmSync(videoDir, { recursive: true, force: true });
+    fs.rmSync(videoDir, { force: true, recursive: true });
     if (fs.readdirSync(path.dirname(videoDir)).length === 0) {
-      fs.rmSync(path.dirname(videoDir), { recursive: true, force: true });
+      fs.rmSync(path.dirname(videoDir), { force: true, recursive: true });
     }
   } else {
     for (const app of apps) {

@@ -23,21 +23,21 @@ export class Logger {
   private static createLogger(logLevel = 'info'): CustomLogger<unknown> {
     const settings = {
       minLevel: Logger.getMinLevel(logLevel),
-      prettyLogTemplate: '{{dd}}-{{mm}}-{{yyyy}} {{hh}}:{{MM}}:{{ss}}:{{ms}} :: {{logLevelName}} ::',
       prettyLogStyles: {
         logLevelName: {
           '*': ['bold', 'black', 'bgWhiteBright', 'dim'],
-          SILLY: ['bold', 'white'],
-          TRACE: ['bold', 'whiteBright'],
           DEBUG: ['bold', 'green'],
-          INFO: ['bold', 'blue'],
-          WARN: ['bold', 'yellow'],
           ERROR: ['bold', 'red'],
           FATAL: ['bold', 'redBright'],
-          STEP: ['bold', 'green'],
+          INFO: ['bold', 'blue'],
           SCENARIO: ['bold', 'green'],
+          SILLY: ['bold', 'white'],
+          STEP: ['bold', 'green'],
+          TRACE: ['bold', 'whiteBright'],
+          WARN: ['bold', 'yellow'],
         },
       },
+      prettyLogTemplate: '{{dd}}-{{mm}}-{{yyyy}} {{hh}}:{{MM}}:{{ss}}:{{ms}} :: {{logLevelName}} ::',
     };
     return new CustomLogger(settings);
   }

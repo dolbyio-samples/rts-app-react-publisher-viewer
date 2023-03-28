@@ -1,14 +1,14 @@
 import { Box, Flex, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 
-import InfoBar from '@millicast-react/info-bar';
-import InfoLabel from '@millicast-react/info-label';
-import useLocalFiles from '@millicast-react/use-local-files';
-import useMediaDevices from '@millicast-react/use-media-devices';
-import useNotification from '@millicast-react/use-notification';
-import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
-import usePublisher from '@millicast-react/use-publisher';
-import useScreenShare from '@millicast-react/use-screen-share';
+import InfoBar from '#millicast-react/info-bar';
+import InfoLabel from '#millicast-react/info-label';
+import useLocalFiles from '#millicast-react/use-local-files';
+import useMediaDevices from '#millicast-react/use-media-devices';
+import useNotification from '#millicast-react/use-notification';
+import usePageClosePrompt from '#millicast-react/use-page-close-prompt';
+import usePublisher from '#millicast-react/use-publisher';
+import useScreenShare from '#millicast-react/use-screen-share';
 
 import ActionBar from './components/action-bar';
 import PublisherVideoTiles from './components/publisher-video-tiles';
@@ -50,9 +50,9 @@ const App = () => {
     handleError: showError,
     streamName: VITE_RTS_STREAM_NAME || TIMESTAMP_STREAM_NAME,
     streamNameId: VITE_RTS_ACCOUNT_ID,
+    streams,
     token: VITE_RTS_STREAM_PUBLISHING_TOKEN,
     viewerAppBaseUrl: VITE_RTS_VIEWER_BASE_URL,
-    streams,
   });
 
   // Initialise first media device if no streams

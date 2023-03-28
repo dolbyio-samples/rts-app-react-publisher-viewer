@@ -1,5 +1,8 @@
 /* eslint-disable no-param-reassign */
+
 /* eslint-disable func-names */
+import { options } from '../../test.config';
+
 import {
   Before,
   BeforeAll,
@@ -11,7 +14,6 @@ import {
 } from '@cucumber/cucumber';
 import { ITestStepHookParameter } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
-import { options } from '../../test.config';
 import { selectorMappingPath } from '../config/defaults';
 import { logger } from '../logger';
 import { closePages, consoleLogsVerification, openPages } from '../playwright-support/app-specific/browser-actions';
@@ -20,7 +22,6 @@ import { captureArtifacts } from '../playwright-support/utils/test-artifacts';
 import { formatURL } from '../utils/helper';
 import { SelectorMapper } from '../utils/selector-mapper';
 import { GlobalData } from './GlobalData';
-
 import { ScenarioWorld } from './ScenarioWorld';
 import { saveData } from './utils';
 

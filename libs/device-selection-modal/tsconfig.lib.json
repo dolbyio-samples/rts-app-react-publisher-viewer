@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node", "react", "react-dom"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts"]
+  "extends": "./tsconfig.json",
+  "include": ["**/*.ts", "**/*.tsx", "../../millicast-sdk.d.ts"]
 }

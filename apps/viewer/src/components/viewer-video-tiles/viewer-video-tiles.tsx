@@ -1,10 +1,10 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { IconProfile } from '@millicast-react/dolbyio-icons';
-import { SimulcastQuality } from '@millicast-react/use-viewer';
+import { IconProfile } from '#millicast-react/dolbyio-icons';
+import { SimulcastQuality } from '#millicast-react/use-viewer';
+import usePlaybackControl from '#viewer/src/hooks/use-playback-control';
 
-import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
 

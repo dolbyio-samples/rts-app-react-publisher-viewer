@@ -1,8 +1,11 @@
 /* eslint-disable no-await-in-loop */
+
 /* eslint-disable no-restricted-syntax */
+
 /* eslint-disable no-param-reassign */
 import { expect } from '@playwright/test';
 import { BrowserContext } from 'playwright';
+
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { getData, saveData } from '../../hooks/utils';
 import { logger } from '../../logger';

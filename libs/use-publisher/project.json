@@ -1,24 +1,24 @@
 {
-  "name": "use-publisher",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/use-publisher/src",
+  "name": "use-publisher",
   "projectType": "library",
+  "sourceRoot": "libs/use-publisher/src",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/use-publisher/**/*.{ts,js}"]
-      }
+      },
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/use-publisher/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     }
   }
 }

@@ -1,8 +1,9 @@
-import { logger } from '../../logger';
 import assert from 'assertion';
 import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+
+import { logger } from '../../logger';
 
 export const verifyMatch = (actual: string, expPattern: string, message?: string): void => {
   message = `${message || ''}\n\tExpected RegEx: ${expPattern}\n\tActual: ${actual}`;
@@ -76,7 +77,7 @@ function imageCompare(actualImage: string, expectedImage: string, diffOutput: st
   const expectedImg = PNG.sync.read(fs.readFileSync(expectedImage));
 
   const { width, height } = expectedImg;
-  const diff = new PNG({ width, height });
+  const diff = new PNG({ height, width });
 
   const numDiffPixels = pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
     threshold: threshold,

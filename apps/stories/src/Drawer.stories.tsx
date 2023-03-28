@@ -1,11 +1,11 @@
 import { Box, Center, ChakraProvider, useDisclosure } from '@chakra-ui/react';
-import React from 'react';
 import { Meta, Story } from '@storybook/react';
+import React from 'react';
 
-import { IconSettings } from '@millicast-react/dolbyio-icons';
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import Drawer, { DrawerProps } from '@millicast-react/drawer';
-import IconButton from '@millicast-react/icon-button';
+import { IconSettings } from '#millicast-react/dolbyio-icons';
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import Drawer, { DrawerProps } from '#millicast-react/drawer';
+import IconButton from '#millicast-react/icon-button';
 
 export default {
   component: Drawer,
@@ -25,8 +25,8 @@ export const Default: Story = (args: Omit<DrawerProps, 'isOpen' | 'onClose'>) =>
             isRound
             onClick={handleOpen}
             position="absolute"
-            right="18px"
             reversed
+            right="18px"
             size="sm"
             testId="drawerOpenButton"
             tooltipProps={{ label: 'Drawer' }}

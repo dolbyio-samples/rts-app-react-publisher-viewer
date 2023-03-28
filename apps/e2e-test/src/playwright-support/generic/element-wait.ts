@@ -1,11 +1,11 @@
 /* eslint-disable no-await-in-loop */
+
 /* eslint-disable no-promise-executor-return */
 import { Page } from 'playwright';
 
 import { logger } from '../../logger';
 import { TimeOutError } from '../../utils/custom-exception';
 import { TargetSelector } from '../../utils/selector-mapper';
-
 import { getLocator } from './element-helper';
 
 export const waitFor = async <T>(
@@ -42,15 +42,15 @@ export const waitFor = async <T>(
 export const waitForSelector = async (
   page: Page,
   selector: string,
-  options?: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; timeout?: number; strict?: boolean }
+  options?: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; strict?: boolean; timeout?: number }
 ): Promise<boolean> => {
   try {
     const { state = 'visible', timeout = 30, strict = false } = options || {};
 
     await page.waitForSelector(selector, {
       state,
-      timeout,
       strict,
+      timeout,
     });
     return true;
   } catch (e) {

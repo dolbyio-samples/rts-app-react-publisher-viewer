@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 import { When } from '@cucumber/cucumber';
-import { defaultReportPath } from '../../config/defaults';
 
+import { defaultReportPath } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { check, click, hover, takeScreenshot, uncheck } from '../../playwright-support/generic/element-action';
 import { TargetSelector } from '../../utils/selector-mapper';

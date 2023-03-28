@@ -1,89 +1,89 @@
 {
-  "name": "publisher",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/publisher/src",
+  "name": "publisher",
   "projectType": "application",
+  "sourceRoot": "apps/publisher/src",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@nxext/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/publisher/src/environments/environment.ts",
+              "with": "apps/publisher/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      },
       "defaultConfiguration": "production",
+      "executor": "@nxext/vite:build",
       "options": {
-        "outputPath": "dist/apps/publisher",
         "baseHref": "/",
-        "configFile": "apps/publisher/vite.config.ts"
+        "configFile": "apps/publisher/vite.config.ts",
+        "outputPath": "dist/apps/publisher"
       },
-      "configurations": {
-        "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/publisher/src/environments/environment.ts",
-              "with": "apps/publisher/src/environments/environment.prod.ts"
-            }
-          ]
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nxext/vite:dev",
-      "options": {
-        "outputPath": "dist/apps/publisher",
-        "baseHref": "/",
-        "configFile": "apps/publisher/vite.config.ts"
-      },
-      "configurations": {
-        "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/publisher/src/environments/environment.ts",
-              "with": "apps/publisher/src/environments/environment.prod.ts"
-            }
-          ]
-        }
-      }
-    },
-    "preview": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite preview -c apps/publisher/vite.config.ts"
-      },
-      "dependsOn": ["build"]
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/publisher/**/*.{ts,js,tsx,jsx}"]
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/publisher/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "parallel": false,
-        "commands": ["yarn nx test-publisher e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher/"]
-      }
-    },
-    "e2e-report": {
-      "executor": "nx:run-commands",
-      "options": {
-        "parallel": false,
-        "commands": ["yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher/"]
-      }
+      "outputs": ["{options.outputPath}"]
     },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
         "command": "bash apps/deploy.sh 'dist/apps/publisher' 'astounding-lily-fa33fc'"
       }
+    },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn nx test-publisher e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher/"],
+        "parallel": false
+      }
+    },
+    "e2e-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn nx test-report e2e-test --skip-nx-cache --report=./apps/e2e-test/reports/publisher/"],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/publisher/**/*.{ts,js,tsx,jsx}"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite preview -c apps/publisher/vite.config.ts"
+      }
+    },
+    "serve": {
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/publisher/src/environments/environment.ts",
+              "with": "apps/publisher/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      },
+      "executor": "@nxext/vite:dev",
+      "options": {
+        "baseHref": "/",
+        "configFile": "apps/publisher/vite.config.ts",
+        "outputPath": "dist/apps/publisher"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/publisher/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
     }
-  },
-  "tags": []
+  }
 }

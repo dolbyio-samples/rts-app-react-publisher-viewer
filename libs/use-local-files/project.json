@@ -1,16 +1,16 @@
 {
-  "name": "use-local-files",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/use-local-files/src",
+  "name": "use-local-files",
   "projectType": "library",
+  "sourceRoot": "libs/use-local-files/src",
   "tags": [],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/use-local-files/**/*.{ts,js}"]
-      }
+      },
+      "outputs": ["{options.outputFile}"]
     }
   }
 }

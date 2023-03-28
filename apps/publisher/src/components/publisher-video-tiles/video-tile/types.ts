@@ -1,7 +1,7 @@
 import { OnStats } from '@dolbyio/webrtc-stats';
 
-import { VideoViewProps } from '@millicast-react/video-view';
-import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
+import { VideoViewProps } from '#millicast-react/video-view';
+import { StreamTypes } from '#publisher/src/hooks/use-multi-media-streams';
 
 import { SettingsPopoverProps } from './video-control-bar/settings-popover';
 

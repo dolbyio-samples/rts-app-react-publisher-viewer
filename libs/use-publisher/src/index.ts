@@ -9,10 +9,9 @@ import {
   VideoCodec,
   ViewerCount,
 } from '@millicast/sdk';
-
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { bitrateList } from './constants';
 
+import { bitrateList } from './constants';
 import reducer from './reducer';
 import { Publisher, PublisherActionType, PublisherProps, PublisherSource, PublisherSources } from './types';
 import { adjustDuplicateSourceIds } from './utils';
@@ -67,8 +66,8 @@ const usePublisher = ({
       const publish = new Publish(streamName, tokenGenerator, true);
 
       const collection = new WebRTCStats({
-        getStatsInterval: GET_STATS_INTERVAL,
         getStats: () => publish.webRTCPeer?.getRTCPeer().getStats(),
+        getStatsInterval: GET_STATS_INTERVAL,
       });
 
       collection.on('stats', (event: OnStats) => {

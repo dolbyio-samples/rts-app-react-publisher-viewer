@@ -27,10 +27,10 @@ const LocalFileSelectionModal = ({
         <ModalBody>
           <VStack>
             <form onSubmit={handleSubmit}>
-              <Heading as="h4" test-id="addLocalFileTitle" size="md">
+              <Heading as="h4" size="md" test-id="addLocalFileTitle">
                 Add local media file
               </Heading>
-              <Text test-id="addLocalFileDesc" fontSize="md">
+              <Text fontSize="md" test-id="addLocalFileDesc">
                 Pick a local file
               </Text>
               <Center padding="16px 0 32px" sx={{ '#pickFile': { color: 'white' } }} width="100%">

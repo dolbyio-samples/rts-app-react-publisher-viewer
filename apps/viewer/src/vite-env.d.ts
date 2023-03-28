@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 interface ImportMetaEnv {
-  readonly VITE_RTS_STREAM_NAME: string;
   readonly VITE_RTS_ACCOUNT_ID: string;
+  readonly VITE_RTS_STREAM_NAME: string;
   // more env variables...
 }
 

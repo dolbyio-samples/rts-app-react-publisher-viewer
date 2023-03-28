@@ -61,7 +61,7 @@ const Timer = ({ isActive = false }: TimerProps) => {
   }, [time]);
 
   return (
-    <Flex test-id="timer" alignItems="center">
+    <Flex alignItems="center" test-id="timer">
       <Text fontSize="32px" lineHeight="1">
         {sessionTime}
       </Text>

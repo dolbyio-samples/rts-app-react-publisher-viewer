@@ -1,7 +1,7 @@
 import { StackProps } from '@chakra-ui/react';
 import { OnStats } from '@dolbyio/webrtc-stats';
 
-import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
+import { StreamTypes } from '#publisher/src/hooks/use-multi-media-streams';
 
 import { SettingsPopoverProps } from './settings-popover';
 

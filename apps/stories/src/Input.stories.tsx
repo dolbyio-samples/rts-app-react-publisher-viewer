@@ -1,9 +1,9 @@
 import { Box, ChakraProvider } from '@chakra-ui/react';
-import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
+import React, { useState } from 'react';
 
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import Input, { InputProps } from '@millicast-react/input';
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import Input, { InputProps } from '#millicast-react/input';
 
 export default {
   component: Input,
@@ -25,11 +25,11 @@ Default.args = {
   disabled: false,
   error: '',
   errorProps: {},
-  label: 'Input label',
-  labelProps: {},
   helper: '',
   helperProps: {},
   inputProps: {},
+  label: 'Input label',
+  labelProps: {},
   placeholder: '',
   required: true,
 };

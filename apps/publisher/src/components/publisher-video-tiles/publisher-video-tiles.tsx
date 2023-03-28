@@ -2,12 +2,12 @@ import { Center, Flex, Heading, Text, VStack, Wrap, WrapItem } from '@chakra-ui/
 import { VideoCodec } from '@millicast/sdk';
 import React, { useMemo } from 'react';
 
-import { IconProfile } from '@millicast-react/dolbyio-icons';
-import { bitrateList } from '@millicast-react/use-publisher';
+import { IconProfile } from '#millicast-react/dolbyio-icons';
+import { bitrateList } from '#millicast-react/use-publisher';
+import { Resolution, StreamTypes } from '#publisher/src/hooks/use-multi-media-streams';
 
-import VideoTile from './video-tile';
-import { Resolution, StreamTypes } from '../../hooks/use-multi-media-streams';
 import { PublisherVideoTilesProps } from './types';
+import VideoTile from './video-tile';
 
 const PublisherVideoTiles = ({
   allSourcesLive,

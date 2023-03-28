@@ -10,9 +10,9 @@ import {
   IconPlay,
   IconSoundOn,
   IconSoundOff,
-} from '@millicast-react/dolbyio-icons';
-import IconButton from '@millicast-react/icon-button';
-import StatisticsPopover from '@millicast-react/statistics-popover';
+} from '#millicast-react/dolbyio-icons';
+import IconButton from '#millicast-react/icon-button';
+import StatisticsPopover from '#millicast-react/statistics-popover';
 
 import SettingsPopover from './settings-popover';
 import { VideoControlBarProps } from './types';

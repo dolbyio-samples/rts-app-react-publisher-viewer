@@ -1,4 +1,12 @@
 /* eslint-disable func-names */
+import {
+  getDefaultFooterData,
+  getDefaultHeaderData,
+  getDefaultSettingsData,
+  getDefaultStatsData,
+  getDefaultViewData,
+} from './workflow/workflow.data';
+
 import { DataTable, Then } from '@cucumber/cucumber';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
@@ -14,13 +22,6 @@ import { waitFor } from '../../playwright-support/generic/element-wait';
 import { Screen, Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { verifyFooterData, verifyHeaderData, verifySettings, verifyStats, verifyView } from './workflow/workflow';
-import {
-  getDefaultFooterData,
-  getDefaultHeaderData,
-  getDefaultSettingsData,
-  getDefaultStatsData,
-  getDefaultViewData,
-} from './workflow/workflow.data';
 
 Then(
   /^the "([^"]*)" should( not)? be in (Full|Normal) size$/,

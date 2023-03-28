@@ -1,6 +1,7 @@
-import { rootMain } from '../../../.storybook/main';
 import type { StorybookViteConfig } from '@storybook/builder-vite';
 import { Options } from '@storybook/core-common';
+
+import { rootMain } from '../../../.storybook/main';
 
 const config: StorybookViteConfig = {
   ...rootMain,

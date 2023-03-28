@@ -1,6 +1,6 @@
 import { IconButtonProps } from '@chakra-ui/react';
 
-import { SimulcastQuality } from '@millicast-react/use-viewer';
+import { SimulcastQuality } from '#millicast-react/use-viewer';
 
 export interface SettingsPopoverProps {
   iconProps?: Omit<IconButtonProps, 'aria-label'>;

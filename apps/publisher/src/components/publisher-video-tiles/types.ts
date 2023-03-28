@@ -1,8 +1,7 @@
 import { BroadcastOptions, VideoCodec } from '@millicast/sdk';
 
-import { PublisherSources } from '@millicast-react/use-publisher';
-
-import { ApplyConstraintsOptions, StreamsMap } from '../../hooks/use-multi-media-streams';
+import { PublisherSources } from '#millicast-react/use-publisher';
+import { ApplyConstraintsOptions, StreamsMap } from '#publisher/src/hooks/use-multi-media-streams';
 
 export interface PublisherVideoTilesProps {
   allSourcesLive: boolean;

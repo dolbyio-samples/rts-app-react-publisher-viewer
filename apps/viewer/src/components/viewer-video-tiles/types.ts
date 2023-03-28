@@ -1,6 +1,6 @@
 import { OnStats } from '@dolbyio/webrtc-stats';
 
-import { RemoteTrackSource, RemoteTrackSources, SimulcastQuality } from '@millicast-react/use-viewer';
+import { RemoteTrackSource, RemoteTrackSources, SimulcastQuality } from '#millicast-react/use-viewer';
 
 export interface ViewerVideoTilesProps {
   mainMediaStream?: MediaStream;

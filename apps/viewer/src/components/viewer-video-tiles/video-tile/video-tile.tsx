@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-import VideoView from '@millicast-react/video-view';
+import VideoView from '#millicast-react/video-view';
 
 import { VideoTileProps } from './types';
 import { delay } from './utils';

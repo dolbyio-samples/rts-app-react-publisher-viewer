@@ -5,7 +5,15 @@ declare namespace millicast {
   type VideoCodec = 'av1' | 'h264' | 'vp8' | 'vp9';
 
   interface Capabilities {
+    /**
+     * - Only for audio, the number of audio channels supported.
+     */
+    channels?: number;
     codecs: Array<CodecInfo>;
+    /**
+     * - An array specifying the URI of the header extension, as described in RFC 5285.
+     */
+    headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
     // /**
     //  * - Audio or video codec name.
     //  */
@@ -18,23 +26,15 @@ declare namespace millicast {
      * - In case of SVC support, a list of scalability modes supported.
      */
     scalabilityModes?: Array<string>;
-    /**
-     * - Only for audio, the number of audio channels supported.
-     */
-    channels?: number;
-    /**
-     * - An array specifying the URI of the header extension, as described in RFC 5285.
-     */
-    headerExtensions: Array<RTCRtpHeaderExtensionCapability>;
   }
 
   interface BroadcastOptions {
-    mediaStream: MediaStream;
-    sourceId: string;
-    events?: Event[];
-    simulcast?: boolean;
+    bandwidth?: number;
     codec?: VideoCodec;
-    bandwidth?: number; // bitrate restriction, 0 means unlimited
+    events?: Event[];
+    mediaStream: MediaStream;
+    simulcast?: boolean;
+    sourceId: string; // bitrate restriction, 0 means unlimited
   }
 
   interface CodecInfo {
@@ -47,12 +47,12 @@ declare namespace millicast {
   }
 
   interface MediaTrackInfo {
-    trackId: string;
     media: 'audio' | 'video';
+    trackId: string;
   }
   interface MediaStreamSource {
-    readonly streamId: string;
     sourceId: string;
+    readonly streamId: string;
     readonly tracks: MediaTrackInfo[];
   }
 
@@ -67,24 +67,25 @@ declare namespace millicast {
   }
 
   interface MediaLayer {
-    id: string;
     bitrate: number;
-    simulcastIdx: number;
+    id: string;
     layers: LayerInfo[];
+    simulcastIdx: number;
   }
 
   interface LayerInfo {
-    encodingId: string; // map to 'id' in Medialayer
+    // map to 'id' in Medialayer
     bitrate?: number;
+    encodingId: string;
     simulcastIdx?: number;
     spatialLayerId?: number;
     temporalLayerId?: number;
   }
 
   interface BroadcastEvent {
-    type: string;
-    name: Event;
     data: string | Date | ViewerCount | MediaStreamSource | MediaStreamLayers;
+    name: Event;
+    type: string;
   }
 
   type TokenGeneratorCallback = () => Promise<DirectorResponse>;
@@ -99,12 +100,12 @@ declare namespace millicast {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Publish extends EventEmitter {}
 
-  type StreamVideoStats = {
+  interface StreamVideoStats {
     inbounds?: StreamVideoInboundsStats[];
     outbounds?: StreamVideoOutboundsStats[];
-  };
+  }
 
-  type StreamStats = {
+  interface StreamStats {
     audio: StreamAudioStats;
     availableOutgoingBitrate?: number;
     candidateType?: string;
@@ -114,24 +115,24 @@ declare namespace millicast {
     };
     totalRoundTripTime?: number;
     video: StreamVideoStats;
-  };
+  }
 
-  type DirectorResponse = {
-    urls: string[];
-    jwt: string;
+  interface DirectorResponse {
     iceServers: RTCIceServer[];
-  };
+    jwt: string;
+    urls: string[];
+  }
 
-  type DirectorPublisherOptions = {
+  interface DirectorPublisherOptions {
+    streamName: string;
     token: string;
-    streamName: string;
-  };
+  }
 
-  type DirectorSubscriberOptions = {
-    streamName: string;
+  interface DirectorSubscriberOptions {
     streamAccountId: string;
+    streamName: string;
     subscriberToken?: string;
-  };
+  }
   class Director {
     static getPublisher(options: DirectorPublisherOptions): Promise<DirectorResponse>;
     static getSubscriber(options: DirectorSubscriberOptions): Promise<DirectorResponse>;
@@ -158,10 +159,11 @@ declare namespace millicast {
     webRTCPeer: PeerConnection | undefined;
   }
 
-  type ViewOptions = {
-    pinnedSourceId?: string; // Id of the main source that will be received by the default MediaStream
-    events?: Event[]; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
-  };
+  interface ViewOptions {
+    // Id of the main source that will be received by the default MediaStream
+    events?: Event[];
+    pinnedSourceId?: string; // Override which events will be delivered by the server (any of "active" | "inactive" | "vad" | "layers" | "viewercount")
+  }
 
   interface PeerConnection extends EventEmitter {}
   /**
@@ -197,10 +199,10 @@ declare namespace millicast {
     static getCapabilities(kind: CapabilityKind): Capabilities;
   }
 
-  type LogLevel = {
+  interface LogLevel {
     name: string;
     value: number;
-  };
+  }
 
   interface Logger {
     // TODO: add methods for instance here

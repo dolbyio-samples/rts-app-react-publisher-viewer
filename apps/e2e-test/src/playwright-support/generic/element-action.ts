@@ -2,7 +2,6 @@ import { Page, Locator } from 'playwright';
 
 import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
-
 import { getLocator } from './element-helper';
 
 export const click = async (page: Page, selector: TargetSelector, index?: number): Promise<void> => {

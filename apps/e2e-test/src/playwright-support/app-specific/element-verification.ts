@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
-import { Page } from 'playwright';
 import assert from 'assertion';
+import { Page } from 'playwright';
+
 import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
 import { Screen, Status } from '../../utils/types';
-
 import { getDeviceStatus, getOptions, getViewScreenSize } from './element-read';
 
 export const verifyViewScreenSize = async (

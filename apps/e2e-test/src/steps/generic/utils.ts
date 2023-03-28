@@ -26,8 +26,8 @@ export function getValidationCondition(selectorMap: SelectorMapper, pageName: st
   const validationCondition = selectorMap.getSelector(pageName, 'validation') as string;
   const validationArray = validationCondition.split(':');
   return {
-    selector: validationArray[0],
     condition: validationArray.length > 1 ? validationArray[1] : 'displayed',
+    selector: validationArray[0],
   };
 }
 

@@ -1,9 +1,10 @@
-import { Meta, Story } from '@storybook/react';
 import { ChakraProvider, Center } from '@chakra-ui/react';
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import InfoLabel from '@millicast-react/info-label';
-import type { InfoLabelProps } from '@millicast-react/info-label';
+import { Meta, Story } from '@storybook/react';
 import * as React from 'react';
+
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import InfoLabel from '#millicast-react/info-label';
+import type { InfoLabelProps } from '#millicast-react/info-label';
 
 export default {
   component: InfoLabel,
@@ -11,7 +12,7 @@ export default {
 
 export const Default: Story = (args: InfoLabelProps) => (
   <ChakraProvider theme={dolbyioTheme}>
-    <Center h="30px" bg="black">
+    <Center bg="black" h="30px">
       <InfoLabel {...args} />
     </Center>
   </ChakraProvider>
@@ -30,8 +31,8 @@ export const GreyLabel: Story = (args: InfoLabelProps) => (
 );
 
 GreyLabel.args = {
-  text: 'Presenter',
   color: 'dolbyGrey.500',
+  text: 'Presenter',
 };
 
 export const LabelWithBlackBackground: Story = (args: InfoLabelProps) => (
@@ -43,7 +44,7 @@ export const LabelWithBlackBackground: Story = (args: InfoLabelProps) => (
 );
 
 LabelWithBlackBackground.args = {
-  text: 'Presenter',
-  color: 'white',
   bgColor: 'blackAlpha.600',
+  color: 'white',
+  text: 'Presenter',
 };

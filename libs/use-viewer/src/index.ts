@@ -266,8 +266,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         viewer.on('track', handleTrack);
 
         const collection = new WebRTCStats({
-          getStatsInterval: GET_STATS_INTERVAL,
           getStats: () => viewer.webRTCPeer?.getRTCPeer().getStats(),
+          getStatsInterval: GET_STATS_INTERVAL,
         });
 
         collection.on('stats', handleStats);

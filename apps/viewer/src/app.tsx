@@ -1,11 +1,11 @@
 import { Box, Flex, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
-import InfoBar from '@millicast-react/info-bar';
-import InfoLabel from '@millicast-react/info-label';
-import useNotification from '@millicast-react/use-notification';
-import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
-import useViewer from '@millicast-react/use-viewer';
+import InfoBar from '#millicast-react/info-bar';
+import InfoLabel from '#millicast-react/info-label';
+import useNotification from '#millicast-react/use-notification';
+import usePageClosePrompt from '#millicast-react/use-page-close-prompt';
+import useViewer from '#millicast-react/use-viewer';
 
 import ViewerVideoTiles from './components/viewer-video-tiles';
 

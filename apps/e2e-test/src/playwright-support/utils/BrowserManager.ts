@@ -1,9 +1,12 @@
 /* eslint-disable no-return-await */
+
 /* eslint-disable no-await-in-loop */
+
 /* eslint-disable no-restricted-syntax */
+import { options } from '../../../test.config';
+
 import playwright, { Browser, BrowserContext, BrowserContextOptions, LaunchOptions, Page } from 'playwright';
 
-import { options } from '../../../test.config';
 import { defaultExecutionTimeout } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import { logger } from '../../logger';
@@ -106,7 +109,7 @@ export class BrowserManager {
     if (!contextOptions?.recordVideo && this.options.video !== 'off') {
       contextOptions.recordVideo = {
         dir: `${this.options.reportPath}/videos/${scenarioWorld.featureNameFormated}/${scenarioWorld.scenarioNameFormated}/`,
-        size: { width: 1280, height: 1024 },
+        size: { height: 1024, width: 1280 },
       };
     }
     return contextOptions;

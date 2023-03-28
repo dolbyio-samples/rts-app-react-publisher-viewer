@@ -42,6 +42,7 @@
     "@storybook/react": "6.5.13",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/react": "13.4.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/jest": "28.1.1",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.20",

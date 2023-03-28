@@ -1,4 +1,3 @@
-import React, { SVGProps } from 'react';
 import {
   Alert as ChakraAlert,
   AlertProps as ChakraAlertProps,
@@ -6,8 +5,9 @@ import {
   AlertIcon,
   CloseButton,
 } from '@chakra-ui/react';
+import React, { SVGProps } from 'react';
 
-import { IconClose, IconWarning } from '@millicast-react/dolbyio-icons';
+import { IconClose, IconWarning } from '#millicast-react/dolbyio-icons';
 
 type AlertProps = ChakraAlertProps & {
   message: string;
@@ -21,10 +21,10 @@ const alertStatusIcons: Record<string, (props: SVGProps<SVGSVGElement>) => JSX.E
 const Alert = ({ message, status, onClose }: AlertProps) => {
   return (
     <ChakraAlert status={status}>
-      <AlertIcon boxSize="22px" as={status ? alertStatusIcons[status] : undefined} />
+      <AlertIcon as={status ? alertStatusIcons[status] : undefined} boxSize="22px" />
       <AlertTitle>{message}</AlertTitle>
       {onClose && (
-        <CloseButton cursor="pointer" position="absolute" right="3" boxSize="14px" as={IconClose} onClick={onClose} />
+        <CloseButton as={IconClose} boxSize="14px" cursor="pointer" onClick={onClose} position="absolute" right="3" />
       )}
     </ChakraAlert>
   );

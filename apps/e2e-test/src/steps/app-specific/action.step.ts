@@ -1,4 +1,6 @@
 /* eslint-disable func-names */
+import { getDefaultConfigureSettings } from './workflow/workflow.data';
+
 import { DataTable, When } from '@cucumber/cucumber';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
@@ -10,7 +12,6 @@ import {
 import { Status } from '../../utils/types';
 import { arrayContainsAll } from '../generic/utils';
 import { addFileSource, addSource, configureSettings, projectAsMainStream } from './workflow/workflow';
-import { getDefaultConfigureSettings } from './workflow/workflow.data';
 
 When(
   /^the (?:publisher|viewer) turns (Off|On) the "([^"]*)"$/,

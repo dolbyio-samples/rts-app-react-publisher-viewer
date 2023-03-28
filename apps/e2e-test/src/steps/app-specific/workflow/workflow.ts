@@ -1,16 +1,3 @@
-import { getElementText } from '../../../playwright-support/generic/element-read';
-import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
-import { logger } from '../../../logger';
-import { selectSettingDropdown, toogleSimulcast } from '../../../playwright-support/app-specific/element-action';
-import { getStreamStats } from '../../../playwright-support/app-specific/element-read';
-import { verifyViewScreenSize } from '../../../playwright-support/app-specific/element-verification';
-import { clearText, click, enterText } from '../../../playwright-support/generic/element-action';
-
-import { waitFor } from '../../../playwright-support/generic/element-wait';
-import { verifyArrayContains, verifyEqualTo } from '../../../playwright-support/generic/verification';
-import { TargetSelector } from '../../../utils/selector-mapper';
-import { State, Status, Screen } from '../../../utils/types';
-import { replaceAttributeTargetSelector } from '../../generic/utils';
 import {
   addCamera,
   addLocalFile,
@@ -22,7 +9,21 @@ import {
   validateText,
   validateValue,
 } from './workflow.utils';
+
 import fs from 'fs';
+
+import { ScenarioWorld } from '../../../hooks/ScenarioWorld';
+import { logger } from '../../../logger';
+import { selectSettingDropdown, toogleSimulcast } from '../../../playwright-support/app-specific/element-action';
+import { getStreamStats } from '../../../playwright-support/app-specific/element-read';
+import { verifyViewScreenSize } from '../../../playwright-support/app-specific/element-verification';
+import { clearText, click, enterText } from '../../../playwright-support/generic/element-action';
+import { getElementText } from '../../../playwright-support/generic/element-read';
+import { waitFor } from '../../../playwright-support/generic/element-wait';
+import { verifyArrayContains, verifyEqualTo } from '../../../playwright-support/generic/verification';
+import { TargetSelector } from '../../../utils/selector-mapper';
+import { State, Status, Screen } from '../../../utils/types';
+import { replaceAttributeTargetSelector } from '../../generic/utils';
 
 export const verifyView = async (
   scWorld: ScenarioWorld,

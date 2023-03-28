@@ -6,26 +6,26 @@ import { BrowserManager } from '../playwright-support/utils/BrowserManager';
 const browserMgr = new BrowserManager();
 
 const reportOptions: Options = {
-  theme: 'bootstrap',
   brandTitle: autName,
-  name: testReportTitle,
   jsonFile: `${browserMgr.options.reportPath}/cucumber_report.json`,
-  output: `${browserMgr.options.reportPath}/cucumber_report.html`,
-  screenshotsDirectory: `${browserMgr.options.reportPath}/screenshots`,
-  storeScreenshots: true,
-  noInlineScreenshots: true,
-  reportSuiteAsScenarios: true,
-  scenarioTimestamp: true,
   launchReport: false,
   metadata: {
     'App Version': '2.1.0',
-    'Test Environment': 'DEV',
     Browser: `${browserMgr.options.browserName}`,
     Headless: `${browserMgr.options.headless}`,
-    Viewport: `${browserMgr.options.viewport.width} x ${browserMgr.options.viewport.height}`,
     Platform: `${process.platform}`,
+    'Test Environment': 'DEV',
     Time: `${new Date()}`,
+    Viewport: `${browserMgr.options.viewport.width} x ${browserMgr.options.viewport.height}`,
   },
+  name: testReportTitle,
+  noInlineScreenshots: true,
+  output: `${browserMgr.options.reportPath}/cucumber_report.html`,
+  reportSuiteAsScenarios: true,
+  scenarioTimestamp: true,
+  screenshotsDirectory: `${browserMgr.options.reportPath}/screenshots`,
+  storeScreenshots: true,
+  theme: 'bootstrap',
 };
 
 generate(reportOptions);

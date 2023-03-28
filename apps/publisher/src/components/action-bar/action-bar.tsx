@@ -1,14 +1,13 @@
 import { HStack, useDisclosure, VisuallyHidden } from '@chakra-ui/react';
 import React, { FormEvent, useEffect, useState } from 'react';
 
-import DeviceSelectionModal from '@millicast-react/device-selection-modal';
-import { IconAddCamera, IconPresent, IconStreamLocal } from '@millicast-react/dolbyio-icons';
-import LiveIndicator from '@millicast-react/live-indicator';
-import LocalFileSelectionModal from '@millicast-react/local-file-selection-modal';
-import PopupMenu from '@millicast-react/popup-menu';
-import ShareLinkButton from '@millicast-react/share-link-button';
-
-import useCanCaptureStream from '../../hooks/use-can-capture-stream';
+import DeviceSelectionModal from '#millicast-react/device-selection-modal';
+import { IconAddCamera, IconPresent, IconStreamLocal } from '#millicast-react/dolbyio-icons';
+import LiveIndicator from '#millicast-react/live-indicator';
+import LocalFileSelectionModal from '#millicast-react/local-file-selection-modal';
+import PopupMenu from '#millicast-react/popup-menu';
+import ShareLinkButton from '#millicast-react/share-link-button';
+import useCanCaptureStream from '#publisher/src/hooks/use-can-capture-stream';
 
 import { ActionBarProps } from './types';
 

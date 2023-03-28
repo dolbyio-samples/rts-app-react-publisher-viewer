@@ -1,21 +1,21 @@
 import { Menu, MenuButton, MenuList, MenuItem, Button, Box, Text } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconAdd } from '@millicast-react/dolbyio-icons';
+import { IconAdd } from '#millicast-react/dolbyio-icons';
 
 import { PopupMenuProps } from './types';
 
 const PopupMenu = ({ buttonTitle, disabled = false, items }: PopupMenuProps) => {
   return (
-    <Menu placement="top" gutter={14} autoSelect={false}>
+    <Menu autoSelect={false} gutter={14} placement="top">
       <MenuButton
         _active={{
-          borderColor: 'dolbyPurple.500',
           bg: 'dolbyPurple.500',
+          borderColor: 'dolbyPurple.500',
         }}
         _hover={{
-          borderColor: 'dolbyPurple.500',
           bg: 'dolbyPurple.500',
+          borderColor: 'dolbyPurple.500',
         }}
         as={Button}
         bg="transparent"
@@ -32,31 +32,31 @@ const PopupMenu = ({ buttonTitle, disabled = false, items }: PopupMenuProps) => 
         {buttonTitle}
       </MenuButton>
       <MenuList
-        data-id="addSourceMenu"
         bg="dolbyNeutral.800"
-        w="200px"
-        color="white"
         border="none"
-        p="0"
+        color="white"
+        data-id="addSourceMenu"
         overflow="hidden"
+        p="0"
+        w="200px"
       >
         {items.map(({ icon, text, onClick, isDisabled }) => (
           <MenuItem
-            test-id={text.replace(/\s/g, '')}
-            key={text}
-            onClick={onClick}
-            bg="dolbyNeutral.800"
-            _hover={{ bg: 'dolbyNeutral.500' }}
             _active={{ bg: 'dolbyNeutral.500' }}
             _focus={{ bg: 'dolbyNeutral.500' }}
+            _hover={{ bg: 'dolbyNeutral.500' }}
+            bg="dolbyNeutral.800"
             isDisabled={isDisabled}
+            key={text}
+            onClick={onClick}
             px={4}
             py={3}
+            test-id={text.replace(/\s/g, '')}
           >
-            <Box width="24px" mr={3}>
+            <Box mr={3} width="24px">
               {icon}
             </Box>
-            <Text noOfLines={1} textOverflow="ellipsis" fontSize="14px" fontWeight="500">
+            <Text fontSize="14px" fontWeight="500" noOfLines={1} textOverflow="ellipsis">
               {text}
             </Text>
           </MenuItem>

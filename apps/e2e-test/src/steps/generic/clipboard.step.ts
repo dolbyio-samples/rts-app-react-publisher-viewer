@@ -1,16 +1,16 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
-import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { replacePlaceholder } from './utils';
 import { getData, saveData } from '../../hooks/utils';
+import { readClipboardText } from '../../playwright-support/generic/clipboard-actions';
 import {
   verifyEqualTo,
   verifyMatch,
   verifyNotEqualTo,
   verifyNotMatch,
 } from '../../playwright-support/generic/verification';
+import { replacePlaceholder } from './utils';
 
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,

@@ -1,9 +1,9 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconCameraOn, IconSettings } from '@millicast-react/dolbyio-icons';
-import Dropdown from '@millicast-react/dropdown';
-import Popover from '@millicast-react/popover';
+import { IconCameraOn, IconSettings } from '#millicast-react/dolbyio-icons';
+import Dropdown from '#millicast-react/dropdown';
+import Popover from '#millicast-react/popover';
 
 import { SettingsPopoverProps } from './types';
 import { qualityElementResolver } from './utils';

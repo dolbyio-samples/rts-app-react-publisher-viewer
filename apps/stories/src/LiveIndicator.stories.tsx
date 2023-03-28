@@ -1,8 +1,9 @@
-import { Meta, Story } from '@storybook/react';
 import { ChakraProvider } from '@chakra-ui/react';
-import dolbyioTheme from '@millicast-react/dolbyio-theme';
-import LiveIndicator from '@millicast-react/live-indicator';
+import { Meta, Story } from '@storybook/react';
 import * as React from 'react';
+
+import dolbyioTheme from '#millicast-react/dolbyio-theme';
+import LiveIndicator from '#millicast-react/live-indicator';
 
 export default {
   component: LiveIndicator,

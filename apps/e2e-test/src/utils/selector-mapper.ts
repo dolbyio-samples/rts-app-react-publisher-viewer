@@ -1,15 +1,14 @@
 import fs from 'fs';
-import path from 'path';
-
 import { load } from 'js-yaml';
+import path from 'path';
 
 import { logger } from '../logger';
 
 export type TargetSelector = string | string[];
 type PageSelectorMap = Map<string, TargetSelector>;
-type PageSelectorObject = {
+interface PageSelectorObject {
   [key: string]: TargetSelector;
-};
+}
 type SelectorMap = Map<string, PageSelectorMap>;
 
 export class SelectorMapper {

@@ -1,6 +1,7 @@
 import { HStack, Text } from '@chakra-ui/react';
-import { IconEye } from '@millicast-react/dolbyio-icons';
 import React, { useMemo } from 'react';
+
+import { IconEye } from '#millicast-react/dolbyio-icons';
 
 export interface ParticipantCountProps {
   count: string | number;

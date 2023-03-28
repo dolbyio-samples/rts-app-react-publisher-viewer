@@ -5,7 +5,6 @@ import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
 import { Status } from '../../utils/types';
 import { getLocator } from '../generic/element-helper';
-
 import { getDeviceStatus, getSimulcastStatus } from './element-read';
 
 export const toogleDevice = async (page: Page, selector: TargetSelector, status: Status): Promise<void> => {

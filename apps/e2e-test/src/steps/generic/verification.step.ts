@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 import { Then } from '@cucumber/cucumber';
-import { defaultReportPath } from '../../config/defaults';
 
+import { defaultReportPath } from '../../config/defaults';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
 import {
   verifyElementContainsText,

@@ -4,7 +4,6 @@ import { Page } from 'playwright';
 import { logger } from '../../logger';
 import { TargetSelector } from '../../utils/selector-mapper';
 import { State } from '../../utils/types';
-
 import { getLocator } from './element-helper';
 import { getElementValue } from './element-read';
 
