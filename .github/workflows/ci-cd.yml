@@ -95,10 +95,7 @@ jobs:
   #     publishing_token: ${{ secrets.STREAM_PUBLISHING_TOKEN }}
   #     account_id: ${{ secrets.STREAM_ACCOUNT_ID }}
   deploy:
-    needs:
-      [
-        lint-check
-      ]
+    needs: [lint-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
