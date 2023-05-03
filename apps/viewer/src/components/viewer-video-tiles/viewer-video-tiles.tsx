@@ -8,7 +8,7 @@ import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
 
-const MAX_SOURCES = 4;
+const MAX_SOURCES = 10;
 
 const ViewerVideoTiles = ({
   mainMediaStream,

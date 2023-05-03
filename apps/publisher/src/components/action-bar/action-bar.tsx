@@ -19,7 +19,7 @@ const ActionBar = ({
   onStartMediaDevice: handleStartMediaDevice,
   onStartScreenShare: handleStartScreenShare,
   onStopAllSources: handleStopAllSources,
-  maxSources = 4,
+  maxSources = 10,
   shareUrl,
   sources,
   streams,
