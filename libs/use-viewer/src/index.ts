@@ -1,6 +1,7 @@
 import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
 import { BroadcastEvent, Director, MediaStreamLayers, MediaStreamSource, View, ViewerCount } from '@millicast/sdk';
-import { useReducer, useRef, useState } from 'react';
+import { useReducer, useRef } from 'react';
+import useState from 'react-usestateref';
 
 import reducer from './reducer';
 import { RemoteTrackSources, SimulcastQuality, Viewer, ViewerActionType, ViewerProps } from './types';
@@ -28,8 +29,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const activeEventCounterRef = useRef(0);
   const mainAudioMIDRef = useRef<string>();
   const mainVideoMIDRef = useRef<string>();
-  const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
-  const [mainSourceId, setMainSourceId] = useState<string>();
+  const [mainMediaStream, setMainMediaStream, mainMediaStreamRef] = useState<MediaStream>();
+  const [mainSourceId, setMainSourceId, mainSourceIdRef] = useState<string>();
   const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>(buildQualityOptions());
   const [mainStatistics, setMainStatistics] = useState<OnStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
@@ -78,17 +79,18 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     switch (event.name) {
       case 'active':
         try {
+          const srcId = sourceId || DEFAULT_MAIN_SOURCE_ID;
           const activeEventCounter = activeEventCounterRef.current + 1;
           activeEventCounterRef.current = activeEventCounter;
-          const newRemoteTrackSource = await addRemoteTrack(viewer, sourceId || DEFAULT_MAIN_SOURCE_ID, tracks);
+          const newRemoteTrackSource = await addRemoteTrack(viewer, srcId, tracks);
           dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
           if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
             setMainMediaStream(newRemoteTrackSource.mediaStream);
-            setMainSourceId(sourceId);
+            setMainSourceId(srcId);
             mainAudioMIDRef.current = newRemoteTrackSource.audioMediaId;
             mainVideoMIDRef.current = newRemoteTrackSource.videoMediaId;
           }
-          await viewer.project(sourceId, generateProjectMapping(newRemoteTrackSource));
+          await viewer.project(srcId, generateProjectMapping(newRemoteTrackSource));
         } catch (error) {
           handleInternalError(error);
         } finally {
@@ -100,6 +102,17 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         const remoteTrackSource = remoteTrackSourcesRef.current?.get(sourceId);
         if (remoteTrackSource) {
           try {
+            if (sourceId === mainSourceIdRef.current && remoteTrackSourcesRef.current) {
+              const nextSourceId = Array.from(remoteTrackSourcesRef.current.keys()).find(
+                (sourceId) => sourceId !== mainSourceIdRef.current
+              );
+              if (nextSourceId) {
+                projectToMainStream(nextSourceId, false);
+                const nextTrack = remoteTrackSourcesRef.current.get(nextSourceId);
+                remoteTrackSource.audioMediaId = nextTrack?.audioMediaId;
+                remoteTrackSource.videoMediaId = nextTrack?.videoMediaId;
+              }
+            }
             dispatch({ sourceId, type: ViewerActionType.REMOVE_SOURCE });
             await unprojectFromStream(viewer, remoteTrackSource);
           } catch (error) {
@@ -153,34 +166,45 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     setMainStatistics({ ...statistics, input: { audio: mainAudio, video: mainVideo } });
   };
 
-  const projectToMainStream = async (sourceId: string): Promise<void> => {
+  // Project the tracks specified by the source ID to main stream
+  // It will swap the current tracks in main stream with the target tracks if `shouldSwap` is true
+  const projectToMainStream = async (sourceId: string, shouldSwap = true): Promise<void> => {
     const { current: viewer } = viewerRef;
 
-    if (!viewer || !mainSourceId) {
+    if (!viewer || !mainSourceIdRef.current || !remoteTrackSourcesRef.current || !mainMediaStreamRef.current) {
       return;
     }
-
+    const remoteTrackSources = remoteTrackSourcesRef.current;
+    const mainMediaStream = mainMediaStreamRef.current;
     const remoteTrackSource = remoteTrackSources.get(sourceId);
-    const mainTrackSource = remoteTrackSources.get(mainSourceId);
+    const mainTrackSource = remoteTrackSources.get(mainSourceIdRef.current);
     if (remoteTrackSource && mainTrackSource && mainMediaStream) {
       try {
-        await projectToStream(viewer, mainTrackSource, remoteTrackSource.audioMediaId, remoteTrackSource.videoMediaId);
+        const actionPayload = [
+          {
+            sourceId,
+            mediaStream: mainMediaStream,
+            audioMID: mainAudioMIDRef.current,
+            videoMID: mainVideoMIDRef.current,
+          },
+        ];
+        if (shouldSwap) {
+          await projectToStream(
+            viewer,
+            mainTrackSource,
+            remoteTrackSource.audioMediaId,
+            remoteTrackSource.videoMediaId
+          );
+          actionPayload.push({
+            sourceId: mainSourceIdRef.current,
+            mediaStream: remoteTrackSource.mediaStream,
+            audioMID: remoteTrackSource.audioMediaId,
+            videoMID: remoteTrackSource.videoMediaId,
+          });
+        }
         await projectToStream(viewer, remoteTrackSource, mainAudioMIDRef.current, mainVideoMIDRef.current);
         dispatch({
-          payload: [
-            {
-              sourceId,
-              mediaStream: mainMediaStream,
-              audioMID: mainAudioMIDRef.current,
-              videoMID: mainVideoMIDRef.current,
-            },
-            {
-              sourceId: mainSourceId,
-              mediaStream: remoteTrackSource.mediaStream,
-              audioMID: remoteTrackSource.audioMediaId,
-              videoMID: remoteTrackSource.videoMediaId,
-            },
-          ],
+          payload: actionPayload,
           type: ViewerActionType.UPDATE_SOURCE_MEDIA,
         });
         setMainSourceId(sourceId);
@@ -193,21 +217,25 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   };
 
   const setSourceQuality = async (sourceId: string, quality?: SimulcastQuality) => {
-    const { current: viewer } = viewerRef;
+    const viewer = viewerRef.current;
     if (!viewer) {
       return;
     }
     const { streamQuality = 'Auto', simulcastLayer } = quality ?? {};
-    if (streamQuality === 'Auto') {
-      await viewer.select();
-    } else {
-      await viewer.select(simulcastLayer);
+    try {
+      if (streamQuality === 'Auto') {
+        await viewer.select();
+      } else {
+        await viewer.select(simulcastLayer);
+      }
+      dispatch({
+        quality: streamQuality,
+        sourceId,
+        type: ViewerActionType.UPDATE_SOURCE_QUALITY,
+      });
+    } catch (err) {
+      console.error(err);
     }
-    dispatch({
-      quality: streamQuality,
-      sourceId,
-      type: ViewerActionType.UPDATE_SOURCE_QUALITY,
-    });
   };
 
   const startViewer = async () => {
@@ -217,7 +245,6 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
         viewer.on('broadcastEvent', handleBroadcastEvent);
         viewer.on('connectionStateChange', handleConnectionStateChange);
-        // viewer.on('track', handleTrack);
 
         const collection = new WebRTCStats({
           getStatsInterval: GET_STATS_INTERVAL,

@@ -32,7 +32,7 @@ export interface Viewer {
   mainSourceId?: string;
   mainQualityOptions: SimulcastQuality[];
   mainStatistics?: OnStats;
-  projectToMainStream: (sourceId: string) => Promise<RemoteTrackSource | void>;
+  projectToMainStream: (sourceId: string, shouldSwap: boolean) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
   setSourceQuality: (sourceId: string, quality?: SimulcastQuality) => void;
   startViewer: () => void;
