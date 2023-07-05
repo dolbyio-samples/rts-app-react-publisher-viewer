@@ -5,5 +5,5 @@
     "types": ["react", "react-dom", "node"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts", "../../millicast-sdk.d.ts"]
+  "include": ["**/*.ts"]
 }

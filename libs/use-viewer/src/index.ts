@@ -1,27 +1,19 @@
 import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
-import {
-  BroadcastEvent,
-  Director,
-  MediaStreamLayers,
-  MediaStreamSource,
-  View,
-  ViewerCount,
-  ViewProjectSourceMapping,
-} from '@millicast/sdk';
+import { BroadcastEvent, Director, MediaStreamLayers, MediaStreamSource, View, ViewerCount } from '@millicast/sdk';
 import { useReducer, useRef, useState } from 'react';
 
 import reducer from './reducer';
+import { RemoteTrackSources, SimulcastQuality, Viewer, ViewerActionType, ViewerProps } from './types';
 import {
-  RemoteTrackSource,
-  RemoteTrackSources,
-  SimulcastQuality,
-  Viewer,
-  ViewerActionType,
-  ViewerProps,
-} from './types';
-import { addRemoteTrack, buildQualityOptions, projectToStream, unprojectFromStream } from './utils';
+  addRemoteTrack,
+  buildQualityOptions,
+  generateProjectMapping,
+  projectToStream,
+  unprojectFromStream,
+} from './utils';
 
 const GET_STATS_INTERVAL = 1000;
+const DEFAULT_MAIN_SOURCE_ID = 'main_undefined';
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const collectionRef = useRef<WebRTCStats>();
@@ -34,10 +26,10 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   // Use this to keep track of the quantity of concurrent active event handlers
   const activeEventCounterRef = useRef(0);
-  const mainAudioMappingRef = useRef<ViewProjectSourceMapping>();
-  const mainVideoMappingRef = useRef<ViewProjectSourceMapping>();
-
+  const mainAudioMIDRef = useRef<string>();
+  const mainVideoMIDRef = useRef<string>();
   const [mainMediaStream, setMainMediaStream] = useState<MediaStream>();
+  const [mainSourceId, setMainSourceId] = useState<string>();
   const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>(buildQualityOptions());
   const [mainStatistics, setMainStatistics] = useState<OnStats>();
   const [viewerCount, setViewerCount] = useState<number>(0);
@@ -88,33 +80,24 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         try {
           const activeEventCounter = activeEventCounterRef.current + 1;
           activeEventCounterRef.current = activeEventCounter;
-
-          const newRemoteTrackSource = await addRemoteTrack(viewer, sourceId, tracks);
-
+          const newRemoteTrackSource = await addRemoteTrack(viewer, sourceId || DEFAULT_MAIN_SOURCE_ID, tracks);
           dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
-
-          // Project to main stream if there are currently no remote tracks and it is the first active event
           if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
-            await projectToStream(
-              viewer,
-              newRemoteTrackSource,
-              mainAudioMappingRef.current,
-              mainVideoMappingRef.current
-            );
-          } else {
-            await viewer.project(sourceId, newRemoteTrackSource.projectMapping);
+            setMainMediaStream(newRemoteTrackSource.mediaStream);
+            setMainSourceId(sourceId);
+            mainAudioMIDRef.current = newRemoteTrackSource.audioMediaId;
+            mainVideoMIDRef.current = newRemoteTrackSource.videoMediaId;
           }
+          await viewer.project(sourceId, generateProjectMapping(newRemoteTrackSource));
         } catch (error) {
           handleInternalError(error);
         } finally {
           activeEventCounterRef.current = activeEventCounterRef.current - 1;
         }
-
         break;
 
       case 'inactive': {
         const remoteTrackSource = remoteTrackSourcesRef.current?.get(sourceId);
-
         if (remoteTrackSource) {
           try {
             dispatch({ sourceId, type: ViewerActionType.REMOVE_SOURCE });
@@ -123,11 +106,9 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
             handleInternalError(error);
           }
         }
-
         if (!remoteTrackSourcesRef.current?.size) {
           setMainQualityOptions(buildQualityOptions());
         }
-
         break;
       }
 
@@ -136,12 +117,11 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
         break;
 
       case 'layers': {
-        const { mediaId } = mainVideoMappingRef.current ?? {};
+        const mediaId = mainVideoMIDRef.current;
 
         if (mediaId) {
           const mid = parseInt(mediaId, 10);
           const { active } = (event.data as MediaStreamLayers).medias[mid] ?? {};
-
           setMainQualityOptions(buildQualityOptions(active));
         }
 
@@ -167,90 +147,64 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const handleStats = (statistics: OnStats) => {
     const { audio, video } = statistics.input;
 
-    const mainAudio = audio.filter(({ mid }) => mid === mainAudioMappingRef.current?.mediaId) ?? [];
-    const mainVideo = video.filter(({ mid }) => mid === mainVideoMappingRef.current?.mediaId) ?? [];
+    const mainAudio = audio.filter(({ mid }) => mid === mainAudioMIDRef.current) ?? [];
+    const mainVideo = video.filter(({ mid }) => mid === mainVideoMIDRef.current) ?? [];
 
     setMainStatistics({ ...statistics, input: { audio: mainAudio, video: mainVideo } });
   };
 
-  // Get the audio/video media IDs for the main stream from the track event
-  // and use them to create the main stream mapping
-  const handleTrack = (event: RTCTrackEvent) => {
-    const {
-      streams: [mediaStream],
-      track: { kind },
-      transceiver: { mid },
-    } = event;
-
-    if (mediaStream && mid !== null) {
-      const newMapping = { media: kind, mediaId: mid, trackId: kind };
-
-      setMainMediaStream(mediaStream);
-
-      if (kind === 'audio') {
-        mainAudioMappingRef.current = newMapping;
-      } else if (kind === 'video') {
-        mainVideoMappingRef.current = newMapping;
-      }
-    }
-  };
-
-  const projectToMainStream = async (sourceId?: string): Promise<RemoteTrackSource | void> => {
+  const projectToMainStream = async (sourceId: string): Promise<void> => {
     const { current: viewer } = viewerRef;
 
-    if (!viewer) {
+    if (!viewer || !mainSourceId) {
       return;
     }
 
     const remoteTrackSource = remoteTrackSources.get(sourceId);
-
-    if (remoteTrackSource) {
+    const mainTrackSource = remoteTrackSources.get(mainSourceId);
+    if (remoteTrackSource && mainTrackSource && mainMediaStream) {
       try {
-        await unprojectFromStream(viewer, remoteTrackSource);
-        await projectToStream(viewer, remoteTrackSource, mainAudioMappingRef.current, mainVideoMappingRef.current);
-
-        return remoteTrackSource;
+        await projectToStream(viewer, mainTrackSource, remoteTrackSource.audioMediaId, remoteTrackSource.videoMediaId);
+        await projectToStream(viewer, remoteTrackSource, mainAudioMIDRef.current, mainVideoMIDRef.current);
+        dispatch({
+          payload: [
+            {
+              sourceId,
+              mediaStream: mainMediaStream,
+              audioMID: mainAudioMIDRef.current,
+              videoMID: mainVideoMIDRef.current,
+            },
+            {
+              sourceId: mainSourceId,
+              mediaStream: remoteTrackSource.mediaStream,
+              audioMID: remoteTrackSource.audioMediaId,
+              videoMID: remoteTrackSource.videoMediaId,
+            },
+          ],
+          type: ViewerActionType.UPDATE_SOURCE_MEDIA,
+        });
+        setMainSourceId(sourceId);
+        setSourceQuality(sourceId);
       } catch (error) {
         handleInternalError(error);
+        return Promise.reject(error);
       }
     }
   };
 
-  const reprojectFromMainStream = async (sourceId?: string) => {
+  const setSourceQuality = async (sourceId: string, quality?: SimulcastQuality) => {
     const { current: viewer } = viewerRef;
-
     if (!viewer) {
       return;
     }
-
-    const remoteTrackSource = remoteTrackSources.get(sourceId);
-
-    if (remoteTrackSource) {
-      try {
-        await viewer.project(sourceId, remoteTrackSource.projectMapping);
-      } catch (error) {
-        handleInternalError(error);
-      }
-    }
-  };
-
-  const setSourceQuality = (sourceId?: string, quality?: SimulcastQuality) => {
-    const { current: viewer } = viewerRef;
-
-    if (!viewer) {
-      return;
-    }
-
-    const { streamQuality, simulcastLayer } = quality ?? {};
-
+    const { streamQuality = 'Auto', simulcastLayer } = quality ?? {};
     if (streamQuality === 'Auto') {
-      viewer.select({});
+      await viewer.select();
     } else {
-      viewer.select(simulcastLayer ?? {});
+      await viewer.select(simulcastLayer);
     }
-
     dispatch({
-      quality: streamQuality ?? 'Auto',
+      quality: streamQuality,
       sourceId,
       type: ViewerActionType.UPDATE_SOURCE_QUALITY,
     });
@@ -263,18 +217,19 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
         viewer.on('broadcastEvent', handleBroadcastEvent);
         viewer.on('connectionStateChange', handleConnectionStateChange);
-        viewer.on('track', handleTrack);
+        // viewer.on('track', handleTrack);
 
         const collection = new WebRTCStats({
           getStatsInterval: GET_STATS_INTERVAL,
-          getStats: () => viewer.webRTCPeer?.getRTCPeer().getStats(),
+          getStats: () => {
+            if (!viewer.webRTCPeer) return Promise.reject();
+            return viewer.webRTCPeer.getRTCPeer().getStats();
+          },
         });
 
         collection.on('stats', handleStats);
-
         collectionRef.current = collection;
         viewerRef.current = viewer;
-
         connect();
       } catch (error) {
         handleInternalError(error);
@@ -299,11 +254,11 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   return {
     mainMediaStream,
+    mainSourceId,
     mainQualityOptions,
     mainStatistics,
     projectToMainStream,
     remoteTrackSources,
-    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,

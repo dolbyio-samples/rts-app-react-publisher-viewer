@@ -1,19 +1,21 @@
 import { OnStats } from '@dolbyio/webrtc-stats';
-import { LayerInfo, ViewProjectSourceMapping } from '@millicast/sdk';
+import { LayerInfo } from '@millicast/sdk';
 
 export enum ViewerActionType {
   ADD_SOURCE = 'ADD_SOURCE',
   REMOVE_SOURCE = 'REMOVE_SOURCE',
+  UPDATE_SOURCE_MEDIA = 'UPDATE_SOURCE_MEDIA',
   UPDATE_SOURCE_QUALITY = 'UPDATE_SOURCE_QUALITY',
 }
 
 export interface RemoteTrackSource {
-  audioMediaId?: string;
   mediaStream: MediaStream;
-  projectMapping: ViewProjectSourceMapping[];
   quality?: StreamQuality;
-  sourceId?: string;
+  sourceId: string;
+  audioMediaId?: string;
+  audioTrackId?: string;
   videoMediaId?: string;
+  videoTrackId?: string;
 }
 
 export type RemoteTrackSources = Map<string, RemoteTrackSource>;
@@ -27,12 +29,12 @@ export type StreamQuality = 'Auto' | 'High' | 'Medium' | 'Low';
 
 export interface Viewer {
   mainMediaStream?: MediaStream;
+  mainSourceId?: string;
   mainQualityOptions: SimulcastQuality[];
   mainStatistics?: OnStats;
-  projectToMainStream: (sourceId?: string) => Promise<RemoteTrackSource | void>;
+  projectToMainStream: (sourceId: string) => Promise<RemoteTrackSource | void>;
   remoteTrackSources: RemoteTrackSources;
-  reprojectFromMainStream: (sourceId?: string) => void;
-  setSourceQuality: (sourceId?: string, quality?: SimulcastQuality) => void;
+  setSourceQuality: (sourceId: string, quality?: SimulcastQuality) => void;
   startViewer: () => void;
   stopViewer: () => void;
   viewerCount: number;
@@ -41,11 +43,15 @@ export interface Viewer {
 export type ViewerAction =
   | {
       remoteTrackSource: RemoteTrackSource;
-      sourceId?: string;
+      sourceId: string;
       type: ViewerActionType.ADD_SOURCE;
     }
-  | { sourceId?: string; type: ViewerActionType.REMOVE_SOURCE }
-  | { quality: StreamQuality; sourceId?: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY };
+  | { sourceId: string; type: ViewerActionType.REMOVE_SOURCE }
+  | {
+      payload: { sourceId: string; mediaStream: MediaStream; audioMID?: string; videoMID?: string }[];
+      type: ViewerActionType.UPDATE_SOURCE_MEDIA;
+    }
+  | { quality: StreamQuality; sourceId: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY };
 
 export interface ViewerProps {
   handleError?: (error: string) => void;

@@ -14,7 +14,7 @@
     "@dolbyio/webrtc-stats": "^0.2.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@millicast/sdk": "^0.1.37",
+    "@millicast/sdk": "^0.1.39",
     "@playwright/test": "^1.31.0",
     "@types/js-yaml": "^4.0.5",
     "@types/pixelmatch": "^5.2.4",
