@@ -9,7 +9,7 @@ export enum ViewerActionType {
 }
 
 export interface RemoteTrackSource {
-  mediaStream: MediaStream;
+  mediaStream?: MediaStream;
   quality?: StreamQuality;
   sourceId: string;
   audioMediaId?: string;
@@ -48,7 +48,7 @@ export type ViewerAction =
     }
   | { sourceId: string; type: ViewerActionType.REMOVE_SOURCE }
   | {
-      payload: { sourceId: string; mediaStream: MediaStream; audioMID?: string; videoMID?: string }[];
+      payload: { sourceId: string; mediaStream?: MediaStream; audioMID?: string; videoMID?: string }[];
       type: ViewerActionType.UPDATE_SOURCE_MEDIA;
     }
   | { quality: StreamQuality; sourceId: string; type: ViewerActionType.UPDATE_SOURCE_QUALITY };

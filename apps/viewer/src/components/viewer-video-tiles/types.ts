@@ -7,7 +7,7 @@ export interface ViewerVideoTilesProps {
   mainSourceId: string;
   mainQualityOptions: SimulcastQuality[];
   mainStatistics?: OnStats;
-  projectToMainStream: (sourceId: string) => Promise<void | RemoteTrackSource>;
+  projectToMainStream: (sourceId: string, shouldSwap: boolean) => Promise<void | RemoteTrackSource>;
   remoteTrackSources: RemoteTrackSources;
   setSourceQuality: (sourceId: string, quality?: SimulcastQuality | undefined) => void;
 }

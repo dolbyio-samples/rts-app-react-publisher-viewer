@@ -83,14 +83,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
           const activeEventCounter = activeEventCounterRef.current + 1;
           activeEventCounterRef.current = activeEventCounter;
           const newRemoteTrackSource = await addRemoteTrack(viewer, srcId, tracks);
-          dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
           if (!remoteTrackSourcesRef.current?.size && activeEventCounter === 1) {
-            setMainMediaStream(newRemoteTrackSource.mediaStream);
+            newRemoteTrackSource.audioMediaId = mainAudioMIDRef.current;
+            newRemoteTrackSource.videoMediaId = mainVideoMIDRef.current;
+            newRemoteTrackSource.mediaStream = mainMediaStreamRef.current;
             setMainSourceId(srcId);
-            mainAudioMIDRef.current = newRemoteTrackSource.audioMediaId;
-            mainVideoMIDRef.current = newRemoteTrackSource.videoMediaId;
           }
           await viewer.project(srcId, generateProjectMapping(newRemoteTrackSource));
+          dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId, type: ViewerActionType.ADD_SOURCE });
         } catch (error) {
           handleInternalError(error);
         } finally {
@@ -131,8 +131,9 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
       case 'layers': {
         const mediaId = mainVideoMIDRef.current;
-
-        if (mediaId) {
+        // Viewer.select only works for main stream
+        // if we want to change layers for second stream, we should use viewer.project function
+        if (mediaId && mediaId === mainVideoMIDRef.current) {
           const mid = parseInt(mediaId, 10);
           const { active } = (event.data as MediaStreamLayers).medias[mid] ?? {};
           setMainQualityOptions(buildQualityOptions(active));
@@ -178,7 +179,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     const mainMediaStream = mainMediaStreamRef.current;
     const remoteTrackSource = remoteTrackSources.get(sourceId);
     const mainTrackSource = remoteTrackSources.get(mainSourceIdRef.current);
-    if (remoteTrackSource && mainTrackSource && mainMediaStream) {
+    if (remoteTrackSource && mainTrackSource) {
       try {
         const actionPayload = [
           {
@@ -187,7 +188,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
             audioMID: mainAudioMIDRef.current,
             videoMID: mainVideoMIDRef.current,
           },
-        ];
+        ] as { sourceId: string; mediaStream?: MediaStream; audioMID?: string; videoMID?: string }[];
         if (shouldSwap) {
           await projectToStream(
             viewer,
@@ -218,7 +219,9 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
   const setSourceQuality = async (sourceId: string, quality?: SimulcastQuality) => {
     const viewer = viewerRef.current;
-    if (!viewer) {
+    // Viewer.select only works for main stream
+    // if we want to change layers for second stream, we should use viewer.project function
+    if (!viewer || sourceId !== mainSourceIdRef.current) {
       return;
     }
     const { streamQuality = 'Auto', simulcastLayer } = quality ?? {};
@@ -238,6 +241,23 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     }
   };
 
+  const handleTrack = (event: RTCTrackEvent) => {
+    const {
+      streams: [mediaStream],
+      track: { kind },
+      transceiver: { mid },
+    } = event;
+    // main stream always has mid 0 for video and mid 1 for audio in current stage
+    if (mid !== '0' && mid !== '1') return;
+
+    if (kind === 'audio') {
+      mainAudioMIDRef.current = mid || undefined;
+    } else if (kind === 'video') {
+      mainVideoMIDRef.current = mid || undefined;
+    }
+    setMainMediaStream(mediaStream);
+  };
+
   const startViewer = async () => {
     if (!viewerRef.current?.isActive()) {
       try {
@@ -245,6 +265,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
 
         viewer.on('broadcastEvent', handleBroadcastEvent);
         viewer.on('connectionStateChange', handleConnectionStateChange);
+        viewer.on('track', handleTrack);
 
         const collection = new WebRTCStats({
           getStatsInterval: GET_STATS_INTERVAL,
