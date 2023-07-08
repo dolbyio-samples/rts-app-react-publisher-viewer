@@ -113,14 +113,14 @@ const App = () => {
   };
 
   const handleStartAllSources = () => {
-    for (const id of sources.keys()) {
+    startTimer();
+    //for (const id of sources.keys()) {
       try {
-        console.log("***** handleStartAllSources")
-        startStreamingToSource(id);
+        startStreamingToSource(Array.from(sources.keys())[0]);
       } catch (error) {
         showError(`Failed to start streaming: ${error}`);
       }
-    }
+    //}
 
     setAllSourcesLive(true);
   };
@@ -138,6 +138,7 @@ const App = () => {
   };
 
   const handleStopSource = (id: string) => () => {
+    console.log(">>> handleStopSource", id);
     stopStreamingToSource(id);
     setAllSourcesLive(false);
   };
@@ -156,9 +157,9 @@ const App = () => {
         startAds();
   
         clearInterval(timerInterval);
-        timerInterval = setInterval(toggleTimer, 10000); // Switch to 10 seconds timer
+        timerInterval = setInterval(toggleTimer, 20000); // Switch to 10 seconds timer
       } else {
-        console.log('10 seconds elapsed');
+        console.log('20 seconds elapsed');
         // Perform actions after 10 seconds here
         stopAds();
   
@@ -174,7 +175,14 @@ const App = () => {
 
   function startAds() {
     console.log(">>>>>>>>> start Ads")
-    handleStartAllSources();
+    for (const id of sources.keys()) {
+      try {
+        startStreamingToSource(id);
+      } catch (error) {
+        showError(`Failed to start streaming: ${error}`);
+      }
+    }
+    setAllSourcesLive(true);
   }
 
   function stopAds() {
@@ -183,7 +191,8 @@ const App = () => {
         try {
           if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
             console.log("***** source stopped", source.broadcastOptions.sourceId)
-            handleStopSource(id);
+            stopStreamingToSource(id);
+            setAllSourcesLive(false);
           }
         } catch (error) {
           showError(`Failed to stop streaming: ${error}`);
@@ -191,9 +200,9 @@ const App = () => {
       });
   }
   
-  useEffect(() => {
-    //startTimer();
-  }, []);
+  // useEffect(() => {
+  //   startTimer();
+  // }, []);
   
   return (
     <VStack
