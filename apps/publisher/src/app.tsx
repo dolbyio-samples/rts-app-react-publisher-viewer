@@ -115,6 +115,7 @@ const App = () => {
   const handleStartAllSources = () => {
     for (const id of sources.keys()) {
       try {
+        console.log("***** handleStartAllSources")
         startStreamingToSource(id);
       } catch (error) {
         showError(`Failed to start streaming: ${error}`);
@@ -144,6 +145,56 @@ const App = () => {
   const hasMultiStream = sources.size > 1;
   const isPublisherStreaming = Array.from(sources).some(([, { state }]) => state === 'streaming');
 
+  function startTimer() {
+    let timerInterval: NodeJS.Timeout;
+    let is30Seconds = true;
+  
+    function toggleTimer() {
+      if (is30Seconds) {
+        console.log('30 seconds elapsed');
+        // Perform actions after 30 seconds here
+        startAds();
+  
+        clearInterval(timerInterval);
+        timerInterval = setInterval(toggleTimer, 10000); // Switch to 10 seconds timer
+      } else {
+        console.log('10 seconds elapsed');
+        // Perform actions after 10 seconds here
+        stopAds();
+  
+        clearInterval(timerInterval);
+        timerInterval = setInterval(toggleTimer, 30000); // Switch to 30 seconds timer
+      }
+  
+      is30Seconds = !is30Seconds;
+    }
+  
+    timerInterval = setInterval(toggleTimer, 30000); // Start with 30 seconds timer
+  }
+
+  function startAds() {
+    console.log(">>>>>>>>> start Ads")
+    handleStartAllSources();
+  }
+
+  function stopAds() {
+    console.log(">>>>>>>>> stop Ads")
+    sources.forEach((source, id) => {
+        try {
+          if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+            console.log("***** source stopped", source.broadcastOptions.sourceId)
+            handleStopSource(id);
+          }
+        } catch (error) {
+          showError(`Failed to stop streaming: ${error}`);
+        }
+      });
+  }
+  
+  useEffect(() => {
+    //startTimer();
+  }, []);
+  
   return (
     <VStack
       background="background"
