@@ -42,7 +42,23 @@ const ViewerVideoTiles = ({
       const newSrcId = srcArray[srcArray.length -1][0];
 
       console.log(">>>>", isDesktop, newSrcId);
-      if(remoteTrackSources.size == 1 || (isDesktop && newSrcId.toLowerCase().includes('desktop'))){
+      if(remoteTrackSources.size == 1){
+        setMainSourceId(newSrcId);
+        changeMainSource(newSrcId);
+        return;
+      }
+
+      if((isDesktop && newSrcId.toLowerCase().includes('desktop'))){
+        setMainSourceId(newSrcId);
+        changeMainSource(newSrcId);
+      }
+
+      if((isTablet && newSrcId.toLowerCase().includes('tablet'))){
+        setMainSourceId(newSrcId);
+        changeMainSource(newSrcId);
+      }
+
+      if((isMobile && newSrcId.toLowerCase().includes('mobile'))){
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
