@@ -7,7 +7,7 @@ import useLocalFiles from '@millicast-react/use-local-files';
 import useMediaDevices from '@millicast-react/use-media-devices';
 import useNotification from '@millicast-react/use-notification';
 import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
-import usePublisher from '@millicast-react/use-publisher';
+import usePublisher, { PublisherSources } from '@millicast-react/use-publisher';
 import useScreenShare from '@millicast-react/use-screen-share';
 
 import ActionBar from './components/action-bar';
@@ -23,6 +23,8 @@ const { VITE_RTS_VIEWER_BASE_URL, VITE_RTS_ACCOUNT_ID, VITE_RTS_STREAM_NAME, VIT
 
 const App = () => {
   const [allSourcesLive, setAllSourcesLive] = useState(false);
+  const [showAds, setShowAds] = useState(false);
+  const adFiles: File[] = [];
 
   const { showError } = useNotification();
   usePageClosePrompt();
@@ -75,6 +77,7 @@ const App = () => {
   useEffect(() => {
     if (allSourcesLive) {
       sources.forEach((source, id) => {
+        console.log("#####", source.broadcastOptions.sourceId)
         try {
           if (!source.publish.isActive()) {
             startStreamingToSource(id);
@@ -85,6 +88,26 @@ const App = () => {
       });
     }
   }, [sources.size]);
+
+  useEffect(() => {
+    if (showAds) {
+      // console.log(">>>>>>>>> start Ads", adFiles.length);
+      // adFiles.forEach( file => {
+      //   localFiles.add(file);
+      // });
+      // setAllSourcesLive(true);
+    } else {
+      sources.forEach((source, id) => {
+        console.log(">>>>>>>>> stopping", source.publish.isActive(), source.broadcastOptions.sourceId);
+        if (!source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+          stopStreamingToSource(id);
+          localFiles.remove(id);
+        }
+      });
+      
+      setAllSourcesLive(false);
+    }
+  }, [showAds, adFiles.length]);
 
   const handleRemoveSource = (id: string) => {
     if (sources.size <= 1) {
@@ -155,13 +178,14 @@ const App = () => {
         console.log('30 seconds elapsed');
         // Perform actions after 30 seconds here
         startAds();
+        setShowAds(true);
   
         clearInterval(timerInterval);
-        timerInterval = setInterval(toggleTimer, 20000); // Switch to 10 seconds timer
+        timerInterval = setInterval(toggleTimer, 10000); // Switch to 10 seconds timer
       } else {
         console.log('20 seconds elapsed');
         // Perform actions after 10 seconds here
-        stopAds();
+        setShowAds(false);
   
         clearInterval(timerInterval);
         timerInterval = setInterval(toggleTimer, 30000); // Switch to 30 seconds timer
@@ -175,34 +199,48 @@ const App = () => {
 
   function startAds() {
     console.log(">>>>>>>>> start Ads")
-    for (const id of sources.keys()) {
-      try {
-        startStreamingToSource(id);
-      } catch (error) {
-        showError(`Failed to start streaming: ${error}`);
-      }
-    }
+    // for (const id of sources.keys()) {
+    //   try {
+    //     startStreamingToSource(id);
+    //   } catch (error) {
+    //     showError(`Failed to start streaming: ${error}`);
+    //   }
+    // }
+    adFiles.forEach( file => {
+      localFiles.add(file);
+    });
     setAllSourcesLive(true);
   }
 
-  function stopAds() {
-    console.log(">>>>>>>>> stop Ads")
-    sources.forEach((source, id) => {
-        try {
-          if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
-            console.log("***** source stopped", source.broadcastOptions.sourceId)
-            stopStreamingToSource(id);
-            setAllSourcesLive(false);
-          }
-        } catch (error) {
-          showError(`Failed to stop streaming: ${error}`);
+  const stopAds = (activeSources: PublisherSources) => {
+    console.log(">>>>>>>>> stop Ads", sources.size)
+    activeSources.forEach((source, id) => {
+        // try {
+        //   if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+        //     console.log("***** source stopped", source.broadcastOptions.sourceId)
+        //     stopStreamingToSource(id);
+        //     setAllSourcesLive(false);
+        //   }
+        // } catch (error) {
+        //   showError(`Failed to stop streaming: ${error}`);
+        // }
+        console.log(">>>>>>>>> stopping", source.publish.isActive(), source.broadcastOptions.sourceId);
+        if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+          stopStreamingToSource(id);
+          localFiles.remove(id);
         }
       });
+      
+      setAllSourcesLive(false);
   }
   
-  // useEffect(() => {
-  //   startTimer();
-  // }, []);
+  function addFiles(file: File) {
+    if(!file.name.toLowerCase().includes("main")){
+      adFiles.push(file);
+    } else{
+      localFiles.add(file);
+    }
+  };
   
   return (
     <VStack
@@ -243,7 +281,7 @@ const App = () => {
       />
       <ActionBar
         audioDevices={mediaDevices.audioDevices}
-        onAddLocalFile={localFiles.add}
+        onAddLocalFile={addFiles}
         onStartAllSources={handleStartAllSources}
         onStartMediaDevice={mediaDevices.start}
         onStartScreenShare={screenShare.start}
