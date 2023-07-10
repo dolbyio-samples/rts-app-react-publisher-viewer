@@ -15,14 +15,15 @@ import {
 Then(
   /^store the copied clipboard text in "([^"]*)" variable$/,
   async function (this: ScenarioWorld, variableName: string) {
-    saveData(this, variableName, readClipboardText());
+    saveData(this, variableName, await readClipboardText(this.currentPage));
   }
 );
 
 Then(
   /^the copied clipboard text should( not)? contain "([^"]*)"$/,
   async function (this: ScenarioWorld, negate: string, expRegex: string) {
-    const clipboardText = readClipboardText();
+    // console.log(await this.currentPage.evaluate("navigator.clipboard.readText()"))
+    const clipboardText = await readClipboardText(this.currentPage);
     const expPattern = replacePlaceholder(expRegex, this);
     const message = 'Clipboard text verification failed';
     if (!negate) {
@@ -36,7 +37,7 @@ Then(
 Then(
   /^the copied clipboard text should( not)? be equal to the stored "([^"]*)" variable$/,
   async function (this: ScenarioWorld, negate: string, variableName: string) {
-    const clipboardText = readClipboardText();
+    const clipboardText = await readClipboardText(this.currentPage);
     const expText = getData(this, variableName);
     const message = 'Clipboard text verification failed';
     if (!negate) {

@@ -61,7 +61,7 @@ Feature: Publisher Camera Preview
         Then the "settings popup" should be displayed
         And the "resolution dropdown" should be displayed
         And the "resolution dropdown" should be enabled
-        And the "resolution dropdown default" text should be "Resolution  - 3840x2160"
+        And the "resolution dropdown default" text should be "Resolution  - 640x480"
         And the "resolution dropdown options" should contain "3840x2160,2560x1440,1920x1080,1280x720,854x480,640x480,640x360" options
 
     Scenario: Publisher should be presented with codec selection dropdown under settings

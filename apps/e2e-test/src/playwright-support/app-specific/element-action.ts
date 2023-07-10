@@ -7,6 +7,7 @@ import { Status } from '../../utils/types';
 import { getLocator } from '../generic/element-helper';
 
 import { getDeviceStatus, getSimulcastStatus } from './element-read';
+import { delay } from '../../utils/helper';
 
 export const toogleDevice = async (page: Page, selector: TargetSelector, status: Status): Promise<void> => {
   status === 'On' ? await turnOnDevice(page, selector) : await turnOffDevice(page, selector);
@@ -87,6 +88,8 @@ export const selectSettingDropdown = async (
   logger.trace(`Select ${option} from ${selector}`);
   let locator = await getLocator(page, selector, index);
   locator.click();
+  await delay(1000);
   locator = await getLocator(page, optionsSelector, index);
   await locator.filter({ hasText: option }).click();
+  await delay(1000);
 };

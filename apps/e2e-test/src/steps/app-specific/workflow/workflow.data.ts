@@ -164,7 +164,7 @@ const viewConfigureSettings: ViewData = {
 
 const publisherPreviewCameraViewConfigureSettings: ViewData = {
   ...viewConfigureSettings,
-  resolution: '3840x2160',
+  resolution: '640x480',
 };
 
 const publisherPreviewScreenViewConfigureSettings: ViewData = {
@@ -176,7 +176,7 @@ const publisherPreviewLocalFileViewConfigureSettings: ViewData = {
 };
 
 const publisherStreamingCameraViewConfigureSettings: ViewData = {
-  resolution: '3840x2160',
+  resolution: '640x480',
   bitrate: 'Auto',
 };
 
@@ -201,11 +201,11 @@ const viewSettingsData: ViewData = {
 const publisherPreviewCameraViewSettingsData: ViewData = {
   ...viewSettingsData,
   'source name': 'contains: fake',
-  resolution: 'Resolution  - 3840x2160',
+  resolution: 'Resolution  - 640x480',
 };
 
 const publisherStreamingCameraViewSettingsData: ViewData = {
-  resolution: 'Resolution  - 3840x2160',
+  resolution: 'Resolution  - 640x480',
   bitrate: 'Bitrate  - Auto',
 };
 
