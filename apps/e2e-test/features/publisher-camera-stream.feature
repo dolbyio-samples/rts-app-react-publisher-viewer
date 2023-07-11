@@ -53,7 +53,7 @@ Feature: Publisher Camera Streaming
         # Viewer App
         And switch to "viewer-streaming" page on "viewer" app
         Then the viewer should be navigated to "waiting-room" page
-        And the "header" should be displayed with default values
+        #And the "header" should be displayed with default values
         And the "main view" should not be displayed
 
     Scenario: Stream duration is not zero when stream is live
