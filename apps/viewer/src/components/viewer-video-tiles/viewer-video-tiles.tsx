@@ -46,7 +46,7 @@ const ViewerVideoTiles = ({
 
   return (
     <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-      {!isStreaming ? (
+      {!isStreaming || !mainMediaStream ? (
         <VStack>
           <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
             Stream is not live
@@ -90,7 +90,7 @@ const ViewerVideoTiles = ({
                     height={`calc(100% / (${MAX_SOURCES} - 1))`}
                     key={sourceId}
                     onClick={() => {
-                      projectToMainStream(sourceId);
+                      projectToMainStream(sourceId, true);
                     }}
                     test-id="rtsVideo"
                     width="100%"
