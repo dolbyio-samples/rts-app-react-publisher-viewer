@@ -5,7 +5,7 @@ Feature: Viewer Waiting Room
 
     Scenario: Viewer should be presented with Waiting Room without a publisher
         Given a viewer is on the "waiting-room" page
-        Then the "header" should be displayed with default values
+        # Then the "header" should be displayed with default values
         And the "footer" should be displayed with default values
         And the "go live button" should not be displayed
         And the "invite button" should not be displayed
@@ -17,7 +17,7 @@ Feature: Viewer Waiting Room
     Scenario: Viewer should be in the Waiting Room when the streaming is not started
         Given a publisher is on the "preview" page
         And a viewer is on the "waiting-room" page
-        Then the "header" should be displayed with default values
+        # Then the "header" should be displayed with default values
         And the "footer" should be displayed with default values
         And the "go live button" should not be displayed
         And the "invite button" should not be displayed

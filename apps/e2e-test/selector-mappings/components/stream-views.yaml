@@ -46,6 +46,9 @@ camera view setting button:
 camera view stream info button:
   - '$ref: camera view container'
   - '$ref: stream info button'
+camera view control bar:
+  - '$ref: camera view container'
+  - '[test-id=videoControlBar]'
 camera view go live button:
   - '$ref: camera view container'
   - '$ref: go live view button'

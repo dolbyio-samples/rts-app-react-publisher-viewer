@@ -7,13 +7,21 @@ import { getData, hasData, saveData } from '../../hooks/utils';
 import { bringToFront, goToURL } from '../../playwright-support/generic/browser-actions';
 import { getElementText } from '../../playwright-support/generic/element-read';
 import { formatURL } from '../../utils/helper';
+import { verifyElementState } from '../../playwright-support/generic/element-verification';
+import { waitFor } from '../../playwright-support/generic/element-wait';
 
 Given(/^a publisher is on the "(preview)" page$/, async function (this: ScenarioWorld, pageName: string) {
   this.currentPageName = pageName;
   this.currentPage = getData(this, 'publisherApp');
   await goToURL(this.currentPage, options?.publisherURL as string);
 
-  const targetSelector = this.selectorMap.getSelector(this.currentPageName, 'viewer link');
+  let targetSelector = this.selectorMap.getSelector(this.currentPageName, 'video frame');
+  const verifyMethod = async () => {
+    await verifyElementState(this.currentPage, targetSelector, 'displayed');
+  };
+  await waitFor(verifyMethod);
+
+  targetSelector = this.selectorMap.getSelector(this.currentPageName, 'viewer link');
   const viewerURL = (await getElementText(this.currentPage, targetSelector)) as string;
 
   saveData(this, 'App', 'publisher');
