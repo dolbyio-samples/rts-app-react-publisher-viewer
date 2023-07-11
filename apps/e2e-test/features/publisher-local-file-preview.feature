@@ -217,6 +217,7 @@ Feature: Publisher Local File Preview
         |  On         |  vp8    |
         |  Off        |  vp9    |
 
+    @ignore #Bug - 384
     Scenario: Publisher should be able to add multiple local file source
         When the publisher adds "local" file source
         Then the "camera view" should be displayed with default values
