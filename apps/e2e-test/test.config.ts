@@ -42,7 +42,9 @@ export const launchOptionsFirefox = {
   },
 };
 
-export const browserOptions = {permissions: ["clipboard-read"],};
+export const browserOptions = {
+  permissions: ["clipboard-read"],
+};
 
 export const options: TestOptions = {
   browserName: (process.env.BROWSER_NAME as BrowserName) || 'chrome',
