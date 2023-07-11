@@ -43,7 +43,7 @@ export const launchOptionsFirefox = {
 };
 
 export const browserOptions = {
-  permissions: ["clipboard-read"],
+  permissions: ['clipboard-read'],
 };
 
 export const options: TestOptions = {
