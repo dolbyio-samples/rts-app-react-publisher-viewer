@@ -19,10 +19,10 @@ import {
   generateProjectMapping,
   projectToStream,
   unprojectFromStream,
+  DEFAULT_MAIN_SOURCE_ID,
 } from './utils';
 
 const GET_STATS_INTERVAL = 1000;
-const DEFAULT_MAIN_SOURCE_ID = 'main-undefined';
 
 const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }: ViewerProps): Viewer => {
   const collectionRef = useRef<WebRTCStats>();
@@ -101,14 +101,14 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
             newRemoteTrackSource.videoMediaId = mainVideoMIDRef.current;
             newRemoteTrackSource.mediaStream = mainMediaStreamRef.current;
             setMainSourceId(srcId);
-            if (sourceId) {
-              await viewer.project(srcId, generateProjectMapping(newRemoteTrackSource));
-            }
-          } else {
+            // Note: project function accept undefined sourceId here for main stream
+            await viewer.project(sourceId, generateProjectMapping(newRemoteTrackSource));
+            dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId: srcId, type: ViewerActionType.ADD_SOURCE });
+          } else if (sourceId) {
             newRemoteTrackSource = await addRemoteTrack(viewer, srcId, tracks);
             await viewer.project(srcId, generateProjectMapping(newRemoteTrackSource));
+            dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId: srcId, type: ViewerActionType.ADD_SOURCE });
           }
-          dispatch({ remoteTrackSource: newRemoteTrackSource, sourceId: srcId, type: ViewerActionType.ADD_SOURCE });
         } catch (error) {
           handleInternalError(error);
         } finally {
@@ -134,9 +134,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
               }
             }
             dispatch({ sourceId: srcId, type: ViewerActionType.REMOVE_SOURCE });
-            if (srcId !== DEFAULT_MAIN_SOURCE_ID) {
-              await unprojectFromStream(viewer, remoteTrackSource);
-            }
+            await unprojectFromStream(viewer, remoteTrackSource);
           } catch (error) {
             handleInternalError(error);
           }

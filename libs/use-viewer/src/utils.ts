@@ -1,6 +1,8 @@
 import { MediaLayer, MediaTrackInfo, View, ViewProjectSourceMapping } from '@millicast/sdk';
 import { RemoteTrackSource, SimulcastQuality, StreamQuality } from './types';
 
+export const DEFAULT_MAIN_SOURCE_ID = 'main-undefined';
+
 export const addRemoteTrack = async (
   viewer: View,
   sourceId: string,
@@ -106,7 +108,7 @@ export const projectToStream = async (
   if (videoMID && videoTrackId) {
     mapping.push({ media: 'video', trackId: videoTrackId, mediaId: videoMID } as ViewProjectSourceMapping);
   }
-  await viewer.project(source.sourceId, mapping);
+  await viewer.project(source.sourceId === DEFAULT_MAIN_SOURCE_ID ? undefined : source.sourceId, mapping);
 };
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
