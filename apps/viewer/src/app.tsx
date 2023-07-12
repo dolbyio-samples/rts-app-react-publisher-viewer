@@ -23,11 +23,11 @@ const App = () => {
 
   const {
     mainMediaStream,
+    mainSourceId,
     mainQualityOptions,
     mainStatistics,
     projectToMainStream,
     remoteTrackSources,
-    reprojectFromMainStream,
     setSourceQuality,
     startViewer,
     stopViewer,
@@ -62,15 +62,17 @@ const App = () => {
           </Flex>
         ) : undefined}
       </VStack>
-      <ViewerVideoTiles
-        mainMediaStream={mainMediaStream}
-        mainQualityOptions={mainQualityOptions}
-        mainStatistics={mainStatistics}
-        projectToMainStream={projectToMainStream}
-        remoteTrackSources={remoteTrackSources}
-        reprojectFromMainStream={reprojectFromMainStream}
-        setSourceQuality={setSourceQuality}
-      />
+      {mainMediaStream && mainSourceId ? (
+        <ViewerVideoTiles
+          mainMediaStream={mainMediaStream}
+          mainSourceId={mainSourceId}
+          mainQualityOptions={mainQualityOptions}
+          mainStatistics={mainStatistics}
+          projectToMainStream={projectToMainStream}
+          remoteTrackSources={remoteTrackSources}
+          setSourceQuality={setSourceQuality}
+        />
+      ) : null}
       <Box bottom="5px" left="5px" position="fixed" test-id="appVersion">
         <Text fontSize="12px">Version: {__APP_VERSION__}</Text>
       </Box>

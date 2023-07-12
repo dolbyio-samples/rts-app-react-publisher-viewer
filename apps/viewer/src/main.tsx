@@ -6,9 +6,9 @@ import dolbyioTheme from '@millicast-react/dolbyio-theme';
 import App from './app';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <ChakraProvider theme={dolbyioTheme}>
-      <App />
-    </ChakraProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <ChakraProvider theme={dolbyioTheme}>
+    <App />
+  </ChakraProvider>
+  // </React.StrictMode>
 );

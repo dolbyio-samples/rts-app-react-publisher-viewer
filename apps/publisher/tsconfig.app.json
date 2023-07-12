@@ -5,5 +5,5 @@
     "types": ["node"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts", "**/*.tsx", "../../millicast-sdk.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { IconProfile } from '@millicast-react/dolbyio-icons';
 import { SimulcastQuality } from '@millicast-react/use-viewer';
@@ -12,53 +12,23 @@ const MAX_SOURCES = 4;
 
 const ViewerVideoTiles = ({
   mainMediaStream,
+  mainSourceId,
   mainQualityOptions,
   mainStatistics,
   projectToMainStream,
   remoteTrackSources,
-  reprojectFromMainStream,
   setSourceQuality,
 }: ViewerVideoTilesProps) => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
-  const [mainSourceId, setMainSourceId] = useState('');
-
-  // Assign the first source as the initial main stream
-  useEffect(() => {
-    if (remoteTrackSources.size && (mainSourceId === '' || !remoteTrackSources.get(mainSourceId))) {
-      const [[firstSourceId]] = remoteTrackSources;
-
-      setMainSourceId(firstSourceId);
-      changeMainSource(firstSourceId);
-    }
-  }, [remoteTrackSources.size]);
-
   // Reset main stream when layers change
   useEffect(() => {
-    if (mainSourceId === '') {
-      return;
+    if (mainQualityOptions.length) {
+      setSourceQuality(mainSourceId);
     }
-
-    setSourceQuality(mainSourceId);
   }, [mainQualityOptions.length]);
 
-  const changeMainSource = async (newMainSourceId: string) => {
-    if (mainSourceId !== '') {
-      reprojectFromMainStream(mainSourceId);
-    }
-
-    projectToMainStream(newMainSourceId).then(() => {
-      setMainSourceId(newMainSourceId);
-      // Reset quality
-      setSourceQuality(newMainSourceId, { streamQuality: 'Auto' });
-    });
-  };
-
   const mainSourceSettings = useMemo(() => {
-    if (mainSourceId === '') {
-      return {};
-    }
-
     const { quality } = remoteTrackSources.get(mainSourceId) ?? {};
 
     return {
@@ -67,7 +37,7 @@ const ViewerVideoTiles = ({
           setSourceQuality(mainSourceId, data as SimulcastQuality);
         },
         options: mainQualityOptions,
-        value: quality ?? '',
+        value: quality ?? 'Auto',
       },
     };
   }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
@@ -76,7 +46,7 @@ const ViewerVideoTiles = ({
 
   return (
     <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-      {!isStreaming || mainSourceId === '' ? (
+      {!isStreaming || !mainMediaStream ? (
         <VStack>
           <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
             Stream is not live
@@ -120,7 +90,7 @@ const ViewerVideoTiles = ({
                     height={`calc(100% / (${MAX_SOURCES} - 1))`}
                     key={sourceId}
                     onClick={() => {
-                      changeMainSource(sourceId);
+                      projectToMainStream(sourceId, true);
                     }}
                     test-id="rtsVideo"
                     width="100%"

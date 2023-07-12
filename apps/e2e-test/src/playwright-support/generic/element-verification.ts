@@ -150,3 +150,8 @@ export const verifyElementCount = async (
     await expect(locator).toHaveCount(count);
   }
 };
+
+export const isElementVisible = async (page: Page, selector: TargetSelector, index?: number): Promise<boolean> => {
+  const locator = await getLocator(page, selector, index);
+  return await locator.isVisible();
+};

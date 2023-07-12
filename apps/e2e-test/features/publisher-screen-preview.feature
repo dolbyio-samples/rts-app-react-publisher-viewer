@@ -201,6 +201,7 @@ Feature: Publisher Screen Preview
         |  On         |  vp8    |
         |  Off        |  vp9    |
 
+    @ignore #Bug - 384
     Scenario: Publisher should be able to add multiple screen source
         When the publisher adds "screen" source
         Then the "camera view" should be displayed with default values

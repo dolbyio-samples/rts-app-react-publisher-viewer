@@ -4,9 +4,12 @@
 import { expect } from '@playwright/test';
 import { BrowserContext } from 'playwright';
 import { ScenarioWorld } from '../../hooks/ScenarioWorld';
-import { getData, saveData } from '../../hooks/utils';
+import { getData, hasData, saveData } from '../../hooks/utils';
 import { logger } from '../../logger';
 import { BrowserManager } from '../utils/BrowserManager';
+import { bringToFront } from '../generic/browser-actions';
+import { isElementVisible } from '../generic/element-verification';
+import { click } from '../generic/element-action';
 
 export async function openPages(
   scenarioWorld: ScenarioWorld,
@@ -43,5 +46,23 @@ export async function consoleLogsVerification(scenarioWorld: ScenarioWorld, apps
     logger.trace(`${app} Console Logs: ${consoleLogs}`);
     if (errorLogs.length > 0) logger.error(`${app} Error Console Logs: ${errorLogs}`);
     expect(errorLogs).toHaveLength(0);
+  }
+}
+
+export async function stopStreaming(scenarioWorld: ScenarioWorld): Promise<void> {
+  logger.trace('Stop the streaming if started');
+
+  if (hasData(scenarioWorld, 'publisherApp')) {
+    const currentPage = getData(scenarioWorld, 'publisherApp');
+    await bringToFront(currentPage);
+    try {
+      const targetSelector = scenarioWorld.selectorMap.getSelector('publisher-streaming', 'stop button');
+      const isVisible = await isElementVisible(currentPage, targetSelector);
+      if (isVisible) {
+        await click(currentPage, targetSelector);
+      }
+    } catch (error) {
+      // Duck It
+    }
   }
 }
