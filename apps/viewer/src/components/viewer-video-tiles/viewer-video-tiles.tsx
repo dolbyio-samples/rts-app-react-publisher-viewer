@@ -74,14 +74,10 @@ const ViewerVideoTiles = ({
   }, [mainQualityOptions.length]);
 
   const changeMainSource = async (newMainSourceId: string) => {
-    if (mainSourceId !== '') {
-      projectToMainStream(mainSourceId, true);
-    }
-
     projectToMainStream(newMainSourceId, true).then(() => {
       setMainSourceId(newMainSourceId);
       // Reset quality
-      setSourceQuality(newMainSourceId, { streamQuality: 'Auto' });
+      setSourceQuality(newMainSourceId, { streamQuality: 'High' });
     });
   };
 
