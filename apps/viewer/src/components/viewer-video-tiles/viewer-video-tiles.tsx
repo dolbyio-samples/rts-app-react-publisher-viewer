@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { IconProfile } from '@millicast-react/dolbyio-icons';
 import { SimulcastQuality } from '@millicast-react/use-viewer';
@@ -12,23 +12,69 @@ const MAX_SOURCES = 4;
 
 const ViewerVideoTiles = ({
   mainMediaStream,
-  mainSourceId,
   mainQualityOptions,
   mainStatistics,
   projectToMainStream,
   remoteTrackSources,
+  reprojectFromMainStream,
   setSourceQuality,
 }: ViewerVideoTilesProps) => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
 
+  const [mainSourceId, setMainSourceId] = useState('');
+
+  const isMobileBrowser =
+  (typeof navigator !== 'undefined' && navigator.userAgent.match(/Android|iPhone|mobile/i)) ||
+  /*
+   * Apple tablets are faking userAgent by default to treat them as desktop browsers, additional check for Apple devices
+   */
+  (navigator?.platform === 'MacIntel' && 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileSmall, setIsMobileSmall] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(!isMobileBrowser);
+  
+  // Assign the first source as the initial main stream
+  useEffect(() => {
+    if (remoteTrackSources.size) {
+      const srcArray = Array.from(remoteTrackSources);
+      const newSrcId = srcArray[srcArray.length -1][0];
+
+      console.log(">>>>", isDesktop, newSrcId);
+      if(remoteTrackSources.size == 1 || (isDesktop && newSrcId.toLowerCase().includes('desktop'))){
+        setMainSourceId(newSrcId);
+        changeMainSource(newSrcId);
+      }
+    }
+  }, [remoteTrackSources.size]);
+  
   // Reset main stream when layers change
   useEffect(() => {
-    if (mainQualityOptions.length) {
-      setSourceQuality(mainSourceId);
+    if (mainSourceId === '') {
+      return;
     }
+
+    setSourceQuality(mainSourceId);
   }, [mainQualityOptions.length]);
 
+  const changeMainSource = async (newMainSourceId: string) => {
+    if (mainSourceId !== '') {
+      reprojectFromMainStream(mainSourceId);
+    }
+
+    projectToMainStream(newMainSourceId).then(() => {
+      setMainSourceId(newMainSourceId);
+      // Reset quality
+      setSourceQuality(newMainSourceId, { streamQuality: 'Auto' });
+    });
+  };
+
   const mainSourceSettings = useMemo(() => {
+    if (mainSourceId === '') {
+      return {};
+    }
+
     const { quality } = remoteTrackSources.get(mainSourceId) ?? {};
 
     return {
@@ -37,16 +83,58 @@ const ViewerVideoTiles = ({
           setSourceQuality(mainSourceId, data as SimulcastQuality);
         },
         options: mainQualityOptions,
-        value: quality ?? 'Auto',
+        value: quality ?? '',
       },
     };
   }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
 
   const isStreaming = remoteTrackSources.size > 0;
 
+  const breakpoints = {
+    mobileSmall: 320,
+    mobile: 600,
+    tablet: 1024,
+    desktop: 1440,
+  };
+
+  const handleDeviceType = () => {
+    let mainDimension = window.innerWidth;
+
+    if (window.innerWidth > window.innerHeight) {
+      mainDimension = window.innerHeight;
+    }
+    if (window.innerWidth <= breakpoints.tablet || isMobileBrowser) {
+      if (mainDimension <= breakpoints.mobileSmall) {
+        setIsMobile(false);
+        setIsMobileSmall(true);
+        setIsTablet(false);
+        setIsDesktop(false);
+      } else if (mainDimension <= breakpoints.mobile) {
+        setIsMobile(true);
+        setIsMobileSmall(false);
+        setIsTablet(false);
+        setIsDesktop(false);
+      } else if (mainDimension <= breakpoints.tablet || isMobileBrowser) {
+        setIsMobile(false);
+        setIsMobileSmall(false);
+        setIsTablet(true);
+        setIsDesktop(false);
+      }
+    } else {
+      setIsMobile(false);
+      setIsMobileSmall(false);
+      setIsTablet(false);
+      setIsDesktop(true);
+    }
+  };
+
+  useEffect(() => {
+    handleDeviceType();
+  }, []);
+
   return (
     <Flex alignItems="center" flex={1} justifyContent="center" width="100%">
-      {!isStreaming || !mainMediaStream ? (
+      {!isStreaming || mainSourceId === '' ? (
         <VStack>
           <Heading as="h2" fontSize="24px" fontWeight="600" test-id="pageHeader">
             Stream is not live
@@ -80,35 +168,6 @@ const ViewerVideoTiles = ({
               }}
             />
           </Box>
-          {remoteTrackSources.size > 1 ? (
-            <VStack height="100%" maxWidth="20vw">
-              {Array.from(remoteTrackSources)
-                .filter(([sourceId]) => sourceId !== mainSourceId)
-                .map(([sourceId, { mediaStream }]) => (
-                  <Box
-                    cursor="pointer"
-                    height={`calc(100% / (${MAX_SOURCES} - 1))`}
-                    key={sourceId}
-                    onClick={() => {
-                      projectToMainStream(sourceId, true);
-                    }}
-                    test-id="rtsVideo"
-                    width="100%"
-                  >
-                    <ViewerVideoView
-                      controls={viewerPlaybackControl[sourceId]}
-                      isStreaming={isStreaming}
-                      videoProps={{
-                        displayVideo: true,
-                        label: sourceId,
-                        mediaStream,
-                        muted: true,
-                      }}
-                    />
-                  </Box>
-                ))}
-            </VStack>
-          ) : undefined}
         </HStack>
       )}
     </Flex>
