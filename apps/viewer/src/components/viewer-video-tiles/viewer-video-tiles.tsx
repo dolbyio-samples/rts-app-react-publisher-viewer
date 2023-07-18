@@ -33,6 +33,7 @@ const ViewerVideoTiles = ({
   const [isMobileSmall, setIsMobileSmall] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isDesktop, setIsDesktop] = useState(!isMobileBrowser);
+  const [playingAds, setPlayingAds] = useState(false);
 
   // Assign the first source as the initial main stream
   useEffect(() => {
@@ -41,23 +42,27 @@ const ViewerVideoTiles = ({
       const newSrcId = srcArray[srcArray.length - 1][0];
 
       console.log('>>>>', isDesktop, newSrcId);
-      if (remoteTrackSources.size == 1) {
+      if (remoteTrackSources.size == 1 || playingAds) {
+        setPlayingAds(false);
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
         return;
       }
 
       if (isDesktop && newSrcId.toLowerCase().includes('desktop')) {
+        setPlayingAds(true);
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
 
       if (isTablet && newSrcId.toLowerCase().includes('tablet')) {
+        setPlayingAds(true);
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
 
       if (isMobile && newSrcId.toLowerCase().includes('mobile')) {
+        setPlayingAds(true);
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
@@ -75,7 +80,6 @@ const ViewerVideoTiles = ({
 
   const changeMainSource = async (newMainSourceId: string) => {
     projectToMainStream(newMainSourceId, true).then(() => {
-      setMainSourceId(newMainSourceId);
       // Reset quality
       setSourceQuality(newMainSourceId, { streamQuality: 'High' });
     });
