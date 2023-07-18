@@ -24,47 +24,47 @@ const ViewerVideoTiles = ({
   const [mainSourceId, setMainSourceId] = useState('');
 
   const isMobileBrowser =
-  (typeof navigator !== 'undefined' && navigator.userAgent.match(/Android|iPhone|mobile/i)) ||
-  /*
-   * Apple tablets are faking userAgent by default to treat them as desktop browsers, additional check for Apple devices
-   */
-  (navigator?.platform === 'MacIntel' && 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0);
+    (typeof navigator !== 'undefined' && navigator.userAgent.match(/Android|iPhone|mobile/i)) ||
+    /*
+     * Apple tablets are faking userAgent by default to treat them as desktop browsers, additional check for Apple devices
+     */
+    (navigator?.platform === 'MacIntel' && 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0);
 
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileSmall, setIsMobileSmall] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isDesktop, setIsDesktop] = useState(!isMobileBrowser);
-  
+
   // Assign the first source as the initial main stream
   useEffect(() => {
     if (remoteTrackSources.size) {
       const srcArray = Array.from(remoteTrackSources);
-      const newSrcId = srcArray[srcArray.length -1][0];
+      const newSrcId = srcArray[srcArray.length - 1][0];
 
-      console.log(">>>>", isDesktop, newSrcId);
-      if(remoteTrackSources.size == 1){
+      console.log('>>>>', isDesktop, newSrcId);
+      if (remoteTrackSources.size == 1) {
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
         return;
       }
 
-      if((isDesktop && newSrcId.toLowerCase().includes('desktop'))){
+      if (isDesktop && newSrcId.toLowerCase().includes('desktop')) {
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
 
-      if((isTablet && newSrcId.toLowerCase().includes('tablet'))){
+      if (isTablet && newSrcId.toLowerCase().includes('tablet')) {
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
 
-      if((isMobile && newSrcId.toLowerCase().includes('mobile'))){
+      if (isMobile && newSrcId.toLowerCase().includes('mobile')) {
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
       }
     }
   }, [remoteTrackSources.size]);
-  
+
   // Reset main stream when layers change
   useEffect(() => {
     if (mainSourceId === '') {

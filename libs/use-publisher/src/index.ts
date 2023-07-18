@@ -160,7 +160,7 @@ const usePublisher = ({
 
   const stopStreamingToSource = (id: string) => {
     const source = sources.get(id);
-console.log("%%%%%%%%%%%%%", source)
+    console.log('%%%%%%%%%%%%%', source);
     if (!source) {
       return;
     }

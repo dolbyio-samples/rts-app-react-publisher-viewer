@@ -77,7 +77,7 @@ const App = () => {
   useEffect(() => {
     if (allSourcesLive) {
       sources.forEach((source, id) => {
-        console.log("#####", source.broadcastOptions.sourceId)
+        console.log('#####', source.broadcastOptions.sourceId);
         try {
           if (!source.publish.isActive()) {
             startStreamingToSource(id);
@@ -98,13 +98,13 @@ const App = () => {
       // setAllSourcesLive(true);
     } else {
       sources.forEach((source, id) => {
-        console.log(">>>>>>>>> stopping", source.publish.isActive(), source.broadcastOptions.sourceId);
-        if (!source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+        console.log('>>>>>>>>> stopping', source.publish.isActive(), source.broadcastOptions.sourceId);
+        if (!source.broadcastOptions.sourceId.toLowerCase().includes('main')) {
           stopStreamingToSource(id);
           localFiles.remove(id);
         }
       });
-      
+
       setAllSourcesLive(false);
     }
   }, [showAds, adFiles.length]);
@@ -138,11 +138,11 @@ const App = () => {
   const handleStartAllSources = () => {
     startTimer();
     //for (const id of sources.keys()) {
-      try {
-        startStreamingToSource(Array.from(sources.keys())[0]);
-      } catch (error) {
-        showError(`Failed to start streaming: ${error}`);
-      }
+    try {
+      startStreamingToSource(Array.from(sources.keys())[0]);
+    } catch (error) {
+      showError(`Failed to start streaming: ${error}`);
+    }
     //}
 
     setAllSourcesLive(true);
@@ -161,7 +161,7 @@ const App = () => {
   };
 
   const handleStopSource = (id: string) => () => {
-    console.log(">>> handleStopSource", id);
+    console.log('>>> handleStopSource', id);
     stopStreamingToSource(id);
     setAllSourcesLive(false);
   };
@@ -172,33 +172,33 @@ const App = () => {
   function startTimer() {
     let timerInterval: NodeJS.Timeout;
     let is30Seconds = true;
-  
+
     function toggleTimer() {
       if (is30Seconds) {
         console.log('30 seconds elapsed');
         // Perform actions after 30 seconds here
         startAds();
         setShowAds(true);
-  
+
         clearInterval(timerInterval);
         timerInterval = setInterval(toggleTimer, 10000); // Switch to 10 seconds timer
       } else {
         console.log('20 seconds elapsed');
         // Perform actions after 10 seconds here
         setShowAds(false);
-  
+
         clearInterval(timerInterval);
         timerInterval = setInterval(toggleTimer, 30000); // Switch to 30 seconds timer
       }
-  
+
       is30Seconds = !is30Seconds;
     }
-  
+
     timerInterval = setInterval(toggleTimer, 30000); // Start with 30 seconds timer
   }
 
   function startAds() {
-    console.log(">>>>>>>>> start Ads")
+    console.log('>>>>>>>>> start Ads');
     // for (const id of sources.keys()) {
     //   try {
     //     startStreamingToSource(id);
@@ -206,42 +206,42 @@ const App = () => {
     //     showError(`Failed to start streaming: ${error}`);
     //   }
     // }
-    adFiles.forEach( file => {
+    adFiles.forEach((file) => {
       localFiles.add(file);
     });
     setAllSourcesLive(true);
   }
 
   const stopAds = (activeSources: PublisherSources) => {
-    console.log(">>>>>>>>> stop Ads", sources.size)
+    console.log('>>>>>>>>> stop Ads', sources.size);
     activeSources.forEach((source, id) => {
-        // try {
-        //   if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
-        //     console.log("***** source stopped", source.broadcastOptions.sourceId)
-        //     stopStreamingToSource(id);
-        //     setAllSourcesLive(false);
-        //   }
-        // } catch (error) {
-        //   showError(`Failed to stop streaming: ${error}`);
-        // }
-        console.log(">>>>>>>>> stopping", source.publish.isActive(), source.broadcastOptions.sourceId);
-        if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
-          stopStreamingToSource(id);
-          localFiles.remove(id);
-        }
-      });
-      
-      setAllSourcesLive(false);
-  }
-  
+      // try {
+      //   if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes("main")) {
+      //     console.log("***** source stopped", source.broadcastOptions.sourceId)
+      //     stopStreamingToSource(id);
+      //     setAllSourcesLive(false);
+      //   }
+      // } catch (error) {
+      //   showError(`Failed to stop streaming: ${error}`);
+      // }
+      console.log('>>>>>>>>> stopping', source.publish.isActive(), source.broadcastOptions.sourceId);
+      if (source.publish.isActive() && !source.broadcastOptions.sourceId.toLowerCase().includes('main')) {
+        stopStreamingToSource(id);
+        localFiles.remove(id);
+      }
+    });
+
+    setAllSourcesLive(false);
+  };
+
   function addFiles(file: File) {
-    if(!file.name.toLowerCase().includes("main")){
+    if (!file.name.toLowerCase().includes('main')) {
       adFiles.push(file);
-    } else{
+    } else {
       localFiles.add(file);
     }
-  };
-  
+  }
+
   return (
     <VStack
       background="background"
