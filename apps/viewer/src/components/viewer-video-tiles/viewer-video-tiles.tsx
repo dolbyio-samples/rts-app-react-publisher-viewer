@@ -16,7 +16,6 @@ const ViewerVideoTiles = ({
   mainStatistics,
   projectToMainStream,
   remoteTrackSources,
-  reprojectFromMainStream,
   setSourceQuality,
 }: ViewerVideoTilesProps) => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
@@ -76,10 +75,10 @@ const ViewerVideoTiles = ({
 
   const changeMainSource = async (newMainSourceId: string) => {
     if (mainSourceId !== '') {
-      reprojectFromMainStream(mainSourceId);
+      projectToMainStream(mainSourceId, true);
     }
 
-    projectToMainStream(newMainSourceId).then(() => {
+    projectToMainStream(newMainSourceId, true).then(() => {
       setMainSourceId(newMainSourceId);
       // Reset quality
       setSourceQuality(newMainSourceId, { streamQuality: 'Auto' });
