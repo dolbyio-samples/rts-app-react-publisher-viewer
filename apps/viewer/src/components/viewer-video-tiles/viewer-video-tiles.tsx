@@ -34,6 +34,7 @@ const ViewerVideoTiles = ({
   const [isMobileSmall, setIsMobileSmall] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isDesktop, setIsDesktop] = useState(!isMobileBrowser);
+  const [deviceType, setDeviceType] = useState("default");
   
   // Assign the first source as the initial main stream
   useEffect(() => {
@@ -41,7 +42,8 @@ const ViewerVideoTiles = ({
       const srcArray = Array.from(remoteTrackSources);
       const newSrcId = srcArray[srcArray.length -1][0];
 
-      console.log(">>>>", isDesktop, newSrcId);
+      console.log(">>>> updating ", newSrcId);
+
       if(remoteTrackSources.size == 1){
         setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
@@ -49,18 +51,21 @@ const ViewerVideoTiles = ({
       }
 
       if((isDesktop && newSrcId.toLowerCase().includes('desktop'))){
-        setMainSourceId(newSrcId);
+        //setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
+        console.log(">>>> desktop ", newSrcId);
       }
 
       if((isTablet && newSrcId.toLowerCase().includes('tablet'))){
-        setMainSourceId(newSrcId);
+        //setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
+        console.log(">>>> tablet ", newSrcId);
       }
 
       if((isMobile && newSrcId.toLowerCase().includes('mobile'))){
-        setMainSourceId(newSrcId);
+        //setMainSourceId(newSrcId);
         changeMainSource(newSrcId);
+        console.log(">>>> mobile ", newSrcId);
       }
     }
   }, [remoteTrackSources.size]);
@@ -75,10 +80,6 @@ const ViewerVideoTiles = ({
   }, [mainQualityOptions.length]);
 
   const changeMainSource = async (newMainSourceId: string) => {
-    if (mainSourceId !== '') {
-      reprojectFromMainStream(mainSourceId);
-    }
-
     projectToMainStream(newMainSourceId).then(() => {
       setMainSourceId(newMainSourceId);
       // Reset quality
@@ -125,22 +126,28 @@ const ViewerVideoTiles = ({
         setIsMobileSmall(true);
         setIsTablet(false);
         setIsDesktop(false);
+        setDeviceType("mobile");
       } else if (mainDimension <= breakpoints.mobile) {
         setIsMobile(true);
         setIsMobileSmall(false);
         setIsTablet(false);
         setIsDesktop(false);
+        setDeviceType("mobile");
       } else if (mainDimension <= breakpoints.tablet || isMobileBrowser) {
         setIsMobile(false);
         setIsMobileSmall(false);
         setIsTablet(true);
         setIsDesktop(false);
+        setDeviceType("tablet");
+      } else {
+        setDeviceType("desktop");
       }
     } else {
       setIsMobile(false);
       setIsMobileSmall(false);
       setIsTablet(false);
       setIsDesktop(true);
+      setDeviceType("desktop");
     }
   };
 
@@ -160,6 +167,7 @@ const ViewerVideoTiles = ({
       ) : (
         <HStack height="573px" justifyContent="center" maxHeight="573px" width="100vw">
           <Box height="100%" maxWidth="90vw" test-id="rtsVideoMain" width="80vw">
+          <Text test-id="pageDesc">{mainSourceId + " " + remoteTrackSources.size + " " + deviceType}</Text>
             <ViewerVideoView
               controls={viewerPlaybackControl[mainSourceId]}
               isStreaming={isStreaming}
