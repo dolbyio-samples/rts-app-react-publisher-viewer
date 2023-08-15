@@ -18,7 +18,6 @@ const App = () => {
   const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_RTS_ACCOUNT_ID;
 
   const { showError } = useNotification();
-  // Prevent closing the page
   usePageClosePrompt();
 
   const {
