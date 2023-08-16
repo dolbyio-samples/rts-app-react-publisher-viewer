@@ -2,6 +2,7 @@ import WebRTCStats, { OnStats } from '@dolbyio/webrtc-stats';
 import { BroadcastEvent, Director, MediaStreamLayers, MediaStreamSource, View, ViewerCount } from '@millicast/sdk';
 import { useReducer, useRef } from 'react';
 import useState from 'react-usestateref';
+import { first } from 'lodash';
 
 import reducer from './reducer';
 import {
@@ -37,6 +38,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
   const activeEventCounterRef = useRef(0);
   const mainAudioMIDRef = useRef<string>();
   const mainVideoMIDRef = useRef<string>();
+  const mainVideoTrackIdRef = useRef<string>();
   const [mainMediaStream, setMainMediaStream, mainMediaStreamRef] = useState<MediaStream>();
   const [mainSourceId, setMainSourceId, mainSourceIdRef] = useState<string>();
   const [mainQualityOptions, setMainQualityOptions] = useState<SimulcastQuality[]>(buildQualityOptions());
@@ -182,7 +184,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     const { audio, video } = statistics.input;
 
     const mainAudio = audio.filter(({ mid }) => mid === mainAudioMIDRef.current) ?? [];
-    const mainVideo = video.filter(({ mid }) => mid === mainVideoMIDRef.current) ?? [];
+    const mainVideo = video.filter(({ trackIdentifier }) => trackIdentifier === mainVideoTrackIdRef.current);
 
     setMainStatistics({ ...statistics, input: { audio: mainAudio, video: mainVideo } });
   };
@@ -274,6 +276,7 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
       mainAudioMIDRef.current = mid || undefined;
     } else if (kind === 'video') {
       mainVideoMIDRef.current = mid || undefined;
+      mainVideoTrackIdRef.current = first(mediaStream?.getVideoTracks())?.id;
     }
     setMainMediaStream(mediaStream);
   };
