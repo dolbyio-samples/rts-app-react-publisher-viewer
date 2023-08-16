@@ -184,6 +184,8 @@ const useViewer = ({ handleError, streamAccountId, streamName, subscriberToken }
     const { audio, video } = statistics.input;
 
     const mainAudio = audio.filter(({ mid }) => mid === mainAudioMIDRef.current) ?? [];
+
+    // Safari and Firefox do not report on mid so we fall back to trackIdentifier to easily pick up stats when streaming with multiple sources
     const mainVideo = video.filter(({ trackIdentifier }) => trackIdentifier === mainVideoTrackIdRef.current);
 
     setMainStatistics({ ...statistics, input: { audio: mainAudio, video: mainVideo } });
