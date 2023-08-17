@@ -2305,10 +2305,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
-"@dolbyio/webrtc-stats@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@dolbyio/webrtc-stats/-/webrtc-stats-0.2.0.tgz#9749ce4c8063c6273d3e1715bab916d8bc44f785"
-  integrity sha512-dkkKFpAPmmrPun9RPv9vfDGYbkY+ICHMmTjzoDBVq9rI+nyFlfQPxKRY+Rz2lVRbk1Zie+lJ8OdvtK6I3UUaBQ==
+"@dolbyio/webrtc-stats@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@dolbyio/webrtc-stats/-/webrtc-stats-0.3.0.tgz#f48814dbb0c6866d4b63c0bdc48fe9043e5aca28"
+  integrity sha512-1lIvblSCd8za2+TXnc75gxDn5dYFHuYcjb9+wjj/NHDe+bogEJX1+HIJmLEoIHnJJMu8Ee8OQbdhqxADzSLZfA==
   dependencies:
     js-logger "^1.6.1"
 
