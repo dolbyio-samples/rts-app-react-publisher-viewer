@@ -43,61 +43,67 @@ const ViewerVideoTiles = ({
   const isStreaming = remoteTrackSources.size > 0;
 
   return (
-        <HStack wrap="wrap" justifyContent="center">
-          <Box test-id="rtsVideoMain" flex="2" height={{ sm: '50vh' }} width={{ sm: '80vw' }}>
-            <ViewerVideoView
-              controls={viewerPlaybackControl[mainSourceId]}
-              isStreaming={isStreaming}
-              settings={mainSourceSettings}
-              showControlBar
-              statistics={mainStatistics}
-              videoProps={{
-                displayVideo: true,
-                label: mainSourceId,
-                mediaStream: mainMediaStream,
-                placeholderNode: (
-                  <Center
-                    background="dolbyNeutral.800"
-                    color="dolbyNeutral.700"
-                    height="100%"
-                    position="absolute"
-                    width="100%"
-                  >
-                    <IconProfile height="174px" width="174px" />
-                  </Center>
-                ),
-              }}
-            />
-          </Box>
-          {remoteTrackSources.size > 1 ? (
-            <Grid gridTemplateColumns={{ base: '1fr 1fr', sm: '1fr' }} width={{ sm: '20vw' }} gridRowGap="15px" columnGap="15px" marginTop={{ base: '20px', sm: '0px' }}>
-              {Array.from(remoteTrackSources)
-                .filter(([sourceId]) => sourceId !== mainSourceId)
-                .map(([sourceId, { mediaStream }]) => (
-                  <Box
-                    cursor="pointer"
-                    key={sourceId}
-                    onClick={() => {
-                      projectToMainStream(sourceId, true);
-                    }}
-                    test-id="rtsVideo"
-                    width="100%"
-                  >
-                    <ViewerVideoView
-                      controls={viewerPlaybackControl[sourceId]}
-                      isStreaming={isStreaming}
-                      videoProps={{
-                        displayVideo: true,
-                        label: sourceId,
-                        mediaStream,
-                        muted: true,
-                      }}
-                    />
-                  </Box>
-                ))}
-            </Grid>
-          ) : undefined}
-        </HStack>
+    <HStack wrap="wrap" justifyContent="center">
+      <Box test-id="rtsVideoMain" flex="2" height={{ sm: '50vh' }} width={{ sm: '80vw' }}>
+        <ViewerVideoView
+          controls={viewerPlaybackControl[mainSourceId]}
+          isStreaming={isStreaming}
+          settings={mainSourceSettings}
+          showControlBar
+          statistics={mainStatistics}
+          videoProps={{
+            displayVideo: true,
+            label: mainSourceId,
+            mediaStream: mainMediaStream,
+            placeholderNode: (
+              <Center
+                background="dolbyNeutral.800"
+                color="dolbyNeutral.700"
+                height="100%"
+                position="absolute"
+                width="100%"
+              >
+                <IconProfile height="174px" width="174px" />
+              </Center>
+            ),
+          }}
+        />
+      </Box>
+      {remoteTrackSources.size > 1 ? (
+        <Grid
+          gridTemplateColumns={{ base: '1fr 1fr', sm: '1fr' }}
+          width={{ sm: '20vw' }}
+          gridRowGap="15px"
+          columnGap="15px"
+          marginTop={{ base: '20px', sm: '0px' }}
+        >
+          {Array.from(remoteTrackSources)
+            .filter(([sourceId]) => sourceId !== mainSourceId)
+            .map(([sourceId, { mediaStream }]) => (
+              <Box
+                cursor="pointer"
+                key={sourceId}
+                onClick={() => {
+                  projectToMainStream(sourceId, true);
+                }}
+                test-id="rtsVideo"
+                width="100%"
+              >
+                <ViewerVideoView
+                  controls={viewerPlaybackControl[sourceId]}
+                  isStreaming={isStreaming}
+                  videoProps={{
+                    displayVideo: true,
+                    label: sourceId,
+                    mediaStream,
+                    muted: true,
+                  }}
+                />
+              </Box>
+            ))}
+        </Grid>
+      ) : undefined}
+    </HStack>
   );
 };
 

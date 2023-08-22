@@ -16,7 +16,6 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@millicast-react/info-bar": ["libs/info-bar/src/index.tsx"],
       "@millicast-react/alert": ["libs/alert/src/index.tsx"],
       "@millicast-react/control-bar": ["libs/control-bar/src/index.tsx"],
       "@millicast-react/device-selection-modal": ["libs/device-selection-modal/src/index.tsx"],
@@ -25,6 +24,7 @@
       "@millicast-react/drawer": ["libs/drawer/src/index.tsx"],
       "@millicast-react/dropdown": ["libs/dropdown/src/index.tsx"],
       "@millicast-react/icon-button": ["libs/icon-button/src/index.tsx"],
+      "@millicast-react/info-bar": ["libs/info-bar/src/index.tsx"],
       "@millicast-react/info-label": ["libs/info-label/src/index.tsx"],
       "@millicast-react/input": ["libs/input/src/index.tsx"],
       "@millicast-react/live-indicator": ["libs/live-indicator/src/index.tsx"],
@@ -38,12 +38,12 @@
       "@millicast-react/tabs": ["libs/tabs/src/index.tsx"],
       "@millicast-react/timer": ["libs/timer/src/index.tsx"],
       "@millicast-react/toggle-button": ["libs/toggle-button/src/index.tsx"],
-      "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-local-files": ["libs/use-local-files/src/index.ts"],
-      "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
+      "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
       "@millicast-react/use-page-close-prompt": ["libs/use-page-close-prompt/src/index.ts"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
+      "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
       "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],
       "@millicast-react/video-view": ["libs/video-view/src/index.tsx"]
     }

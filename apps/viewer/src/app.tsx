@@ -8,7 +8,7 @@ import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
 import useViewer from '@millicast-react/use-viewer';
 
 import ViewerVideoTiles from './components/viewer-video-tiles';
-import { NoStream } from './components/no-stream'
+import { NoStream } from './components/no-stream';
 
 import './styles/app.css';
 
@@ -72,7 +72,9 @@ const App = () => {
           remoteTrackSources={remoteTrackSources}
           setSourceQuality={setSourceQuality}
         />
-      ) : <NoStream />}
+      ) : (
+        <NoStream />
+      )}
       <Box bottom="5px" left="5px" position="fixed" test-id="appVersion" paddingTop="10px">
         <Text fontSize="12px">Version: {__APP_VERSION__}</Text>
       </Box>
