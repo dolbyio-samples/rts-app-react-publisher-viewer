@@ -42,9 +42,9 @@ const ViewerVideoTiles = ({
   }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
 
   const isStreaming = remoteTrackSources.size > 0;
-  
+
   if (!isStreaming) {
-    return <NoStream />
+    return <NoStream />;
   }
 
   return (
