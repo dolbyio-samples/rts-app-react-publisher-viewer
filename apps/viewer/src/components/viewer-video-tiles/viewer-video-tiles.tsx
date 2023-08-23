@@ -7,6 +7,7 @@ import { SimulcastQuality } from '@millicast-react/use-viewer';
 import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
+import { NoStream } from '../no-stream';
 
 const ViewerVideoTiles = ({
   mainMediaStream,
@@ -41,6 +42,10 @@ const ViewerVideoTiles = ({
   }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
 
   const isStreaming = remoteTrackSources.size > 0;
+  
+  if (!isStreaming) {
+    return <NoStream />
+  }
 
   return (
     <HStack wrap="wrap" justifyContent="center">
