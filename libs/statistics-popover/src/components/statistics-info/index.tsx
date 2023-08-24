@@ -114,7 +114,7 @@ const StatisticsInfo = ({ statistics }: StatisticsInfoProps) => {
               {video ? (
                 <Tr>
                   <Th>Codecs:</Th>
-                  <Td>{`${video.mimeType}` + (audio ? `, ${audio.mimeType}` : 'unknown')}</Td>
+                  <Td>{`${video.mimeType}` + (audio ? `, ${audio.mimeType}` : ', unknown')}</Td>
                 </Tr>
               ) : undefined}
               {video || audio ? (
