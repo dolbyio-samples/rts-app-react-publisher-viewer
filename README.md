@@ -26,6 +26,8 @@ This project is setup as a monorepo, and contains the following:
 
 - Publisher app (under `apps/publisher`)
 - Viewer/subscriber app (under `apps/viewer`)
+- Hosted viewer/subscriber app (under `apps/hosted-viewer`)
+- Dev app for testing the hosted viewer (under `apps/hosted-viewer-harness`)
 - Tests (under `apps/e2e-test/*` )
 - Shared components/hooks (under `libs/*`)
 - Storybook stories (under `.apps/stories/*`)
@@ -56,7 +58,7 @@ Once created, you can grab the stream name, publisher token and stream ID from t
 
 ![tokens screenshot](docs/img/tokens.png)
 
-For your application to pick these values up, you can either set them as environment variables or store them in a `.env` file. The `.env` file must be under `apps/publisher/` and `apps/viewer/`.
+For your application to pick these values up, you can either set them as environment variables or store them in a `.env` file. The `.env` file must be under `apps/publisher/`, `apps/viewer/`, `apps/hosted-viewer`, and `apps/hosted-viewer-harness`.
 
 ```bash
 VITE_RTS_STREAM_NAME=<your stream name>
@@ -100,6 +102,20 @@ To run your app in dev mode, run the following command in your terminal and open
 
 ```bash
 yarn nx serve viewer
+```
+
+#### Running the hosted-viewer app
+
+To run your app in dev mode, run the following command in your terminal and open the browser:
+
+```bash
+yarn nx serve hosted-viewer
+```
+
+If you want to run your hosted-viewer through an app with an iframe, run the above command and then run the following command in your terminal and open the browser to the URL output in the console:
+
+```bash
+yarn nx serve hosted-viewer-harness
 ```
 
 ## Features, roadmap and limitations
