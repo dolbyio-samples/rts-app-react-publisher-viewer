@@ -4,10 +4,10 @@ import React, { useEffect, useMemo } from 'react';
 import { IconProfile } from '@millicast-react/dolbyio-icons';
 import { SimulcastQuality } from '@millicast-react/use-viewer';
 
-import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
-import { NoStream } from '../no-stream';
+import NoStream from '@millicast-react/no-stream';
+import usePlaybackControl from '@millicast-react/use-playback-control';
 
 const ViewerVideoTiles = ({
   mainMediaStream,
