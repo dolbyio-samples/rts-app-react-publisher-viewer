@@ -13,8 +13,8 @@ import {
 } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
+import SettingsPopover from '@millicast-react/settings-popover';
 
-import SettingsPopover from './settings-popover';
 import { VideoControlBarProps } from './types';
 
 const VideoControlBar = ({
