@@ -1,0 +1,16 @@
+{
+  "name": "use-pip",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/use-pip/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/use-pip/**/*.{ts,js}"]
+      }
+    }
+  }
+}

@@ -42,6 +42,7 @@
       "@millicast-react/use-media-devices": ["libs/use-media-devices/src/index.ts"],
       "@millicast-react/use-notification": ["libs/use-notification/src/index.tsx"],
       "@millicast-react/use-page-close-prompt": ["libs/use-page-close-prompt/src/index.ts"],
+      "@millicast-react/use-pip": ["libs/use-pip/src/index.ts"],
       "@millicast-react/use-publisher": ["libs/use-publisher/src/index.ts"],
       "@millicast-react/use-screen-share": ["libs/use-screen-share/src/index.ts"],
       "@millicast-react/use-viewer": ["libs/use-viewer/src/index.ts"],

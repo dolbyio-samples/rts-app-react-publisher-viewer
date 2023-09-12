@@ -1,5 +1,5 @@
 import { Box, CloseButton } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import VideoView from '@millicast-react/video-view';
 import { StreamTypes } from 'apps/publisher/src/hooks/use-multi-media-streams';
@@ -27,7 +27,7 @@ const VideoTile = ({
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
-
+  const videoElementRef = useRef<HTMLVideoElement>(null);
   const handleToggleAudio = () => {
     setIsAudioEnabled((prevIsAudioEnabled) => {
       audioTrack.enabled = !prevIsAudioEnabled;

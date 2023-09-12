@@ -24,21 +24,32 @@ The following components and hooks are currently present to simplify your workfl
 ### Components
 
 - Alert
-- ActionBar
 - ControlBar
+- DeviceSelectionModal
+- Drawer
 - DropDown
+- IconButton
+- InfoBar
 - InfoLabel
+- Input
 - LiveIndicator
+- LocalFileSelectionModal
+- ParticipantCount
+- Popover
 - PopupMenu
 - ShareLinkButton
-- StatisticInfo
+- StatisticsPopover
+- Tabs
 - Timer
 - ToggleButton
 - VideoView
 
 ### Hooks
 
-- useMediaCapabilities
+- useLocalFiles
+- useMediaDevices
 - useNotification
+- usePageClosePrompt
 - usePublisher
+- useScreenShare
 - useViewer
