@@ -11,12 +11,10 @@ import ViewerVideoTiles from './components/viewer-video-tiles';
 import { NoStream } from './components/no-stream';
 
 import './styles/app.css';
+import { useURLParameters } from './utils';
 
 const App = () => {
-  const href = new URL(window.location.href);
-
-  const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_RTS_STREAM_NAME;
-  const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_RTS_ACCOUNT_ID;
+  const { streamName, streamAccountId } = useURLParameters();
 
   const { showError } = useNotification();
   usePageClosePrompt();
