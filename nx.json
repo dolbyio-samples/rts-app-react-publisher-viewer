@@ -1,14 +1,5 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "millicast-react",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e", "test-publisher-viewer", "build-storybook"]
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"]
@@ -18,6 +9,14 @@
     },
     "lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e", "test-publisher-viewer", "build-storybook"]
+      }
     }
   },
   "cli": {
