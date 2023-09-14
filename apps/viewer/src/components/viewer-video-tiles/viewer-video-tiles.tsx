@@ -8,6 +8,7 @@ import usePlaybackControl from '../../hooks/use-playback-control';
 import { ViewerVideoTilesProps } from './types';
 import ViewerVideoView from './video-tile';
 import { NoStream } from '../no-stream';
+import { useURLParameters } from '../../utils';
 
 const ViewerVideoTiles = ({
   mainMediaStream,
@@ -19,6 +20,7 @@ const ViewerVideoTiles = ({
   setSourceQuality,
 }: ViewerVideoTilesProps) => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
+  const { isMultiviewEnabled } = useURLParameters();
 
   // Reset main stream when layers change
   useEffect(() => {
@@ -37,6 +39,18 @@ const ViewerVideoTiles = ({
         },
         options: mainQualityOptions,
         value: quality ?? 'Auto',
+      },
+      sources: {
+        handleSelect: (data: unknown) => {
+          const { sourceId } = data as { sourceId: string };
+          projectToMainStream(sourceId, true);
+        },
+        options: Array.from(remoteTrackSources).map(([sourceId]) => ({
+          id: sourceId,
+          label: sourceId,
+          data: { sourceId },
+        })),
+        value: mainSourceId,
       },
     };
   }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
@@ -74,7 +88,7 @@ const ViewerVideoTiles = ({
           }}
         />
       </Box>
-      {remoteTrackSources.size > 1 ? (
+      {isMultiviewEnabled && remoteTrackSources.size > 1 ? (
         <Grid
           gridTemplateColumns={{ base: '1fr 1fr', sm: '1fr' }}
           width={{ sm: '20vw' }}
