@@ -26,7 +26,7 @@ This project is setup as a monorepo, and contains the following:
 
 - Publisher app (under `apps/publisher`)
 - Viewer/subscriber app (under `apps/viewer`)
-- Tests (under `apps/e2e-test/*` )
+- Tests (under `apps/e2e-test/*`)
 - Shared components/hooks (under `libs/*`)
 - Storybook stories (under `.apps/stories/*`)
 
