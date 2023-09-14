@@ -7,7 +7,7 @@ import useNotification from '@millicast-react/use-notification';
 import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
 import useViewer from '@millicast-react/use-viewer';
 
-import ViewerVideoTiles from './components/viewer-video-tiles';
+import ViewerVideoTiles from '@millicast-react/viewer-video-tiles';
 import NoStream from '@millicast-react/no-stream';
 
 import './styles/app.css';

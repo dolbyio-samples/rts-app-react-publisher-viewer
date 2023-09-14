@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'video-viewer-tiles',
+  displayName: 'use-playback-control',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ export default {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/video-viewer-tiles',
+  coverageDirectory: '../../coverage/libs/use-playback-control',
 };
