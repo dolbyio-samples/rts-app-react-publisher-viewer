@@ -12,7 +12,7 @@ export const useURLParameters = (): URLParameters => {
 
     const streamName = href.searchParams.get('streamName') ?? import.meta.env.VITE_RTS_STREAM_NAME;
     const streamAccountId = href.searchParams.get('streamAccountId') ?? import.meta.env.VITE_RTS_ACCOUNT_ID;
-    const isMultiviewEnabled = href.searchParams.get('multisource')?.toLowerCase() === 'true';
+    const isMultiviewEnabled = href.searchParams.get('multisource')?.toLowerCase() !== 'false';
 
     return {
       streamName,
