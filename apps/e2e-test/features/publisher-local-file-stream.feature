@@ -248,7 +248,7 @@ Feature: Publisher Local File Streaming
         When the publisher clicks on the "local file view setting button"
         Then the "settings popup" should be displayed
         And the "settings title" text should be "Stream settings"
-        And the number of "settings dropdowns" count should be "2"
+        And the number of "settings dropdowns" count should be "1"
         And the "bitrate dropdown" should be displayed
         And the "bitrate dropdown" should be enabled
         And the "bitrate dropdown options" should contain "Auto,2 Mbps,1 Mbps,500 kbps,250 kbps" options
