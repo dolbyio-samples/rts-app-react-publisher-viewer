@@ -6,7 +6,7 @@ import usePageClosePrompt from '@millicast-react/use-page-close-prompt';
 import useViewer from '@millicast-react/use-viewer';
 
 import ViewerVideoTiles from './components/viewer-video-tiles';
-import { NoStream } from './components/no-stream';
+import NoStream from '@millicast-react/no-stream';
 
 import './styles/app.css';
 
@@ -29,7 +29,6 @@ const App = () => {
     setSourceQuality,
     startViewer,
     stopViewer,
-    viewerCount,
   } = useViewer({ handleError: showError, streamAccountId, streamName });
 
   useEffect(() => {
@@ -38,7 +37,6 @@ const App = () => {
       stopViewer();
     };
   }, []);
-
   return (
     <VStack background="background" height="100%" padding="24px" spacing="24px" width="100%">
       {mainMediaStream && mainSourceId ? (

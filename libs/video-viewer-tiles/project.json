@@ -1,0 +1,24 @@
+{
+  "name": "video-viewer-tiles",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/video-viewer-tiles/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/video-viewer-tiles/**/*.{ts,js}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/video-viewer-tiles/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
