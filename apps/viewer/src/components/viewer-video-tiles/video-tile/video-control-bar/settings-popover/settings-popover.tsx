@@ -1,14 +1,15 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { IconCameraOn, IconSettings, Sliders } from '@millicast-react/dolbyio-icons';
+import { IconCameraOn, IconSettings, Sliders, SidebarReverse } from '@millicast-react/dolbyio-icons';
 import Dropdown, { Element } from '@millicast-react/dropdown';
 import Popover from '@millicast-react/popover';
+import ToggleButton from '@millicast-react/toggle-button';
 
 import { SettingsPopoverProps } from './types';
 import { qualityElementResolver } from './utils';
 
-const SettingsPopover = ({ iconProps, quality, sources }: SettingsPopoverProps = {}) => (
+const SettingsPopover = ({ iconProps, quality, sources, multiview }: SettingsPopoverProps = {}) => (
   <Popover
     heading="Stream settings"
     icon={<IconSettings fill="white" />}
@@ -22,7 +23,7 @@ const SettingsPopover = ({ iconProps, quality, sources }: SettingsPopoverProps =
           disabled={quality.isDisabled}
           elementResolver={qualityElementResolver}
           elementsList={quality.options}
-          leftIcon={<Sliders />}
+          leftIcon={<Sliders width="90%" height="90%" />}
           onSelect={quality.handleSelect}
           placeholder="Quality"
           selected={quality.value}
@@ -32,7 +33,7 @@ const SettingsPopover = ({ iconProps, quality, sources }: SettingsPopoverProps =
     ) : undefined}
 
     {sources && (
-      <Box marginTop="20px">
+      <Box marginTop="5px">
         <Dropdown
           disabled={sources.isDisabled}
           elementResolver={(e: unknown) => e as Element}
@@ -42,6 +43,20 @@ const SettingsPopover = ({ iconProps, quality, sources }: SettingsPopoverProps =
           placeholder="Source"
           selected={sources.value}
           testId="videoSourcesSelect"
+        />
+      </Box>
+    )}
+
+    {multiview && !multiview.isHidden && (
+      <Box marginTop="5px">
+        <ToggleButton
+          height="48px"
+          isActive={multiview.value}
+          isDisabled={multiview.isDisabled}
+          label={`${multiview.value ? 'Hide' : 'Show'} Multi-view`}
+          leftIcon={<SidebarReverse width="90%" height="90%" />}
+          onClick={multiview.handleToggle}
+          test-id="showMultiviewToggle"
         />
       </Box>
     )}

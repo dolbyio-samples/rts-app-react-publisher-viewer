@@ -1,5 +1,5 @@
 import { Box, Center, HStack, Grid } from '@chakra-ui/react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { IconProfile } from '@millicast-react/dolbyio-icons';
 import { SimulcastQuality } from '@millicast-react/use-viewer';
@@ -21,6 +21,10 @@ const ViewerVideoTiles = ({
 }: ViewerVideoTilesProps) => {
   const viewerPlaybackControl = usePlaybackControl(Array.from(remoteTrackSources).map(([sourceId]) => sourceId));
   const { isMultiviewEnabled } = useURLParameters();
+  const [showMultiview, setShowMultiview] = useState(isMultiviewEnabled);
+
+  const isStreaming = remoteTrackSources.size > 0;
+  const isMultiview = remoteTrackSources.size > 1;
 
   // Reset main stream when layers change
   useEffect(() => {
@@ -52,10 +56,15 @@ const ViewerVideoTiles = ({
         })),
         value: mainSourceId,
       },
+      multiview: {
+        handleToggle: () => {
+          setShowMultiview((prevShowMultiview) => !prevShowMultiview);
+        },
+        isHidden: !isMultiviewEnabled || !isMultiview,
+        value: showMultiview,
+      },
     };
-  }, [mainQualityOptions, mainSourceId, remoteTrackSources]);
-
-  const isStreaming = remoteTrackSources.size > 0;
+  }, [mainQualityOptions, mainSourceId, remoteTrackSources, showMultiview]);
 
   if (!isStreaming) {
     return <NoStream />;
@@ -88,7 +97,7 @@ const ViewerVideoTiles = ({
           }}
         />
       </Box>
-      {isMultiviewEnabled && remoteTrackSources.size > 1 ? (
+      {isMultiview && showMultiview ? (
         <Grid
           gridTemplateColumns={{ base: '1fr 1fr', sm: '1fr' }}
           width={{ sm: '20vw' }}
