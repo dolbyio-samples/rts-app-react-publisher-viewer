@@ -72,7 +72,7 @@ Feature: Publisher Screen Preview
         When the publisher clicks on the "screen view setting button"
         Then the "settings popup" should be displayed
         And the "settings title" text should be "Stream settings"
-        And the number of "settings dropdowns" count should be "2"
+        And the number of "settings dropdowns" count should be "3"
         And the publisher clicks on the "settings close button"
         And the "screen view" setting should be displayed with default values
 
