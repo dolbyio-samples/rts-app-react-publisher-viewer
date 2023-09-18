@@ -32,7 +32,7 @@ const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcas
       </Box>
     ) : undefined}
     {resolution && !resolution.isHidden ? (
-      <Box>
+      <Box marginTop="5px">
         <Dropdown
           disabled={resolution.isDisabled}
           elementResolver={resolutionElementResolver}
@@ -46,7 +46,7 @@ const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcas
       </Box>
     ) : undefined}
     {bitrate && !bitrate.isHidden ? (
-      <Box>
+      <Box marginTop="5px">
         <Dropdown
           disabled={bitrate.isDisabled}
           elementResolver={bitrateElementResolver}
@@ -60,7 +60,7 @@ const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcas
       </Box>
     ) : undefined}
     {codec && !codec.isHidden ? (
-      <Box>
+      <Box marginTop="5px">
         <Dropdown
           disabled={codec.isDisabled}
           elementResolver={codecElementResolver}
@@ -74,15 +74,17 @@ const SettingsPopover = ({ bitrate, codec, iconProps, name, resolution, simulcas
       </Box>
     ) : undefined}
     {simulcast && !simulcast.isHidden ? (
-      <ToggleButton
-        height="48px"
-        isActive={simulcast.value}
-        isDisabled={simulcast.isDisabled}
-        label="Simulcast"
-        leftIcon={<IconSimulcast />}
-        onClick={simulcast.handleToggle}
-        test-id="simulcastToggle"
-      />
+      <Box marginTop="5px">
+        <ToggleButton
+          height="48px"
+          isActive={simulcast.value}
+          isDisabled={simulcast.isDisabled}
+          label="Simulcast"
+          leftIcon={<IconSimulcast />}
+          onClick={simulcast.handleToggle}
+          test-id="simulcastToggle"
+        />
+      </Box>
     ) : undefined}
   </Popover>
 );
