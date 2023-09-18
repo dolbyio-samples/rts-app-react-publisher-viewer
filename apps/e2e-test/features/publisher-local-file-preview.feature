@@ -84,7 +84,7 @@ Feature: Publisher Local File Preview
         When the publisher clicks on the "local file view setting button"
         Then the "settings popup" should be displayed
         And the "settings title" text should be "Stream settings"
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the publisher clicks on the "settings close button"
         And the "local file view" setting should be displayed with default values
 
