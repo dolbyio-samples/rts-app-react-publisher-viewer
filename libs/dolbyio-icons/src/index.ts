@@ -32,3 +32,4 @@ export { default as IconStreamRemote } from './StreamRemote';
 export { default as IconSuccessFilled } from './SuccessFilled';
 export { default as IconWarning } from './Warning';
 export { Sliders } from './Sliders';
+export { SidebarReverse } from './SidebarReverse';
