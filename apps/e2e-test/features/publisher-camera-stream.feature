@@ -194,7 +194,7 @@ Feature: Publisher Camera Streaming
         When the publisher clicks on the "camera view setting button"
         Then the "settings popup" should be displayed
         And the "settings title" text should be "Stream settings"
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "resolution dropdown" should be displayed
         And the "resolution dropdown" should be enabled
         And the "bitrate dropdown" should be displayed
@@ -219,7 +219,7 @@ Feature: Publisher Camera Streaming
 
         When the viewer clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
 
@@ -265,7 +265,7 @@ Feature: Publisher Camera Streaming
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
     Examples:
@@ -298,7 +298,7 @@ Feature: Publisher Camera Streaming
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
     Examples:

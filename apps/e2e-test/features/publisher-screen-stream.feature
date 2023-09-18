@@ -282,7 +282,7 @@ Feature: Publisher Screen Streaming
 
         When the viewer clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
 
@@ -344,7 +344,7 @@ Feature: Publisher Screen Streaming
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
     Examples:
@@ -389,7 +389,7 @@ Feature: Publisher Screen Streaming
 
         When the publisher clicks on the "main view setting button"
         Then the "settings popup" should be displayed
-        And the number of "settings dropdowns" count should be "3"
+        And the number of "settings dropdowns" count should be "2"
         And the "quality dropdown" should be displayed
         And the "quality dropdown" should be enabled
 
