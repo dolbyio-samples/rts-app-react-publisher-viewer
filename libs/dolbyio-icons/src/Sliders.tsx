@@ -1,11 +1,11 @@
 import React from 'react';
 import { SVGProps } from 'react';
 
-export const Sliders = ({ fill, ...otherProps }: SVGProps<SVGSVGElement>) => (
+export const Sliders = ({ fill, height, width, ...otherProps }: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
+    width={width ?? '100%'}
+    height={height ?? '100%'}
     fill={fill ?? 'currentColor'}
     className="bi bi-sliders"
     viewBox="0 0 16 16"
