@@ -1,4 +1,4 @@
-import { Box, Center, HStack, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
+import { Box, Center, HStack, Icon, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
 import React from 'react';
 
 import {
@@ -13,7 +13,7 @@ import {
 } from '@millicast-react/dolbyio-icons';
 import IconButton from '@millicast-react/icon-button';
 import StatisticsPopover from '@millicast-react/statistics-popover';
-
+import usePip from '@millicast-react/use-pip'
 import SettingsPopover from './settings-popover';
 import { VideoControlBarProps } from './types';
 
@@ -30,13 +30,14 @@ const VideoControlBar = ({
   onToggleAudio: handleToggleAudio,
   onTogglePlayback: handleTogglePlayback,
   onToggleVideo: handleToggleVideo,
+  onTogglePip,
   settings,
   statistics,
   volume,
   ...rest
 }: VideoControlBarProps) => {
   const showStatistics = isStreaming && !!statistics;
-
+  const { pipMode } = usePip();
   return (
     <HStack
       background="backgroundTranslucent"
@@ -115,6 +116,13 @@ const VideoControlBar = ({
           onClick={handleTogglePlayback}
           testId="togglePlaybackButton"
           tooltipProps={{ label: 'Toggle playback', placement: 'bottom' }}
+        />
+        <IconButton
+          icon={pipMode ? <IconPlay /> : <IconPause />}
+          isDisabled={!(activePlayback && hasVideoTrack)}
+          testId='pipModeButton'
+          onClick={onTogglePip}
+          tooltipProps={{ label: (pipMode ? 'Disable Picture in Picture Mode' : 'Enable Picture in Picture Mode'), placement: 'bottom' }}
         />
       </HStack>
       <HStack>

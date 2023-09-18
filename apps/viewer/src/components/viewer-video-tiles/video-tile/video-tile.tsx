@@ -6,6 +6,7 @@ import VideoView from '@millicast-react/video-view';
 import { VideoTileProps } from './types';
 import { delay } from './utils';
 import VideoControlBar from './video-control-bar';
+import usePip from '@millicast-react/use-pip'
 
 const SHOW_CONTROL_BAR_DURATION = 2000;
 
@@ -32,7 +33,13 @@ const VideoTile = ({
   const isControlBarVisibleRef = useRef<boolean>();
 
   const [isPlaybackActive, setIsPlaybackActive] = useState(true);
+  const { togglePipMode } = usePip();
 
+  const togglePictureInPictureMode = () => {
+    if (!videoViewRef.current) return;
+
+    togglePipMode(videoViewRef.current);
+  }
   // Hide/show control bar on mouse move
   useEffect(() => {
     if (!videoViewRef.current) {
@@ -139,6 +146,7 @@ const VideoTile = ({
           onToggleFullScreen={handleToggleFullScreen}
           onTogglePlayback={handleTogglePlayback}
           onToggleVideo={handleToggleVideo}
+          onTogglePip={togglePictureInPictureMode}
           opacity={isControlBarVisibleRef.current ? 1 : 0}
           settings={settings}
           statistics={statistics}

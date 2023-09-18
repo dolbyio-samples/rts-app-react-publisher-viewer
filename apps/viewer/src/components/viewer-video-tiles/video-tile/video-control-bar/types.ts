@@ -16,6 +16,7 @@ export interface VideoControlBarProps extends StackProps {
   onToggleFullScreen?: () => void;
   onTogglePlayback?: () => void;
   onToggleVideo?: () => void;
+  onTogglePip?: () => void;
   settings?: SettingsPopoverProps;
   statistics?: OnStats;
   volume?: number;
