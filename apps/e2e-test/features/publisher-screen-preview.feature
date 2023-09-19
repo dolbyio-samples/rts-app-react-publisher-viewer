@@ -68,7 +68,6 @@ Feature: Publisher Screen Preview
             | video button status | Off |
             | audio button status | Off |
 
-    @only
     Scenario: Publisher should be presented with Setting controls under screen View
         When the publisher clicks on the "screen view setting button"
         Then the "settings popup" should be displayed
