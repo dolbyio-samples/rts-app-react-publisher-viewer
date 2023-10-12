@@ -254,6 +254,16 @@ const usePublisher = ({
     dispatch({ broadcastOptions: { mediaStream }, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
   };
 
+  const startRecording = (sourceId: string): Promise<void> => {
+    const source = sources.get(sourceId);
+    return source?.publish.record() ?? Promise.reject(`Source with id=[${sourceId}] not found, can't start recording`);
+  };
+
+  const stopRecording = (sourceId: string): Promise<void> => {
+    const source = sources.get(sourceId);
+    return source?.publish.unrecord() ?? Promise.reject(`Source with id=[${sourceId}] not found, can't stop recording`);
+  };
+
   return {
     codecList,
     shareUrl,
@@ -262,6 +272,8 @@ const usePublisher = ({
     stopStreamingToSource,
     updateSourceBroadcastOptions,
     updateSourceMediaStream,
+    startRecording,
+    stopRecording,
     viewerCount,
   };
 };
