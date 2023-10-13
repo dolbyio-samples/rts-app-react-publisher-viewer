@@ -25,6 +25,8 @@ export interface Publisher {
   stopStreamingToSource: (id: string) => void;
   updateSourceMediaStream: (id: string, mediaStream: MediaStream) => void;
   updateSourceBroadcastOptions: (id: string, broadcastOptions: Partial<BroadcastOptions>) => void;
+  startRecording: (sourceId: string) => Promise<void>;
+  stopRecording: (sourceId: string) => Promise<void>;
   viewerCount: number;
 }
 
