@@ -254,10 +254,10 @@ const usePublisher = ({
     dispatch({ broadcastOptions: { mediaStream }, id, type: PublisherActionType.UPDATE_SOURCE_BROADCAST_OPTIONS });
   };
 
-// Notes - 
-// This is a paid feature. 
-// This also only records a single source. If you wish to record all sources, you'll have to call this method on all your streams. 
-// Refer to https://docs.dolby.io/streaming-apis/docs/recordings for reference 
+  // Notes -
+  // This is a paid feature.
+  // This also only records a single source. If you wish to record all sources, you'll have to call this method on all your streams.
+  // Refer to https://docs.dolby.io/streaming-apis/docs/recordings for reference
   const startRecording = (sourceId: string): Promise<void> => {
     const source = sources.get(sourceId);
     return source?.publish.record() ?? Promise.reject(`Source with id=[${sourceId}] not found, can't start recording`);
